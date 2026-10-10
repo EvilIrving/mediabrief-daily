@@ -10,4 +10,4 @@ https://swyx.io/js-tooling
 
 第六，我们把工具制造者当工具。TypeScript、webpack、Babel、React 的用户都比贡献者多三个数量级以上；教人用工具的讲师能赚几百万，维护者却在 Patreon 和 GitHub 上讨钱，管理层"观望"而不参与。他呼吁多尝试、多回馈，也希望资深工程师用更好的方式传承经验，而不是在社交媒体上冷嘲热讽。最后是资金问题：JS 97% 是开源，他引用 Feross 的话"开源维护者就是没有上行收益的创业者"，不喜欢广告、讨赏和 Gitcoin 式悬赏，更认可培训（React Training）、托管服务（Laravel Forge、Meteor Galaxy）和 Joseph Jacks 的开放核心思路，但最终站在 DHH 一边，认为在基本需求满足的前提下，内在动机才是可持续开源的根本。
 
-结尾他给出乐观的一面：State of JavaScript 调查显示人们对 Jest、Express、GraphQL 等工具的评价普遍上升；ES6 和 TypeScript（npm 用户中 63% 采用）改善了语言，常青浏览器让目标趋于稳定，"没人掌舵"被他重新定义为特性而非 bug，Anders Hejlsberg 和 Jest 团队代表了知识的传承。整体态度是：问题真实存在，但大多有合理成因，出路在于更多参与和善待维护者，而不是抱怨。
+结尾他给出乐观的一面：State of JavaScript 调查显示人们对 Jest、Express、GraphQL 等工具的评价普遍上升；ES6 和 TypeScript（npm 用户中 63% 采用）改善了语言，常青浏览器让目标趋于稳定，"没人掌舵"被他重新定义为特性而非 bug，Anders Hejlsberg 和 Christoph Nakazawa 带领的 Jest 团队代表了知识的传承。整体态度是：问题真实存在，但大多有合理成因，出路在于更多参与和善待维护者，而不是抱怨。

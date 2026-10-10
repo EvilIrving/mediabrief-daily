@@ -1,0 +1,17 @@
+https://swyx.io/cognition
+
+Cognition：魔鬼（Devin）在细节里 Cognition: The Devin is in the Details ｜ swyx ｜ 文章 ｜ https://swyx.io/cognition
+
+swyx（Latent Space 播客与 AI Engineer 大会主理人）宣布加入 Cognition——AI 软件工程师 Devin 的开发商、刚收购了智能体 IDE Windsurf 的公司。Smol AI 的大部分成员随他加入，AI Engineer 和 Latent Space 则继续保持独立（由 Lia 出任 AI Engineer 总经理）。正值 Cognition 两年内从零做到估值 100 亿美元的 C 轮，他用五个论点解释为何在估值暴涨后仍押注这里。
+
+一、“代码短周期，AGI 长周期”：他认为代码 AGI 只需完整 AGI 20% 的时间，却能拿下 80% 的价值；代码是可验证领域，也是唯一能“递归自我改进”的领域，各大模型实验室都已把它当作通往 AGI 的关键路径。问到市场规模时 CEO Scott Wu 笑了——软件的 TAM 在历史上每个阶段都被低估。
+
+二、智能体实验室胜过模型实验室：模型实验室“产品最后”，2023 年自建算力的 Inflection、Stability、Magic.dev 很快熄火；智能体实验室“产品优先”，把前沿能力推向尚未覆盖的领域，或提前预支未来，并能熬过“苦涩的教训”。他坦言这部分论证最弱，还答不上“如果 OpenAI 也做呢”。但“魔鬼在细节里”：从 MCP 市场到 Linear、Slack、Azure DevOps 等企业集成的长尾打磨，正是模型实验室不重视的部分。
+
+三、同时覆盖同步（Windsurf IDE）与异步（Devin）两端。他偏爱异步，认为“Slack 是杀手级智能体界面”；也不认同 IDE 会消失——管理一堆 Claude Code 的第一件事就是给它们做 UI。
+
+四、商业模式：Devin 的 ARR 从 2024 年 9 月的 100 万美元涨到 2025 年 6 月的 7300 万美元，公司历史净烧钱不到 2000 万，大部分收入是正毛利。秘诀是企业版起价每月 500 美元、按智能体计算单元（ACU）计费而不按席位，再用企业利润补贴 20 美元的个人版。收购 Windsurf 后七周企业 ARR 增长超 30%，客户包括高盛、花旗、戴尔、思科、Palantir 等。针对“其实是外包服务”的质疑，他举例一家银行客户在 150 万美元/年的合同上主动扩容十倍以上并签多年约，人员却几乎没增加。
+
+五、团队：一群 IOI 金牌得主却能耐心打磨无聊的企业集成，关键在于他们是“好胜的”程序员；组织像 Transformer 一样“全连接”、少层级、高透明。他认为这种文化比源代码更有价值。
+
+最后是个人反思：2023 年他做过 smol developer，却因模型表现不稳而失去信心，“这本该是 smol developer 成为的样子”，这次他不会再错过。他的具体角色暂未公布，只预告“Cognition Labs”。

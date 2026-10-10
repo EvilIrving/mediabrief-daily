@@ -1,0 +1,15 @@
+https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/
+
+Flexbox 交互式指南 An Interactive Guide to Flexbox ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/
+
+Josh W. Comeau 的 Flexbox 交互式长教程，目标是校正读者对 Flexbox 的心智模型。开篇演示借鉴 Adam Argyle 的“一份代价四种布局”CodePen：一个表单不用任何媒体查询，只靠 flex-grow、flex-basis、flex-wrap 和 gap 就能随容器宽度流畅重排。
+
+他先讲基础：display: flex 在父元素上创建 flex 格式化上下文；Flow 是为文档设计的“Word 式”算法，Flexbox 则专门解决一组元素在行或列上的分布与对齐。一切规则都以主轴和与之垂直的交叉轴为基准，所以横竖布局可以无缝切换；默认子元素在主轴上挤在起点，在交叉轴上拉伸填满。
+
+文章最有价值的部分是解释命名之谜：为什么是 justify-content 和 align-items，为什么有 align-self 却没有 justify-self。他用“烤肉串与鸡尾酒小香肠”打比方：主轴像一根签子串起所有元素，任何一个都不能单独移动而不撞到兄弟；交叉轴则是每根牙签只穿一个，各自可以自由移动。由此定义：justify 指主轴、align 指交叉轴、content 指可整体分配的一组东西、items 指可单独定位的个体。主轴上只能整体分配，所以没有 justify-items/justify-self。
+
+接着是尺寸机制。width 在 Flow 里是硬约束，在 Flex 行里只是“假设尺寸”的建议；flex-basis 就是绑定在主轴上的 width/height。flex-grow 默认 0，多个元素按比例瓜分剩余空间；空间不足时元素默认按比例一起缩小，flex-shrink 决定谁承担多少“赤字”（例如 100px 赤字按 3:1 分摊为 75px 和 25px），只看比例不看绝对值。他把 grow 和 shrink 视为一枚硬币的两面，同一时刻只有一个起作用。flex-shrink: 0 可防止 SVG 图标被压扁。他认为全文最有用的一点是“最小尺寸陷阱”：算法绝不会把元素缩到最小尺寸以下，文本输入框默认约 170–200px，含文字的元素则以最长不可断字符串为下限，再大的 flex-shrink 也没用；解决办法是对子元素设 min-width: 0。
+
+间距方面，gap 自 2021 年初起已被所有现代浏览器支持；auto margin 会吞掉剩余空间放进外边距，比如给 logo 设 margin-right: auto 就能把导航链接推到另一侧，他偏爱这种“把剩余空间当资源分配”的思路。最后是 flex-wrap：换行后元素不再缩到假设尺寸以下，每行变成独立的小 flex 容器（多根签子），align-items 在各行内对齐，而要整体对齐多行则用 align-content——它同样符合“交叉轴 + 整组内容”的定义。
+
+结尾他承认教程很密，并推广课程《CSS for JavaScript Developers》，主张 CSS 其实稳健一致，问题在于心智模型不完整。

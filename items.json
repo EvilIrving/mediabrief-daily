@@ -551,6 +551,48 @@
   "title_zh": "绿色退出代码不是工作发生的证据"
  },
  {
+  "id": "cur-712b951e5e27",
+  "kind": "curated",
+  "type": "article",
+  "source": "NAVER D2",
+  "title": "Python의 GC가 멀티프로세싱과 만나면 생기는 일 - Python과 Airflow, 그리고 관련된 문제 해결기 2편",
+  "link": "https://d2.naver.com/helloworld/4149925",
+  "date": "2026-10-08",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-712b951e5e27.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-712b951e5e27.transcript.txt"
+   }
+  ],
+  "title_zh": "当Python的GC遇到多重处理时会发生什么- Python和气流以及相关的疑难解答第2部分"
+ },
+ {
+  "id": "cur-ad1aae2024e5",
+  "kind": "curated",
+  "type": "article",
+  "source": "Stack Overflow Blog",
+  "title": "Part 1: Make your AI agents boring: the determinism layer",
+  "link": "https://stackoverflow.blog/2026/10/07/part-1-make-your-ai-agents-boring-the-determinism-layer/",
+  "date": "2026-10-07",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-ad1aae2024e5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ad1aae2024e5.transcript.txt"
+   }
+  ],
+  "title_zh": "第1部分：让你的人工智能代理无聊：决定论层"
+ },
+ {
   "id": "cur-1f73001924ca",
   "kind": "curated",
   "type": "article",
@@ -871,6 +913,48 @@
   "title_zh": "重构的经济效益"
  },
  {
+  "id": "cur-39fb82bc57e5",
+  "kind": "curated",
+  "type": "article",
+  "source": "Stratechery",
+  "title": "Who’s Afraid of Chinese Models?",
+  "link": "https://stratechery.com/2026/whos-afraid-of-chinese-models/",
+  "date": "2026-07-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-39fb82bc57e5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-39fb82bc57e5.transcript.txt"
+   }
+  ],
+  "title_zh": "谁怕中国模特？"
+ },
+ {
+  "id": "cur-bf7280b6ee49",
+  "kind": "curated",
+  "type": "article",
+  "source": "Addy Osmani",
+  "title": "Software Factories, Light and Dark",
+  "link": "https://addyosmani.com/blog/software-factories/",
+  "date": "2026-07-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-bf7280b6ee49.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-bf7280b6ee49.transcript.txt"
+   }
+  ],
+  "title_zh": "软件工厂，光明与黑暗"
+ },
+ {
   "id": "cur-7e0346368a85",
   "kind": "curated",
   "type": "article",
@@ -927,8 +1011,8 @@
     "url": "txt/cur-d9c9ed7a60ba.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d9c9ed7a60ba.m4a",
-  "title_zh": "1020 ：你读代码吗？"
+  "title_zh": "1020 ：你读代码吗？",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d9c9ed7a60ba.m4a"
  },
  {
   "id": "cur-9fd93c8ee8fc",
@@ -987,8 +1071,8 @@
     "url": "txt/cur-f00d750dd07e.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f00d750dd07e.m4a",
-  "title_zh": "712 ：斯科特杰尔懒洋洋地上网"
+  "title_zh": "712 ：斯科特杰尔懒洋洋地上网",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f00d750dd07e.m4a"
  },
  {
   "id": "cur-cad5bdded1ef",
@@ -1069,6 +1153,27 @@
    }
   ],
   "title_zh": "代理架构中的安全边界"
+ },
+ {
+  "id": "cur-989e332f832c",
+  "kind": "curated",
+  "type": "article",
+  "source": "OpenAI News",
+  "title": "Harness engineering: leveraging Codex in an agent-first world",
+  "link": "https://openai.com/index/harness-engineering",
+  "date": "2026-02-11",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-989e332f832c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-989e332f832c.transcript.txt"
+   }
+  ],
+  "title_zh": "线束工程：在代理优先的世界中充分利用Codex"
  },
  {
   "id": "cur-a5f012fc82c1",
@@ -1273,6 +1378,27 @@
   "title_zh": "获取流很棒，但不适用于测量上传/下载进度"
  },
  {
+  "id": "cur-145317f4848a",
+  "kind": "curated",
+  "type": "article",
+  "source": "swyx",
+  "title": "Cognition: The Devin is in the Details",
+  "link": "https://swyx.io/cognition",
+  "date": "2025-09-08",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-145317f4848a.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-145317f4848a.transcript.txt"
+   }
+  ],
+  "title_zh": "认知： Devin在细节中"
+ },
+ {
   "id": "cur-f860d82c521a",
   "kind": "curated",
   "type": "podcast",
@@ -1287,8 +1413,8 @@
     "url": "txt/cur-f860d82c521a.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f860d82c521a.m4a",
-  "title_zh": "921 ：新手（和怀疑论者）的人工智能编码路线图"
+  "title_zh": "921 ：新手（和怀疑论者）的人工智能编码路线图",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f860d82c521a.m4a"
  },
  {
   "id": "cur-c9d8040bdb31",
@@ -1322,8 +1448,8 @@
     "url": "txt/cur-f0762e98ea80.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f0762e98ea80.m4a",
-  "title_zh": "668 ：杰克阿奇博尔德关于原生HTML包括"
+  "title_zh": "668 ：杰克阿奇博尔德关于原生HTML包括",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f0762e98ea80.m4a"
  },
  {
   "id": "cur-c4fd1b473658",
@@ -1699,6 +1825,10 @@
    {
     "label": "总结",
     "url": "txt/cur-d8629a423ebb.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d8629a423ebb.transcript.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d8629a423ebb.m4a"
@@ -1936,6 +2066,27 @@
   "title_zh": "为什么我不是单页应用程序的最大粉丝"
  },
  {
+  "id": "cur-30e12c438296",
+  "kind": "curated",
+  "type": "article",
+  "source": "Josh W. Comeau",
+  "title": "An Interactive Guide to Flexbox",
+  "link": "https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/",
+  "date": "2022-11-22",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-30e12c438296.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-30e12c438296.transcript.txt"
+   }
+  ],
+  "title_zh": "Flexbox交互式指南"
+ },
+ {
   "id": "cur-8048e0704e5c",
   "kind": "curated",
   "type": "article",
@@ -2013,8 +2164,8 @@
     "url": "txt/cur-e2b191b5e4d9.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-e2b191b5e4d9.m4a",
-  "title_zh": "SPA是一个大错误吗？"
+  "title_zh": "SPA是一个大错误吗？",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-e2b191b5e4d9.m4a"
  },
  {
   "id": "cur-d44c6270a8c9",
@@ -2053,6 +2204,27 @@
    }
   ],
   "title_zh": "了解布局算法"
+ },
+ {
+  "id": "cur-721401d4a8e8",
+  "kind": "curated",
+  "type": "article",
+  "source": "Surma",
+  "title": "WebGPU — All of the cores, none of the canvas",
+  "link": "https://surma.dev/things/webgpu/",
+  "date": "2022-03-08",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-721401d4a8e8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-721401d4a8e8.transcript.txt"
+   }
+  ],
+  "title_zh": "WebGPU —所有核心，没有画布"
  },
  {
   "id": "cur-810c23f529df",
@@ -2374,8 +2546,8 @@
     "url": "txt/cur-c8c1e5d67e9e.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c8c1e5d67e9e.m4a",
-  "title_zh": "可观察性适用于您未知的未知（面试）"
+  "title_zh": "可观察性适用于您未知的未知（面试）",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c8c1e5d67e9e.m4a"
  },
  {
   "id": "cur-d9f6fd20c2c4",
@@ -2578,6 +2750,27 @@
    }
   ],
   "title_zh": "小型聚焦模块"
+ },
+ {
+  "id": "cur-63bd5d53fbe9",
+  "kind": "curated",
+  "type": "article",
+  "source": "Hacker News",
+  "title": "Reading privileged memory with a side-channel",
+  "link": "https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html",
+  "date": "2018-01-03",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-63bd5d53fbe9.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-63bd5d53fbe9.transcript.txt"
+   }
+  ],
+  "title_zh": "使用侧通道读取特权内存"
  },
  {
   "id": "cur-25a0b4efb4da",

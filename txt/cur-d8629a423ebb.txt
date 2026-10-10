@@ -1,13 +1,21 @@
 https://changelog.com/jsparty/320
 
-Signals 入门：从 Solid 说起（A Solid primer on Signals） ｜ JS Party ｜ 播客 ｜ https://changelog.com/jsparty/320
+《JS Party》第 320 期（2024 年 4 月），主持人 Amal Hussein 和 Nick Nisi，嘉宾是 Solid.js 的作者、人称"Signals CEO"的 Ryan Carniato。节目名义上介绍 Solid，实际想讲清楚的是：为什么"细粒度响应式"和 Signals 会在短短几年里席卷几乎所有前端框架，它除了性能还带来什么。
 
-《JS Party》2024 年的一期，主持人 Amal Hussein 和 Nick Nisi，嘉宾是 SolidJS 作者 Ryan Carniato，他常被称为"Signals 的 CEO"。整期围绕响应式和 Signals 展开，从 Solid 的原理讲到 TC39 的 Signals 提案。
+Ryan 先讲了自己的来路。他 2010 年在 Knockout.js 里迷上响应式，喜欢那种"电子表格式"的数据流：定好规则、改数据、一切自动传播。2014 年后 React 的"全部重渲染"模型成为主流，响应式库被冷落。他对当时的性能基准颇不以为然：真实应用要的是少传数据、少做更新，而不是每秒把整个数据库刷到页面上；React 擅长的是给性能"设下限"，而不是真正让东西快起来。于是他 2016 年开始做 Solid、2018 年开源，实验的问题是："如果 Signals 就是整个框架呢？"不要虚拟 DOM、不要 diff，只在数据变化处直接更新真实 DOM。
 
-Ryan 先批评前端曾经流行的性能观：大家比谁能每秒把整个数据库渲染上百万次，其实没人需要，真正该做的是少传数据、少做更新。他说 React 很擅长把非常低效的东西变得稍微高效一点，相当于给性能兜底，但要真正快是另一回事。Solid 是一次实验：如果响应式本身就是整个框架会怎样？不要单独的渲染和 diff，只用 Signals。他从原生 JS 的思路出发，像 jQuery 那样"这个值变了，就更新 DOM 的这个位置"，再借鉴 Knockout 和 MobX 的经验，把它扩展到能支撑现代应用。Solid 之所以写起来像 React，是因为编译器做了两件事：凡是调用了 Signal 的表达式都包进函数里，以便追踪；像 Lit 那样把 JSX 当模板，提取 HTML 字符串直接克隆节点，再把更新函数挂到具体的元素上。Solid 也提供不需要编译器的标签模板字面量版本，但那样就得自己把每个表达式包成函数，他认为很繁琐。
+Solid 的做法出奇地朴素。语法直接拿现成的 JSX，好让 TypeScript、Prettier 等工具链全都能用；编译器并不分析响应式依赖（依赖完全在运行时动态追踪），只做两件事：把模板里调用了函数或访问了属性的表达式包成函数，避免 JSX 默认的"立即求值"；像 Lit 那样把模板抽成 HTML 字符串以便克隆节点。组件只是运行一次的函数，JSX 的 div 就是真实的 div。Ryan 强调 Solid 本质上是运行时库，用编译器是"不情不愿"的，因为抽象离底层越远，人们掀开盖子时越难受——他认为这正是大家讨厌 useEffect 的原因：那是你发现 React 并不按你想的方式工作的时刻。Solid 看起来很像 React，以至于有人以为"就是 React"，但组件只跑一次、不必纠结 memo，正是 Nick 这种被重渲染调试折磨过的人最羡慕的地方。
 
-谈到 React 即将推出的编译器，Ryan 说它主要是让你不用手写 memo 和 useCallback，减少重渲染，但 React 仍是 React，坚持"重渲染"的愿景，只是做得更干净；他的一句话是：加一层抽象总能让事情变得更容易，但让事情变得更简单很难。他对 Signals 的定义是：不是事件发射器，而是一张有向的数据依赖图，多个 Signal 相互监听、驱动副作用，类似 React hooks 的依赖数组，但靠自动追踪而不必手写。
+关于 API 的相似，Ryan 澄清 Solid 的类 hooks 原语早于 React Hooks。他多年苦于 Signals 的 getter/setter 挤在一个对象上，看到 Hooks 用数组解构把读写分开，觉得这正是自己要的读写分离，于是几周内把 API 改得像 React，但用 create 而非 use，表示只运行一次。他略带不平地指出，React 列举 Hooks 灵感来源时没有提 Knockout、CanJS、Svelte 等任何 Signals 先例；而 React 的立身之本就是反对 KVO 式的数据观察，所以他不认为 React 会很快引入 Signals。
 
-关于 TC39 的 Signals 提案，他说目前还在第一阶段，各家框架作者都预期会在其上再包一层，标准化一个预制的响应式内核存在张力，很多假设难以为未来做出。主持人把它类比为当年 Promise 从各家实现到进入 ES6、进而催生 async/await；Ryan 最期待的是浏览器原生的调试支持，就像现在能在调试器里一路跟踪 await 那样，追踪 Signals 的依赖会是颠覆性的，各个库能否互通反倒是次要的。他还指出前端框架正在趋同：Vue Vapor、Svelte 5 的 runes 和 Solid 在底层几乎是同一种东西，半年后差别可能只剩语法偏好，用美元符号、.value 还是函数调用；但他从 Rich Harris 那里学到，审美和偏好永远会让人们做出不同选择。
+对 React 编译器，Amal 很乐观，认为它会让 React 重新变简单。Ryan 区分了"容易"和"简单"：编译器会自动减少重渲染、省掉 useMemo/useCallback，让 React 更容易用，尤其利好大型应用；但它是又一层抽象，并没有让事情更简单，React 还是重渲染那套生命周期，只是更精简。他更看重的是其中的转折：React 曾以透明、"JSX 就是函数调用"著称，现在却开始为编译器隐藏细节——"十年前的 React，恰恰是 Solid 想成为的样子"。
 
-最后 Ryan 介绍了 SolidStart：一个基于原语、不预设路由的元框架，同一套 API 能从纯客户端单页应用一路做到服务端渲染和静态生成，支持单次往返的数据变更和实验性的 islands。临别时他给所有 JS 开发者的话是：工具本身没那么重要，重要的是把项目成功做出来。
+Ryan 对 Signals 的定义是"一张有向数据图"：signal、派生值和 effect 相互依赖，通过自动追踪建立依赖（不需要 React 那样的依赖数组），并保证同步执行、每次变更只跑一次、批量且有序，因此比事件或 RxJS 式的推送更可预测；它是"推拉结合"，核心是读取值。他回顾了扩散过程：Preact、Qwik 先后采用；Angular 苦于 Zone.js 脏检查的时序问题，需要同步机制；Vue 推出像 Solid 一样编译的 Vapor 模式，Svelte 5 用 runes 也编译成同样的东西。如今几乎所有框架都把 Signals 作为核心或一等支持，"基本只有 React 例外"。
+
+TC39 的 Signals 提案（由 Rob Eisenberg 和 Daniel Ehrenberg 牵头，目前处于 Stage 1）让各框架作者聚到一起，包括 Svelte 5 runes 的主力 Dominic Gannaway。核心的 signal 和计算值大家基本一致，分歧在副作用和调度，所以初版刻意不含 effect。Ryan 预期各框架都会在原生 API 外再包一层，普通开发者未必直接用它。他最期待的不是库之间的互通，而是浏览器级的调试工具：像今天能在调试器里跟踪 async/await 那样追踪数据图，甚至让 IDE 回答"改这里会影响哪些地方"。
+
+Signals 对服务端渲染的意义来自他在 eBay 做 Marko 的经历：电商只在乎首屏，既然知道数据依赖图，就能区分动态与静态，把永不更新的部分自动摇掉，相当于"自动群岛"。Qwik 的可恢复性同理：把数据图序列化送到客户端，交互时只唤醒需要的那一小段代码，不必整页水合，这对慢网和低端设备上"点了没反应、或者被迫整页刷新"的用户意义重大。他由此引出一个观点：性能本身就是开发体验。当组件怎么拆、状态放在哪里不再影响重渲染，开发者就能随意组织代码，框架作者也才有余地把人引入"成功之坑"。
+
+他认为 Solid、Vue、Svelte 半年内可能在底层趋同，差别只剩"美元符号、.value 还是函数调用"这类语法偏好，而正如 Rich Harris 早就看清的，偏好本身足以让人继续各选各的。实际案例方面，他举 Tanner Linsley 的 TanStack：在 React 里，状态库作者因 context 和 setState 不够高效，只能自建外部状态再接回 React，还要应付并发模式，成了"二等公民"（这也是 XState、TanStack Query 作者最常批评 useEffect 的原因）；而在 Solid 里，TanStack Query 只需包装 createResource，就自动获得 SSR 序列化、Suspense、乱序流式传输和 transitions。Solid Query 成功到 TanStack Query 各框架版本的开发者工具如今都用 Solid 写成。
+
+谈到采用障碍，Ryan 很坦然：面对 React 的生态锁定和大公司背书，Solid 无法正面竞争，企业那张"等 1.0、等元框架、等移动端"的清单永远勾不完，尽管 Solid 已经一项项勾掉了。他把成功定义为理念的胜利：Signals 是自虚拟 DOM 以来最具革命性的变化，而且出自草根而非 Meta。他还预告了即将发布 1.0 的元框架 SolidStart：延续原语思路，从无服务器的单页应用到 SSR 用同一套 API，有单次往返变更、实验性群岛支持，不绑定路由、多用现有生态库。最后他给所有 JavaScript 开发者的一句话是：工具没那么重要，重要的是把项目交付给用户；有好想法就去试，Solid 本身就是这样开始的。

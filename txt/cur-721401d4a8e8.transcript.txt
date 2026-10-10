@@ -1,0 +1,484 @@
+https://surma.dev/things/webgpu/
+
+标题：WebGPU——调用所有核心，不碰画布
+作者：Surma
+日期：2022-03-08
+
+WebGPU 是一个即将推出的 Web API，它让你能以底层、通用的方式访问 GPU。
+
+我在图形方面经验不多。我零零碎碎地学过一些 WebGL：读过用 OpenGL 构建游戏引擎的教程，也看过 Inigo Quilez 在 ShaderToy 上只用着色器、不用任何 3D 网格或模型做出惊人效果，从中学到了更多关于着色器的知识。这些足以让我做出 PROXX 背景动画之类的东西，但我对 WebGL 从来没有真正“得心应手”过，原因稍后我会解释。
+
+当 WebGPU 进入我的视野时，我很想上手，但好几个人警告我，WebGPU 的样板代码比 WebGL 还多。我没有退缩，但做好了最坏的打算，把能找到的教程和规范都搜罗了一遍——数量并不多，因为 WebGPU 还处于早期阶段。上手之后我发现，WebGPU 的样板代码并没有比 WebGL 多出多少，反而是一个让我用起来舒服得多的 API。
+
+所以就有了这篇文章。我想分享我在理解 GPU 和 WebGPU 的过程中学到的东西。这篇博文的目标是让 Web 开发者能够上手 WebGPU。不过先打个招呼：我不会用 WebGPU 来生成图形，而是用它来调用 GPU 提供的原始计算能力。也许以后我会再写一篇关于如何用 WebGPU 渲染到屏幕上的文章，但这方面的内容已经不少了。我会深入到理解 WebGPU 所必需的程度，希望能让你“有效地”使用它——但不一定是“高效地”。我没法把你变成 GPU 性能专家，主要因为我自己也不是。
+
+免责声明就到这里。文章很长，系好安全带！
+
+## WebGL
+
+WebGL 诞生于 2011 年，在此之前一直是 Web 上唯一能访问 GPU 的底层 API。WebGL 的 API 其实就是 OpenGL ES 2.0，加了一层薄薄的封装和辅助函数，使其适配 Web。WebGL 和 OpenGL 都由 Khronos Group 标准化，它基本上相当于 3D 图形领域的 W3C。
+
+OpenGL 的 API 本身历史更久，按今天的标准看并不是一个好 API。它的设计围绕一个内部的全局状态对象。从尽量减少每次调用在 GPU 与主机之间传输的数据量来看，这种设计说得通，但它也带来了大量心智负担。
+
+这个内部状态对象基本上是一组指针。你的 API 调用既可以影响状态对象“所指向”的对象，也可以影响状态对象本身。因此，API 调用的顺序极其重要，我一直觉得这让构建抽象和库变得很困难。你必须极其仔细地清理所有可能干扰你接下来要做的 API 调用的指针和状态项，还要把这些指针和值恢复原状，你的抽象才能正确组合。我常常对着一块黑色画布发呆（这基本就是 WebGL 能给你的全部错误报告），靠穷举去找到底是哪个指针指错了。说实话，我完全不知道 ThreeJS 是怎么做到如此健壮的，但它确实做到了。我想这正是大多数人使用 ThreeJS 而不是直接使用 WebGL 的主要原因之一。
+
+**不是你的问题，是我的问题：**说清楚一点，我无法驾驭 WebGL，可能是我自己的不足。比我聪明的人已经用 WebGL（以及 Web 之外的 OpenGL）做出了“惊人”的东西，只是我始终没能开窍。
+
+随着机器学习、神经网络，以及——容我说一句——加密货币的兴起，GPU 已经证明自己不只能在屏幕上画三角形。用 GPU 做任意类型的计算通常称为通用 GPU 计算（GPGPU），而 WebGL 1 并不擅长这个。如果你想在 GPU 上处理任意数据，就得把数据编码成纹理，在着色器里解码，完成计算后再把结果重新编码成纹理。WebGL 2 借助 Transform Feedback（变换反馈）让这件事容易了很多，但 Safari 直到 2021 年 9 月才支持 WebGL2（而大多数其他浏览器从 2017 年 1 月起就支持了），所以它其实算不上一个选项。即便如此，WebGL2 的某些限制仍让它用起来有点笨拙。
+
+## WebGPU
+
+在 Web 之外，新一代图形 API 已经站稳脚跟，它们向显卡暴露更底层的接口。这些新 API 照顾到了 OpenGL 设计之初并不存在的新用例和新约束。一方面，GPU 如今几乎无处不在，连移动设备都内置了性能不错的 GPU，因此现代图形编程（3D 渲染和光线追踪）与 GPGPU 用例“都”越来越常见。另一方面，我们的大多数设备都有多核处理器，能够从多个线程与 GPU 交互可能是一个重要的优化方向。WebGPU 的设计者们借此机会还重新审视了一些以往的设计决策，把 GPU 需要做的许多验证工作提前完成，让开发者能从 GPU 中榨取更多性能。
+
+最流行的新一代 GPU API 是 Khronos Group 的 Vulkan、Apple 的 Metal 和 Microsoft 的 DirectX 12。为了把这些新能力带到 Web 上，WebGPU 诞生了。WebGL 只是 OpenGL 的一层薄封装，而 WebGPU 走了另一条路：它引入了自己的抽象，并不直接照搬任何一个原生 API。部分原因是没有哪个 API 在所有系统上都可用，另外也因为许多概念（比如极其底层的内存管理）并不符合面向 Web 的 API 的习惯。WebGPU 的设计目标是既有“Web 的味道”，又能舒适地架在任何原生图形 API 之上，同时把它们各自的怪癖抽象掉。它正在 W3C 进行标准化，所有主要浏览器厂商都参与其中。由于相对底层且能力强大，WebGPU 有一定的学习曲线，初始化设置也比较繁重，但我会尽量把它拆解清楚。
+
+### 适配器与设备
+
+你首先接触到的 WebGPU 抽象是“适配器”（adapter）和（逻辑）“设备”（device）。
+
+“物理”设备就是 GPU 本身，通常分为集成 GPU 和独立 GPU。一般来说，一台设备只有一块 GPU，但也可能有两块或更多。例如，微软的 Surface Book 就有名地配备了一块低功耗集成 GPU 和一块高性能独立 GPU，操作系统会按需在两者之间切换。
+
+由 GPU 厂商提供的“驱动程序”会以操作系统能理解和预期的方式，把 GPU 的能力暴露给操作系统。操作系统再通过它提供的图形 API（如 Vulkan 或 Metal）把这些能力暴露给应用程序。
+
+GPU 是共享资源。它不仅同时被许多应用使用，还控制着你在显示器上看到的内容。需要有某种机制让多个进程能并发使用 GPU，使每个应用都能把自己的 UI 显示在屏幕上，而不干扰其他应用，更不能恶意读取其他应用的数据。在每个进程看来，自己似乎独占了物理 GPU，但显然并非如此。这种多路复用主要由驱动程序和操作系统完成。
+
+而适配器则是从操作系统原生图形 API 到 WebGPU 的转换层。由于浏览器是一个能运行多个 Web 应用的操作系统级应用程序，这里又一次需要多路复用，让每个 Web 应用都感觉自己独占 GPU。WebGPU 用“逻辑”设备的概念来对此建模。
+
+要获取适配器，可以调用 `navigator.gpu.requestAdapter()`。在撰写本文时，`requestAdapter()` 接受的选项非常少，只能让你请求高性能或低功耗的适配器。
+
+**软件渲染：**有些实现还为没有 GPU 或 GPU 能力不足的系统提供“后备适配器”（fallback adapter）。后备适配器实际上是纯软件实现，速度不会很快，但能让你的应用保持可用。
+
+如果请求成功，即返回的适配器不为 `null`，你就可以检查适配器的能力，并通过 `adapter.requestDevice()` 向适配器请求一个逻辑设备。
+
+```
+if (!navigator.gpu) throw Error("WebGPU not supported.");
+const adapter = await navigator.gpu.requestAdapter();
+if (!adapter) throw Error("Couldn’t request WebGPU adapter.");
+const device = await adapter.requestDevice();
+device.lost.then(()=>{ // 这里不应该 await。
+    throw Error("WebGPU logical device was lost.");
+})
+```
+不带任何选项时，`requestDevice()` 返回的设备“不一定”与物理设备的能力相符，而是 WebGPU 团队认为合理的、所有 GPU 的最低公分母，具体细节在 WebGPU 标准中有规定。例如，虽然我的 GPU 完全能处理最大 4GiB 的数据缓冲区，但返回的 `device` 只允许最大 1GiB 的数据缓冲区，更大的会被拒绝。这看起来有些限制，但实际上很有帮助：如果你的 WebGPU 应用能在默认设备上运行，它就能在绝大多数设备上运行。如有必要，你可以通过 `adapter.limits` 查看物理 GPU 的真实限制，并向 `requestDevice()` 传入选项对象来请求一个提高了限制的 `device`。
+
+关于处理设备丢失的最佳实践，可以参考这篇博文。
+
+### 着色器
+
+如果你用过 WebGL，大概会熟悉顶点着色器和片元着色器。不深入细节地说，传统流程大致是这样的：你把一个数据缓冲区上传到 GPU，并告诉它如何把这些数据解释为一系列三角形。每个顶点占据数据缓冲区中的一块，描述该顶点在 3D 空间中的位置，可能还有颜色、纹理 ID、法线等辅助数据。列表中的每个顶点都会在“顶点阶段”被 GPU 处理，即对每个顶点运行“顶点着色器”，施加平移、旋转或透视变形。
+
+**着色器：**“着色器”（shader）这个词曾让我很困惑，因为你能做的远不止“着色”。但在过去（也就是 20 世纪 80 年代末！），这个词是贴切的：它是一小段运行在 GPU 上的代码，用来决定每个像素应该是什么颜色，从而给被渲染的物体“上色”，营造出光照和阴影的错觉。如今，着色器泛指任何运行在 GPU 上的程序。
+
+接着，GPU 对三角形进行光栅化，也就是算出每个三角形覆盖了屏幕上的哪些像素。然后每个像素由“片元着色器”处理，它能访问像素坐标以及辅助数据，以决定该像素的颜色。只要用得好，这个流程能创造出惊人的 3D 图形。
+
+这种把数据传给顶点着色器、再传给片元着色器、最后直接输出到屏幕上的体系称为“管线”（pipeline），而在 WebGPU 中，你必须显式定义你的管线。
+
+### 管线
+
+目前，WebGPU 允许你创建两种管线：渲染管线（Render Pipeline）和计算管线（Compute Pipeline）。顾名思义，渲染管线用来渲染东西，也就是生成一幅 2D 图像。这幅图像不一定显示在屏幕上，也可以只渲染到内存中（称为帧缓冲区，Framebuffer）。计算管线更通用，它返回一个缓冲区，里面可以装任何类型的数据。本文余下部分我将专注于计算管线，因为我喜欢把渲染管线看作计算管线的一种特化/优化。当然，这在历史上是本末倒置的——计算管线是在专用性很强的渲染管线基础上泛化而来的——而且也大大淡化了一个事实：这两种管线在 GPU 中是物理上不同的电路。但就 API 而言，我觉得这个心智模型相当有用。未来 WebGPU 很可能会加入更多类型的管线，比如光线追踪管线。
+
+在 WebGPU 中，一条管线由一个（或多个）可编程阶段组成，每个阶段由一个着色器和一个入口点定义。计算管线只有一个 `compute` 阶段，而渲染管线则有 `vertex` 和 `fragment` 两个阶段：
+
+```
+const module = device.createShaderModule({
+  code: `
+    @compute @workgroup_size(64)
+    fn main() {
+      // 毫无意义！
+    }
+  `,
+});
+const pipeline = device.createComputePipeline({
+  compute: {
+    module,
+    entryPoint: "main",
+  },
+});
+```
+这是 WGSL（读作“wig-sal”），即 WebGPU 着色语言（WebGPU Shading Language）首次登场。在我看来，WGSL 像是 Rust 和 GLSL 的混合体。它有大量 Rust 风格的语法，同时带有 GLSL 的全局函数（如 `dot()`、`norm()`、`len()` 等）、类型（如 `vec2`、`mat4x4` 等）和分量重排（swizzling）写法（如 `some_vec.xxy` 等）。浏览器会把你的 WGSL 编译成底层系统需要的格式：对 DirectX 12 很可能是 HLSL，对 Metal 是 MSL，对 Vulkan 是 SPIR-V。
+
+**SPIR-V：**SPIR-V 很有意思，它是由 Khronos Group 标准化的一种开放的二进制中间格式。你可以把 SPIR-V 看作并行编程语言编译器领域的 LLVM：有很多语言可以编译“成” SPIR-V，SPIR-V 也可以再编译成许多其他语言。
+
+在上面的着色器模块中，我们只是创建了一个名为 `main` 的函数，并用 `@compute` 属性把它标记为计算阶段的入口点。一个着色器模块里可以有多个被标记为入口点的函数，因为同一个着色器模块可以复用于多条管线，并通过 `entryPoint` 选项选择要调用的函数。那么 `@workgroup_size(64)` 这个属性又是什么呢？
+
+### 并行
+
+GPU 以牺牲延迟为代价来优化吞吐量。要理解这一点，我们需要稍微了解一下 GPU 的架构。我不想（老实说也没能力）完整解释它，只会讲到我认为必要的深度。如果你想了解更多，Fabian Giesen 的这个 13 篇系列博文非常好。
+
+众所周知，GPU 拥有大量核心，可以进行大规模并行工作。然而，这些核心并不像你在多核 CPU 编程时习惯的那样相互独立。首先，GPU 核心是分层分组的。各层级的术语在不同厂商和 API 之间并不统一。Intel 有一份不错的文档对其架构做了高层概述，有人告诉我，可以放心假设其他 GPU 至少以类似方式工作，尽管 GPU 的确切架构是受保密协议（NDA）保护的秘密。
+
+以 Intel 为例，层级的最底层是“执行单元”（Execution Unit，EU），它有多个（这里是七个）SIMT 核心。也就是说，它有七个步调一致（lock-step）运行、始终执行相同指令的核心。不过，每个核心都有自己的一组寄存器和栈指针。所以虽然它们“必须”执行相同的操作，却可以作用于不同的数据。这也是 GPU 性能专家避免分支（如 `if`/`else` 或循环）的原因：如果 EU 遇到 `if`/`else`，除非所有核心恰好走同一个分支，否则所有核心都必须执行“两个”分支。每个核心可以被告知忽略喂给它的指令，但这显然浪费了本可用于计算的宝贵周期。循环也一样！如果某个核心提前结束了循环，它也得假装继续执行循环体，直到“所有”核心都结束循环。
+
+尽管核心频率很高，从内存取数据（或从纹理取像素）仍然相对耗时——Fabian 说需要几百个时钟周期。这几百个周期本可以用来计算。为了利用这些原本空闲的周期，每个 EU 都被严重超额分配了工作。每当一个 EU 本会空闲时（例如等待来自内存的值），它会转而切换到另一个工作项，直到新工作项也需要等待时才切换回来。这就是 GPU 以延迟换吞吐量的关键技巧：单个工作项会耗时更长，因为切换到另一个工作项可能会让它暂停得比必要的更久，但整体利用率更高，带来更高的吞吐量。GPU 力求始终有工作排队，让 EU 时刻保持忙碌。
+
+不过 EU 只是层级中的最底层。多个 EU 组成 Intel 所说的“SubSlice”（子切片）。一个 SubSlice 中的所有 EU 都能访问一小块共享本地内存（Shared Local Memory，SLM），在 Intel 的情况下约为 64KiB。如果要运行的程序包含任何同步指令，它就必须在同一个 SubSlice 内执行，因为只有它们共享用于同步的内存。
+
+在最后一层，多个 SubSlice 组成一个 Slice（切片），构成整个 GPU。一块 Intel 集成 GPU 总共有 170 到 700 个核心，独立 GPU 则轻松拥有 1500 个甚至更多。同样，这些名称取自 Intel，其他厂商可能用不同的叫法，但每块 GPU 的总体架构都是相似的。
+
+要充分利用这种架构的优势，程序需要专门针对它来组织，以便纯程序化的 GPU 调度器能最大化利用率。因此，图形 API 都暴露了一种线程模型，让工作能自然地按这种方式切分。在 WebGPU 中，这里的重要原语是“工作组”（workgroup）。
+
+### 工作组
+
+在传统场景中，顶点着色器对每个顶点调用一次，片元着色器对每个像素调用一次（我知道这里略过了一些细节）。在 GPGPU 场景中，你的计算着色器会对你调度的每个工作项调用一次，而工作项是什么由你自己定义。
+
+所有工作项的集合（我称之为“工作负载”）被划分为若干工作组。一个工作组中的所有工作项会被一起调度运行。在 WebGPU 中，工作负载被建模为一个三维网格，每个“小立方体”是一个工作项，工作项再组合成更大的长方体，形成工作组。
+
+现在我们终于有足够的信息来讨论 `@workgroup_size(x, y, z)` 属性了，到这里它可能已经基本不言自明：这个属性让你告诉 GPU 该着色器的工作组应该有多大。用上图的话说，`@workgroup_size` 属性定义了红框立方体的大小。x × y × z 就是每个工作组的工作项数量。省略的参数默认为 1，所以 `@workgroup_size(64)` 等价于 `@workgroup_size(64, 1, 1)`。
+
+当然，芯片上实际的 EU 并不是按三维网格排列的。把工作项建模为三维网格的目的是提高局部性。其假设是，相邻的工作组很可能访问相近的内存区域，因此依次运行相邻工作组时，所需的值已经在缓存中的概率更高，从而省下从内存取数据的几百个周期。然而，大多数硬件似乎只是按顺序串行运行工作组，因为用 `@workgroup_size(64)` 和 `@workgroup_size(8, 8)` 运行着色器的差别可以忽略不计。所以这个概念被认为有些过时了。
+
+不过，工作组受到多方面的限制：`device.limits` 中有一系列值得了解的属性：
+
+```
+// device.limits
+{
+  // ...
+  maxComputeInvocationsPerWorkgroup: 256,
+  maxComputeWorkgroupSizeX: 256,
+  maxComputeWorkgroupSizeY: 256,
+  maxComputeWorkgroupSizeZ: 64,
+  maxComputeWorkgroupsPerDimension: 65535,
+  // ...
+}
+```
+工作组每个维度的大小都受限，但即使 x、y、z 各自都在限制之内，它们的乘积（= x × y × z）也可能超限，因为乘积有自己单独的上限。最后，每个维度上的工作组数量也是有限的。
+
+**专业提示：**不要生成最大数量的线程。尽管 GPU 由操作系统和底层调度器管理，一个长时间运行的 GPU 程序仍可能让你的整个系统卡死。
+
+那么，“合适”的工作组大小是多少？这实际上取决于你赋予工作项坐标的语义。我知道这不算一个有用的回答，所以我想把 Corentin 给我的建议转告给你：“除非你知道目标 GPU 是什么，或者你的工作负载需要别的大小，否则就用 64（作为工作组大小）。”这似乎是一个安全的数字，在许多 GPU 上表现良好，并能让 GPU 调度器让尽可能多的 EU 保持忙碌。
+
+### 命令
+
+我们已经写好了着色器并设置好了管线，剩下的就是真正调用 GPU 来执行这一切。由于 GPU “可以”是一块拥有独立显存芯片的完全独立的卡，你需要通过所谓的命令缓冲区或命令队列来控制它。命令队列是一块内存，其中装着经过编码、供 GPU 执行的命令。编码方式高度依赖具体 GPU，由驱动程序负责处理。WebGPU 暴露了一个 `CommandEncoder` 来使用这一功能。
+
+```
+const commandEncoder = device.createCommandEncoder();
+const passEncoder = commandEncoder.beginComputePass();
+passEncoder.setPipeline(pipeline);
+passEncoder.dispatchWorkgroups(1);
+passEncoder.end();
+const commands = commandEncoder.finish();
+device.queue.submit([commands]);
+```
+`commandEncoder` 有多个方法，可以把数据从一个 GPU 缓冲区复制到另一个，或者操作纹理。它还能创建 `PassEncoder`（通道编码器），用于编码管线的设置与调用。在这个例子里我们有一条计算管线，所以要创建一个计算通道，设置它使用我们预先声明的管线，最后调用 `dispatchWorkgroups(w_x, w_y, w_z)` 告诉 GPU 在每个维度上创建多少个工作组。换句话说，计算着色器被调用的次数等于 w_x × w_y × w_z × x × y × z。顺便说一句，通道编码器正是 WebGPU 用来避免我在文章开头吐槽的那个内部全局状态对象的抽象。运行一条 GPU 管线所需的全部数据和状态，都通过通道编码器显式传递。
+
+**抽象：**命令缓冲区也是驱动程序或操作系统的切入点，让多个应用能使用 GPU 而互不干扰。当你把命令排入队列时，下面的抽象层会往队列里注入额外的命令，保存前一个程序的状态并恢复你的程序的状态，让你感觉没有别人在使用 GPU。
+
+运行这段代码，我们实际上在 GPU 上生成了 64 个线程，而它们“什么都不做”。但它能跑，这就挺酷的。接下来我们谈谈如何给 GPU 一些数据来处理。
+
+## 数据交换
+
+如前所述，我不会直接用 WebGPU 做图形，所以我想在 GPU 上跑一个物理模拟，再用 Canvas2D 把它可视化，应该会挺有意思。也许称之为“物理模拟”有点自夸——我做的只是生成一大堆圆，让它们在平面上朝随机方向滚动并相互碰撞。
+
+要做到这一点，我们需要把一些模拟参数和初始状态“推送到” GPU，在 GPU “上”运行模拟，再“从” GPU 读回模拟结果。这可以说是 WebGPU 最棘手的部分，因为涉及一堆数据杂技（更别说看似毫无意义的复制），但正是这一点让 WebGPU 能够成为一个与设备无关、又能以最高性能运行的 API。
+
+### 绑定组布局
+
+为了与 GPU 交换数据，我们需要在管线定义中加入一个绑定组布局（bind group layout）。绑定组是一组 GPU 实体（内存缓冲区、纹理、采样器等）的集合，它们在管线执行期间可被访问。绑定组“布局”预先定义了这些 GPU 实体的类型、用途和使用方式，让 GPU 能提前想清楚如何最高效地运行管线。第一步我们先保持简单，只让管线访问一个内存缓冲区：
+
+```
+const bindGroupLayout =
+ device.createBindGroupLayout({
+    entries: [{
+      binding: 1,
+      visibility: GPUShaderStage.COMPUTE,
+      buffer: {
+        type: "storage",
+      },
+    }],
+  });
+const pipeline = device.createComputePipeline({
+  layout: device.createPipelineLayout({
+    bindGroupLayouts: [bindGroupLayout],
+  }),
+  compute: {
+    module,
+    entryPoint: "main",
+  },
+});
+```
+`binding` 编号可以自由选择，它用来把 WGSL 代码中的变量与绑定组布局中这个槽位的缓冲区内容关联起来。我们的 `bindGroupLayout` 还定义了每个缓冲区的用途，这里是 `"storage"`。另一个选项是 `"read-only-storage"`，它是只读的（废话！），GPU 可以据此进一步优化，因为这个缓冲区永远不会被写入，因此不需要同步。缓冲区类型的最后一个可选值是 `"uniform"`，在计算管线中它在功能上与存储缓冲区基本等价。
+
+绑定组布局就位后，我们就可以创建绑定组本身了，其中包含绑定组布局所期望的 GPU 实体的实际实例。一旦装有缓冲区的绑定组就位，计算着色器就能往里面填充数据，我们也就能从 GPU 读取它。但这里有个障碍：暂存缓冲区。
+
+### 暂存缓冲区
+
+我再说一遍：GPU 以牺牲延迟为代价，对吞吐量做了高度优化。GPU 需要以极高的速率向核心输送数据，才能维持这样的吞吐量。Fabian 在他 2011 年的系列博文中做过粗略估算，结论是：对于一个以 1280x720 分辨率运行的着色器，GPU “仅纹理采样”就需要维持 3.3GB/s 的带宽。为了满足今天的图形需求，GPU 搬运数据的速度还得更快。只有让 GPU 的内存与核心非常紧密地集成，才可能做到这一点。而这种紧密集成使得同一块内存很难再暴露给主机进行读写。
+
+因此，GPU 另有一些主机和 GPU 都能访问的内存区，但它们集成度没那么高，提供数据的速度也没那么快。暂存缓冲区（staging buffer）就是分配在这个中间内存区域、可以映射到主机系统进行读写的缓冲区。要从 GPU 读取数据，我们先把数据从内部的高性能缓冲区复制到暂存缓冲区，再把暂存缓冲区映射到主机，从而把数据读回主内存。写入的过程相同，只是方向相反。
+
+回到代码：我们将创建一个可写缓冲区并把它加入绑定组，以便计算着色器写入。我们还会创建第二个同样大小的缓冲区作为暂存缓冲区。每个缓冲区在创建时都带有一个 `usage` 位掩码，用来声明你打算如何使用这个缓冲区。GPU 会据此决定缓冲区应该放在哪里才能满足所有这些用途；如果这些标志的组合无法满足，就会抛出错误。
+
+```
+const BUFFER_SIZE = 1000;
+const output = device.createBuffer({
+  size: BUFFER_SIZE,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+});
+const stagingBuffer = device.createBuffer({
+  size: BUFFER_SIZE,
+  usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+});
+const bindGroup = device.createBindGroup({
+  layout: bindGroupLayout,
+  entries: [{
+    binding: 1,
+    resource: {
+      buffer: output,
+    },
+  }],
+});
+```
+注意，`createBuffer()` 返回的是 `GPUBuffer`，而不是 `ArrayBuffer`，它们暂时还不能读写。要读写，必须先进行映射，这是一个单独的 API 调用，并且只对带有 `GPUBufferUsage.MAP_READ` 或 `GPUBufferUsage.MAP_WRITE` 的缓冲区才会成功。
+
+**TypeScript：**我发现在探索新 API 时 TypeScript 很有帮助。幸运的是，Chrome 的 WebGPU 团队维护着 `@webgpu/types`，所以你能享受到准确的自动补全。
+
+现在我们不仅有了绑定组“布局”，连真正的绑定组本身也有了，接下来需要更新调度代码来使用这个绑定组。之后，我们映射暂存缓冲区，把结果读回 JavaScript。
+
+```
+const commandEncoder = device.createCommandEncoder();
+const passEncoder = commandEncoder.beginComputePass();
+passEncoder.setPipeline(pipeline);
+passEncoder.setBindGroup(0, bindGroup);
+passEncoder.dispatchWorkgroups(1);
+passEncoder.dispatchWorkgroups(Math.ceil(BUFFER_SIZE / 64));
+passEncoder.end();
+commandEncoder.copyBufferToBuffer(
+  output,
+  0, // 源偏移量
+  stagingBuffer,
+  0, // 目标偏移量
+  BUFFER_SIZE
+);
+const commands = commandEncoder.finish();
+device.queue.submit([commands]);
+await stagingBuffer.mapAsync(
+  GPUMapMode.READ,
+  0, // 偏移量
+  BUFFER_SIZE // 长度
+ );
+const copyArrayBuffer =
+  stagingBuffer.getMappedRange(0, BUFFER_SIZE);
+const data = copyArrayBuffer.slice();
+stagingBuffer.unmap();
+console.log(new Float32Array(data));
+```
+由于我们给管线添加了绑定组布局，任何不提供绑定组的调用现在都会失败。定义好“通道”之后，我们通过命令编码器再添加一条命令，把数据从输出缓冲区复制到暂存缓冲区，然后把命令缓冲区提交到队列。GPU 会开始处理命令队列。我们并不确切知道 GPU 什么时候完成，但已经可以提交映射 `stagingBuffer` 的请求。这个函数是异步的，因为它要等到命令队列被完全处理完。当返回的 promise 兑现时，缓冲区已经被映射，但还没有暴露给 JavaScript。`stagingBuffer.getMappedRange()` 让我们请求把缓冲区的一部分（或整个缓冲区）作为一个老朋友 `ArrayBuffer` 暴露给 JavaScript。这是真实的、被映射的 GPU 内存，意味着当 `stagingBuffer` 取消映射时，数据就会消失（这个 `ArrayBuffer` 会被“分离”，detached），所以我用 `slice()` 创建了一份由 JavaScript 持有的副本。
+
+如果输出的不是全零，大概会更有说服力。在 GPU 上做任何高级计算之前，我们先往缓冲区里放一些精心挑选的数据，证明我们的管线“确实”按预期工作。下面是新的计算着色器代码，为了清晰加了额外的空行。
+
+```
+@group(0) @binding(1)
+var<storage, read_write> output: array<f32>;
+@compute @workgroup_size(64)
+fn main(
+  @builtin(global_invocation_id)
+  global_id : vec3<u32>,
+  @builtin(local_invocation_id)
+  local_id : vec3<u32>,
+) {
+  output[global_id.x] =
+    f32(global_id.x) * 1000. + f32(local_id.x);
+}
+```
+前两行声明了一个名为 `output` 的模块作用域变量，它是一个 `f32` 的动态大小数组。属性声明了数据的来源：来自第一个（第 0 个）绑定组中 `binding` 值为 1 的那一项缓冲区。数组的长度会自动反映底层缓冲区的长度（向下取整）。
+
+**变量：**WGSL 与 Rust 的不同之处在于，用 `let` 声明的变量是不可变的。如果你希望变量可变，要用的关键字是 `var`。
+
+我们的 `main()` 函数签名增加了两个参数：`global_id` 和 `local_id`。名字可以随便取——它们的值由关联的属性决定：`global_invocation_id` 是一个内置值，对应这次着色器调用在工作“负载”中的全局 x/y/z 坐标；`local_invocation_id` 则是这次着色器调用在工作“组”中的 x/y/z 坐标。
+
+这张图展示了 `@workgroup_size(4, 4, 4)` 的工作负载坐标系的一种可能解释。坐标系是什么，由你根据自己的用例来定义。如果我们约定使用上图所示的坐标轴，那么 a、b、c 对应的 `main()` 参数如下：
+
+- a：
+  - `local_id=(x=0, y=0, z=0)`
+  - `global_id=(x=0, y=0, z=0)`
+- b：
+  - `local_id=(x=0, y=0, z=0)`
+  - `global_id=(x=4, y=0, z=0)`
+- c：
+  - `local_id=(x=1, y=1, z=0)`
+  - `global_id=(x=5, y=5, z=0)`
+
+在我们的着色器中是 `@workgroup_size(64, 1, 1)`，所以 `local_id.x` 的取值范围是 0 到 63。为了能同时查看这两个值，我把它们“编码”成了一个数字。注意 WGSL 是强类型的：`local_id` 和 `global_id` 都是 `vec3<u32>`，所以我们必须把它们显式转换为 `f32`，才能赋值给 `f32` 类型的输出缓冲区。
+
+这证明了我们的计算着色器确实对输出内存中的每个值都调用了一次，并为每个值填入了唯一的数。我们无法知道这些数据是按什么顺序填入的，因为这是有意不作规定、交给 GPU 调度器决定的。
+
+### 过量调度
+
+细心的读者可能已经注意到，着色器调用的总次数（`Math.ceil(BUFFER_SIZE / 64) * 64`）会导致 `global_id.x` 超过数组的长度，因为每个 `f32` 占 4 个字节。幸运的是，数组访问有隐式的钳制（clamp）保护，所以所有越过数组末尾的写入最终都会写到数组的最后一个元素上。这避免了内存访问错误，但仍可能产生无用的数据。事实上，如果你检查返回缓冲区的最后 3 个元素，会看到 247055、248056 和 608032 这几个数。要防止这种情况，得靠我们在着色器代码中提前退出：
+
+```
+fn main( /* ... */) {
+  if(global_id.x >= arrayLength(&output)) {
+    return;
+  }
+  output[global_id.x] =
+    f32(global_id.x) * 100. + f32(local_id.x);
+}
+```
+如果愿意，你可以运行这个演示并查看完整源码。注：额外的写入似乎已经不再发生了，但我们仍保留这段代码来阻止多余的执行。参见这个 issue。
+
+### 给混乱加点结构
+
+我们的目标是让一大堆小球在二维空间中运动，并发生愉快的小碰撞。为此，每个球需要有半径、位置和速度向量。我们可以继续使用 `array<f32>`，约定第一个浮点数是第一个球的 x 坐标，第二个是第一个球的 y 坐标，依此类推。但这谈不上符合人体工学。幸运的是，WGSL 允许我们定义自己的结构体，把多项数据整整齐齐地装在一起。
+
+**老生常谈：**如果你知道内存对齐是什么，可以跳过这一节（不过还是看看代码示例）。如果你不知道，我不会真正解释其原理，只会展示它的表现以及如何应对。
+
+所以，定义一个包含所有这些成员的 `struct Ball`，并把 `array<f32>` 改成 `array<Ball>` 是合理的。这样做的代价是：我们得谈谈对齐。
+
+```
+struct Ball {
+  radius: f32,
+  position: vec2<f32>,
+  velocity: vec2<f32>,
+}
+@group(0) @binding(1)
+var<storage, read_write> output: array<f32>;
+var<storage, read_write> output: array<Ball>;
+@compute @workgroup_size(64)
+fn main(
+  @builtin(global_invocation_id) global_id : vec3<u32>,
+  @builtin(local_invocation_id) local_id : vec3<u32>,
+) {
+  let num_balls = arrayLength(&output);
+  if(global_id.x >= num_balls) {
+    return;
+  }
+  output[global_id.x].radius = 999.;
+  output[global_id.x].position = vec2<f32>(global_id.xy);
+  output[global_id.x].velocity = vec2<f32>(local_id.xy);
+}
+```
+运行这个演示，你会在控制台看到如下输出：
+
+我在结构体的第一个字段里放了 `999`，方便看出结构体在缓冲区中从哪里开始。到下一个 `999` 之前一共有 6 个数，这有点出乎意料，因为结构体其实只有 5 个数要存：`radius`、`position.x`、`position.y`、`velocity.x` 和 `velocity.y`。仔细看就会发现，`radius` 后面的那个数总是 0。这是对齐造成的。
+
+每种 WGSL 数据类型都有明确定义的对齐要求。如果一个数据类型的对齐值为 N，就意味着该类型的值只能存放在 N 的整数倍的内存地址上。`f32` 的对齐值是 4，而 `vec2<f32>` 的对齐值是 8。假设结构体从地址 0 开始，那么 `radius` 字段可以存放在地址 0，因为 0 是 4 的倍数。结构体的下一个字段是 `vec2<f32>`，对齐值为 8。然而 `radius` 之后第一个空闲地址是 4，“不是” 8 的倍数。为此，编译器会插入 4 个字节的填充，以到达下一个 8 的倍数的地址。这就解释了为什么我们在开发者工具控制台中看到一个值为 0 的未使用字段。
+
+现在我们知道了结构体在内存中的布局，就可以从 JavaScript 填充它来生成小球的初始状态，也可以把它读回来进行可视化。
+
+### 输入与输出
+
+我们已经成功地从 GPU 读取数据、带回 JavaScript 并“解码”。现在该处理另一个方向了。我们需要在 JavaScript 中生成所有小球的初始状态并交给 GPU，让它在其上运行计算着色器。生成初始状态相当简单：
+
+```
+let inputBalls = new Float32Array(new ArrayBuffer(BUFFER_SIZE));
+for (let i = 0; i < NUM_BALLS*6; i+=6) {
+  inputBalls[i + 0] = randomBetween(2, 10); // 半径
+  inputBalls[i + 1] = 0; // 填充
+  inputBalls[i + 2] = randomBetween(0, ctx.canvas.width); // 位置.x
+  inputBalls[i + 3] = randomBetween(0, ctx.canvas.height); // 位置.y
+  inputBalls[i + 4] = randomBetween(-100, 100); // 速度.x
+  inputBalls[i + 5] = randomBetween(-100, 100); // 速度.y
+}
+```
+**buffer-backed-object：**对于更复杂的数据结构，从 JavaScript 操作数据可能会相当繁琐。我的库 `buffer-backed-object` 最初是为 Worker 场景编写的，在这里也能派上用场！
+
+我们也已经知道如何把缓冲区暴露给着色器，只需调整管线的绑定组布局，让它多期望一个缓冲区：
+
+```
+const bindGroupLayout = device.createBindGroupLayout({
+  entries: [
+    {
+      binding: 0,
+      visibility: GPUShaderStage.COMPUTE,
+      buffer: {
+        type: "read-only-storage",
+      },
+    },
+    {
+      binding: 1,
+      visibility: GPUShaderStage.COMPUTE,
+      buffer: {
+        type: "storage",
+      },
+    },
+  ],
+});
+```
+……再创建一个可以通过绑定组绑定的 GPU 缓冲区：
+
+```
+const input = device.createBuffer({
+  size: BUFFER_SIZE,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+});
+const bindGroup = device.createBindGroup({
+  layout: bindGroupLayout,
+  entries: [
+    {
+      binding: 0,
+      resource: {
+        buffer: input,
+      },
+    },
+    {
+      binding: 1,
+      resource: {
+        buffer: output,
+      },
+    },
+  ],
+});
+```
+接下来是新内容：把数据发送到 GPU。和读取数据一样，技术上我们需要创建一个可映射的暂存缓冲区，把数据复制进暂存缓冲区，然后发出一条命令把数据从暂存缓冲区复制到存储缓冲区。不过，WebGPU 提供了一个便捷函数，它会替我们选择把数据送进存储缓冲区的最高效方式，哪怕这意味着临时创建一个暂存缓冲区：
+
+```
+device.queue.writeBuffer(input, 0, inputBalls);
+```
+就这样？就这样！我们甚至不需要命令编码器，可以直接把这条命令放进命令队列。`device.queue` 还为纹理提供了一些类似的便捷函数。
+
+现在我们需要把这个新缓冲区绑定到 WGSL 中的一个变量上，并用它做点什么：
+
+```
+struct Ball {
+  radius: f32,
+  position: vec2<f32>,
+  velocity: vec2<f32>,
+}
+@group(0) @binding(0)
+var<storage, read> input: array<Ball>;
+@group(0) @binding(1)
+var<storage, read_write> output: array<Ball>;
+const TIME_STEP: f32 = 0.016;
+@compute @workgroup_size(64)
+fn main(
+  @builtin(global_invocation_id)
+  global_id : vec3<u32>,
+) {
+  let num_balls = arrayLength(&output);
+  if(global_id.x >= num_balls) {
+    return;
+  }
+  output[global_id.x].position =
+    input[global_id.x].position +
+    input[global_id.x].velocity * TIME_STEP;
+}
+```
+希望到这里，这段着色器代码的绝大部分对你来说已经没有什么意外了。
+
+最后，我们只需把 `output` 缓冲区读回 JavaScript，写一些 Canvas2D 代码来可视化缓冲区的内容，再把这一切放进 `requestAnimationFrame()` 循环中。效果可以在这个演示中看到。
+
+## 性能
+
+上一个演示只是让每个球沿着各自的速度向量移动，既不刺激，计算也不复杂。在考察这个作品的性能特征之前，我先在着色器里加入一些真正的物理计算。我不会在这里解释它们——这篇文章已经够长了——但我要说明，我采用的是最朴素的方法：每个球都要与“其他每一个球”做碰撞检测。如果你好奇，可以去看最终演示的源代码，里面也附有我编写物理部分时参考的资料链接。
+
+我不想对这个实验做任何精确测量，因为我既没有优化物理算法，也没有优化我对 WebGPU 的使用。不过，即便是这样朴素的实现，在我的 M1 MacBook Air 上也表现得非常好，这让我印象深刻。小球数量可以增加到大约 2500 个才会跌破 60fps。但查看性能跟踪就能发现，在 2500 个球时，瓶颈是 Canvas2D 绘制场景，而不是 WebGPU 的计算。
+
+为了看看它到底有多快，我关闭了渲染，改用 `performance.measure()` 来测量在耗尽 16 毫秒帧预算之前能模拟多少个球。在我的机器上，这个数字大约是 14000 个。如此未经优化的东西都能跑这么快，WebGPU 给我的算力让我简直有些飘飘然。
+
+## 稳定性与可用性
+
+WebGPU 已经开发了一段时间，我认为标准组织急于宣布这个 API 稳定。话虽如此，目前该 API 只在 Chrome 和 Firefox 中通过开关标志（flag）提供。我对 Safari 推出这个 API 持乐观态度，但在撰写本文时，Safari 技术预览版（Safari TP）里还什么都看不到。
+
+就稳定性而言，甚至在我为本文做研究期间就有一些变更落地。例如，属性语法从 `[[stage(compute), workgroup_size(64)]]` 改成了 `@compute @workgroup_size(64)`。在撰写本文时，Firefox 仍在使用旧语法。`passEncoder.end()` 以前叫 `passEncoder.endPass()`。规范中还有一些内容尚未在任何浏览器中实现，比如着色器常量，以及在移动设备上提供该 API。
+
+总之我想说的是：在浏览器厂商和标准制定者为这个 API 走向✨稳定✨冲刺的最后阶段，预计还会有一些破坏性变更。
+
+## 结论
+
+在 Web 上拥有一个与 GPU 对话的现代 API，将会非常有意思。在花时间跨过最初的学习曲线之后，我真切地感到自己有能力用 JavaScript 在 GPU 上运行大规模并行的工作负载。此外还有 wgpu，它用 Rust 实现了 WebGPU API，让你能在浏览器之外使用这个 API。wgpu 还支持把 WebAssembly 作为编译目标，所以你可以在浏览器外原生运行 WebGPU 程序，也可以通过 WebAssembly 在浏览器内运行。趣闻：Deno 是第一个开箱即支持 WebGPU 的运行时（这要归功于 wgpu）。
+
+如果你有问题或遇到困难，有一个 Matrix 频道聚集了许多 WebGPU 用户、浏览器工程师和标准制定者，他们给了我极大的帮助。去试试水吧！激动人心的时代。
+
+*感谢 Brandon Jones 为本文校对，也感谢 WebGPU Matrix 频道回答了我的所有问题。*

@@ -1,0 +1,286 @@
+https://stackoverflow.blog/2026/10/07/part-1-make-your-ai-agents-boring-the-determinism-layer/
+
+第 1 部分：让你的 AI 智能体变"无聊"——确定性层
+
+把 LLM 智能体放进高风险系统的诀窍，不是更聪明的模型，而是把模型限制在一个节点里，让系统的其余部分都是普通的、可测试的代码。下面是具体的结构性做法，并附上实现它们的契约和类型。
+
+演示喜欢那种会循环、调用工具、"自己想办法"的自主智能体。生产环境讨厌它们。一旦智能体的行为取决于模型今天碰巧走了哪条路，你就无法测试它、无法审计它，也不能让它碰任何要紧的东西。在受监管或后果严重的系统中——资金流转、医疗、基础设施——"通常能用"是行不通的。
+
+这是在生产环境中运行 LLM 系统的六级成熟度模型中的第 1 级：确定性层。在你能做评估（evals）、置信度路由或技术栈上更高层的任何事情之前，你需要底下这部分保持稳定。这一级的全部要义只有一个思路——把模型限制在单个节点里，让它周围的一切都是普通的、可测试的代码——并通过几个设计动作来体现。你保留了模型的智能，同时去掉了几乎所有的不可预测性。本文给出的是契约，而不只是概念。
+
+### 智能体只提议，不行动
+
+最重要的规则：智能体是一个纯函数，从上下文映射到一个"拟议"决策——它相对于业务状态是纯的，并且在给定其网关的情况下是确定的（唯一的非确定性调用，即模型，是通过注入提供的，因此测试可以伪造它）。它无权改变世界。由一个独立的、简单的、经过大量测试的组件——基底（substrate）——来应用提案，而且只在获得所需批准之后。
+
+```
+from typing import Protocol, Literal
+from dataclasses import dataclass
+@dataclass(frozen=True)
+class Proposal:
+    decision_id: str
+    capability: str
+    action: dict                  # 结构化的拟议变更——尚未应用
+    confidence: float
+    routing: Literal["auto", "hitl_recommended", "hitl_required", "reject"]
+    reasoning: list[str]
+    evidence: list[dict]
+class Agent(Protocol):
+    def propose(self, ctx: "Context") -> Proposal: ...     # 纯函数：对业务状态没有副作用
+class Substrate(Protocol):
+    def apply(self, proposal: Proposal, approval: "Approval") -> "Effect": ...  # 唯一的变更者
+```
+
+由于 `propose()` 是纯函数，它最核心的性质只需要一条断言：
+
+```
+def test_propose_is_pure():
+    agent = ClassifyAgent(gateway=FakeGateway(scripted))
+    assert agent.propose(ctx) == agent.propose(ctx)   # 相同上下文 → 相同提案；不触碰外部世界
+```
+
+这条边界给你带来三个性质：
+
+- 可测试。`propose()` 是纯函数——相同上下文，相同提案。测试逻辑时无需模拟整个世界。
+- 安全。被越狱或有 bug 的智能体产生的是一个糟糕的"提案"，而不是一个糟糕的"动作"。影响范围止于"护栏或人拒绝了它"。
+- 可组合。智能体从不调用其他智能体。工作通过基底流转（例如一张案例表加一个调度器），因此不存在需要推敲的隐藏副作用链。
+
+这一个约束，就把"AI 做了一件我们无法解释的事"变成了"AI 建议了一件事，而这就是批准它的确切依据"。
+
+### 每项能力一张固定的图
+
+自由形式的 ReAct 循环适合探索，却很难提供保证。把每项能力建模为一个固定的节点序列，只在需要判断的地方使用模型，其余一切都是普通代码。下面的箭头示意图为便于阅读做了简化；完整的节点列表（包括 `pre_check` 和 `memory_write`）在下一节。
+
+```
+entry → load context → reason (LLM) → output guardrail → verify →
+        judge (sampled) → compose confidence → route → prepare proposal → record → exit
+```
+
+（下表对比：自由形式 ReAct 循环 vs. 固定图。控制流：由模型决定下一步 vs. 事先已知；可测试性：困难（路径会变）vs. 每个节点可单独测试；延迟/成本：无上限 vs. 有界、可预测；审计：需从追踪中重建 vs. 每次都是统一的一行记录；适用于：开放式探索 vs. 必须有保证的决策。）
+
+```
+                Free-form ReAct loop     Fixed-graph (this)
+--------------  -----------------------  ---------------------------------
+Control flow    model decides next step  known in advance
+Testable        hard (path varies)       each node in isolation
+Latency / cost  unbounded                bounded, predictable
+Audit           reconstruct from trace   uniform row every time
+Right for       open-ended exploration   decisions that must be guaranteed
+```
+
+你放弃了一些聪明，换回了推断系统将做什么的能力。聪明的部分——对杂乱输入的判断——恰好留在模型擅长的地方，在一个节点里，被你读得懂的代码包围着。
+
+### 一次请求的解剖
+
+在你看到一个具体样子之前，"让智能体变得确定"很难付诸行动。所以，我们沿着图逐个节点走一遍单次请求——也就是上面那张图背后的实现。
+
+状态对象。每个节点都读写同一个贯穿整张图的类型化状态值。把它显式化就成功了一半——正因如此，你才能通过构造一个状态并对结果做断言来单独测试某个节点。
+
+```
+from typing import TypedDict, Literal, Optional
+class GraphState(TypedDict):
+    decision_id: str
+    tenant_id: str
+    identity: dict                      # 谁/什么权限（在入口处设置）
+    inputs: dict                        # 已校验的请求
+    context: dict                       # 已加载的记忆/参考数据切片
+    model_output: Optional[dict]        # LLM 节点输出的原始结构化结果
+    guardrail: dict                     # 已施加的拦截/脱敏
+    verification: dict                  # 确定性检查结果
+    judge: Optional[dict]               # 第二意见结果（若被抽样）
+    confidence: Optional[float]         # 合成后的分数
+    routing: Optional[Literal["auto", "hitl_recommended", "hitl_required", "reject"]]
+    proposal: Optional[dict]            # 最终成形的提案
+    ledger_entry_id: Optional[str]
+```
+
+节点契约。每个节点都是同样的形状：`state -> state`。除了那个模型节点之外，都是确定性的。正是这种一致性，让你能对每个节点做单元测试，并对整体进行推理。
+
+```
+from typing import Protocol
+class Node(Protocol):
+    name: str
+    def run(self, state: GraphState, deps: "Deps") -> GraphState: ...
+```
+
+图。有 8 个节点在所有能力之间共享；只有少数是能力专属的。新增一项能力 = 实现约 4 个节点，继承其余 8 个。
+
+（下列清单依次为：编号、节点名、职责、[共享/能力专属]。1 entry：生成 decision_id，绑定租户与身份；2 pre_check：校验输入、解析引用、低成本的提前退出；3 context_load：只获取本次决策所需的上下文；4 llm_decision：推理步骤，结构化输入、结构化输出；5 output_guardrail：对模型输出做 PII/策略清洗；6 verification：确定性的、能力专属的正确性检查；7 judge：抽样的第二模型复核（高风险场景）；8 confidence_compose：由各信号合成分数；9 routing：自动 vs. 人工介入 vs. 拒绝；10 prepare_proposal：塑造最终提案；11 memory_write：写入智能体自身的审计记忆（不是业务状态）；12 exit：追加不可变的账本条目。）
+
+```
+1  entry              mint decision_id, bind tenant + identity              [shared]
+2  pre_check          validate inputs, resolve refs, cheap early-outs       [capability]
+3  context_load       fetch only the context this decision needs            [shared]
+4  llm_decision       the reasoning step — structured in, structured out    [capability]
+5  output_guardrail   PII / policy scrub on the model output                [shared]
+6  verification       deterministic, capability-specific correctness checks [capability]
+7  judge              sampled second-model review (high-stakes)             [shared]
+8  confidence_compose composed score from the signals                       [shared]
+9  routing            auto vs hitl vs reject                                [shared]
+10 prepare_proposal   shape the final proposal                              [capability]
+11 memory_write       write the agent's own audit memory (not business state)[shared]
+12 exit               append the immutable ledger entry                     [shared]
+```
+
+两个承重节点是 `llm_decision` 和 `verification`。前者是唯一的非确定性节点——结构化输入、受 schema 约束的输出、不匹配时重试——它周围的一切在检查之前都把它的输出视为不可信（下一节详述）。后者是确定性的、能力专属的代码，整个"限制模型"的论点就建立在它之上：
+
+```
+def run(self, state, deps):
+    out = state["model_output"]
+    checks = {
+        "in_enum":   out["decision"] in ALLOWED_DECISIONS,        # 不能返回清单之外的动作
+        "schema_ok": matches_schema(out, DECISION_SCHEMA),
+        "rules_ok":  deps.rules.check(out, state["inputs"]),      # 业务不变量
+    }
+    state["verification"] = {"checks": checks, "score": sum(checks.values()) / len(checks)}
+    return state
+```
+
+固定形状的意义在于：你能读懂控制流（路径"就是"这张图），模型被限制在一个节点里，每个决策都是统一的——每次形状相同，意味着每次的审计记录都相同，增加检查、指标或护栏的位置也都相同。
+
+### 结构化输出优于自由形式
+
+第 4 个节点值得单独讨论，因为相当多的 LLM 脆弱性都源于一个选择：让模型返回自由文本，然后再去解析它。散文是有歧义的，格式在多次调用之间会漂移，你的下游代码离崩溃只差一句意料之外的措辞。"当然！大概是 Approve，不过也可能是 Escalate"——现在你得负责一个自然语言理解问题来提取 `Approve`，而明天换个说法就会让你的正则失效。你把系统耦合到了模型的"文风"上，而这是它最不稳定的东西。
+
+解决办法无聊而强大：约束模型输出经过校验的结构，其他任何输出都视为调用失败并重试。约束有三种方式，按保证需要多强来选择：
+
+（下表依次为：方法、做法、保证强度、适用场景。Schema 引导（JSON Schema / response_format）：要求输出符合 schema 的 JSON；保证强，由提供方强制；适用于大多数情况。工具/函数调用：模型输出一个类型化的工具调用；保证强，天然适合"带参数做 X"；适用于决策对应某个动作时。语法约束解码：把 token 约束在某种语法内；硬性保证（不可能输出无效内容）；适用于严格/受监管的格式、本地模型。）
+
+```
+method                                         how                             guarantee                             use when
+---------------------------------------------  ------------------------------  ------------------------------------  --------------------------------------
+Schema-guided (JSON Schema / response_format)  ask for JSON matching a schema  strong, provider-enforced             most cases
+Tool / function call                           model emits a typed tool call   strong; natural for "do X with args"  the decision maps to an action
+Grammar-constrained decoding                   constrain tokens to a grammar   hard guarantee (can't emit invalid)   strict/regulated formats, local models
+```
+
+```
+# 以类型表达契约——下游消费的是类型化对象，绝不是散文
+from pydantic import BaseModel
+from typing import Literal
+class Decision(BaseModel):
+    decision: Literal["approve", "escalate", "reject"]   # 枚举本身就是一道护栏
+    confidence: float
+    reasons: list[str]
+```
+
+约束式生成能减少格式错误的输出，但不能消除它。所以要闭环：校验每一个响应，不匹配时重试——并把校验错误反馈回去。限制重试次数，失败即关闭。
+
+```
+from pydantic import ValidationError
+class NonConformingOutput(Exception): ...
+def decide(base_prompt, model, max_retries=2) -> Decision:
+    prompt = base_prompt
+    for _ in range(max_retries + 1):
+        raw = model.generate(prompt, schema=Decision.model_json_schema())
+        try:
+            return Decision.model_validate_json(raw)            # 成功：类型化对象
+        except ValidationError as e:
+            # 从 base_prompt 重建——不要在已追加过的提示上继续追加（会层层累积）
+            prompt = f"{base_prompt}\n\nYour previous output was invalid: {e}. Return JSON only."
+    raise NonConformingOutput()      # 失败即关闭——绝不把猜测交给下游
+```
+
+在边界处做校验，意味着系统其余部分只会看到格式良好的决策；"模型有没有好好表现"这个杂乱的问题被限制在这一个函数里。你用一个清晰的校验问题替换了一个模糊的自然语言理解问题——没有解析层，在更换模型/提示时保持稳定，自带护栏（固定的枚举"不可能"返回清单之外的东西），还有一个黄金测试可以对其断言的类型化契约。
+
+有一点值得大声强调：结构约束的是"形式"，而不是"正确性"。一个完全合法的 `{"decision":"approve","confidence":0.99}` 可能完全是错的。结构化输出消除的是解析失败这种模式，而不是判断失败这种模式——这就是为什么它是生产系统的"地板"，位于评估、验证和置信度之下，而不是它们的替代品。
+
+### 黏合剂：置信度 → 路由
+
+置信度（模型信号 + 验证 + 抽样评审）在置信度节点合成；路由节点用一个阈值把它转化为四条路径之一，随后 `prepare_proposal` 把这个结果盖到提案上：
+
+```
+def route(confidence: float, verified: bool, T: float = 0.85) -> str:  # T 是按能力配置的参数，不是常量
+    if not verified:           return "reject"
+    if confidence >= T:        return "auto"
+    if confidence >= T - 0.2:  return "hitl_recommended"   # 接近阈值：为人工预填提案
+    return "hitl_required"                                 # 偏低：由人从头决定
+```
+
+`verified` 由验证节点推导而来（`verified = all(checks.values())`），而不是智能体自己设置的字段，路由器会输出全部四种 `routing` 状态。注意顺序：路由在提案成形之前运行（节点 9 → 节点 10），所以它接收的是一个普通的置信度值和一个已验证标志——而不是一个 `Proposal`。一开始把 `T` 设得保守一些——所有东西都交给人——然后只有当数据证明安全时，才逐个切片地调低它。人的注意力这一昂贵资源，恰好花在系统没把握的地方。
+
+### 账本：只追加的权威记录
+
+每一个拟议决策都会成为一条不可变的行——作为每次决策的最后一个节点无条件写入。它不是一行日志，而是关于发生了什么以及为什么发生的权威记录。
+
+```
+CREATE TABLE decision_ledger (
+  decision_id     TEXT PRIMARY KEY,
+  ts              TIMESTAMPTZ NOT NULL,
+  tenant_id       TEXT NOT NULL,
+  capability      TEXT NOT NULL,
+  inputs_hash     TEXT NOT NULL,          -- 存哈希，不存原始敏感数据
+  model_version   TEXT NOT NULL,
+  prompt_version  TEXT NOT NULL,
+  decision        JSONB NOT NULL,
+  confidence      REAL NOT NULL,
+  routing         TEXT NOT NULL,          -- auto | hitl_* | reject
+  outcome         TEXT,                    -- 之后以一条新的取代行记录，绝不就地 UPDATE
+  supersedes      TEXT REFERENCES decision_ledger(decision_id),
+  prev_hash       TEXT,                    -- 可选的哈希链，用于防篡改留痕
+  entry_hash      TEXT
+);
+-- 只追加：不授予 UPDATE/DELETE 权限；更正是设置了 `supersedes` 的新行。
+```
+
+对输入做哈希，而不是把它们存进仓库——既可验证，又不承担责任风险。让它只追加：更正是取代，绝不覆盖。如果你能 `UPDATE` 账本，它就不是审计追踪；收回这个权限。并且绝不在高负载时跳过写入——它是权威记录，不是可丢弃的遥测数据。
+
+### 有界 ReAct：循环唯一该在的地方
+
+如果你遵循了以上所有做法——固定的图，模型被限制在一个节点里——你终究会遇到一个不合适的问题：某种开放式的事情，模型必须查点东西，对查到的内容进行推理，也许再查更多，然后才能决定。这"正是"ReAct 式工具循环的用武之地。错误不在于循环，而在于"无界"的循环。把自主性作为一种刻意的、有护栏保护的例外来允许——除此之外，别处都不允许。
+
+四道护栏让它保持受控：(1) 硬性迭代上限——用 `for`，绝不用 `while(not done)`，这样就不是由模型来决定何时停止；(2) 按能力设定的工具允许清单——它只能调用一份明确的、限定于该能力的清单上的工具；(3) 完整的逐次迭代追踪——每一步都被记录，因此决策可以回放；(4) 与其他一切相同的出口——循环的"输出"仍然要经过护栏、验证、置信度和路由，而且仍然只是"提议"，绝不行动。
+
+```
+class DisallowedTool(Exception): ...    # 当循环试图调用清单外的工具时抛出
+ALLOWED_TOOLS = {                       # 护栏 2：按能力设定的允许清单，而不是"所有工具"
+    "enrich_request": {"search_kb", "fetch_record", "lookup_reference"},
+}
+@dataclass
+class Step:                              # 护栏 3：每次迭代一条追踪记录
+    i: int; action: str; args: dict; result_digest: str
+def bounded_react(state, deps, capability, MAX_STEPS=6) -> Proposal:
+    allow = ALLOWED_TOOLS[capability]
+    trace: list[Step] = []
+    for i in range(MAX_STEPS):                                   # 护栏 1：硬上限
+        action = deps.model.next_action(state, tools=sorted(allow))
+        if action.is_final:                                     # 先检查这个——最终答案不带工具调用
+            return finalize(action.proposal, trace)             # 护栏 4：仍然只是提案
+        if action.tool not in allow:                            # 纵深防御
+            raise DisallowedTool(action.tool)
+        result = deps.tools[action.tool](**action.args)
+        trace.append(Step(i, action.tool, action.args, digest(result)))
+        state = state.with_observation(result)                  # 循环内部的状态类型，不是固定图的 GraphState
+    return escalate("hit step cap", trace)                      # 有界：触达上限 → 返回路由为 "hitl_required" 的提案
+```
+
+`trace` 会随账本条目一起写入，因此基于循环的决策与基于固定图的决策同样可以重建。有两道护栏各值得一个测试——它总会终止，以及它无法调用清单外的工具：
+
+```
+def test_always_terminates():
+    deps = fake_deps(model=never_final)                 # 一个永远不返回 is_final 的模型
+    p = bounded_react(state, deps, "enrich_request", MAX_STEPS=3)
+    assert p.routing == "hitl_required"                 # 触达上限 → 转给人工，没有卡死
+def test_disallowed_tool_refused():
+    deps = fake_deps(model=calls("danger_tool"))        # 一个不在允许清单上的工具
+    with pytest.raises(DisallowedTool):
+        bounded_react(state, deps, "enrich_request")
+```
+
+判断你是否真的需要它的决策规则：得出决策所需的步骤，其数量和顺序是否取决于过程中发现的东西？否 → 固定图（大多数能力）。是 → 有界循环，四道护栏，并作为例外记录在案。如果你是"为了保险"或"为了灵活"而去用循环，停下来——那通常是换了身装扮的固定图场景。你不需要的灵活性，就是你凌晨两点要去调试的非确定性。
+
+### 反模式
+
+- 智能体"就这一次"写入业务状态。这样它就不再是纯的、不再可测试，一个 bug 就成了一次事故，而不是一个糟糕的提案。让基底始终是唯一的变更者。
+- 隐式状态：在步骤之间用临时的元组/字典传递——你会失去单独测试某个节点的能力。把状态做成类型化对象。
+- 在提示里写"返回 JSON"却没有 schema 强制——你仍然会得到散文、代码围栏或尾随的评论。使用 schema/工具/语法强制，然后校验并重试；受约束 ≠ 有保证。
+- 直接拿模型自报的"置信度"。它是没有校准的；应当由独立信号合成。
+- 可修改或被跳过的审计。如果你能 `UPDATE` 账本，它就不是审计追踪；如果你在高负载时丢弃写入，你就没有权威记录。
+- "为了灵活"而用无界循环。默认使用固定图。确实要用循环时，用带上限的 `for` 和按能力设定的允许清单——绝不用 `while not done` 或"所有工具都可用"。
+
+### 要点
+
+第 1 级就是始终如一地贯彻一条纪律：把模型限制在一个节点里，让智能体成为只会"提议"的纯函数，把这个节点约束为经过校验的 schema，由独立信号合成置信度以便把拿不准的情况交给人，让一个简单的基底在批准之后作为唯一的变更者，并把每个决策写入只追加的账本。当某项能力确实需要自主性时，给它做预算——步数上限、工具允许清单、追踪记录，以及与其他一切相同的输出检查。
+
+模型仍然做它独一无二擅长的事——对杂乱输入做判断——但它周围的系统是确定性的、可测试的、可审计的。无聊，以最好的方式：可预测到足以测试，受控到足以信任，站得住到足以上线。这就是本系列中其他一切所赖以建立的地板。
+
+（系列：在生产环境中运行 LLM 系统——6 级中的第 1 级：确定性。）

@@ -1,0 +1,13 @@
+https://d2.naver.com/helloworld/4149925
+
+Python 的 GC 遇上多进程会发生什么——Python 与 Airflow 问题解决记（第 2 篇） ｜ NAVER D2 ｜ 文章 ｜ https://d2.naver.com/helloworld/4149925
+
+NAVER 团队在 Airflow 3.1 的 PoC 中，碰到两个看似无关的故障，追查后发现根源相同：都是 fork 出的子进程在运行 Python 循环 GC 时，触碰了从父进程继承来的对象。
+
+第一个故障是 worker 内存持续增长。他们先用 Memray 找到两个普通泄漏：secrets masker 白白 import 整个 kubernetes.client，每个 worker 多占 32MB；Task SDK client 反复创建 SSL context。这两个问题在 3.1.2 中修复，他们还给 Airflow 加了 Memray 剖析功能和文档。修完后内存仍在涨，Memray 却看不到新分配；smem 显示 RSS 基本不变，PSS、USS 从 20～30MB 涨到 100MB 以上，说明共享页在被写时复制（COW）。第二个故障是 MySQL 环境下 dag-processor 间歇重启，报错 2013“Lost connection”。MySQL 日志显示是客户端主动发了 Quit。他们用 weakref.finalize 追踪，发现是 fork 出的解析子进程在销毁继承来的连接副本时，mysqlclient 通过共享 socket 发出 COM_QUIT，把父进程的连接断了。
+
+原因在于 CPython 的分代循环 GC：收集时会往每个被追踪对象的 PyGC_Head 写入 gc_refs，子进程即使从不使用那些继承来的对象，所在页面也会被复制。他们用 /proc/pagemap 做实验，子进程调用一次 gc.collect()，20 个页面全部换了物理页框。连接的问题也是同一机制：Airflow 按 SQLAlchemy 的建议，在 fork 后执行 engine.dispose(close=False)，但连接池与连接记录互相引用，要等子进程 GC 达到阈值才回收。所以只有 dynamic DAG 这类长时间解析才会触发，小规模环境复现不了。
+
+先尝试提前 fork、延迟 import，但 CLI 启动时就已加载 100MB 依赖，而且 task 吞吐从每分钟 100 多个跌到 60～70 个，于是放弃。最终方案是 Instagram 贡献给 CPython 的 gc.freeze()：把现有对象移入永久代，循环 GC 不再扫描它们，引用计数照常生效，开销是 O(1)。LocalExecutor 在创建 worker 前 freeze、创建后 unfreeze（PR #58365）。dag-processor 每个文件都 fork，频繁 freeze 会把 GC 计数器清零，导致垃圾堆在第 2 代无法回收，所以改为进入循环前只 freeze 一次（PR #60505）。Celery 则在 preload 完成后 freeze、worker_ready 时 unfreeze（PR #62212）。
+
+效果：LocalExecutor 每个 worker 从 100MB 降到 40MB，容器总量减少 58%；dag-processor 内存尖峰减小，重启问题消失；Celery worker 容器从 2.25GB 降到 1.07GB。这些改动包含在 Airflow 3.1.4、3.1.7 和 Celery provider 3.17.2 中。作者提醒，gunicorn preload 这类“先加载、后 fork”的服务都适用 gc.freeze，但 fork 比 GC 触发更频繁时，不要反复 freeze/unfreeze。连同其他修复，3.3.0 在他们的环境中已没有 worker 内存泄漏。
