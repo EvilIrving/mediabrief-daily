@@ -2,10 +2,6 @@ https://hacks.mozilla.org/2017/11/entering-the-quantum-era-how-firefox-got-fast-
 
 进入量子时代：Firefox 如何重新变快 How Firefox Got Fast Again ｜ Mozilla Hacks，Lin Clark（经 Hacker News） ｜ 文章 ｜ https://hacks.mozilla.org/2017/11/entering-the-quantum-era-how-firefox-got-fast-again-and-where-its-going-to-get-faster/
 
-这是 Mozilla 工程师 Lin Clark 2017 年 11 月发在 Mozilla Hacks 上的文章，写在 Firefox Quantum 正式发布的前一天。大家发现 Firefox 又变快了，她解释背后的原因：过去七个月里，Mozilla 在快速替换引擎的主要部分，引入 Rust 和 Servo 的组件，还组建了一支性能突击队在代码库里搜罗明显和不明显的性能问题，整个计划叫 Quantum 项目。她也强调这只是开始。
+Mozilla 工程师 Lin Clark 在 Firefox Quantum 发布前一天解释 Firefox 为何又变快了：过去七个月，Mozilla 引入 Rust 和 Servo 的组件替换引擎主要部分，还组建了性能突击队，这就是 Quantum 项目。
 
-第一层是粗粒度并行，用来跟上过去十年的硬件变化。Chrome 刚推出时比 Firefox 更快更流畅，原因之一就是它的工程师看到了多核 CPU 的趋势。并行容易引入难以发现和调试的 bug，比如两个核同时给内存里同一个数加一，可能互相覆盖；最直接的规避办法是把程序拆成几块很大、无需共享内存的任务。浏览器里很容易找到这种粗粒度：每个标签页是一块独立的工作，网页之外的浏览器界面又是一块，于是后台标签的长脚本不会卡住前台标签。Firefox 因为背着现有代码库，走得更坎坷：Electrolysis 项目引入了类似 Chrome 的多进程架构，2016 年开始小范围测试，2017 年中推给所有用户；Quantum Compositor 把合成器挪进独立进程，显卡驱动崩溃不会拖垮整个浏览器，也更流畅；Quantum DOM 让主线程能给任务排优先级，比如响应按键比垃圾回收更重要，后续还要做抢占式调度。
-
-第二层是细粒度并行。粗粒度并行用好了硬件，却没用到极致：有的核闲着，新页面在新核上加载仍和单核一样慢。细粒度并行把大任务拆成小单元分给多个核，比如把 Pinterest 页面上的各个图钉分开处理，这样不仅降低延迟，还能纯粹提速，核越多越快。难点是这通常要在核之间共享内存，又会带来数据竞争。Mozilla 为此投入研究：造了一门没有数据竞争的语言 Rust，再用它造了充分利用细粒度并行的浏览器引擎 Servo，证明可以又快又少 bug。落到 Firefox 里的是 Quantum CSS（即 Stylo），把样式计算完全并行到所有 CPU 核上，用"工作窃取"让每个核都忙着，耗时随核数线性下降；还有 Quantum Render，其中的 WebRender 计划 2018 年上线，用来调度 GPU 上成百上千的核，同时 Advanced Layers 项目先改造现有的图层系统支持批量渲染，立刻见效。渲染管线的其他部分也可能受益，接下来几个月会继续寻找。
-
-第三层是确保持续变快、不再变慢。除了这些大的架构改动，代码库里也会在不注意时溜进性能 bug，于是有了 Quantum Flow 这支突击队：不盯某个子系统的整体性能，而是聚焦非常具体的重要场景，比如加载社交媒体信息流，跨团队查清它为什么在 Firefox 里比别的浏览器慢。它带来了很多大的性能收益，也沉淀出发现和追踪这类问题的工具和流程。之后他们要把"一次聚焦一个关键场景"变成日常工作方式，改进工具，让组织里更多工程师都能自己找问题，而不必依赖专家突击队；为防止优化一个场景时拖慢另一个，还在增加 CI 性能测试、用户体验遥测和 bug 内的回归管理。她最后说，明天对 Mozilla 是个大日子，但接下来一年还会持续交付性能改进。
+第一层是粗粒度并行。Chrome 早年更快，部分是因为看准了多核趋势。把浏览器拆成互不共享内存的大块任务最安全，Firefox 背着旧代码，通过 Electrolysis 多进程架构、把合成器移进独立进程的 Quantum Compositor、能给任务排优先级的 Quantum DOM 逐步追上。第二层是细粒度并行，把大任务拆小分给多个核，但共享内存会带来数据竞争。Mozilla 为此造了 Rust，又造了 Servo，落到 Firefox 里的是把样式计算并行到所有核的 Quantum CSS，以及调度 GPU 的 Quantum Render 和 WebRender。第三层是 Quantum Flow 突击队，聚焦加载社交信息流这类具体场景，跨团队追查性能问题，并用 CI 性能测试和遥测防止回归。她强调这只是开始，接下来一年还会持续提速。

@@ -2,12 +2,8 @@ https://www.joshwcomeau.com/css/understanding-layout-algorithms/
 
 理解布局算法 Understanding Layout Algorithms ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/understanding-layout-algorithms/
 
-Josh W. Comeau 这篇文章讲的是他学 CSS 时的一次“顿悟”：CSS 不是一堆属性的集合，而是一组相互关联的布局算法（规范里叫布局模式），每种算法有自己的规则和隐藏机制。属性只是传给算法的“参数”，具体做什么由算法决定。很多人觉得 CSS 不一致、不可靠——同一段熟悉的代码换个地方结果就变了——根源在于心智模型不完整，不知道属性所处的是哪套算法。
+Josh W. Comeau 讲他学 CSS 的一次顿悟：CSS 不是一堆属性，而是一组布局算法，属性只是传给算法的参数。很多人觉得 CSS 不可靠，是因为不知道属性处在哪套算法里。
 
-常见的布局算法有 Flow（流式）、Flexbox、Positioned（定位）、Grid、Table 等。Flow 是 Web 最早的默认算法，诞生于网页被看作超链接文档的年代，类似 Word 这类文字处理软件的排版。他用 z-index 举例：过去他会说“z-index 必须配合 position: relative/absolute 才生效，因为它依赖 position”，这话不算错，但更准确的说法是 Flow 布局根本没有实现 z-index，文档式排版不允许元素重叠。证据是：Flex 容器里的子元素不设 position，z-index 照样有效，因为 Flexbox 算法实现了它。更让他震惊的例子是 width：同一个 width: 2000px 的元素，在 Flow 里是硬性规则，真的撑出 2000px；放进 Flex 容器则只是“建议”，规范称之为假设尺寸（hypothetical size），容器窄了就会收缩。不是 width 在 Flexbox 下有特例，而是两种算法对 width 的实现不同。
+他举了两个例子。z-index 在 Flow 布局里无效，并不是"必须配合 position"，而是 Flow 根本没实现它，Flex 子元素不设 position 照样生效。width: 2000px 在 Flow 里是硬性规则，在 Flexbox 里只是可收缩的"假设尺寸"。元素用哪种算法，有的由自身声明决定，如 position: fixed；有的由父元素决定，如 display: flex 让子元素改用 Flexbox；冲突时定位布局通常胜出。
 
-如何判断元素用哪种算法？CSS 没有 layout-mode 属性。有的声明直接作用于元素本身（position: fixed 进入定位布局，float 进入浮动布局）；有的取决于父元素——display: flex 并不改变自身的布局算法，而是创建 flex 格式化上下文，让直接子元素改用 Flexbox。有些算法还有变体，如定位布局分 relative/absolute/fixed/sticky，Flow 里分块级和行内。冲突时有点像优先级：定位布局通常胜出，Flex 容器里绝对定位的子元素对 Flexbox 计算来说就像不存在（他承认实际情况更复杂一些）。
-
-文章主体用一个经典难题演示这种视角的价值：一张 250px 高的猫咪图片放在容器里，容器却有 258.5px 高，多出的几像素既不是 margin、padding 也不是 border，他多年来私下称之为“行内魔法空白”。答案在 Flow 布局：文档由行内的字词和纵向堆叠的块组成，行内元素本该出现在段落中间（比如句子里的小图标），为了不影响周围文字的可读性，算法会给它留一点额外的垂直空间；图片默认是行内元素，按基线对齐，下方留出的正是给 j、p 这类下伸字母的空间。解决办法有三：把图片设为 display: block（他已把这条写进自己的 CSS Reset）；把父元素改成 display: flex，换掉 Flow 算法；或给容器设 line-height: 0（会让多行文字无法阅读，仅作演示，也证明问题来自行距）。他推荐前两种。
-
-他的结论是：只研究单个属性，你永远搞不懂这块空白从哪来，MDN 上 display 或 line-height 的页面都不会解释它；只盯属性只能看到冰山一角，看不到层叠上下文、包含块、层叠来源这些重要概念。网上很多 CSS 教学同样浅，只分享好用的代码片段而不讲原理（他承认自己在社交媒体上也这样）。CSS 没有报错、没有 debugger 和 console.log，直觉是最好的调试工具；他多年来每遇到意外行为就深挖 MDN 和 CSSWG 规范，很值得但极其耗时。文末是他的课程《CSS for JavaScript Developers》的推广，称已有超过 2.1 万名开发者（来自 Apple、Google、Microsoft 等）学过。
+文章主体解释了图片下方多出几像素的"行内魔法空白"：图片默认是行内元素，Flow 按基线对齐，给下伸字母留了空间。解决办法是设 display: block，或让父元素用 Flex，line-height: 0 也行但只作演示。他的结论是，只研究单个属性看不到层叠上下文、包含块这些冰山下的概念；CSS 没有报错和调试器，直觉是最好的工具。他也批评网上很多 CSS 教学只分享代码片段而不讲原理，自己多年靠深挖 MDN 和 CSSWG 规范来补全心智模型，很值得但极耗时。常见的算法包括 Flow、Flexbox、Positioned、Grid 和 Table，其中 Flow 是诞生于文档时代的默认算法，像文字处理软件那样排版，不允许元素重叠。文末推广了他的课程。

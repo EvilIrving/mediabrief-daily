@@ -2,18 +2,18 @@ https://overreacted.io/writing-resilient-components/
 
 编写有韧性的组件 Writing Resilient Components ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/writing-resilient-components/
 
-Dan Abramov（React 核心团队成员）2019 年在个人博客 Overreacted 上的长文。他先泼冷水：初学者总想要一份风格指南，但大多数风格规则是任意的，真正重要的是组件设计原则，而风格指南并没有抓住它们。
+React 核心团队的 Dan Abramov 2019 年在 Overreacted 上的长文。他先泼冷水：大多数风格规则是任意的，真正重要的是组件设计原则。
 
-前半部分批评过度严格的代码风格规范。他观察到，JavaScript 社区里由 linter 强制执行的强主张风格指南往往弊大于利：有人拿着完全合法的代码说“React 报错了”，其实是 lint 配置在报错。后果有三：linter 被当成吹毛求疵的守门人，有用的警告淹没在风格噪音里，设计师等不常写 JS 的人更难参与；人们不再学习区分某种模式的合理与不合理用法——比如流行规则禁止在 componentDidMount 里调用 setState，但测量 DOM 布局（如定位 tooltip）正是它的合法用途，有人用 setTimeout 绕过规则，完全没抓住要点；最终形成“执法者心态”，执着于函数声明还是箭头函数这类无实质差别但容易检查的事，带来虚假的成就感。他不是反对 lint，而是主张 linter 用来抓 bug。建议是“用断舍离的方式整理 lint 配置”：周一召集团队半小时逐条过规则，问“这条规则帮我们抓到过 bug 吗？”，没有就关掉（或从不含风格规则的 eslint-config-react-app 起步）；格式交给 Prettier；规则抓不到的细微风格问题靠团队信任和简短的设计说明。
+前半部分批评过度严格的 lint 风格规范：有人把 lint 报错当成"React 报错"，有用的警告淹没在风格噪音里，人们也不再学习区分模式的合理与不合理用法。比如禁止在 componentDidMount 里调用 setState 的规则，挡住了测量 DOM 布局这种正当用途，有人用 setTimeout 绕过规则，完全没抓住要点。久而久之形成执着于箭头函数还是函数声明的"执法者心态"。他不反对 lint，而是主张 linter 用来抓 bug：团队逐条过规则，问"这条帮我们抓到过 bug 吗"，没有就关掉，格式交给 Prettier。
 
-正文提出“有韧性的组件”的四条原则，并认为任何单向数据流的 UI 组件模型最终都会摸索出同样的原则。
+正文提出"有韧性的组件"四条原则，并认为任何单向数据流的 UI 模型最终都会摸索出这些原则。
 
-一、不要阻断数据流。渲染上，常见错误是把 props 复制进 state，这样会忽略后续所有更新；若确实有意如此，应命名为 initialColor 或 defaultColor。即便为了优化昂贵计算也不该复制：放到 render 里配合 PureComponent，或在 componentDidUpdate 里重算（会多一次渲染），或用旧的 componentWillReceiveProps（人们常在里面放副作用，会给并发渲染的时间切片、Suspense 带来问题），getDerivedStateFromProps 又笨重。本质上需要的是记忆化：类组件用 memoize-one，函数组件用 useMemo。副作用上，数据请求也是数据流的一部分：以搜索组件为例，只在 componentDidMount 里请求，query 变了就什么都不发生；补上 componentDidUpdate 后，再加一个 currentPage 状态又会忘记处理。类组件里任何方法都能调用其他方法，静态检查一致性会有大量误报；而 useEffect 把逻辑放进 effect 并显式声明依赖，使得 eslint-plugin-react-hooks 的 exhaustive-deps 规则能自动校验——这正是用 linter 抓 bug。他强调，无论类还是函数组件都必须尊重 props 和 state 的更新，这也不是 React 独有问题，凡是把“创建”和“更新”分开处理的 UI 库都存在。优化上，自写 shouldComponentUpdate 或给 React.memo 自定义比较时容易漏比函数 props；类组件传的方法通常身份稳定，所以不会立刻出错，但当 onClick 随状态切换为 null，或绑定了会变化的 draft.content 时，按钮就会看到旧函数。建议用默认浅比较（React.memo / PureComponent），坚持自定义就别跳过函数；Hooks 下函数每次渲染都不同，问题会立即暴露，也可用 useCallback 和 useContext 避免把函数层层下传。
+一是不要阻断数据流。别把 props 复制进 state，想优化昂贵计算就用记忆化，如 memoize-one 或 useMemo。数据请求也是数据流的一部分：只在挂载时请求，query 或页码变了就会漏掉；useEffect 显式声明依赖，让 exhaustive-deps 规则能自动校验，这正是用 linter 抓 bug。自定义 shouldComponentUpdate 或 React.memo 比较时也别跳过函数 props，否则按钮会拿到旧函数。
 
-二、随时准备好渲染。组件不应引入时序假设。反面例子是用 componentWillReceiveProps 在每次收到 props 时重置本地 state，这完全依赖偶然的时机：今天父组件很少更新没事，明天父组件加了动画频繁重渲染，子组件状态就会被不断冲掉。要修正心智模型：“收到 props”和普通渲染没有区别，组件应能承受更多或更少次的渲染，否则就和特定父组件耦合过深。解法是做成完全受控组件，或完全非受控组件并用 key 重置。压力测试可以临时在父组件里每 100 毫秒 forceUpdate 一次。用 PureComponent 挡住重渲染只是虚假的安全感，再加一个频繁变化的 style prop 仍会丢失状态；PureComponent、shouldComponentUpdate、React.memo 只能用于性能，不能用来控制行为，去掉优化组件就坏，说明它本来就太脆弱。
+二是随时准备好渲染，不要引入时序假设。用 componentWillReceiveProps 在收到 props 时重置本地 state，一旦父组件频繁重渲染，状态就会被不断冲掉。解法是做成完全受控组件，或完全非受控并用 key 重置。PureComponent 等优化只能用于性能，不能用来控制行为。
 
-三、没有组件是单例。导航栏这类“只显示一次”的假设迟早出问题，比如路由切换时新旧两个 Page 要同时挂载做过渡动画。检验办法是把整个应用渲染两遍点一点看。他自己写过的反例是在 componentWillUnmount 或 componentDidMount 里重置 Redux 中的全局表单状态，页面上有两个这样的组件时就会互相破坏。原则是：显示或隐藏一棵树，不应破坏树外的组件。
+三是没有组件是单例。路由过渡时新旧页面可能同时挂载，在卸载时重置全局表单状态就会互相破坏。检验办法是把应用渲染两遍试试。
 
-四、保持本地状态隔离。判断一个状态是否本地，就问：“如果这个组件渲染了两份，这个交互应该反映到另一份上吗？”答案为否就是本地状态。以社交帖子为例：帖子内容和评论列表应同步，应放进 Apollo、Relay 或 Redux 之类的缓存；哪些评论展开、新评论输入框的值则应是各自组件的本地状态。他声明这不是教条，简单应用全用本地状态也行；但不要把真正的本地状态全局化，这能减少组件间意外的同步，还能顺带解决一大类过度渲染的性能问题。
+四是保持本地状态隔离。判断标准是：组件渲染两份时，这个交互该不该同步到另一份？帖子内容和评论属于缓存，展开状态和输入框的值属于本地。他说这不是教条，但别把真正的本地状态全局化。
 
-他总结说，这些原则让组件“为变化而优化”，易于添加、修改和删除；等组件有了韧性，再回头讨论 props 要不要按字母排序这个“紧迫难题”——以一句调侃收尾，呼应开头对风格之争的态度。
+他总结说，这些原则让组件为变化而优化，并以"再来讨论 props 要不要按字母排序"的调侃收尾，呼应开头。

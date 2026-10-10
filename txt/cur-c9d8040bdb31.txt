@@ -2,19 +2,10 @@ https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms
 
 从零理解并实现大模型中的 KV 缓存（Understanding and Coding the KV Cache in LLMs from Scratch） ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms
 
-Sebastian Raschka 在养伤期间写了这篇教程，补上他《从零构建大语言模型》一书没有收录的 KV 缓存。KV 缓存的做法是把推理时算出的键（K）和值（V）存起来复用，能显著加快文本生成；代价是代码更复杂、更占内存，而且不能用于训练。不过在生产环境里，这笔交换通常很划算。
+Sebastian Raschka 在养伤期间写了这篇教程，补上他《从零构建大语言模型》一书没收录的 KV 缓存：把推理时算出的键和值存起来复用，显著加快文本生成，代价是代码更复杂、更占内存，且不能用于训练，但在生产环境里通常很划算。
 
-他先用"Time → flies → fast"的例子讲清问题所在。LLM 每次生成一个 token，每一步都要把整个序列重新处理一遍。从注意力计算看，"Time"和"flies"的 k、v 向量由同样的 W_k、W_v 投影得到，每一步算出来都一模一样，反复重算纯属浪费。KV 缓存的流程是：先为提示里的 token 计算并缓存 k、v；之后每生成一个新 token，只算这个 token 的 k、v，旧的从缓存里取。在这个例子里，"Time"算一次、复用两次，"flies"算一次、复用一次；文本越长，复用得越多。
+他用"Time → flies → fast"的例子说明问题：LLM 每生成一个 token 都要重新处理整个序列，而旧 token 的 k、v 由同样的投影矩阵得出，每步都一样，重算纯属浪费。有了缓存，提示里的 token 只算一次，之后每步只算新 token，文本越长复用越多。
 
-代码实现追求可读性，提供了 gpt_ch04.py 和 gpt_with_kv_cache.py 两个自包含脚本，改动处用 `# NEW` 标出，可以直接对比。要点有五个：
-- 在 MultiHeadAttention 中注册 cache_k、cache_v 两个缓冲区。
-- forward 增加 use_cache 参数：第一次初始化缓存，之后用 torch.cat 把新算出的 k、v 拼接进去，再整体取出参与注意力计算。这就是"存"和"取"的核心。
-- 增加 reset_kv_cache。两次生成之间必须清空缓存，否则新提示会关注到上一段序列遗留的过时键。
-- GPTModel 用 current_pos 记录已经缓存的 token 数，让新 token 的位置紧接在已缓存内容之后，不会重新从 0 开始；同时改为显式循环，把 use_cache 传给每个 TransformerBlock，并提供模型级的缓存重置。
-- 生成函数先用完整提示初始化缓存，之后每一步只把新 token 送进模型。
+代码以可读性为先，用两个自包含脚本对照改动：在注意力模块里注册缓存缓冲区，前向时用 torch.cat 拼接新的 k、v；两次生成之间必须清空缓存，否则会关注到上一段的过时键；模型还要记录已缓存的位置，让新 token 的位置编码接着往下走。实测在 M4 Mac Mini 的 CPU 上，用 1.24 亿参数的未训练模型生成 200 个 token 提速约 5 倍，两版输出完全一致，说明实现正确，毕竟索引写错很容易让结果不同。原理上每步计算从对整个序列做注意力降为线性，代价是内存随 token 数线性增长，长序列大模型会吃掉大量显存。
 
-实测在 M4 Mac Mini 的 CPU 上，用 1.24 亿参数的未训练模型生成 200 个 token，提速约 5 倍。两个版本输出的乱码完全一致，说明实现正确，因为索引写错很容易导致结果不同。从原理上看，有缓存时每一步的计算量从对整个序列做注意力（累计 O(n²)）降为线性；代价是内存随 token 数线性增长，长序列、大模型下可能吃掉大量显存。
-
-真正部署还需要优化：反复 torch.cat 会造成内存碎片和频繁分配，可以按最大长度预先分配张量，再往切片里写；也可以用滑动窗口只保留最近 window_size 个 token，防止显存撑爆。优化版代码在 gpt_with_kv_cache_optimized.py 里，在 CPU 上同样更快；但在 CUDA 上，模型太小，设备间的传输开销抵消了收益。
-
-补充实验中，他给自己从零实现的 Qwen3（0.6B）和 Llama 3（1B）加上了 KV 缓存。由于两者支持的上下文分别长达 41k 和 131k token，预分配会额外占用约 8 GB 内存，所以他改用 torch.cat，并把缓存移到模型外部，以便用 torch.compile 编译。结果是：在 CPU 上，KV 缓存提速最明显，编译后更快；在 GPU 上，最快的反而是不带缓存的编译模型，原因可能是没有在 GPU 上预分配张量，而且模型较小。
+部署时还可以按最大长度预分配张量、用滑动窗口限制缓存长度；但在 CUDA 上，小模型的收益会被开销抵消。他给自己实现的 Qwen3 和 Llama 3 也加了缓存：在 CPU 上提速最明显，在 GPU 上最快的反而是不带缓存的编译模型。

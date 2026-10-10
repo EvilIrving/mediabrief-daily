@@ -2,12 +2,8 @@ https://www.matuzo.at/blog/building-the-most-inaccessible-site-possible-with-a-p
 
 用满分 Lighthouse 打造最不无障碍的网站 Building the most inaccessible site possible with a perfect Lighthouse score ｜ Manuel Matuzović ｜ 文章 ｜ https://www.matuzo.at/blog/building-the-most-inaccessible-site-possible-with-a-perfect-lighthouse-score
 
-前端开发者 Manuel Matuzović 的一篇带着讽刺意味的实验文章。他开头声明，这篇文章不是在批评 Lighthouse，其他自动化测试工具表现也差不多，他想谈的是开发者自己：不能不假思索地依赖自动化测试。
+前端开发者 Manuel Matuzović 的讽刺实验：他声明不是批评 Lighthouse，而是提醒开发者别盲信自动化测试。Lighthouse 无障碍满分只说明给人工测试打好了地基。受 Zach Leatherman 和 Vadim Makeev 推文启发，他做了一个尽可能不无障碍、却拿到满分的网站。
 
-人们爱在社交媒体上晒 Lighthouse 的绿色 100 分，这说明他们在乎质量。但 Lighthouse 说网站 100% 无障碍，并不代表真的无障碍，只说明为人工测试打好了地基。它基于 axe-core 和一套自定义规则，能发现一部分坏做法，而有些做法本身不坏，误用才有害。为了证明光靠自动化测试保证不了质量，他做了一个尽可能不无障碍、却拿到 Lighthouse 满分的网站。灵感来自推特：Zach Leatherman 提议写"如何做出 Lighthouse 满分的最慢网站"，Vadim Makeev 回复说无障碍审计也可以来一个，比如 alt 文字就写成图片文件名。
+他从一个无障碍的页面出发，一步步把各类人挡在门外：用 hidden 加 CSS 和 JS 才显示内容；给 body 加 aria-hidden 排除屏幕阅读器，被修复后又改用 tabindex="-1" 绕过；去掉焦点轮廓并拦截所有按键；在高对比度模式下把文字设成背景色；隐藏光标并禁用指针事件。他还把透明度降到 0.03，字号设成 1px 以禁用 Safari 阅读模式，最后把文字转成 HTML 实体。分数依然是 100。
 
-他从一个简单、无障碍的页面开始，一步步把各类人群挡在门外，每步配一个 CodePen 演示，标题都带着竖中指的表情。先让网站必须依赖 CSS：给 body 加 hidden 属性，再用 CSS 类把它显示回来；接着把这个类改成由 JavaScript 添加，于是 CSS 和 JS 都必须正常加载才能看到内容，测试仍是满分。然后排斥屏幕阅读器用户：给 body 加 aria-hidden="true"，把整页从无障碍树里移除。后来 Lighthouse 修复了对这一点的检测，但他发现把所有可聚焦元素的 tabindex 设为 -1 就能绕过去。对键盘用户，先用三行 CSS 去掉焦点轮廓，再用 JS 拦截所有按键的默认行为。对开启 Windows 高对比度模式的低视力用户，他用专门的媒体查询，把所有文字颜色设为系统颜色关键字 window，也就是背景色本身，他自嘲这么邪恶，Facebook 和 Uber 会来 LinkedIn 挖他。对鼠标用户，先隐藏光标，再用 pointer-events: none 让一切都点不了，还以"渐进式降级"的名义加了 JS 兜底，不支持该属性的浏览器里直接拦截点击。
-
-可读性方面，他把 body 的透明度降到 0.03，内容几乎不可见；Lighthouse 后来也修了这一点，他就改用 filter: opacity(0.03)。他发现 Safari 阅读模式还能读到内容，于是把字号设为 1px 来禁用阅读模式。最后，为了防住会去"查看网页源代码"的高手，他把文字全部转成 HTML 实体来混淆。最终测试依然满分，而这个网站对视力好或差的人、鼠标、键盘和屏幕阅读器用户都无法使用。
-
-他的结论是：分数能反映应用和网站的质量，但不能盲信，自动化测试只是第一步。下次看到高分想收工时，读一读分数旁边那句话：这些检查只能自动发现一部分无障碍问题，也鼓励人工测试，下面还列了需要人工检查的项目和如何做无障碍审查的链接。我们测试和优化网站，不是为了高分带来的好感觉，而是因为想要、也必须让做出的东西尽可能多的人能用；设计和开发时不完全依赖自动化，测试时也不该。
+他的结论是：分数能反映质量，但自动化测试只是第一步，要读分数旁边那句"只能发现一部分问题"的提示，并做人工测试。我们优化网站是为了让尽可能多的人能用，而不是为了高分带来的好感觉。
