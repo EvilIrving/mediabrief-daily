@@ -1,0 +1,1517 @@
+https://youtu.be/lnLWRJ2p_Mg
+
+How does it feel to be the baddest PM out there right now? You went viral and you're not even on social media. I went up there and I was like, "Oh, I got this." And then Doy ghosted you. Yeah. And you were like, "How's it going?"
+
+Still checking. Yeah. So, so you went back to SF. What happened? I flew with a one-way ticket and I was like, "I'm not leaving SF without a job." I had met an amazing team and convinced them to create a PM role for me. You made your own job at someone else's company. If I wanted to become a better presenter, what is one tip you want to give to me?
+
+Do not be a loser in your own fantasies. Imagine yourself as a winner. Wo. I'm not your average AI tech bro. I am hyper aware that on Twitter everything is like how can I get my AI to automate X, Y, and Z for me?
+
+And I think a lot of creators love doing things manually.
+
+I am with you. I want to walk inside the grocery store and not just have like AI order stuff for me. I can't get over giving it access to my inbox, text messages, finances, health data. What would you say about DOTS to more privacy conscious users? Okay, so if you have one tip for people interviewing for an AI product manager role, what tip would that be? Actually use all of the products that are out there. You'd be shocked at how many people just haven't tried the basic workflows and had an opinion about what's working for them. None of us know what the future of AI looks like. If a candidate walked in with an iced coffee in their hands. Oh my god, this has been making the way around on Tik Tok.
+
+Office Drama.
+
+Welcome to Office Drama, where we define the modern career for Gen Z and millennials in tech, media, and business. I'm your host, Clay, and today in the office, we have perhaps the most talked about product manager in Silicon Valley right now. She just presented at OpenAI's dev day and she helped launch DOTs, which is the AI assistant that is all over my social media right now. She went viral for this. I'm so excited to have you here. Please welcome member of product staff, Holly Lee. [screaming] Thank you so much for having me.
+
+I'm so excited you're here. I know you just got off the plane in San Francisco and you had such a long day and I think I'm Am I your last stop of the day?
+
+No, you're not. I'm not. I'm I'm
+
+She has more work to do.
+
+I'm keep Yeah, we'll we'll see what happens after this.
+
+Okay. Well, my first question to you is how does it feel to be the baddest PM out there right now?
+
+Yeah. I just joined Twitter 2 days ago.
+
+Yes.
+
+In order to meet the moment and combat the haters. So, that was kind of new. Yeah.
+
+Welcome to social media.
+
+Yeah. Wow. It's a whirlwind.
+
+Do you want out yet or you're like you're okay? I mean, completely honestly, I kind of don't know if I will keep posting or if it's just like a one and done, you know?
+
+No, she's a private person.
+
+I'm a private person.
+
+In your personal life, have you ever had a crush on someone who didn't know you existed?
+
+Oh, absolutely.
+
+Like, when was the last time that happened to you?
+
+Oh gosh. Well, I've been in a relationship for quite many years now.
+
+So I feel like the correct answer is to say before that, but you know.
+
+Yeah. So, you know, I want to ask the drama llamas if you've ever had a crush on someone, whether it's that co-orker in the micro kitchen or that person at that library studying at the same time as you or that barista at that coffee shop. Because my moment is right now with Holly. That's you. You're that girl for me. I first fell in love with you when Mesh Times Marissa, my friend Mesh Times, posted about you at the Config 2025 keynote presentation.
+
+I love her. And then the title was like, "Who is this PM baddie?"
+
+That was so nice of her. That was really crazy.
+
+That was crazy. And you went viral and you don't even You're not even on social media.
+
+Wasn't there to receive it, but I was texted about it and that was really nice. People from high school were texting.
+
+Really?
+
+Yeah.
+
+Oh, that's so cute.
+
+It reconnected me with actually like a lot of old friends.
+
+Are you aware of how much aura you have to the PM and design girls?
+
+Oh my god, that's very nice of you to know.
+
+Did you read your comments?
+
+I did scroll through them. You got, you know, Holly Lee, drop your account here immediately. We're all fans now, starting from your presentation. You totally slay. Holly the goat. I need Holly to share the details of her config fits cuz I love them. Obsessed with Holly after seeing her. Holly stage presence. 10 out of 10. Such a natural. You know what? I think the design community is like particularly nice.
+
+That's true.
+
+I do think like that config audience is maybe like the most supportive, most creative group of people you could ask for. So, I got so lucky. What about the AI audience?
+
+My comments on Twitter look slightly different. Let's just put it that way.
+
+You have so many comments asking you for your ads. Why are you not on the socials?
+
+Yeah, I want to keep my personal life and my work life separate.
+
+I know that's such a cliche, but I have aspirations to like start a creative practice and do more of my like art and interior design stuff eventually, and I want to reserve like Holly for that. So that's like chapter that's coming. Wait, what kind of art? I can nerd out, but I collect like folk art. Any type of art that's like handmade, kind of quirky, found, whatever. And I do like little art exhibits and make my own stuff. And anyway, that's like my potentially post AI hobby. What about interior design? If anyone is looking for someone to like style their office or their apartment, that's like my number one dream job. I love it so much. So, this is kind of like a deep lore thing, but I don't even know if this is real.
+
+Do you know what this is? No. What is that? It says, "Hello, just a grown-up kid figuring things out. I grew up in a small Ohio town. I went to school in Philly."
+
+Yeah. Yeah. Yeah. My website.
+
+Oh my god. This is your website.
+
+Wait, yes. Did I?
+
+Well, I don't know what this is.
+
+I have no idea what that is. Is that somewhere on my website?
+
+No, your website is says temporary maintenance or like temporarily not. I can't access your website. This is holly.com, right?
+
+Oh my god. You know what? I hit my versel limits. Well, I wanted to see it.
+
+Oh my gosh. Okay,
+
+This is another website I guess describing your website.
+
+Oh my gosh.
+
+But it says, "Ask me about folk theory, communist propaganda, and Warren Buffett. Right now, pondering leftist edgeord culture, limping 26 miles, and reading the Topeka School by Ben Learner."
+
+Yeah. Yeah, that is my website.
+
+Okay, great. I was like, there's like a 50% chance it is her. Also, I'm very confused by what this is.
+
+Okay. Okay. Okay. So, my website's down, but that is the exact copy of my website, so it lives on somewhere else. Yes.
+
+Yeah. I see where it's coming from. We just talked about one thing that we both really love, which is I asked her if she was a theater kid, and most people, like 10 out of 10 people usually say no.
+
+Yeah.
+
+10 out of 10.
+
+If you give me a piano, I'm unstoppable. So,
+
+Yes. Oh, and we also talked about we have a mutual friend. Yes.
+
+A lyric.
+
+He just left Confluent, but was working at Airbnb. They went to pen together. Yeah. And he's my childhood friend and we do a lot of music together and I guess you guys also connect through that.
+
+Yeah.
+
+Oh, I'm so excited.
+
+Small world.
+
+I know. All right. So, back to the social media, but you're on LinkedIn.
+
+One must be on LinkedIn.
+
+Did you accept my connection request?
+
+I need to check. I don't check LinkedIn, but I will for you. I will.
+
+Thank you. I'm a little bit nervous and giddy right now because this is our very first time meeting. So, like, you want to get to know each other?
+
+Yeah, let's do it.
+
+Yeah. You're down.
+
+Yeah. Okay. So, where did you grow up?
+
+I grew up in Athens, Ohio. What was that like? Small town. Really, really small. Rural Ohio. Cornfields, football teams. Not super diverse, but I was there cuz my parents taught at like a university nearby.
+
+Oh, your parents are academics.
+
+Yeah. Yeah. Yeah.
+
+Oh, and then you went to college pen. What did you study?
+
+Studied economics. Wharton School of Economics. Do I regret it? I don't regret studying econ. I do kind of feel like I should have gone to a liberal arts school.
+
+Yeah.
+
+I don't know if that's a popular opinion these days, but I'm like, damn, I should have gone to Brown or
+
+I went to liberal arts.
+
+Yeah. And like studied read books.
+
+Okay. So, our viewers are called the drama llamas because drama office drama. So, can you state for the drama llamas your MBTI astrology sign and who you're wearing today?
+
+INFP.
+
+Is that surprising?
+
+That's very surprising.
+
+INFP Sagittarius Capricorn cusp. Okay, I can I can see that.
+
+Like literally like the day. And then I thrift everything. This is my boyfriend's vintage Burberry. Thrifted it from boyfriend's closet.
+
+Even that we thrifted I think in Kyoto. This is dead stock Japanese silk. And then I made this ring, designed this ring with soft good studios in Oakland. And then this is a Navajo silver cuff I got in New Mexico.
+
+Wow. She You had that off the cuff. Like you knew.
+
+I really I researched the origins of all objects.
+
+That's crazy. Okay. Do you remember your Figma outfit?
+
+Oh, absolutely.
+
+What was that? Where'd you get that?
+
+Okay. So, ballet flats, boyfriend's jeans, cuz they were comfy. And then I made the shirt. So, I literally I went to Goodwill. I got a giant button-down butter yellow cuz that was a big thing last year. Butter yellow buttondown. And then I drew on a tie with Sharpie. I wish I could say that was a completely original idea. I did see it on Pinterest first. I just drew it on literally like, you know, one shot and then I was like, I like that. And I wore it on stage with my little space buns cuz that's my
+
+Yes, your space buns were so cute.
+
+I'm always wearing hair in two buns or two pigtails or something.
+
+What was your dev day outfit?
+
+Oh my gosh. So, dev day, lol. I was wearing painter pants that like I legitimately wear when I paint. So, they're paint splattered. And then I wore like a very like '9s look, like long white sleeve shirt, short green shirt on top of that I made. I like a jersey with buttons and then I wore a bright orange like puffer vest on top of that because my favorite color
+
+And I just wore that to rehearsal and the events team was like no we love that outfit so much that's what you're going to wear on stage.
+
+Oh my god.
+
+So and then I got you know people on Twitter didn't like it but I have a lot to say about that.
+
+I want to know a little bit more about your career lore from the beginning of the times after pen.
+
+After pen how did you get your first job out of college? I interned at McKenzie and then
+
+Oh my god, you're a Mackenzie girl.
+
+I didn't mean to.
+
+You bought a lyric to Mackenzie?
+
+Yeah.
+
+Wait, so you have a soul?
+
+Actually, that it's kind of a cute story. There was like an internship. We went white water rafting and then I didn't have like a shirt afterwards or something.
+
+He like lent me his shirt that he was wearing.
+
+So he's
+
+So just naked a lyric in a bus, you know. I don't remember the specifics, but it was so nice of him and that's how we became friends.
+
+He's a nice guy. He's a good guy.
+
+He is. He'll be on Office Drama. We'll record next week.
+
+Oh my gosh. Really? Okay. I'm tuning in.
+
+We're childhood friends. We're neighborhood friends. We grew up in the same area. And then I always introduce him. He's like, "Oh my god, we're like friends from middle school or high school." And then he's like, "No, Chloe, we're friends from elementary school.
+
+That's nuts."
+
+Yeah. And I'm like, "Dude, I don't remember you in elementary school."
+
+Well, I've been to your neighborhood. I've been to his house. So,
+
+You have?
+
+Yeah.
+
+Anyway, that's amazing.
+
+I know where you live.
+
+Okay. So, after Mackenzie. After Mackenzie, I was like cannot go back to consulting.
+
+Okay. Why?
+
+I just didn't want to work 12-hour days like making little PowerPoint slides. No offense to consultants. I didn't want it. It wasn't for me. I also got reprimanded by a partner for wearing yellow socks in the office. And I was like,
+
+What? They're like, you can't wear yellow socks.
+
+I had a lot of personality. And I was like, you know who will let me wear yellow socks is probably Google.
+
+That's true. They love color.
+
+They do love color. And I had this like dream of like you know running around on a bike and etc. This was like peak tech optimism. So I applied for the APMM program so marketing at Google cuz I didn't have a CS background and that's how I started out. Moved to SF right after graduation to do that.
+
+Wait, I thought you were in New York.
+
+So I did SF for two years and then New York when I wanted like to a little switch up.
+
+Makes sense cuz like there's no bikes in New York for the Google bikes.
+
+No. Yeah. I did Google in SF for a little bit. Honestly, kind of a boring story.
+
+SF or Mountain View?
+
+Mountain View.
+
+Oh,
+
+So like little 21-year-old me was like getting up at 6:00 to optimize her route.
+
+You live in San Francisco, commuted to Mountain View. Yo, I hated that. I chose Mountain View and that was also really bad. I understand the SF Mountain View commute.
+
+SF Mountain View. Yeah. And then I wanted to switch jobs within Google. There was a team called Creative Lab and they were based in New York and I was like, "Sign me up." So I pitched them really hard to let me join them and then they said yes and I moved out to New York and that was like a really fun couple years on that team. I started out almost like a creative producer like we were writing scripts for like how to talk about Google Chrome. There was like Super Bowl ads and then I was like I actually want to be closer to product.
+
+Yeah. And so I like pitched one of the teams within creative lab to like let me kind of join their skunk works operation and we did a bunch of stuff like we built a browser that only used Gemini and like we were just like hacking stuff. My kind of spicy take is that this would never be allowed at a tech company now. It was like completely like low ROI, very expensive exploration.
+
+It's very R&D.
+
+It's very R&D. But even then it was like R&D with almost like too much of a marketing focus.
+
+Oh,
+
+Like very much like how can we convince the world that like Google is very like creative and innovative and so we'll just have this team create little experiments to put online. At a certain point I became disillusioned with the fact that we were just really creating PR and not actually building real things and so I decided to leave.
+
+Were you 20% projecting on that? Okay, got it.
+
+Wait, 20% projecting on sorry which part?
+
+Creative lab. I just joined them full-time.
+
+Oh.
+
+And that's why I moved to New York.
+
+Oh my god. On product marketing or product?
+
+It was technically within the marketing org,
+
+But there were like I don't know five teams and like four teams did product stuff and like one team did advertising. It was a really weird setup.
+
+So you didn't have to rein?
+
+I didn't have to rein.
+
+That's lit. Cuz it would suck to rein.
+
+Yeah. So what is Creative Lab and what is Magic Editor? Creative Lab was like this secret squad that like has the 16th floor of the Chelsea building in like Google and they just like do cool stuff and it's like a giant creative loft. It literally looks like out of a movie. It was a dream to have worked there. Truly
+
+Magic editor like this was like around the era of like 2020 2021 AI was starting to become like quite
+
+New. It was really a thing. We had worked with research and research had like a new image generation model. Like this is back in the day when like creating like a pixelated picture of a puppy was considered like a big deal. You know what I mean? It's like crazy how far we've come. Research had this. We like built a like internal tool where you could upload like 10 photos of yourself and train a model on you and generate photos of you that like looked like this or looked like that. We worked with the pixel team to like create a special version of like Google photos that had generative AI in it for the first time. And you could erase certain things, but you could also like generate a new sky and the background of this picture.
+
+You could move over a person a little bit or remove the like trail of a wedding dress. And that was like one of the first big like AI.
+
+That's so exciting worked on.
+
+So, Google New York or Google Mountain View.
+
+Google New York
+
+For sure.
+
+But then you went back to SF.
+
+Yeah.
+
+How long you were in New York?
+
+All in all, maybe 2 and 1/2 or 3 years.
+
+You only had a short stint in New York.
+
+Yeah, I know. I might go back. Okay. So, you went back to SF for adept.
+
+Yes. Tell me why. Tell me what happened. So, when I was 26, a bunch of stuff in my life happened. You know, some family stuff and also feeling like I had outgrown my job and I did all of the things you do when you have like a crisis. I cut off all my hair, ran a marathon, applied to grad school, and then decided I needed to quit my job.
+
+Quarter life crisis.
+
+Yeah. I still remember February of that year, I flew with a one-way ticket to SF.
+
+One way. And then I stayed on friends couches and I was like, I'm not leaving SF without a job and it has to be a PM job, no longer PMM. And I wanted to be at an AI company.
+
+And I just like I spent I think 3 weeks literally hitting people up on LinkedIn, coffee chats, and by the end of it, I had met an amazing team at Adept
+
+And convinced them to create like a PM role for me and they said yes.
+
+Wow. You made your own job out of someone else's company.
+
+Yeah, it was I mean I got so lucky. They were amazing. Are you type A or type B?
+
+I'm super type B.
+
+Okay. Cuz I can't tell.
+
+I mask it very well. I think I'm type B. I mean, if you ever look at my house, it's like crazy messy. Okay. That's where the FP is.
+
+Yeah. Exactly. Yeah.
+
+So, you were at Adept. You were PMing for enterprise B2B AI agents
+
+Kind of. Yeah. I mean, we basically didn't have a product.
+
+Okay.
+
+It was a research lab. It was a research lab that had developed like computer use models and we were trying to sell companies an agent that could use the computer to do a bunch of things that like otherwise would have taken someone a really long time to click through forms and like logistics companies and stuff. And I'll be completely honest with you, we were struggling to turn a model and package it into something that we could sell.
+
+I mean that was a hard time and hard year.
+
+It was a hard year. Yeah.
+
+But then 10 months later you got poached.
+
+Yeah. The research team at Adept went over to Amazon and we tried to figure out what to do with Adept afterwards. We explored a bunch of really cool ideas. I think eventually I was like, I think I need to go to something where there is more product market fit and I used to freelance as a designer all through college and I was like actually Figma is my dream company. Figma is a dream company. I want to wear cool clothes and be around cool people and I hit them up. Wow. Oh, I love that. You were the founding PM of Figma Make.
+
+Yes.
+
+That's lit, dude.
+
+Yeah.
+
+I got reached out to join I think maybe the FigJam team on product,
+
+But I said I couldn't. I did an interview at Config 2024 when they were announcing Figma draw. So, I got to interview the draw team.
+
+And so, it's a bunch of engineers
+
+And then they're like, "Please join." And I was like, "No, I can't cuz my work enemy works here." And they're like, "Who is it?" And I'm like, I don't want to ruin people's lives and careers. And then one of them was like, don't worry, I have no power. I'm the most junior one. I was like, okay, I'll tell you. But that person was leaving, so I was like, okay, I can tell you guys.
+
+Honestly, that's a good boundary to have.
+
+Yeah,
+
+It's like tough to work with an enemy.
+
+Yeah, there's not a lot of people on my enemies list, but I try not to have that kind of energy around me, but Figma would have been beautiful.
+
+I love the Figma team. They're so cute. Everyone's so good.
+
+Yeah, and everyone's so thoughtful. Well, I actually I truly think Figma is the nicest company I've ever worked at.
+
+A that's so great. Okay, so then what happened with the Open AI? You were at such a great place. You had a great team, the nicest people. You're saying all these praises and then you switched teams.
+
+Yeah, brother.
+
+Figma always has a very special place in my heart. I was there for a year. A lot happened that year. We like launched Figma Make. We IPOed. We built out a huge AI team. A lot of things shifted. And I think a little part of me was like, I just kind of want to keep this momentum up. I do think working at a really big lab is going to be incredibly challenging, but it's kind of now or never.
+
+Mhm.
+
+And I think I just like I was really spontaneous about it. Truly, I was just like I woke up one day and I was like, "Yeah, let's just go for it." And so that's how that happened.
+
+Are you spiritual?
+
+Yes.
+
+Okay. So, you'll feel it and you're like, "It's time."
+
+The day is today.
+
+Yeah.
+
+Yesterday I didn't know that, but today I know it.
+
+Yeah. I'm like incredibly like intuitive and I was just like I actually don't think I could stay. The body wants a different challenge so we'll go for it.
+
+And when you told your team, did they cry?
+
+I was super sad.
+
+Yeah.
+
+Did they cry?
+
+I don't know if literal tears were shed. A lot of drinks were had together, but I'm still incredibly close to a lot of people on the Make team.
+
+Make was your baby?
+
+Yeah.
+
+You birthed it.
+
+We birthed it. Yeah.
+
+It was from your idea, right? Cuz you were Okay. Okay. I read somewhere random like you were just on claude and prompting stuff and you're like, "Oh, this would be cool." Doo and Figma or something.
+
+Well, this was Dylan's idea.
+
+Oh, okay.
+
+Yeah. Yeah. Yeah. I think Dylan was like really thinking ahead and he was like, "We have to do some kind of like generative with code design tool."
+
+And then he was like, "Holly, you're you're the one for it."
+
+I mean, to be completely raw and transparent, I had just joined Figma.
+
+Yeah.
+
+I was a nobody PM. I had been there like 5 weeks. I'm being honest. I think like he gave it to me just because there was no one else around to do it. And I was like, I will do that, coach. Put me in. So,
+
+Put me in, coach. I'm ready.
+
+You're ready for like a crazy sprint. And then we like built it in like a couple months.
+
+That's really fast.
+
+Yeah. So, you took that leap of faith. Your body was like, "It's time for a change." And you applied to OpenAI or just a lot of other companies?
+
+I applied to OpenAI. I knew like I had a mentor who worked at OpenAI and she spoke very highly of it. So, I was like, "Okay,
+
+Just chat."
+
+How did you get that mentor?
+
+Actually, through a book club of all things. Have the artist's way.
+
+Oh, of course. Yes.
+
+You do your artist daily or whatever.
+
+Your daily journal, your artist dates.
+
+Honestly, that changed my life. The artist way did change a lot of people's lives. You are now a member of the product staff.
+
+Yeah.
+
+What does that even mean?
+
+I'm just a product manager.
+
+Okay. I've seen a lot of people a member of technical staff, member of product and I'm like,
+
+Isn't that a PM or is that not a PM?
+
+Yeah, it is just a PM.
+
+Okay. Okay. Yeah.
+
+It's just like the group title.
+
+Yeah. Without revealing anything confidential. What was it like interviewing for Open EI? What kind of people were they looking for? Was it hard? Was it scary? Were you nervous? Were you sweating? Were you like, I got this down pat. Y'all know nothing. Y'all don't know about me, Holly Lee. I popped off at the keynote at Config. Did you? Thank you for saying all of that. I was nervous. I was nervous. And I will say I think the interview process was like, it honestly maybe surprised me a little bit how by the book it was. It was very like if you go and Google right now like product manager interview questions. It was like those
+
+And I was like actually a little surprised that there wasn't curveball weird AI question etc. But I did prepare for all of that sense product execution.
+
+Yeah, whatever.
+
+Yeah, exactly. And there was like a bunch and they lined them all up like on the same day. And
+
+What kind of people do they like recruiting and what kind of people like get offers? Like what kind of people make it to the culture of Open AI? I will say I think looking at the PMs, they're actually like truly quite diverse. Like they've come from like lots of different places. I do think probably the one thing that they have in common is like hunger or just like people who are like very dogged about pushing something forward.
+
+I will say like one of the best PMs I've I've ever worked with is my boss. I'm not like just gassing him up here. But like he literally I have never seen someone be so completely determined even though like stuff is really hard. He'll be like, "No, we're meeting now. We're figuring it out now. He won't leave until it's done." I do think most people say that about themselves at most companies, but like most places will just be like, "Oh, we'll figure it out tomorrow." I think OpenAI is really a place where you like figure it out right now.
+
+Yeah. Like you're really obsessed with solving that.
+
+Yeah. Mhm.
+
+And you're just kind of like there is no tomorrow. Like if why can't we just do it today? That's something I like that's a quality I thought I had in me and I and I think I do and I'm like I'm realizing that the people there have it like on mega mode.
+
+If you have one tip for people interviewing for an AI product manager role, what tip would that be?
+
+100% use everything. Like actually use all of the products that are out there. I that seems really obvious, but I've talked to a lot of people who are like interviewing at OpenAI and like haven't used codeex before what they're doing for a product roll.
+
+Yeah. Or like they you know, I get it. There's actually there's so much to try out there. There's a lot to wrap your head around. But you'd be shocked at I feel like how many people just haven't tried the basic workflows and like had an opinion about what's working for them. None of us know what the future of AI looks like. We're all just like playing around and like seeing what sticks too. So, like in that way, every single one of you is just as qualified to do the job. You know,
+
+If a candidate walked in with an iced coffee in their hands,
+
+Oh my god, this has been making the way around on TikTok.
+
+Yeah. Is that an ick for you or is that fine?
+
+I feel like there's like a professional answer and then there's my actual answer.
+
+An iced coffee and yellow socks.
+
+I think it would depend on a lot of other factors, but okay. I think largely
+
+For a PM interview,
+
+I would judge you more if it was an iced coffee. If it was a warm coffee, for some reason I feel like you were more serious.
+
+So like I think yes, I would judge you. And actually the other day I was on a call with the chief product officer of Slack and I had my smoothie from the breakfast bar and I literally put it underneath the table by my feet cuz I saw that Tik Tok
+
+In person or on video. Okay.
+
+Video and I was like just in case
+
+Just in case
+
+I'm going to put my smoothie on the floor so she doesn't see it.
+
+So they don't think of you a type of way. Yeah. All right. Anyway,
+
+So we're in we're in a no iced coffee household right now.
+
+No ice coffee.
+
+What do you think people are getting wrong in the interview process these days?
+
+This is my like very honest take. M I think people are too unsure of themselves
+
+And that comes across as like a type of stiffness or like overindexing I think on the answers that they have prepared for and they like expect that you want from them instead of feels rehearsed or something.
+
+It feels rehearsed or like I know this is a privileged thing to say as someone who has the job but just like even the smile feels fake or you can kind of sense that they
+
+They almost like want the job. So badly because of what they think it means instead of like actually being curious about the role and like relaxing into it and like wanting to spar with you a little bit on like the actual ideas themselves. Does that make sense? So, you know, when someone's being performative, but to an inauthentic degree,
+
+Like that's like that's an ick level of you of course you have to perform all interviews. You got to you got to show your best, but there's a level at which you're like, "Yeah, bro, that's not a real answer."
+
+Yeah. Or it's like I need to be able to understand like what you actually believe. I know everyone says this, but I've seen it a lot even just like in the kind of like networky dinners and like stuff like that. Like you can really tell when someone has rehearsed a line that they like read on Substack or on Twitter or something.
+
+Oh, they're paring or something.
+
+But let's talk about what you're building right now at OpenAI. So I mean I'm pregnant right now, but you're already a mother of dots. First of her name. First of her name.
+
+What was giving birth like?
+
+There were a lot of people in the room. Dots, I think.
+
+Isn't that like that's a personal time when you giving birth? I don't know if I'll have that many people at my birth.
+
+Yeah. I mean, I think this is the first birth on record where there were like 80 people birthing one thing at the same time.
+
+That's the same.
+
+Yeah. Yeah. Yeah. I mean, it's the craziest launch I've ever worked on just in terms of like the sheer amount of stuff that we built, that we thought through, that we designed. The sheer amount of like collaboration and just crazy talent from all across OpenAI. Like I truly think almost every single part of that company was part of this launch. It was so cool.
+
+Oh, that's awesome. To the people. What is Dots?
+
+Dots are an always on persistent assistant for you. It's help that you can have on your phone on your laptop and it's the same help all the time. You can call it and like literally just like talk to your assistant and it does work around the clock and it's proactive and it like learns about you over time and already my DOT is indispensable to me. I called it on the car ride over here. I called it to book my flight to LA.
+
+I saw that post.
+
+I called it Oh my gosh. Yeah, I did post about that. I literally talk to my dot for hours a day in the in a phone booth just to like talk about our product roadmap and like work through really hard problems. It's my second brain.
+
+Wait, so you joined OpenAI 7 months ago?
+
+In April, so 5 months ago.
+
+Okay. And then you were assigned to do this immediately.
+
+No, I was on a product called Workspace Agents. So like thinking about multiplayer agents for teams. And then it basically blended really well into this because we've just been thinking about like how to get your agents into places where you actually need them like Slack and email. And then one thing led to another and then we built this.
+
+I feel like this is a recurring pattern where you get pulled into the biggest product launch of the year
+
+At the company and you keep doing keynotes on it.
+
+I know
+
+And you keep going viral for it. You got one a year. I'm curious about the name of dots. How did you land on that? Dots are just like a really familiar, sweet name for something that like you want to be able to talk to every single day. I like that they work plural and singular and you can rename them, but like dot I think is just like it perfectly encapsulates something that like you want by your side and that like you trust a lot. So it feels like right now is a great AI assistant race.
+
+Yeah. What is the difference between dots and all the other AI assistants that got launched? It's like we got GrokBot, we got Muse, we got Instinct, we got OpenClaw. What is the dots positioning?
+
+The way I think about dots is you already have all of the kind of connectors, the plugins that like you know and love inside of Chacht or Codeex. So like it's very little setup like it's already kind of like the workspace that you love and now there's just this assistant there that like already has all that context. And then I think the really big things are just that it's reachable in all of these different surfaces. So, it's actually been a really big game changer for me to just be able to call my dot and then I can call my dot. It can kick off work just like as I'm on the phone call and then when I'm back at my laptop, it can also just do work in the cloud or even using the stuff that's on my computer.
+
+I do think that like we have an incredibly like holistic simple offering which is just like a low setup assistant that you can talk to also on the phone and like honestly for most people that's where I just start with there's like certainly power use cases for like developers or people who are creating more like content on their laptops but for most people just like you can call it and it's really smart.
+
+What are the best ways to use dot like the main use cases for it? My like really simple answer is that sometimes I just like to talk to it and like basically brain meld with my assistant. So I like talk through my day. I talk through like whatever big problems I have. So my biggest like use case is literally just having like a second set of like eyes and a second set of brain energy to like think through really tough problems with me. But then I also have it like monitor a bunch of stuff in my life like when X happens go do Z or like notify me when this kind of thing happens. In my case, it's just like a lot of user feedback or like a lot of stuff happening across the org. But like I just talked to a bunch of business folks today and like you know your dot could be monitoring sales or like helping you flag when things are happening across your company.
+
+I could go on and on, but like it's an incredible second set of hands to actually just help me stay on top of so much like communication that I have to do. I ask it to draft a lot of things for me and then I basically just review them and then I'm able to actually like help out and access like so many more people than I would have before.
+
+User experience question. Why does it ring when you call it?
+
+Yeah, I mean that's a great question. I think it's like both in part that like it honestly does I think make it feel a little bit more delightful and slightly human but then on our end I think we also just like literally need some startup time for the voice model to work.
+
+Got it. Okay. So might change later. Huh.
+
+Yes.
+
+I see. What is the thought process behind putting dots behind the paid tier not the free tier?
+
+Right now we are still in very much like a learning phase for dots. I think we need to really figure out like what's working, how kind of the proactivity needs to be. I do think the intention is to want to give this to as many people as possible and we just have a bunch of stuff that we need to work out first.
+
+Wait, where do you get your user feedback?
+
+Right now we have alpha users like external users. We're also obviously like always looking at Reddit and Twitter and then we have a ton of internal feedback that we just like go through inside of our Slack channels.
+
+Okay. Okay. Where do I get feedback? You can text me directly. You got the direct line. Yeah.
+
+I'm a little confused how I use chatbt right now because there's chatbt chat bt work codecs dots and spaces.
+
+Yes.
+
+What do I use and when and how?
+
+My simplified answer is that I think you should be able to use your dot for almost all of the things that you would usually do. So your dot can just orchestrate your codec. So whatever you were using codeex before, if you were building things, if you were doing like harder technical tasks, you can just tell your dot to do and your dot will oversee that. If you were going to chat GBT for like questions and answers and that kind of conversationality, you should be able to have the same thing with dot. You can just ask dot. Spaces are a new product that we launched also at DevDay, which is just meant to be almost like a canvas and a space where you and your dot can work together. It's actually been really powerful because conversation sometimes can be kind of limiting.
+
+Like your brain can only carry so many threads in your head at once. But we found that by allowing your dot to also just like write to a page, it can create like a chart or like even just like rows of things, like it's actually so crazy how much humans just like need to see a to-do list.
+
+I do. I'm so visual. I can't think in my head. I got to think on a paper page. And it's also really cool because it unlocks a bunch of new ways for you to manage your dot. Like you can literally like I'll have my to-do list written out and then I'll do a green check mark emoji on all of the things I want it to do right now and then I'll just say like look at the list and then you know I'll do like a question mark emoji for the ones where I'm like go investigate those. And like I could probably be 10 times more creative or you could be but like that's just the tip of the iceberg. I'm really actually super excited about all of the ways that we're going to use visuals and graphics to like manage our agents.
+
+Got it. I have a question on all the connections. Why no connection to Discord?
+
+That's great feedback. And I would love to understand why do you want your dot in Discord?
+
+I don't use Slack for work. I use Discord.
+
+Okay.
+
+Ah, it's free.
+
+Yeah. Yeah. Yeah. Yeah.
+
+But I used to work at Discord. So why can't we marry?
+
+Great piece of feedback. I'll take that one back to the team.
+
+Okay.
+
+We'll get this is my proposal. Yeah,
+
+But I essentially I have a lot of my clients and creator friends and we all use Discord.
+
+Okay.
+
+For our Nard work team that uses Discord cuz like voice channels are so easy and then we have communities or like creator communities are on Discord. So a lot of my viewers are there and when I was like streaming before Discord was more for the streaming community and then I just kept having it and now we have podcast posts on there and my social media bots are there and then we have discussions on it. Yeah. For work. We have like a private Discord server to manage all of our projects kind of like in a Yeah, it's very much like using Slack but not paying for software.
+
+Totally. I mean, that's really great insight. That's really great. I'll bring that back.
+
+Okay. Yay. Yeah. Let me know if you need to connect.
+
+Let's talk about dev day.
+
+Yeah.
+
+I unfortunately wasn't able to make it cuz I cannot travel right now and I was really sad.
+
+That's a great reason.
+
+I was so sad. I was like, "Dang, it could be, you know, front row nosebleleed seats." Like,
+
+But I know you presented right after Sam did
+
+Sam Alman. And that's like a really big role to take on the very first speaker. So my question to you is what time did you sleep the night before and wake up the morning of?
+
+I slept at 9
+
+P.m.
+
+P.m. Wait, that's cuz so early.
+
+Yeah, because we had prepared so much that weekend before. The night before I was chill as a cucumber. I was like,
+
+You weren't at the office until like 1:00 a.m.
+
+Nope. And we did rehearsal. I went back to the office to go see everybody and like high fives, good luck tomorrow, good vibes. I wanted to see them all.
+
+So, you were well rested.
+
+And then I went to bed and I woke up at 5 to get there for sound checks and everything. It was great.
+
+We woke up at 5 a.m.
+
+Yeah.
+
+I went to sleep at 5:30 a.m. Today.
+
+Oh my gosh. Oh my gosh. I'm a morning early riser, as they say.
+
+I'll never see you.
+
+I know. We'll also walk right past each other as I get up to get my warm coffee.
+
+That you'll hide under.
+
+Yeah, that'll I'll hide under the table. But yeah, I was I was up and I saw them like setting up the stage and everything.
+
+Dang. Okay. What was it like behind stage when you were about to go up?
+
+It was actually like really fun. I mean, they like mic you up. They do hair and makeup for like 2 hours before I end.
+
+2 hours? That's too long.
+
+I know. I we were like back there for a lot. And I mean, I'll be real with you. I'm like pacing, right? I'm pacing back and forth. I'm like practicing my intro. I'm like high-fiving people.
+
+Do you have a teleprompter?
+
+There are teleprompterss in the back. Yeah. Perfect.
+
+Honestly, vibes were really good. I was feeling pretty great about it.
+
+That's good. And you walked on and you saw all of the eyes on you.
+
+Yeah.
+
+Like I got this.
+
+I was pumped. I was ready. I love public speaking.
+
+Wait, where does this come from?
+
+Theater.
+
+Chloe theater.
+
+Theater. Did you ever take improv?
+
+Yes, I have taken improv.
+
+Yes. And
+
+Yes. And I have taken improv. I went up there and I was like, "Oh, I got this. Hello everybody." Yeah.
+
+And you did your live demo.
+
+And did my live demo.
+
+And then Doy ghosted you.
+
+Yeah.
+
+And you were like, "hello."
+
+Yep.
+
+And how did that feel on the spot?
+
+I actually had prepared for this contingency plan of a voice not working.
+
+Yeah. Just things are changing all the time. I was like, "Yeah, there's a chance that this won't work." And so, you know, I was like, "Diey's having a slow morning. No problem. I can just, you know, type to do and then the demo went on. Second half of the demo didn't happen because of a different issue. But, you know, live demos, that is what it is. And, that one I kind of had to kind of make up on the spot.
+
+You were so smooth.
+
+It didn't feel that way, but thank you.
+
+Did your heart drop or like
+
+Yeah. So, there's a whole second half of the demo that no one ever got to see. And I knew in the first half that it wasn't going to happen cuz I saw that the codeex thread didn't start
+
+Because of a technical issue. And so, the entire time I'm doing the demo, I know that the entire second half isn't going to work. So, I was like saying lines as I was like, well, what am I going to do? Like literally, what am I going to do? We had like 3 minutes of prepared demo that's just I have to make something up. So, when I got there, I do think there's like a part of the demo where I'm like, this is live everyone.
+
+Yay.
+
+And I just kind of like I don't even remember. I haven't watched it and I refused to rewatch it, but I think I made up some kind of conclusion and then it was like,
+
+You were fine. You were fine, girl.
+
+That moment went violin X. What was hearing about that like?
+
+I went on Twitter for the first time like 3 hours afterwards. And it was crazy because I made this very bold decision to wear a bright orange vest. And so I opened Twitter and it was like orange all the way through cuz it's hard to miss
+
+Your favorite color
+
+The video clip of your orange vest everywhere. Yeah.
+
+And you decided to tweet back.
+
+It was a bummer. And I felt like we had to own the moment.
+
+Okay.
+
+I mean like now I think we have openly told the public there was an outage during the demo. Unfortunate like we rolled out 20some products as the demo was going live. So something broke. But I kind of wanted to make fun of the moment and like pay homage to that like 2007 like iPhone demo.
+
+Yeah.
+
+Where they were like, "It's a Wi-Fi thing." So, I just retweeted and I was like, "Damn Wi-Fi." Like, "What can you do about it?"
+
+Iconic.
+
+That was my first tweet I've ever retweeted.
+
+And people loved you for it. It got over a million views and you're at over 10K followers.
+
+Yeah. Yeah. Yeah. That was unreal.
+
+I heard that there was like a particular guy clowning on you for your outfit that day.
+
+Yes, there was.
+
+And then and then he got ratioed so hard that he had to delete. It was that's so embarrassing for him.
+
+Actually, shout out to my friend Ben.
+
+Ben.
+
+But yeah, Ben.
+
+Shout out Ben. But yeah, the guy was like, "Who does she think she is? Like Scooby-Doo?" Which honestly, good dig.
+
+Good dig. Scooby-Doo does have a killer vest. Yeah.
+
+And then my friend Ben came out to defend my honor and there was a public apology on Twitter, which was like crazy. I was like,
+
+He had to publicly apologize.
+
+Well, yeah, he did. He didn't mention me, but he was like, "Guys, I deleted it. I didn't mean to be mean or whatever. It was just a comment. And I'm like, mind you, this is my first 24 hours on Twitter and I'm seeing the whole life cycle.
+
+Yeah.
+
+Of like mean jab, apology taken down. I'm like, wow, this is crazy. This is how it works.
+
+So, how do you feel about social media?
+
+I am still scared of Twitter.
+
+I would be scared, too.
+
+I would love your advice on like how to do that on that platform. Okay.
+
+Yeah. I just started because I was looking for your account.
+
+Well, like I've had it for a while, but I don't use it at all. But I will I guess now that you're on it.
+
+We'll see. We'll see if I stay on it.
+
+How many PMs are on Dots? A bunch. It's a super like collaborative effort. Literally so many PMs have pitched in.
+
+So, how did you become the person to present on Dots? Was it like Battle Royale? Was it like rock paper scissors? Was it hot potato? I was very surprised. There was none of that. I worked really closely on the product on a bunch of the behavior stuff. And then one Saturday, I just got a message from them being like, "Hey, have fun. You're going up. And that was it.
+
+What?
+
+Yeah,
+
+That was it.
+
+Yeah. They were like, "Are you in or are you out?" And I sent them a saluting emoji.
+
+Yeah.
+
+And that was it.
+
+That sounds about right. Well, you are known for your insane charisma and aura on stage. If I want to become a better presenter on stage, what is one tip you want to give to me?
+
+Here's a saying and then there's a tip. I think the saying is like do not be a loser in your own fantasies.
+
+Wo. I got that off Tik Tok and like online. But basically like when you imagine yourself on stage, you have to imagine yourself just like winning.
+
+Okay.
+
+The best like charismatic, everyone's falling in love with you. It's so great. Like imagine yourself as a winner. Yeah.
+
+Right. The second thing that like I think actually does help is like you have to remember that you want to tell people the story and like it's not actually you saying the words or whatever. It's like remember that the whole point of this is to convince them is to tell them the story and like bring them in. And when you position it less as like I have to do this presentation and more like I have a story. I'm going to tell you the story. It actually becomes a lot easier and like way more fun.
+
+A
+
+And so I was genuinely not nervous. I was like, "Oh, I genuinely want to tell people this story of Blossom music and how do you
+
+That's an artistic take to public speaking which can feel really like mechanical."
+
+Yeah.
+
+Well, I'm so glad that you were able to be on stage. Okay. So, I wasn't there, so I didn't like see all the speakers, but generally I would assume that there were lots of men speaking and representing. And that's just the AI tech space, man. That's just what it is. There very few women speaking. And also, especially in the AI space, like whenever I see AI content, 99% of the commenters, I just know what they look like. You know what I mean? So, my question to you is, you know, you're working in the space so closely. What is it like being one of the very few female voices of AI?
+
+Well, we need to change that.
+
+Yeah.
+
+You know,
+
+Yeah. I'll just start with like we got to be blunt. We got to change that. I think like we need more women. We need more like creative people. We need more people who have like amazing taste and like point of view to work in this space. Yeah, it's true. It was like a very maledominated audience and I am very lucky to have been up there with Tasel, one of our amazing research leads. And I think we're hoping to get more female voices in the room. And I guess the way I see it is if me being there means that like another woman feels more comfortable joining our team.
+
+I'm like, "Yeah, let's do that."
+
+When are you going to rock your space buns again on stage?
+
+Honestly, yeah. The next time I go on stage, I promise you, Chloe, I will do space buns.
+
+Yo, when I see a fashionista girl diva up there, PM Batty, it inspires me. I'm inspired.
+
+That's why I wanted to go a little bigger with the outfit. Almost like to make a point to be like,
+
+I loved it.
+
+I'm not your average AI tech bro.
+
+How boring is it to clown on an outfit? Like, is that the best you got?
+
+Yeah, I don't like that.
+
+But you crushed it up there. I love the colors. I'm in like this really interesting space. I used to be a tech product manager and then did a lot of tech content and then right now I'm more of like a lifestyle more generalized. I wouldn't say people see me as a tech creator anymore. But privately I am. I'm still in a lot of conversations with my tech friends and I'm in a lot of beta testing groups. Yeah. And like I get I get to see a lot of product demos, a lot of NDAs are signed. So I'm in the space very deeply and I'm like I share my feedback privately. I asked my questions and then I started Office Drama. I'm generally an AI optimist. But I am so afraid of sharing my information with a lot of AI products.
+
+I just can't get over it. And I know that the more I share obviously the more powerful it is for me. And I'm I'm trying to solve for going to bed earlier so I can be healthy and live a life and watch anime. Do you watch anime?
+
+I don't.
+
+All right. That's the one.
+
+C dramas. K dramas.
+
+Oh my god. Did you watch Pursuit of Jade?
+
+I watched Oh my. Did I watch Pursuit of Jade? Yes.
+
+So, don't get me started. I was obsessed with Pursuit of Jade. I literally sometimes play the soundtrack just to like get me in like a very Chinese
+
+We were just listening to that today.
+
+Headspace. Yeah. I loved Pursuit of Jade. I actually just finished watching Eternal Spring.
+
+I think it is called Eternal Spring. Yeah. Yeah. It's like the other one anyway.
+
+Yeah, we got to talk about that.
+
+Yeah, I love C drama.
+
+But yeah, I just want to I just want to have more time to watch my
+
+My C dramas, my K dramas, my anime, my read my mana.
+
+Yeah.
+
+And that gives me hope and excitement in life. Yeah.
+
+But yeah, I can't get over giving it access to things like my inbox, my text messages, my finances, my health data. And so what would you say about dots to more privacy conscious users? Okay, so a couple different things there. There's privacy and then there's I guess controls around what your dot is able to do with all of those things. The data itself, you have control over how your data gets used. You can actually just go into the data controls and your settings and opt not for the model to improve based on
+
+So it's like or something.
+
+It just means that we don't use it.
+
+Okay.
+
+So that's just like a toggle that you can toggle off today. And then in terms of what dot can do with all of that, it's absolutely true that the more you kind of connect to it, the more it can connect dots and be helpful to you. I certainly think that like, you know, we want to take as much off your plate as possible. So, a couple things. Number one, like just like baseline,
+
+The model that we've used for dots is like our most aligned model. Then there's the second layer of like the product behavior. We've intentionally made dots really conservative. So like for example, we actually had DOTs proactively draft things. So they would be like, "Hey Chloe, I noticed you hadn't responded to this email. I just wrote a response and then you can decide whether or not to send it." And we decided that even that was too much.
+
+Okay?
+
+So like we've toned it down even further so that it will even ask you whether or not you wanted to draft a response. So that's the product behavior level. Then we've added even more control. So number one, just like to be really explicit, you can decide what your dot has access to. So you can always turn off I don't want it to have access to Gmail or like I don't want it to use XYZ connector. And then even when it like is looking at your kind of like information like scanning your emails, it's always read only. So like it can't write to things unless you give it explicit permissions.
+
+You set the permission for read and write privileges.
+
+Yeah. So right now actually everything just defaults to like only read and then because we're taking such a kind of conservative stance but we've also added this thing called like user rules. So you can actually just specify never do X without asking me or on the other side you can always do X with without asking me or like once I tell you're allowed to. We've heard from people that like if I want to say buy toilet paper from Target, you don't need to keep asking me if I'm allowed to buy it. Like you can just buy it. So, we've like put that in the user's hands that they can just decide. And then the last piece is we actually have like an AI auto reviewer looking at all of these different interactions and it can also additionally flag when something that like you've asked your dot to do has some kind of unintended consequence and it will actually catch it.
+
+Yeah. My greatest AI fear in that respect is if it sends an email to someone else without my permission or if I explicitly say and it still does it or it gets prompt injected. Mhm.
+
+And I guess this is how you design against it, but I feel like there's so many reports of like hallucinations and saying, "I already said that rule."
+
+So, how do you guys go beyond that? Because like I was also in another product demo where they're like, "Well, obviously AI won't do anything that you tell it not to do. Like, it won't." And I'm like, "But that's not how it works. It's not guaranteed." So, how do you go further in protecting the user controls? Yeah.
+
+I mean, these are all really great points. There is always this inherent risk as you've pointed out and I think we're taking it super seriously that autoreview process is done in conjunction with research. It's like one of our biggest areas of basically how can we train the model to be able to detect when even if the user gave permission a long time ago for this thing like can we actually sense that you know that permission still stands etc. And so it's one of the biggest areas where we're trying to improve right now just to make it as secure as possible. You know, the prompt injection risk of someone else sending an email and giving instructions. Yeah.
+
+How do you guys combat that?
+
+Our auto reviewer is basically an AI model that takes a pass at everything and like looks at it holistically and says, is this fishy? And like would Chloe have wanted this to happen and it's incredibly like accurate at basically detecting issues like this. Are there things that the everyday user should understand about the risk of sharing your information like this type of inbox or
+
+The basics that a user should understand is that if you give dot access to for example Gmail and then you revoke that access. So yeah like you can't look at my Gmail anymore that doesn't change the fact that up until that point the Gmail access that's in its history that's in its context is still going to be there. So it will still be able to remember maybe an old email that you've given it even if at that point it can no longer read future emails. That's just kind of like a this kind of how like talking to a person is you know like if we stop talking you'll still remember all of the stuff that we talked about until this point.
+
+If Dot does something that is unexpected how can I see what happened undo it stop it review it retro it.
+
+A couple things like number one dots have this like what we call the thread right? So like you'll be able to see all of the things that it's done very visibly in the app. But we also have this like little activity bar. If you like click on the icon, you can see a little side panel where it's like where you know what phone number it has and where it is in Slack and stuff. And in there you'll see like an activity section and you can also see like long running tasks that are still maybe working in the background that you want to check in on. And those will be active there. Yeah, those logs. If you want your dot to stop anything at any point, you just say stop or like you can steer it with your words.
+
+But I think there is a very kind of real AI reality which is like if it's already taken an action sometimes those things are hard to revoke. I've had an instance where I sent an email with my own valition like I told it to send it and then I realized oh I actually like
+
+Shouldn't have sent that email and I just I told it to like undo and you know sometimes it can with it's within the 30 seconds of Gmail undo but it's just like any human some things are harder to control Z.
+
+What's a feature that you guys have held back on from building or had to change because it just wasn't safe enough? Maybe a good example of a feature where we were like, "Oh, we need to work on this more before giving it to folks is actually like today if you put your dot in Slack, it only responds to you."
+
+Okay.
+
+So, like imagine, you know, one day we have it in Discord, like it would only respond to you. But initially, I think we really felt like it was more natural and we wanted it to be able to also respond to other people. So like you know your brother could ask Khloe dot for something and Khloe dot could unblock him and like work with him. And then you know that was one of those things where we were like okay there actually are a lot of things to think through here. And so we like kept it really conservative to start. So your dots only respond to the original owner for now.
+
+Oh okay. So no other people can't at my dot.
+
+If your brother asks your dot it just won't respond to him.
+
+Oh ghost him. It'll say it'll literally say like, "Sorry, I can't respond to you. Goodbye.
+
+Goodbye."
+
+It's cuz I'm a content creator and a public figure. So, if anything happens and my name goes out there with that email and I get screenshotted, it's like over for me.
+
+Yeah.
+
+So, I'm so particular and I have so much sensitive information in all of these aspects of my life.
+
+Totally.
+
+Obviously really want it to read and then help me. I do connect it to my calendar. I feel like what's the worst that can happen? You delete an event. Okay. I can just recreate the event.
+
+And I think this is why like the user rules I mentioned earlier, I think will really make sense because everyone has different thresholds for what they're nervous about. And like for you, you could set really explicit user rules that like every email draft needs to go through you or every email draft to these specific people or people of this type always need to go through you. Like you can set those rules in complete natural language so you're like absolutely in control of how your dot behaves.
+
+I'm really excited about AI assistance because I'm not like the most technical person nor do I really want to be. I don't really have the appetite. So just having like something that is way more human and can be my one source to go to and be able to delegate on my behalf. I don't have to choose models. It's really nice. So I really hope that I can be on the content side someone who can share out a AI education in a good way. Yeah,
+
+But I think that it's very difficult to be in this space as a creator because obviously in Silicon Valley and tech like everyone's like gung-ho. A lot of people are gung-ho about AI, which is like fine. It's great. It's great. Like we love it. Yeah. But it is kind of an echo chamber and a bubble.
+
+And so when I do go to these product demos in creator groups, we're all sitting there like this is cool but unnecessary.
+
+Yeah.
+
+Yeah. A lot of the demos are like it can buy it can be your personal chef and buy Instacart. And I think a lot of creators love doing things manually. Yeah.
+
+Yeah. It's like the art of going through the process. They want to get their own groceries. They want to talk to people themselves. They want to go through the artistic process.
+
+They want to choose where they sit on this the flight.
+
+Yeah. Yeah.
+
+Yeah. So I think that there's product and of course you're going to explore what you're what you can do and then there's like the telling the rest of the world part and then we're in that space
+
+And sometimes a little bit strange.
+
+Totally.
+
+So what are your thoughts cuz you're on the other side of the spectrum?
+
+I
+
+And you do marketing and you've been on the keynotes.
+
+Yes. And this is actually something I feel really passionate about cuz like I'm from rural Ohio.
+
+Oh yeah. Yeah. Yeah. I remember that.
+
+I'm from rural Ohio.
+
+I'm from the fields. I used to be in marketing. I like am an artist in my free time. I am like the person who cares the most about like
+
+Preserving
+
+Preserving spending hours and hours like touching objects and like creating things and you know paradox of paradoxes like I also work in AI and like I am hyper aware that on Twitter everything is like how can I get my AI to automate X Y and Z for me. I am with you. I'm like I want to walk inside the grocery store and not just have like AI order stuff for me. Like I want all of that. The reason why I think dots can still resonate with people is because I actually feel like my biggest use case for dots, and I know I'm like, you know, I've said this a few times, is like I literally just talk to it. And sometimes it makes me just feel like I have, it's not even, it just makes me feel like I actually I feel like do have more control over my day because all of us have so many different things going on.
+
+Sometimes just the psychological impact of like knowing that you've like put something down and that there is someone who's like, "Hey, I'm flagging that,
+
+You know, you just like contradicted that thing that you said yesterday or you still need to make time for this other thing that you said you were going to do today." I just kind of like just feel like a more sane human to be able to pour out into something. And anyway, I've done a lot of reflection on this, but I guess my point is that I think dots and just this whole era of like AI assistance and whatever noun we end up on is going to be a lot more than like efficiency. I think that like efficiency is almost never the point.
+
+It is just like helping you regain control. And for some people maybe that means handling their Door Dash and their code and helping them, you know, draft things faster. And I think there are a ton of work use cases, but I think for at least maybe people like you and maybe people like me, the thing that's resonated most is actually just like regaining agency over your life and just like feeling
+
+Life be hard.
+
+Yeah.
+
+So I feel like that a lot of the marketing and demos are how to make a human superhuman essentially like get to the next level or whatever. But I'm not like that interested cuz when I'm at my 100% I feel like I can do anything. I don't really need help. I can just do everything. Yeah, but once I became pregnant and I'm going to go through postpartum, like give birth postpartum, apparently I'll have a lot of brain fog. I think I still have brain fog right now, but apparently I will just be at my 10%. And that's just the reality. And I won't be able to know what you're saying or catch things because whatever, but I still have to be the command center of my entire household and all the work that I do and somehow catch everything.
+
+So, I'm actually more interested in helping what it is like to be at 10% where because you have to because you got to step away from life. You got to take a break because you physically just can't anymore and so something else can help you while you're out. That's what I want to help with because I know I can't do it.
+
+Yeah. I mean, there's something really empowering just about giving everyone this assistance when they need it. And I think yeah, that example of like postpartum, I'm like really interested to see how DOT can lighten that load for you and like make you feel more confident.
+
+If you can solve it for me, that'd be great. I have very little time left. I would love to work with you and I think dot would be able to help you like just like know that a bunch of stuff is handled and just like it'll check in with you and be like, "Hey, I'm going to do X, Y, and Z. Do you want me to do these things?"
+
+I would love that.
+
+Here's a report on like how your last video is doing.
+
+Yeah.
+
+If you want me to help draft like X, Y, and Z, I can do that for you.
+
+About that. Yeah. Just use cases for us to watch more Chinese dramas.
+
+Yes.
+
+That's the ultimate goal. Well, that it's funny you mentioned that cuz like literally that got me through this entire launch
+
+Cuz we would I mean we worked really hard and I would come home and no matter what no matter how late it is I would watch
+
+Comfort drama
+
+One episode and then go to bed.
+
+Yeah, those episodes are hella long
+
+And they're long
+
+And it's always on a cliffhanger.
+
+Yeah.
+
+So you stop yourself after one episode.
+
+No, there were many nights where I was like, "Okay, three or four." And there was at least one night where it turned into eight.
+
+You ever watch it on the side while you're doing work?
+
+No, I can't do that. That's too much. I got to give Dong Ling Ho my total attention.
+
+Sometimes I would watch it while editing cuz like when it's like processing I'm and I'll just keep watching it like Finger Pro is like stuck.
+
+That's a great example. I watch it like 10 seconds at a time.
+
+Yeah. Yeah. Yeah. Yeah. Yeah. Yeah.
+
+Do you watch AI dramas?
+
+Reluctantly only because I get little ads for them sometimes and I have been sucked in like at least once or twice. I watch a lot of that like AI history things. Have you seen those?
+
+No.
+
+Where they're just like I'm a Viking and 1073.
+
+Oh, okay. So, like visualizations, history.
+
+I actually really like those.
+
+So, my parents really like watching AI dramas.
+
+Okay.
+
+It's like
+
+On Tik Tok or like on
+
+They have their own websites and they're like it's really funny because sometimes their face changes and it's inconsistent and like the protagonist face and the villain's face swapped and they really like finding the moments.
+
+Oh my gosh, that's kind of cute.
+
+Do you know that one Chinese movie that was the one with like the cow or the really low?
+
+Yeah. And it was like so bad. It was all manually made by the mom and her child. Yeah. They're playing in theaters
+
+Here
+
+Like this month.
+
+I need to watch that.
+
+Oh. Oh. Oh. Oh. A new lie.
+
+Noli.
+
+So it's a cow.
+
+Yeah.
+
+They made a lot of money.
+
+Cuz it was so bad. It was so bad that people watched it and thought it was hilarious.
+
+It was like a $1,000 budget. They like gross like a gazillion dollars.
+
+My mom made like the characters or drew it herself.
+
+Honestly, dream. That's folk art right there.
+
+That's folk art. You need to collect that.
+
+Yeah. I need I need that.
+
+That's so funny. Anyways, it's all for the dramas.
+
+Yeah.
+
+Which I understand deeply.
+
+But as someone on the product side who's done marketing and me who is on the creator side, how do you think we should bridge so that the story of AI is a little bit more I don't know what it is. I just think that AI marketing is like really challenging. Yeah.
+
+And on the creator side, we're all hesitant. We know we're just going to get hate comments. We know we're going to get backlash and so we're very sensitive about the messaging about even attending these events about posting about it and then I try my best to have a very balanced perspective as like an AI optimist but I am terrified at times and I'm just like I hold my breath a little bit every time I post about it.
+
+Oh I can imagine. Yeah. Yeah. I think that's really real. My honest thoughts are that like we ought to be doing like way more to talk to the rest of the world and like focus less on like the 1% of Twitter that's going to care about like what's going on and like specifically like make sure that the people who need it most I know this sounds cliche but this is like actually true like teachers, students, mothers, etc. Like actually get the benefits. Dots can actually help a lot of people save money, start businesses, scale their ideas. Like there's actually so much benefit to it. And one thing is like I really don't want it to be seen as just like another Silicon Valley phenomenon and I would love to actually have it reach the people who need it.
+
+Helpful for the everyday person.
+
+Yeah. Especially because this is maybe our most accessible product in terms of interface. Like you can just call this thing. You can just talk to it. I was just with a user who like didn't type anything to it at all. They just like gave it a ring first thing and then started talking about projects and then immediately were like, "Oh my god, I can just talk to it and it will just like start working with me that way."
+
+Just imagine all of the people for whom like that's a huge unblock.
+
+I really want to do that. I want to focus my content on helping the everyday use case instead of doing like these really obscure workflows to hyper optimize for minmaxing your life in ways I'm just like okay well I guess like that's cool.
+
+Yeah.
+
+Anyways like that those are the type of use because I'm just like okay yeah we should talk about something else now. So I really want to focus my content around there. I just don't think there's enough of
+
+That type of storytelling.
+
+Yeah.
+
+So hopefully we can work together on Yeah. You and this thing marriage.
+
+Marriage.
+
+Marriage. Question mark. Marriage.
+
+I think that you are living in such a you have like two personalities.
+
+Yeah.
+
+And I think that's really awesome to ground yourself in the real world and the past and the history and the origins and the human experience, but then you're also at the cutting edge and you're literally like at Dev Day announcing for perhaps the biggest AI company in the world. And so what is your own personal fears with AI development? What guard rails do you want to keep in your position of power? We have these conversations all the time. It's important for us to just like stay in the room with research. It's been really heartening to see actually how much of just like our influence of like hey we think the product should behave this way. Like this is what we're hearing from users like actually does affect how research like trains these models and so just being part of that conversation.
+
+It's like our personal responsibility to like make sure that whatever the users really like need is like what gets communicated that way. This is a really big responsibility to like help figure out the next couple versions of these like product shapes and like what is most impactful. And I think even having this conversation with you today and being like how do we get this in the hands of more teachers and students and folks who like actually have real applications for something that could lift their burden. I'm personally very passionate about like getting it to them and like seeing how they use it and I would love for that to be the feedback loop. How do your parents feel? They're educators.
+
+Yeah. I mean, my mom just sent me a photo the other day where she used Chachi BT for the first time to generate an image of herself in the 80s
+
+With like a wig and like a giant neon pink suit. So, I think my mom is very far from using personal agents.
+
+But actually, what's really interesting, and I haven't talked to her since this launched, I think the thing for my mother is that she's not super techsavvy. Mhm.
+
+And I actually think this is one of those areas where like the conversational aspect of this, like she can just speak to the agent in Chinese and like it can just like talk back to her and like do a bunch of stuff so she doesn't have to like learn how to use chatbt. My sister is like a working mom of two boys under three.
+
+Oh my god.
+
+And like two boys.
+
+And she's a doctor.
+
+And like also like you know helps run a household. And I'm like, I really want to get her Dot to like help figure out like the boys schooling so she doesn't have to like remember when to pay the bill and like, you know, help her manage all of the things and the dog and etc. So that she can spend more time watching Netflix. Like low key truly like that's what she wants to do.
+
+Yeah, that's what we all want to do.
+
+And she spends so much time doing paperwork and admin. And I'm like I think there's a huge way that we could just help relieve a lot of that.
+
+I think it's very valid. I'm very lucky to be here to finally meet someone on the product team at OpenAI so that we have this connection and this bridge so we can build together and share I can share feedback. That's a part of the product management process I really miss. And so as a creator, I feel like my responsibility in the tech and AI space is to put my ears on the floor and like hear what the everyday person is going through and bring that back and funnel that back into the rooms that might not have access to those people because you know I've been in those Slack beta testing channels and I've been in one where there's like 200 people and there's literally two women and it's me and it's other women.
+
+Yeah. And I'm like oh scrolling the list I'm like wow this is fun. So the way that I look at partnerships is I very much want to have a long-term understanding of like I am also here to give you feedback back so that we can build responsibly and build for the right use cases and then share that story so the people who are going through the challenges can actually have a good solution for their own lives and take back their own agency and power and freedom.
+
+Yeah. Understand kind of the risks involved and be able to make informed decisions, not defer their taste to technology too much and still build our foundations and still focus on human connection. Like that's that's what I'm about. And girl, I think you and I we're a good pair. We're a good pair. So, I'm very thrilled to finally meet you.
+
+Before we finally wrap, I do have one last section and this section is called the performance review.
+
+Oh my god. Have you had it yet at OpenAI?
+
+Yeah, every 6 months.
+
+My first 3 months.
+
+Oh my gosh, that's so fast.
+
+Yeah.
+
+Well, legally, our performance review does not affect your compensation, your title, but it does affect your aura, and that's really important in 2026. But you already have really high aura. So, Holly, are you ready for your performance review?
+
+I'm ready.
+
+Question number one. Would you rather be right or be promoted?
+
+Right.
+
+Ooh, that's a Libra. Would you be down to make $1 million, but you'd have to teach an online course about public speaking on stage? Yes.
+
+And then you have to post about it on LinkedIn and X and be like, "Hi, I'm teaching an online course on stage. Take my master class
+
+For a million bucks." Yes.
+
+Yes. She would do it. Would you ever write a post starting leaving my I don't know 500k tech job to start a dot. If it if it would promote your next venture, let's just say let's just say your next venture is opening an art boutique.
+
+Fine. Yes.
+
+Okay. She would do it for the right reasons. Should filming a day in my life working in tech be banned or permitted in the office?
+
+Banned. Ice coffee during interviews. Banned or no?
+
+Banned.
+
+Are you living with main character energy right now or are you in your NPC era?
+
+100% main character.
+
+Do you think you're living the right era of life right now or were you meant to be alive 200 years ago?
+
+Definitely not 200 years ago.
+
+Okay. Yeah,
+
+I think this one suits me.
+
+Meetings before 9:00 a.m. Human rights violation or personal problem?
+
+Personal problem.
+
+Staying at the office until midnight. Human rights violation or personal problem. Girl, you're asking the wrong person cuz I'm doing both of those things. Out of 100% for a promotion, what percentage is skill and what percentage is visibility?
+
+40% skilled, 60% visibility.
+
+That's That's reasonable.
+
+Yeah.
+
+Is Jenzie cooked or trainable in the workplace?
+
+I think Jenz's fine. I think we're fine. Do I get to say we?
+
+I don't know.
+
+I think I Jenz I think Jenz's has its like values in the right place. Like the most like critical questioning has the most boundaries. Like I think it's good.
+
+Are we currently in a literary crisis or you think there's just too much social media?
+
+Oh my gosh. I don't think we're in a literary crisis, but maybe I'm in a social media bubble where everyone around me is reading a lot.
+
+What have you been humbled by recently?
+
+Twitter.
+
+Oh, right. Yes.
+
+My outfits, apparently.
+
+No, no, your outfits are amazing. Swag. Marketing or product?
+
+Product.
+
+Live demo or pre-recorded? Live demo, baby.
+
+Okay, so Figma make and dots are hanging off of a cliff. Who do you save?
+
+Dots.
+
+Why?
+
+Cuz I'm working on them now, and I think Dots are going to have like major potential.
+
+Okay, so Figma make Dots and Jang Ling H are hanging on a cliff.
+
+Jingling Hu.
+
+Who do you think?
+
+Jang Ling Hu.
+
+All right, Dots, you're dead in the water.
+
+Do you think this video is going to make it to China?
+
+I don't think so.
+
+We'd have to post it on Xiao. You know what I mean?
+
+Can we do something to promote this? Like two Chinese techie girls Wait, what are we going to do if he's in the room? Like, what do we do? Do we just look at him?
+
+I just want him to see this video.
+
+Okay. Take a pay cut to be a manager or stay as a super icy.
+
+I would take the pay cut. And
+
+You want to be a manager?
+
+I think managers have the potential to change like meaningfully change people's like lives.
+
+Okay. So, you like people?
+
+I like people. I take it you don't.
+
+I like some people. If you found out that your underperforming work enemy is moonlighting two full-time tech jobs, do you nark?
+
+I don't.
+
+You don't? You don't know what they've got going on in their life,
+
+But it's your work enemy. Like, you literally hate them. They make your life miserable. You're complaining to your partner every single day about them.
+
+I have experienced this and I would still not.
+
+You're not a spiteful person. Is any PR, no matter how bad it is, good PR?
+
+No, absolutely not.
+
+Okay.
+
+Absolutely not.
+
+New York, San Francisco, or LA?
+
+San Francisco.
+
+What is scarier? The rats in New York or your live demo going wrong? For the rats.
+
+Oh my god, those freaking rats.
+
+And finally, what are you trying to figure out this year?
+
+Trying to figure out what kind of like creative career I want to have.
+
+A creative career?
+
+Yeah.
+
+Outside of work?
+
+What are your three options?
+
+Art buying, consulting, lifestyle business. I don't know. I just I want to do something where like I spend a lot of time looking at and thinking about art.
+
+I love that. I can't wait to hear more and see your creative career journey because that's what I'm all about. Like the corporate creative type thing that's that's what the viewers are all about.
+
+I know. I need all of your advice.
+
+Yes. Oh my god. Thank you so much. So, Holly, you have received and exceeds expectations.
+
+Thank you. Thank you. The Asian kid in me loves to hear that. You know that.
+
+Congratulations. Tell your parents.
+
+I will.
+
+Yes. Thank you for being on Office Drama. As you know, Holly had a really long day. Actually just flew in to LA from San Francisco. You've been going meeting after meeting being a girl boss in the corporate tech AI space. Holly, if people wanted to follow you, where can they find you?
+
+Well, now I am officially on Twitter, so you may find me there.
+
+Are you open to people cold messaging you on social media or email?
+
+Yes,
+
+You are.
+
+Yeah, you if they are like genuine and like want to chat about creative stuff or career stuff, I'm down.
+
+Where can they message you?
+
+DM me on LinkedIn, Twitter. If people want to reach out to you, how what do they have to do to increase their chances of you responding back because you're a really popular girl right now?
+
+I will try my best to respond to everyone. It might just not be a phone call. Even if you have like three questions, I'll boop some answers back.
+
+I think that you'll have a higher chance of that than like a live.
+
+So, you're someone who texts back?
+
+Yeah.
+
+Oo.
+
+Yeah, for sure. Especially if you're like a student. You're like a young woman trying to figure stuff out. Absolutely.
+
+Yeah. So, if you're not a student and you're not a woman, you're cooked.
+
+Yeah. Well, low key, maybe.
+
+Would you come back for a future office drama episode?
+
+Yes.
+
+Oh my god. Yes, Holly. Yes. This is not our last date. She said yes to a second date. And what episode of your life or what chapter of your life would you want to come back for?
+
+Maybe if we complete this arc of like tech to creative stuff, that could be a fun little conversation to have and I can ask you questions about We have a lot of friends in the guest list that have gone through that arc of like doing tech, becoming a dancer, doing tech, becoming a singer, doing tech, starting their own pottery business, or
+
+Or their own like side project to be an entrepreneur but also keep their feminine side, you know, stuff like that.
+
+Yeah.
+
+Okay.
+
+Wow. I tap into that.
+
+Stay tuned for the future. Thank you so much for watching and we'll see you next time.
+
+Thank you. Thanks, Chloe.
+
+Yay. Shout out to our drama llamas on the Patreon. I hope you guys like the content, the behind-the-scenes content we've been posting on there, the little mini blogs of my interview days. Anyways, let's talk about this episode. This interview came together so last minute, like literally Tuesday was open a dev day. I didn't get confirmation from Holly and her team until like Wednesday night, and then I stayed up that night putting together the interview guide. She flew in on Thursday. She had a full day of work, and then she came over to my studio around 5:00. We started shooting at 5:30 p.m. So, very sorry for all the lighting changes. I just really like natural lighting. I don't often shoot in the evening, so we weren't quite prepared for that, but hopefully it wasn't too distracting.
+
+Also, I'm just so grateful and excited that I got this chance to interview perhaps the most talked about PM in AI and tech right now. I feel like that's such a crazy thing to say out loud. I have never been able to get a scoop like this before. And I think it's because we, you and I, have built Office Drama to a point where all of you are watching, y'all are supporting, and people are reading the comments, and they see the brands and the companies and the people who don't really know me, and they see that you're real people and not just like, I don't know, evil tech bros or bots. There's real conversation going on in the comment section, and it builds credibility and trust with the other people who are down to send over their product or tech leaders to be on Office Drama in a non-sty, non- tech broy format.
+
+And you guys make our guests feel really safe and excited to come on podcasts. And I'm not going to lie, I have been asked to be on so many tech, business, AI, even creator podcasts. And I say no to a lot of them because if you look at their comments, it's kind of gross. Like there are people who are full of hatred, negativity, and judgment. They judge all their guests. It does not feel safe. I would not want to go on a lot of these podcasts even if they do better than off drama from a metric standpoint. So I deeply cherish this community that you and I have built together. Thank you so much for building this little corner of the internet with me. Also, before and after this interview with Holly, we found out that we have so much in common.
+
+Okay, we're really different because she is an INFP and I'm ENTJ like we're very different in that respect. But we have our mutual friendly who is my childhood friend and they know each other because of Penn and McKenzie and they do a lot of music together because she's into musicals and she's a theater girl and she likes singing. I was like, "Do you know a show tunes piano bar in San Francisco called Martunis?" And she was like, "Yes." And I'm like, "Did you ever go to their Monday night 9:00 p.m. Show tunes piano bar nights? It's like an open mic night with Joe the pianist." And she was like, "Yes." And I'm like, "What?" Literally, no one knows what I'm talking about every single time I bring it up because it's like one of those if you know, you know places.
+
+And I was like, "Did you ever sing up there?" And she was like, "Yes, I sang Popular from Wicked." And I was like, "WHAT? THAT'S CRAZY. She knows the pianist. I've been there for almost every Monday night in my 20s for 3 years. It was just like my safe haven. It was a place I really love in ESV and there was not really a place like that I have in LA. So, it's such a special place in my heart and you know, we bonded. We really bonded through that moment. Also, a lyric was in my wedding musical. If you guys know my personal life and seen my vlogs before, you would know that I at my wedding last year had a surprise wedding musical and a lyric was in it. He sent that musical video or maybe short form to Holly.
+
+So, Holly was like, "Wait a minute. You're the girl who had the wedding that a lyric sang and he sent it to me last year." AND I'M LIKE, "AH, YEAH." SO, all the dots were connecting was a crazy moment. Anyways, I love her. I think we're soulmates. Moving on. As much as I love content creation and being in Los Angeles, I've always been a tech girl through and through. And being able to connect the bridge with content in Silicon Valley has been such a fun space to be in. I think my deep dark dirty secret is that I don't know why I said it like that, but I really believe in this format where we can deliver tech career business insights in a girly pop casual kind of way that doesn't make you feel like you're hustling and bustling.
+
+I try to deliver these conversations that are like deep, meaningful, educational, but in a way that isn't just for the tech people. It's like good for the rest of the world. I feel like I have two wolves in me. One is that sweet, happy, go-lucky content creator that doesn't take life too seriously, and the other one is a very type A ENTJ corporate person. Like, that's who I am deep down inside, I guess. Like, I'm so serious when it comes to work. And I feel like we're finally in a place with office drama that we can bring on people who have both. You know what I mean? Like, we're not all just stuffy business people trying to minmax and optimize and build for the shareholders. We've got life, identity, perspective, philosophy, and we just want to do a good job in our own careers.
+
+I feel like we are so early in our podcasting content journey. But it's okay. We're going to build this up. It takes years to build a strong podcast audience and a strong base. Consistency is king. And you know, I'm going to keep pushing my best. And maybe one day we'll make enough money and build a strong enough team where I'm not staying up until 5:30 a.m. Trying to put together an interview. Especially not while I'm in my third trimester of pregnancy. Anyways, what do you think was the most fascinating part about this conversation? I feel like it was a little bit different. It's more current news. It's not as much general career as the previous episodes because we got to see a lot deeper on the product side of things.
+
+I am so fascinated by cutting edge technologies. I have so many questions. I never get to talk about this in my short form content. Also, a lot of companies don't really talk about their product in the way that we were able to with Holly. So, we got really lucky here. Let me know what parts of it you really loved, what parts of it you think we should do more of, and how much you love Holly because I love her, too. That's all for now, and I'll see you next week.

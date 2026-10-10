@@ -1,0 +1,217 @@
+https://youtu.be/A63sedG-p5Q
+
+I talked a lot about this spot that I built called Benny, and I wanted to figure out how would I make it so my agents could just automatically fix bugs for me while I sleep. And so that was the inspiration for some of our earlier experiments like you know what if everybody could define one of their own bots, you know, give it an identity, and give it things like its own computer plus routines and automations. So, like I have I bots right now that are you know every time someone gives us feedback on GrokBot, my bots are automatically going out and fixing them for me and I just like review their code.
+
+Hello everyone and welcome back. Today I'm joined by Lauren Tan and Roshan Sadanani from Cursor. And earlier today Cursor and SpaceX jointly announced Grok 4.6. So, excited to talk to you both about the new model and also to do some live demos of GrokBot. Lauren, Roshan, welcome to MTS.
+
+Thanks so much for having us. Yeah, really excited.
+
+So excited. I know you just informed me right before we went live that we're actually going to do a live GrokBot demo. So, before we just jump into that, can you share with me about what GrokBot is and how does Grok 4.6 maybe change what it's capable of?
+
+Yeah, we're we're super excited about GrokBot. Tons of really great reception yesterday and so it's been sort of a labor of love to bring it live over the last little while. Hopefully folks have had a chance to try it out. You have if you haven't yet, you can go sign up for and try it out right now. Really just motivated by making it easier to interact with and use agents. This product got a ton of internal PMF when we started building it internally. Everyone from go-to-market teams to ops teams to engineering teams to product teams just like latched on to it and just really found fun ways to use agents that I think make a lot of sense for their jobs. So.
+
+That's so cool. How have you guys been using it directly? You said you found internal PMF with your team. What was that specific moment? Was there an example that happened?
+
+Yeah, I think like so early on there was a very small team prototyping and building GrokBot. And it started out very organically like you know it was just them using GrokBot for themselves. But they started sharing it with a few people and it started you know like I started to use it. I used it to book the Odyssey IMAX tickets.
+
+70-in screen? Wow. Oh my gosh. That is that is a milestone, a new benchmark.
+
+But yeah it really was very exciting to be able to use agents to like you know automate like so many different things that you might not necessarily think you can. And GrokBot has its own computer so it's like super powerful. It runs even if you're not at your computer. So it's been it's been awesome.
+
+Yeah. I'm a little curious. How does it work internally? So do internal teammates just test out different things and then ones that are starting to take off where like okay how do we make this into a commercial product?
+
+Yeah I think that's like roughly how it works. We think that our colleagues are pretty high taste when it comes to using products and also just like using agent products and so for a lot of things we build we sort of ship them internally and get feedback from the other folks in the company who are using them daily. Look for that internal PMF and usually that's been a good sign for kind of releasing something into the broader world and so GrokBot kind of followed that exact same process. What was really unique about GrokBot though I think is that kind of what I was saying earlier sort of regardless of role
+
+From like ops to go to market to insert your role here someone found a use case for GrokBot and a lot of that's because it just talks so seamlessly with all the tools you already use and then obviously like Lauren was saying it has its own computer so it's sort of this persistent agent that sort of felt really novel to interact with and so I think some of those interactions which we'll hopefully show you in just a second really cool so
+
+All right let's jump in. I feel like I got all of the preview. I'm ready to jump into the demo. Let's take it away.
+
+Yeah I can start maybe we can go back and forth a little bit. So, what you're looking at here is GrokBot and this is my team of bots that we're looking at. I have a coordinator agent here who's my chief of staff and knows stuff about my calendar and can actually message my other agents. So, it can check in on the other agents and how they're going. So, here's my coordinate agent messaging Shoppie who helps me buy stuff on the internet and learning about the recent purchases I just made.
+
+Tickets.
+
+Totally. Yeah, like Odyssey tickets or yeah, my groceries maybe. That was a use case we saw internally that was really fun. But then, you know, these agents also have their own computer and can be signed in to all the tools you use. And so, right before this, I just set up a marketing agent who has access to my LinkedIn. And so, if I hit this button here, we can see that this marketing agent has its own screen, is logged into my LinkedIn, and actually just pulled some of my LinkedIn posts just by browsing on Chrome. So, I'll just go ahead and ask him to update LinkedIn for me. We'll see if we can do this. We want to post that we're talking about GrokBot live. Actually, don't forget to tag the right MTS account.
+
+Or MTS live.
+
+MTS live. And what's really cool about these agents is you can just chat with them like you're chatting with a colleague and that was a real huge part of the design inspiration here is just making it so that this feels like you have a really intelligent colleague that's hanging out with you in the chat versus having to like wait your turn maybe or wait for some thinking to happen or whatever else. So, yeah, he's going to start working and trying to post from my LinkedIn. So, we'll check in on him in a second. The other cool thing that we've seen a lot of cool use cases with is putting together sort of presentations or helping automate a lot of the more drudgery that might happen in your job. We have a channel internally called GrokBot wins and so, I'm going to ask this agent here, my chief of staff, to put together some feedback from that channel and maybe actually do it in Figma slides so we can maybe share those out.
+
+So, yeah, let those guys cook for a little bit. Oh, and it looks like our post might be going live. You can see the computer up there.
+
+Oh, that's super fast.
+
+That is really cool. I hope it makes it available to anyone. It looks like it is going to do that.
+
+Oh my gosh.
+
+Found the right MTS live account, but I think he did. Yeah, that looks right. Okay.
+
+Wow, yep, it's the correct one.
+
+Cool, cool, cool. Well, yeah, we should have a LinkedIn post. The release is coming up really soon there. So
+
+Okay, and we'll post this clip also on LinkedIn afterwards. So we shouted out. Oh my gosh. So you guys announced this all yesterday. What was the reception like? Maybe Lauren would love to get your opinion here.
+
+Yeah, I think the reception has been super positive. You know, people really love the GrokBot identity, the animation, the logo. It's really fun. And not to mention, yeah, like all the use cases where you can use GrokBot are I think we've heard a lot of cases where it's like very intuitive. You know, it looks like iMessage. I've seen a couple of people share GrokBot with their mom and their mom's onboarding onto GrokBot. So I've been really blown away by how well received GrokBot is. There's still a lot more to do, right? Like there's we have a few bugs here and there that we have to fix. But overall it's been very positive and very excited that we finally get got to launch it.
+
+And you announced another announcement today. So pairing those two together, what is now possible?
+
+So Grok 4.5 is really powerful. It's you know, much more intelligent than 4.5 is at the same token cost. So I think like for coding tasks and the type of work that I do cuz I do a lot of engineering work. I use Grok 4.5 a lot for that. And it's just way more capable. It's really, really fast. I still use like the other models too, like Fable and Sol, but Grok is like a really it's just so fast. And it's like affordable. It's cheap. So I really like using it.
+
+Yeah, I think one thing that we talked about when we launched Grok 4.5 with the SpaceX AI team was sort of this idea that we're going to train models for more than just code. And I think what we're continuing to see with Grok 4.6 and some of the investments in GrokBot like really there's a lot more that's possible when with these really great models. And so yeah, we're just excited for the models to keep improving to be part of the discussion on the frontier of models. And yeah, to be able to bring that into the world. So
+
+Yeah.
+
+I'm really excited what you show here because I know that Cursor started off mainly in the agentic coding space. I was sharing earlier that Cursor is actually my gateway into starting to use vibe coding tools in general. It was the first actual tool I used. I used the Cursor models and then I just kept updating from there. And I still to this day use it. And then I realized before I was actually testing out GrokBot, I was like, "Oh, you can use the same tool to do research, to do other things." And still even though people say agents are expanding and growing, the it's still mainly coding agents because the actual infrastructure the UX to use agents for everyday things socks. I think openclaw was maybe the first mainstream, but like you mentioned, I don't think my mom would ever be using openclaw.
+
+And even myself, I set up a whole openclaw in a telegram. It looks kind of like this in my UI and I have my shopping agent my all that stuff. And it breaks all the time. And I'm always like trying to fix it. This is awesome. And I love the whole UI and structure. How did you What was like the design process going through creating this creating GrokBot?
+
+Yeah, I mean the brief was basically keep it simple. If I if to be a little cheeky. And I think that's actually really real. It's like a lot of AI applications have, you know, a lot of control and power that they give you, but sometimes that power is like balanced with complexity. And so really our design brief here was like how can we make this really simple first and foremost. And so that's kind of where the messaging interface became a little bit inspired from. And then of course some of the design touches that we added over time. Know Lauren if you'd add anything kind of having built it all.
+
+I wouldn't say I built it all, but I think that the team really strove for a very clean, simple user interface cuz like you know, if you've used Cursor, you're probably like a power developer power user. It's like very It's like a lot of knobs and whistles and like very It's very tailor focused for coding.
+
+Mhm.
+
+And with GrokBot, we really wanted to take you know, like a fresh perspective on what would it look like if your agent was really more like a colleague?
+
+Mhm.
+
+Right, you know, and so you don't you don't necessarily want to you know, micromanage your colleague and say what tool calls are you know, are you using right now? But you want to talk to it like a person.
+
+Yeah.
+
+Right, you want to see what they're doing on their computer, but yeah, it's like it's a So, we've we've tried to keep the interface really elegant and simple.
+
+Really cool. I love that I have both of you two on the interview because we have the product side, we have the software engineering side.
+
+Whole team behind the scenes, too. They've done a lot of work on this.
+
+There's Wait, there's more people besides just you two?
+
+On it. No, for sure. And so, having you both here, you get a really comprehensive overview of what it actually takes to create GrokBot and get this product into the mainstream. I do know like the user might be a little bit different from the typical Cursor user. Who are you envisioning are going to be the mainstream adopters of GrokBot?
+
+Yeah, I think we really see this being useful for everyone. So kind of like what we were saying when we when we saw this launch internally, I think there's a lot of work out there that's just rife to be made more efficient. And I think the motivation for why we built this internally is we actually saw a bunch of folks within Cursor who you know, were building their own agents kind of like constructing the chats together, building Slack bots. Actually, Lauren had a really famous Slack bot that still lives in our in our Slack instance. And it's sort of like that takes a lot of context to put together. And so the idea was, well, could we package that up? And these bots were for deployed engineering and for like software engineering, for our ops teams and really just wanting to say like could we productize that in a really in a really fun way.
+
+So, yeah.
+
+Yeah. So, yeah. I talk a lot about this bot that I built called Benny. He's like this little dog that's his avatar. But the idea I had with Benny was really you know, like I'm a fairly lazy person and I wanted to figure out how can I you know, we like we're getting in so many bug reports for Cursor, right? And I wanted to just fix them all.
+
+Yeah.
+
+And so I started thinking about how would I make it so my agents could just automatically fix bugs for me while I sleep. And so that was the inspiration for some of our earlier experiments with, you know, building like a more like persistent bot. And so I think there were some ideas that we took from there. Cuz I got so many questions like how do you how did you build Benny? You know, how can I build my own? I think that inspired some of the thinking behind GrokBot. Like, you know, what if everybody could define one of their own like bots, you know, give it an identity and give it things like its own computer plus routines and automations. So, like I have like a bot like bots right now that are, you know, every time someone gives us feedback on GrokBot, my bots are automatically going off and fixing them for me and I just like review their code.
+
+So, what's your job now?
+
+How's it changed?
+
+It's definitely become interesting as I'm almost like a manager for my for my digital colleagues. Yeah, so it's pretty interesting.
+
+It's actually remarkable how much of GrokBot was built with GrokBot, too. That's like a It was a It's been a really cool feedback loop where these agents can self-triage issues. They can they can write code. And so they can connect to cloud agents. And I don't know if you have a demo of that, Lauren. That was that we wanted to show.
+
+Do.
+
+Ooh, I love these demos. This is so fun.
+
+It's like the best way to explain something is to make it interactive.
+
+Exactly. You explain something and you're like, "Wow, I do have a demo pulled up. Let me just show you now how it actually works."
+
+We'll continue monitoring right after this message from our sponsors. 11 Labs, AI that communicates at human level across every channel and modality. 11labs.io/mts. Scale your startup on Neon. Millions of developers and startups have already chosen Neon for their backend. Start on the free plan or get up to $100,000 in credits for your startup at neon.com/mts. Special thanks to our sponsor Kong, the AI connectivity platform.
+
+Connect APIs, LLMs, agents, and systems with serious security and governance. Konghq.com.
+
+Yeah, so I kind of I asked my chief of staff already like if there's any interesting bugs that we saw today. And it's found a few. You can also see I have X open on the on the my bot's computer, just in case. But yeah, if you know, I can I can tell it to dispatch. So like I have a Mhm. I have a GrokBot team over here or sorry, a grok bot team. So each of them kind of are responsible for a different feature. And so now my chief of staff is going to like send off those tasks to those agents. And in a minute we'll see a bunch of messages that it'll send to the you know, my different my team members. And then they'll go off and actually work on those tasks. And then at the end of it I'll get like a pull request that I can review.
+
+I'll get videos. I'll get a screenshot. And yeah. So like here's another example where this is like one of my engineering team agents. And I think this is like almost like a feature that's not super obvious, but if you set up cloud agents on Cursor, your grok bot bots can actually kick them off.
+
+Mhm.
+
+So like here, you know, we have like I have a cloud agent that's running with its own computer that this agent is managing. And so, it's got like, you know, a bunch of things in flight already. So, I have a bunch of PRs to review later.
+
+I think there's like something really exciting about the future of software development here, too, where it's really like talking to and working with a bunch of agents that are doing specific tasks, and then you kind of just step back and become the manager of them, and it sort of feels like that vision's coming true in a really fun way here. So, yeah.
+
+That's amazing. And I see here it's a bunch of cat photos.
+
+Oh, yeah.
+
+So, all your agents are actual cats.
+
+Yeah, I just love cats, so I decided to give them like silly profile pictures just to personalize my GrokBot a little bit. The I mean, the default GrokBot avatars are super cute, as well. And I added these before we added those, but it's just having a bit of fun, you know?
+
+Yeah. Roshan, you hinted towards something that is a trend that of course is happening with the future of agent AI coding, and it Cursor has been at the front and center of seeing all of this happen. More and more code is getting automated and is done by these agents. And so, as a human, you become this puppeteer of agents who are handling all these tasks for you. I know that's a world that you're particularly excited about. Can you share a little bit more? Why are you excited about that? What does that actually unlock at maybe the human level that people in the mainstream audience might not realize?
+
+Yeah, totally. I think the like if I had to pick one word, it would be efficiency. I think there's so many ideas in people's heads, regardless of role again. Like, I have so many product ideas I want to build into Cursor. And it's the limiting factor. Like, there's always some bottleneck in that like idea-to-existence pipeline. And so, I think the promise of being able to throw fleets of agents at these problems, and then have them produce things that are really high quality and sort of align with the taste that I would myself put into a product. That's the that's the vision, right? Like, that's sort of the dream. It's like being able to go from thought to existence. So, to me that's the like the thing to work towards is can we can we build these things in a way where whether I'm managing a bunch of agents or asking agents to manage other agents or working with Lauren's agents or whatever that looks like, we're able to really shorten, compress, compress, compress that cycle more and more.
+
+And I think if you kind of like look at the evolution of Cursor as a company, that's sort of how we've built in our in a lot of ways built ourselves towards that future is by, you know, continuously introduce more and more sort of like agent tools and complexity there. So, yeah, I think that's the vision and we're excited for it.
+
+And then how has it changed the software engineering team? What differences from when you started working at Cursor to how it is now?
+
+I think like the way I see engineers roles evolve in the agent world is you know, like I like I mentioned, you're sort of like an engineering manager for your agents. But I think a big part of our responsibility now as engineers is also to like you know, keep the code base it in a condition where, you know, product managers, designers can contribute like high-quality code. And that's something I talk a lot about on Twitter as well, which is you know, like investing in refactoring, rewriting, even rewriting your code base so that agents can really thrive even if they're not like they don't they don't they're not very smart agents sometimes. You know, like things like encoding your rules and your style guides into actual like lint rules or hard constraints that you know, fail CI so that again, like that the I think the big unlock is as an engineer, I can empower like so many other people to do things that they couldn't do before.
+
+Yeah.
+
+And I can do things that I couldn't do before as well because like, you know, I've done a lot of big refactors and migrations at Cursor and I did them like mostly by myself. Like with one other person.
+
+Agents.
+
+Yeah, all the cat agents were just going wild and like, you know, I converted, you know, a bunch of stuff, you know, which would have taken me or a team of engineers months or even years to finish.
+
+Wow, that's incredible. And as an outsider's perspective, you might think, "Okay, now that agents can do all this coding, what's the role of a software engineer?" And if you actually look at what's happening on the ground, there's more demand than ever for more and more of these engineers. And it's probably towards something that you hinted. Now that you can build software with the thought to execution timeline is getting so condensed, we just now get something like GrokBot that started off as that something you guys are building, and then you can use GrokBot to now build GrokBot and put it out into commercial production. Is that also what you're seeing just as a trend happen more and more?
+
+Yeah, I mean, I think the time to prototype ideas has gone down a bunch, and so it's really quick to test things. I think we've been able like the team behind GrokBot has been able to move incredibly quickly just because of these tools getting better, and obviously the model's getting better is a huge component of that. And so, yeah, I think the like to bring it to the GrokBot side of things, the motivation there is really around how can we make this product more and more helpful for folks. As far as the trend, I think like this is going to get easier. I think there's still a really strong role for people to play in all that, too, right? Whether it's the taste argument or some other combination like that, but yeah, I think it's just ideas are, you know, abound, and it's just going to be exciting to see more and more of them come to reality.
+
+Wow, that's so
+
+Yeah, the sort of analogy or metaphor that I that I personally like a lot is this idea that so, I like food. Yeah. I'm a big lover of food, and I kind of think of my agents as sort of like a kitchen a Michelin kitchen is what I call it. And so, like, maybe my role has sort of changed in that maybe I'm not, you know, cooking all the food myself anymore, but I have a team of bots and agents that are that I've sort of hired, right? And I've trained through skills or like refactoring to do good code the way that I would have done it. And so my role is becoming more like you know like a head chef, right? Like I maybe assemble a plate of the food. I you know I own the quality control but you know, if you invest a lot in having like early capable team of agents, you can just do so much more.
+
+And now think about that like with every engineer in your team can have one of these teams behind them. You can really you can solve a lot more problems, you know, you can build more features. Not all of them should be built, but
+
+You know, you have much more productivity and velocity.
+
+Yeah. I do like what you hinted about the internal culture of you actually build things, you test it out, and that the employees themselves at Cursor have a certain taste for what other engineers, what other product people, what other consumers like I guess in general would want to see exist. Do you have any hints that you can maybe share, okay if you don't, but of what might be coming up or even something that people are working on internally?
+
+Yeah, I mean, we definitely want to make GrokBot better. We launched this as a beta yesterday, and so tons of feedback coming in of all shapes and sizes. Our goal there is just to make this as helpful these assistants, these bots as helpful as we can. And so definitely going to continue investing there. Obviously really excited about the models getting better, too, and excited to be a part of that conversation and to have frontier models now. And so I think we're going to continue to just invest a bunch in that space. And then, you know, some more fun stuff to come, too. But I think you know, overall like just very bullish on the future and the future of both coding agents, but also as general purpose agents.
+
+And I think it's going to be a really fun time. So.
+
+Definitely.
+
+Yeah.
+
+Yeah, I'm personally really excited to see more performance and reliability as an engineering that is something that I care about a lot. But yeah, we have something like you know, really interesting features that we're debating. You know, like actually like one thing that I try to hacked I hacked in into GrokBot like when in the early days was support for like iMessage. You can actually text your bots. I don't know if we'll we'll add it for GrokBot, but I know it's like a common ask. So, we're definitely like, you know, thinking about things like this where again, it's like the mental model is these are colleagues, right? You know, so like how do you like your colleague is accessible not just through Slack, right?
+
+That you can text them, you can call them. So, it's interesting to kind of imagine a world where you have these always-on colleagues that you can talk to at any time from anywhere. And they're just off doing good work for you.
+
+Oh my gosh, I can't wait to be able to text them or call them. I saw this meme where it's like my agents were talking to each other in their stand-up and they're like, "Sorry, I was off like all weekend." It's like, "You're an agent." Like, I
+
+Don't know exactly what that means.
+
+Yeah, maybe we need agent PTO and agent fun time.
+
+PTO. Turn your computer off.
+
+Let's do it. One last thing I did want to bring up because this is really impressive is you guys of course not just working on GrokBot, not just working on the application layer, but also on the model layer. And Grok 4.6, the benchmarks came out on Cursor Bench 3.2 and were really impressive and I wanted to address them here on air while we still have time. You had Grok 4.6 extra high scored 70.8% at an average cost of 2.81 per task. For context, Fable 5 Max scored 70.5%, but at $17.32. This is a huge change. How does this model maybe change how the everyday consumer actually interacts with agents with AI as a whole?
+
+Yeah. Go ahead.
+
+So, yeah, this definitely like very top of mind for me because you know, I think about this a lot cuz I work at Cursor. I have unlimited tokens and so I can just, you know, you know, go crazy with token maxing. But obviously a lot of our customers and our users are you know are more cost conscious. So personally what I'm most excited about is this idea that you have a very efficient model that is as good as you know some of the other big models but at a fraction of the cost. And I feel like that's like a very you know important topic that a lot of leaders and engineers are having right now which is you know that the rising cost of using AI, right? So I think Grok 4.6 is like a really interesting you know choice in that discussion.
+
+You know like every company's going to have their own requirements I suppose for the type of model mix that they use. So I think Grok 4.6 makes a very compelling a very compelling option. Right? If you're considering between like some of the bigger models which are also extremely capable but you want something like a little bit more you know cheaper. Grok is like an excellent choice.
+
+Yeah. It's like if you have a budget of 20 bucks to do all of your AI tasks and the cost per task goes down is like you can just do more tasks. And so I think the efficiency game is just such a fun one to play cuz it feels like you just can do more like you can have more bots or write more code and so yeah just like this idea and I think this is happening across the industry which is very exciting but just like being able to do more things with the tokens or just like it's it's wild it's wildly cool to see. So yeah I think we like are investing a ton of efficiency specifically cuz we think that's just a really great direction for these models to go in and obviously intelligence matters a ton too so that yeah we're we're excited about the results.
+
+The benchmark results are pretty cool so yeah.
+
+Yeah that was really cool to see and now I'm super excited specifically about lowering costs for such a great model. It provides better you know capabilities for startups who make maybe don't have the same amount of resources or even just indie hackers who want to experiment but you can't be paying for all of your token costs out of pocket cuz it's just getting a little bit crazy. So, it's really starting to level out the playing field, and I'm incredibly excited about what that actually means, what that looks like for the future, and all of you guys' products. But, Lauren, Roshan, really wanted to thank you guys for coming on MTS today and sharing more about GrokBot, Grok 4.6, and all of the fun updates.
+
+Thanks so much for having us. Yeah, it's super fun. And if you haven't tried GrokBot, give it a shot. It's really great.
+
+I'll definitely have to give it a shot. Appreciate you guys for joining, and we'll be back with MTS.
+
+A huge thanks to MTS sponsors. Blitzcy, autonomous software development for enterprise code bases, ship 5x faster. Blitzcy.com. AdQuick, make your brand a billboard. Out of home advertising as easy to scale as digital. Adquick.com. Arena, measuring AI performance in the real world. Arena.ai.
+
+Support for the show comes from VCX, the public ticker for private tech. The US stock market started history's greatest wave of wealth creation. From factory workers in Detroit to farmers in Omaha, anyone could own a piece of the great American companies. But, today, our most innovative companies are staying private longer, which means everyday Americans are missing out. Until now. Introducing VCX, a public ticker for private tech.
+
+Visit getvcx.com for more info. That's getvcx.com.
+
+Carefully consider the investment material before investing, including objectives, risk, charges, and expenses. This and other information can be found in the Innovations Fund prospectus at getvcx.com. This is a paid sponsorship.

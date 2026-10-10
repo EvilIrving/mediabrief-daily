@@ -1,0 +1,472 @@
+https://x.com/impreiaxbt/status/2108218392188518533
+
+Thank you so much for joining. Thanks for having me. Yeah, very excited to be here. Big fan of yours. And a huge fan of yours, I think people have been talking about this like it's like the meeting of the skill minds, the skill, Mount olympus or something because both of us have very popular skill libraries as I was saying before we started, I've not used a ton of yours and like I want to get all of the juice out of your brain so that I can go and use it properly use it better. I think where I want to start with this is you gave a talk pretty recently. About 10 days ago and posted it on X, which when absolutely nuts is about how I shipped 2500 PRs last month to production, got about three million views or something on X and I watched it and I loved it and I recommended it and I kind of want to run this as almost like a Q andA of that talk basically of giving you, I just had tons of questions about it and I wanted to dive into it.
+
+And I think where I want to start is. You talk about a trust ladder with agents. Where you as you trust agents more, you can get them to do better and better things. AndOr scale them to up to use more and more agents So what is your story of how you climbed the trust ladder and? How did that work when like you got SpaceX? Starttop2 normal. So I think the journey sort of began even before I joined Cursor, which is now SpaceX AI. So the story is. After meta, so I used to work at meta on the react team, I took a month off because I was feeling kind of burnt out and of course what do you do when you're burn out, you go and start a new side project. And so I started a side project, you know, I was of course using AI to write code, but then I started to realize.
+
+You know, I was spending like so many hours just micromanaging one agent. And at the time, this was back in February, maybe February, early February or January. Know people were really obsessed with this idea of like orchestration. This was like, you know before you know things like Cursor, you know like the agent window was had become popular so people were still in like Tui land you know in their terminal and they were all talking about you know I built a custom orchestrator right and so of course I had I was a bit nud and buy that. And you know, as I was building my toy project, I gotnerd tonight by, oh, how do I make my AI coding setup more efficient? And so, you, I kind of started the journey there where.
+
+I just you took a step back and realized. Yeah, I was spending all this time micromanaging a single agent. You know, I was creating skills and I was like. Finding it quite difficult to measure the output or the result, the impact of the skill as well. So I was kind of flying blind, but I was you iterating really fast. And. So that project eventually sort of became the basis of PStack, even though I didn't know it at a time. And a lot of. Some tricks I had learned like building that early set of skills, actually it's still open source if you want to, if anybody wants to take a look it's on my Github like potatoe/. Un noodle. N O DLE and in there you will see some skills and a brain directory And so I was really interested in this idea of.
+
+How do I. You know, extract my own. If that makes sense and give it to the agent right because I realized that you know all I was trying to do was trying to teach the agent to write code more like me, you know do workflows more like me. So, you know, the skills were like an entry point to doing that. And then after I joined Cursor, I was starting to work on the agents window and it had a lot of performance issues, it was pretty laggy and so since I had experience working and react, I was asked like hey, do you want to come and help out with the agents window? The beginning of the Cursor journey was very manual, I was deep in like looking at like flame grasss and heat snapshots and trying to see like why exactly is the app so slow?
+
+But then coming back to the same realization that I was sort of the bottleneck. I was doing everything manually, I was sort of the meat proxy in a way or I was a meat proxy between my agent and Chroe devaf tools and I was like really annoyed by that. And what month of the year is that, let's say, where are we in the timeline? So I joined curssor in March, so this was like early April, probably early April is when you know I joined and I didn't have any skills or I sort of abandoned my personal skills because I didn't think they'd be relevant anymore, but then working on the agents window and now working on GrokBot. I sort of realized that a lot of the. Lessons I had learned from those time building the initial set of skills were very relevant.
+
+Especially around things like. Verification, you, being very rigorous in your work. Because I think agents from my experience, even the frontier ones. 1end to. Tend to take shortcuts. They tend to do the easy thing. So a lot of the skills that I built have been around how do I make the easy thing the right thing, you know, how do I make that the best thing? The idea of sort of distilling your expertise. AndTurning what you do every day into processes, that's something that feels super familiar to me, that's exactly what I've been doing with the skills and I suppose. There's something in that, which is a lot of people think domain expertise is getting less useful now as people start to rely more on AI.
+
+What do you think about that just as a sort of five check before we start talking? I feel like domain expertise is more important than ever. You, I think I wrote this on my ex at some point. You know, at times, I sometimes think of. You know, AI as this. Like especiallyly as the models get smarter and smarter and more capable and the frontier models are just getting so good. Like I love Opus 5.5, by the way, you know, as the models get really, really, really good. It almost becomes like the bottleneck is no longer the agent, right, it becomes. Your ability to express your intent in your goals in a clear way that the agent can understand and. Actually carry out and that's why I think, you know, like people with a lot of domain expertise are extremely.
+
+Have a huge advantage in my opinion, especially if you're a little bit like you know, tech. Tecno curious. So I think of people like a doctor or a lawyer or someone who has a deep expertise in a particular non-engineering domain and if they're actually just a little bit tech savvy and they can figure out how to use agents, they can actually build really, really great products if they have a clear enough, Vision in their head. And they can articulate it in a way that the agent can build it. You know, I think that. That is really the bottleneck these days is like the transfer of your intent. Right,And your vision to the agent. Yeah I've been obsessed with language basically since Age dropped I just thinking constantly about the composition of words, how I can make things sharper, what might be hidden in the phrases that I'm using and finding what I love is when you find a word that the agent then hooks onto and then goes, okay, I'm going to reinforce that word I'm going to reuse that in my thinking traces.
+
+I found that with TDD was an early example of that, a lot of chat about TDD recently of like people say should you use TDD with agents, it doesn't matter what you're doing is you're getting the agent to think about TDD, getting it to write test, getting it to prioritize things in a different way than it did before and that's why sort of grilling I think works effectively grilling is it draws those words out of you or at least it helps the agent. Understand your thinking so that it can propose those words to you and you can pick up and say, yes, exactly that. I've actually copied some of the tips that you've shared with El. One of my favorite ones that you've shared recently not or like maybe in the past couple of weeks is about reducing or eliminating tautological tests, like one of my pet peeves of agents is like all of the useless tests that they write and so you know, That was one thing where, you the word taology is I guess you, not many people necessarily know that especially if English is in your first language.
+
+But there's a lot of meaning to that word and it's like. It's almost like compressed right like you compress a lot of intent and meaning into words and so I totally agree with you like I think language, I've always been interested in language actually. Like programming languages, natural human languages and how they came to be and it's so interesting that now with agents it's sort of like this meeting of. Natural language with programming language, but it's all it's all language out of the it's all communication totally I did a drama degree right, so you know I've been thinking about language and Shakespeare and stuff for a long time and so this all feels very familiar Yeah So okay there's sort of.
+
+Before we get into like. The thing I want from you is like. Software factory stuff right Soft factory is the big buzzword Soware factory is the thing that I'm thinking about to I'm sort of releasing a course in that direction to and. It's this sort of scaling yourself up to? Unrealistic numbers of PRs basically or PR numbers that sound ridiculous to people who don't understand how this works so where I want to get to is sort of from people who are doing kind of like one to five agents today up to you know hundreds of agents running at once and how that sort of functions and so I'd love to hear about your metaphor of the Michelin Kitch. Instead of the software factory because I think that says a bit about the way you think about this stuff, yes.
+
+Yeah, I've never really liked the term software factory, not because, you know, it's not accurate, but think I think the a lot of people when you think factory, right, they don't necessarilyequ that with. Po Or craft, right, things which are very important to me and a lot of people and technologists who work, you know, building products, we care about. The user experience, we care about the things we're building. So while I do think software factory is an apt term, it also I guess maybe conjures up negative you know maybe sometimes negative connotations so Michelin kitchenitch is the thing that I've sort of landed on where it's much more. I feel like it's much more aspirational. I like the metaphor a lot because you know I like food, I'm called potato of course, and I like cooking and I see a lot of parallels, right?
+
+Like, with. Right when you're cooking a meal for yourself, for example, it's both utilitarian like you're trying to just feed yourself right and survive. But it can actually be transformed into art and that's what a Michelin starred chef or even just a chef or a cook can do with food is take something very ordinary and turn it into a delicious meal that takes you back to your childhood days or something like that.. And so it almost like mirrors that trust letter that I talk about. Where. You can sort of imagine your own journey as a home cook right as a home cook, you are doing all of the food, the cooking yourself. You cut all the vegetables, you do all the prep work, you do all the cleanup, you know, you are the one man or one woman show really.
+
+And it's an interesting thought experiment like, okay, if you were to cook a meal. And then you add people right your partner drawing to your brother, your sister, and now suddenly you have your whole family in the kitchen, I think most people would get very stressed by that right the thought of oh so many people are just mucking around in my kitchen, they have no idea where all the utensils are they're I have a max capacity of one person Yeah exactly so yeah absolutely so I feel like that. That's really apt because. When you ask yourself that question of how do I go from being a solo cook, right? To having an army or even not even an army. A few sous chef right that are helping me in kitchen, how do I?
+
+Think about. Dividing the work in a way that makes sense. You know, I'm not dividing work just for the sake of it. But in a way, that actually makes the sum the better than, you know, the total of its parts. And so the Michelin kitchen. Metaphoror to me like works really well in that regard because, you know as a chef. Your. You know, if you become a chef, you're in a position where. You're not necessarily cooking all the food yourself anymore. But you are thinking. You're almost like the tech lead, right for the kitchen. Where you know, chefs have to think about, you know, not just cooking, but they have to basically organize the whole kitchen and they're like the CEO of the kitchen, they have to think about.
+
+When do you order ingredients, how do you store them, how do you prepare them, when do you have to be prepared, you know whole it's a whole job right that's not just cooking. And I think that again, it mirrors so much of. How engineers write code today where you are not writing the code yourself anymore, you have agents right but you as a human are still responsible for the final outcome right your name still is associated with the work that you do, your reputation. And. So how you set up your kitchen and how you set up your skills, your environment, your code base. I think. Are ultimately, the new ingredients that go into. Building product. Yeah I think what I love about your approach is the amount of focus that you put into the environment that the agent operates in right because I think a lot of people they think right the agent is good, I'm probably not going to be able to make it better, let's just trust what these magic model people have put into the harness and the model combination there's nothing I can really do like I can't mess about with claw codes internals or something or whatever you're using.
+
+But what I love about. Your approach and it's something I advocate for too is that you can change the environment the agent operates in right you can make changes in the cobase and also give it tools for verification as well and allow it to verify its own work so the thing I loved about watching that talk is the amount of focus you put in verification and like that is the lever that you can start to generate trust. Talk about that and what that concretely looks like, let's start like looking at practical ways that people can improve their own processes. They're in kitchens. Yeah, I've said this a lot actually that. Even if you don't use PStack or your skills, I think that the single most important skill that should be in your toolkit.
+
+Is verification? Because without verification and for by the way for those watching, don't know what that means, it's this idea that you can give, you can sort of give your agent. Hands and eyes, in a way, that's the analogy I like. Where the agent is able to run the code right and actually interact with it like a normal human user would and also do things like you know debug it, you, take traces and snapshots. And funnily enough, that was actually the first skill I built when I joined Cursor. That gave me a lot of that was the thing that actually started to let me ascend the trust ladder a little bit in a way that some of the other skills I had looked at, Or belts had not really led me through.
+
+Because no matter how good, you know, some of the other skills were like the how skill, the why skill, the unslopped skill were. I was still relying on me right as the proxy between my agent and the output. So that, you know, if the agent can actually see the result of its work, there's no way it can actually iterate. And so this is where people start to talk about loops, this idea of the loop. And really, I think the term loop, you know, seems kind of. Al. Like people like, what is a loop, what is an agent loop? But really, to me, like the most important part of the loop that allows it to be a loop is the verification part because the agent is able to. To verify its own work. And, you know, that takes you out of the equation where now I can actually do something like.
+
+So one of the very first use cases I had for verification was you like the performance work that I was doing on Cursor's Age window. And I wanted to get to a point where I could do something called hill climbing. Which is a term that I think the labs talk about a lot. Whichhich is this idea that you have some kind of rubric or a way to judge or score something, and now because you have a loop, you can have an agent continually try to make improvements to that. I think Karpathy, Andre Karpathy also famously released something called auto research that has a lot of these ideas. But yeah, very vacation, I would say is. Probably the most important skill in PStack and many other tool sets. And I think it's the most important thing to focus on so a lot of the a lot of I spent a lot of time actually you know tuning the verification, the C verification skill.
+
+And also internally. We have so many verification skills now like every app that Cursor has or SpaceX AI has. Has a verification skill that is auto maintained as well, And it's become critical infrastructure for our team because everybody. Uses it. And you went pretty far with that too, right like you had a in your talk I saw that you actually built a custom CI for that too, so what does that CLI do like how does it execute things and why did you, I mean that's proof of how deep you're going. Right actually're pushing. Yeah, so this is actually a tip I learned early on where.. I guess, you know, back in January or late last year. The thing that people were very concerned about was context window right that was the big the big topic at the time was.
+
+How do I you manage the context window because you know compaction summarization wasn't really that good yet and people were always people had this, there was almost this meme in the community that. You knowOnce your agent summarized or compacted once, it would become sort of stupid right for the rest of your session. So there was a lot of thinking around like. Being very efficient with your context usage and so. That was actually the inspiration for some of the. The CLI work inside of the verification skills. I guess now it's less so about context because. You know, agents are. Much better or harnesses have gotten a lot better with summarization. I still think there's some benefits to, you know.
+
+Having a clean context. Window. So the CLI is really just more if I away from me. Take the deterministic parts of what the skill does. And encode that into a script or a CI. To reduce, to kind of take away the judgment. That would otherwise unnecessarily be used. Because with judgment, so I also think of you know, agents and skills and sort of like. Its like a gradient. You have some parts of the work that are. Entirely judgment based, right, you know, something that requires thought, you know, putting together multiple pieces of context thinking. And then you have the more deterministic parts like, I don't know if you want to. Refactor some code, right from one pattern to another. That's very mechanical.
+
+Right, You don't, You don't need an agent to. Think about it and come up with it. In a novel way, each time. And so that was really the inspiration for the CLI and you'll see this in a lot of the other skills that I built is like I try to extract. That deterministic parts and turn that into code. And just leave only the parts that actually require judgment to the agent. So in a way, I think of the skill is kind of like a wrapper, it's a wrapper with some light instructions on how to use these custom tools that are inside of the skill. Oh yeah I don't think the C is really that interesting in its own really it's not like a novel piece of software it's just something that interacts with like playwright and the Chrome Devtools protocol and calls a bunch of APIs it's like it's just a bunch of glue No it's fascinating because it's a way of hiding information from the skill right it's a way of conserving the skill, keeping the skill quite small.
+
+And then you're able to delegate more of the complicated deterministic stuff into a script within the skill, so it's almost you're compressing. Information and making the agent do more consistent things more. Consistently, it's fascinating and it also helps, I guess if you care about context window, it does help. Because now the agent doesn't need to. You know, reinvent things. One thing I had noticed early on when we didn't have a CI. Was that. While the agent would try to verify its work but it would basically rebuild the world each time and every agent did it differently and I was starting to notice like that's very ineffient right I was wasting. It was actually not just about contact usage, but also speed right like as now an agent had to actually go off and write the scripts or to CLI and test it and you know and it doesn't work and the last agent did it and it worked, but I discarded it so it was just very obvious at that point like I should just turn this into a CLI and.
+
+That inside of the skill so that every agent that uses it now. Benefits from that same piece.. I also think like, it's a good push for people to think about. Is how much of your skills and rules could actually be deterministic? That's like another core thing or one of my core principles that I like to think about is. Make very efficient use of determinism and nondeterminism and let Asian shine at the non deterministic parts because that's what they're trained to do. And. The other parts, which are much more mechanical or straightforward can be just pure determinism. And you'll see this as well for things. Doing migrations, which is another big thing that I've talked about is you know. Going from one technology to another, especially one that is better for our agents right and a lot of how you can do that migration is, I think through, Things like scripts and CLs, like the deterministic parts, like code mods, you know, like crawling the AST, the abstracts and tax tree and transforming code literally mechanically like a script that does it for you instead of an agent.
+
+Totally makes sense. I think what. There's another thing there, which is. You're taking stuff away from the agent and you're kind of putting it in the environment too a little bit, which is let's say you have a thing that you notice the agent always gets wrong, you want to make that just impossible within the environment and that sort of comes down to, quality as well. Talk about a lot like having a. Good code base means right, what is a good code base and there's a definition I like, which is a good code base is a code base that's easy to make changes in. Easy to. Change stuff without things screwing up. And that means that you have a lot of guardrails that you have a lot of the agent or the human is constrained to very narrow paths and that's again something you talk about in your talk and you talk about this not only on the kind of, sort of automated checks side of things, so linting and time checking blahlah blah, but also in the way you design abstractions and you guys even I think built a framework for your agent to work into, I think.
+
+What I'd love to hear is. You obviously think of that as very important, right and that'. How important is that compared to other things you could be doing like building features or shipping work? Yeah, I think I almost feel like the new job of the engineer is really to spend time on the environment. I most actually wrote a tweet about this yesterday, but I didn't, but I think that. I think that if you haven't really spent time building trust in your Asian and building skills and tools. You can get stuck in this mode where you're very low on that trust ladder, right you don't have a lot of trust in your agent's work. And so. The only way to cope in that. When you're in that situation, it's just to kind of lock in and micromanage agents and that's very time consuming and when you're stuck in that mode, you don't really.
+
+Have the luxury to think about. You know. Higher level things. Making yourself more productive. In the same way that. I guess analogy would be like if you've never taken the time to learn like your tools or as a developer when you were writing code yourself and you have never heard of VS code, you've never heard of VIm, you only knew about notepad and you hadn't even heard about Git, that's sort of that analogy, it's like you haven't spent the time sharpening your own knives. And so of course, if you have a dull knife, then everything we can take a long time. And you're just going to be. And especially if you know, deadlines are looming. Then you don't have the now you're stuck in this rut, right where, where you, you, you don't have.
+
+Sharp knives, you don't have good tools. But you're under all this pressure to ship, right, and so all you can do is just focus on that. But I do think that, you know, if you can find yourself the time to actually spend time thinking about your setup. It's again, going back to the cooking you analogy. It's like. You know if you for example if. If cutting the garlic is like super slow, right, there are garlic and maers, right, you can you can buy and you put it in the thing and you like squeeze it out right is super fast. Machines and tools are invented for a reason, right? And so if you're operating a Michelin kitchen and your cooks had no tools, then of course, everything' is going to be extremely inefficient, very, very every cook is going to make something up of their own.
+
+So I think the tools and the determinism to me are you taking that part away and just like you said, about constraints as well. The constraints are to me as well. Actually, a slight tangent on that is. I think we should talk about Typescript because it's like we actually both share like a background in Tpescript where, you know, you obviously have done a lot of work with Typecr in, total Tpescript in. You know, you're a leader in that space. And I had adopted. Typecr pretty early and I had given like a talk or two at TypecrCon many years ago and so one of the talk that I did actually was about type systems and constraining the constraining types one of my most favorite things about TypeSscript is actually type narrowing right this idea that you go from a very broad type.
+
+That could be anything. And then you through. Type cardss and, you know. Ing and runtime checks, you can actually narrow the space and say like, oh, this isn't just a string. This is a very special type of string. It's a constant, right. I determine that through the type system. And in a way, it's like, there's a lot of parallels, I think, to that with. Constraints in your code base. Where is it you're constraining the space? If you think about category theory as well, you're constraining the number of possible. RightThat can exist. And you're saying there's only one type right, and for us like that. Framework that I'm building called Dunne. It's not an open source framework, it's the way I describe it to you people, it's kind of like our internal nextGS for our electron apps.
+
+But it comes with a lot of really, really restrictive lit rules and the code base is designed in a way that. There's really only one way to do something. So we make use we make use of a lot of conventional. Patterns. So like features all go into a specific directory, well every feature has its own directory as an example, you know, there's like a thing that discovers features like through a registry and like crawling the code base and stuff like that. This. Conventional pattern. And the Lnt rules make for an environment where it's actually very hard to write bad code. And that sort of frees out the. It both frees up your own mental. You know. Capacity as well as the agent sort of doesn't have to think about that anymore.
+
+Or it's just like, oh, there's only there's I should just if I want to add a new feature, it just goes into the feature the new feature directory and all the code goes in there and I'm not going to append to a God file right that was really actually the inspiration for those feature directories is, The very first couple of versions of GrokBot. Or composed of like eight. God files which for like at least 10,000 lines long, if not longer. And so I kind of had to break it up into smaller pieces. But I was just observing, you know. Actually, that's another important part is observing how agents fail. Every time you see a mistake, every time you see something that could be done better. You think you step back and think.
+
+How do I turn this into alin role, How do I make it so that? The code base makes this impossible, right? And it comes back to me from my background learning Type script and types. Type systems is. How do I. Constrain the space so that, you know I know precisely what I'm working with and I think, yeah, there's a lot of parallels there. Totally makes sense and then I mean. It's funny that you mention mentioned Tcr and files in the same sentence because Tpecrt famously has a 25,000 line type Yeah I realize that I, although don't know if they've rewritten that and go. U. So. Environment is important, you should watch your agent like a hawk to make sure that any mistakes it makes you turn them into things in the environment and the benefit of the environment is you're not overloading your agent in terms of rules in terms of things it has to remember it's just in the environment and so it stumbles into the rules exactly.
+
+Bunces off them and hits them at the right moment. So okay. We still haven't talked about the 2500 PRs, where do those come from, like how do you, you've built your trust ladder, you've worked on your environment and you understand, okay, I now want to scale up. So what are the mechanics of that scaling? Are you initiating 2500 like chats per month that can't be right, so there must be are there any kind of automated triggers that trigger stuff in your repo like how do you get the software factory kind of triggering work by itself? I'll definitely say that the prerequisite to. You know, something like a very high volume of pull requests. Is the environment, you know, the stuff we just talked about, where I definitely would not have been able to do this if I had not spent the time., thinking about the kitchen and the knives and the tools for my Asian and.
+
+In a way, I think of this as. I've spent a time building one kitchen and one restaurant. And now I'm in a position where I don't actually have to be there anymore. Because the environment, you know, the same analogy it works really well yeah I know that of restaurants exactly Yeah, exactly it's like youre Gordon Ramsay and you know, you've taught your executive chef like all the tricks of them of coming up with great menu and like the kitchen is set up really well, everything is just perfect. And you're now in a position where you can open your second, your third restaurant. I guess I sort of see each project that I work on like each big chat is sort of like a restaurant. And I have multiple of them operating at the same time, and I'm sort of like.
+
+Helicoptering between them, sometimes. Some more than others, depending on how in the Lu I am, but yeah, definitely, I think there is theyre external. Sggars and context that those. Projects don't have. For a long time, I was the proxy for that. The best example I have is like, you know, you have a project that's working on a feature. Or you're trying to fix the bug and you're getting bug reports, but the bug reports are going to things like Slack or. Linear or X, right. And these are external systems that aren't connected to your inner loop. So I like to talk about this outer loop in the inner loop. I don't know if I'm using the definition correctly, but to me my inner loop is like basically my.
+
+Engineers, my agent engineers working on the code to and building towards an intent. Or snapshot of my intent. And the thing about that is that the snapshot can go stale. New information comes to light. That I then have to be the proxy of and you know transfer that context to agent so you know if you don't have these triggers pulling information back into the inter loopop, Then you sort of have to play that role. Where you're off, you know in Slack or X or whatever, and you're gathering context right, you're gathering contracts about bug reports about feature requests about you know something someone said about, you know our back infrastructure has some limitation, you know, all that information.
+
+You have to ferry that across to your agent. So that's what I think like. Pools like GrokBot are really good because they help you. Autommate the outer loop as well. And when you connect those two loops, it's very, very powerful because now all of a sudden. Your Asians have the ability to get context for themselves, right if, for example. You know, either through just as a simple example, like maybe you have the Slack MCP right or you have your own harness right that you've built a Slack subscription into for a particular Slack channel. Now, all of a sudden you can tell your agents, okay, subscribe to the Slack channel. Every time there's a bug report about something, go off and triage that thing,, go reproduce the issue right using the verification skills that we've already spent time building and all of those other skills that we've set up.
+
+So that I have a lot of trust right I have a lot of trust that these agents can actually go off in. Understand the bug, you know, verify that the bug actually still exists on main and it wasn't. Something about, you maybe the user setup or their data or maybe I don't know, they didn't install a dependency or something like that. Basically, I think. Credating that. Yeah, creating those two loops and connecting them is really a very important part of the job these days. Especially if you are thinking about how to scale yourself. So. A big theme here is really just like always thinking about like. Where am I the bottleneck in this process? Why do my agents need me to answer this question, I always like to think about that.
+
+And so I try to think about how do I actually get the agent to answer its own question,, but not by hallucinating, not by guessing, but actually real data. And you know, a lot of people talk about this idea of a company brain right, or context graph, I feel like those terms aren't necessarily. Complex. Or even abstract to me iss just about. How do I take information that my agent needs that I would otherwise have to go and? Pass it myself. And just teach it how to do it. And that removes me from the equation. And so how I arrive at 2000 or however many PRs. Is the fact that I have all these loops set up. Right, and so. It allows me to open chain restaurants right I can I can really parallelze myself so yeah i'm not sitting there creating 250 chats right of course it's really like these projects are..
+
+Ary Ksler has a new feature called projects, which are these like coordinator agents. And so the coordinator agents are really good at. Sor of delegating and not doing work of their own, but they manage and supervise like almost a list of tasks. And sponsor agents to go and do them. And so, I'm just constantly. Feeding contexts or teaching the agents how to get their own context, and then they're going off. Doing the work for me. And really big the last thing I'll say to this is like the big unlock for me for getting to 2000 PRs. Is starting from the question and working backwards of? How do I get to the point where my agent can merge its own code? Because. The obvious thing people ask me when they when I tell them, oh, I shipped 2000 and 2500 pull requests last month, they'll be like.
+
+How did you review that, that thats a lot of PRs to review you like your team must hate you. Do you mind if we go there in a second because that's absolutely a good question about that. I want to like this analog is great, I want to like deepen it a bit, which is. Before if you're like manually initiating all those chats, it's like you're bringing the orders to your chefs manually, right, whereas if you've got an agent sort of like doing the expo, then you're able to sort of run it itself. What is. What does that concretely look like then you've got these sort of rock bots that are subscribing to channels, pulling in S messages and you it sounds like have a couple of coordinator agents or like chief of staff agents that like monitor that or something like when you look at your computer to manage your agents what does it look like?
+
+Yeah, so, so this is, I guess, somewhat confusing, but we're working on, you know, simplifying and unifying. But so. There is GrokBot which or you know, you can use other tools of course as well, but I largely think of these tools as like your outer loop. These are tools like. You know, G out that have connectors, right, These are connectors. I guess a lot of people call them personal agents. But there are connectors to things like your email, your calendar, Sck. Pid, I don't know, like all these different services. And they are a great source of pulling context in. To your work. So the same way that a human, like know, if I were, if I was a manager and I was. Leading a team of engineers. You know, like when I used to work in Netflix, one of the biggest things that managers would talk about was this idea of context, not control, which funnily enough, you know, has so much u, has so much carry over to the agents' world.
+
+Of, you know you. Know you of course can drive to an outcome you want by control right like by micromanaging, but what you want is to provide context instead right like teach the agent, teach your engineers how to be selfsicient and then you don't have to micromanage them and so I see a lot of parallels there but yeah Got. So concretely, I have some GrokBot that. Look at my slack channels, look at my ex. Or my emails are linear and they're just constantly they have routines that subscribe so they're constantly watching and I have I'll tell them things like you know I'll watch for issues with bugs in the GrokBot desktop app as an example. And whenever you find that, send it to my Cursor project.
+
+So one of the really cool things about Gpa is it connects to Cursor. So Cursor has. Like I just mentioned this new feature called projects. And a project is really a, again, like you get a coordinator agent that's in the cloud and has its own computer. And all it really does is like it's a manager of agents, it's like your executive chef, right, your chief of staff. It doesn't do the work itself. Delegates and orchestras and manages the work of other subagents to, you know. Report to your chief. Your're chief of SaF. And it. Basically is responsible for driving the work forward and managing things and. Passing context to them. So if you get a sudden burst of issues, let's say you get 30 issues at once in one payload or something or very quickly the coordinator agent can figure it out and delegate Yeah exactly, it gets like you0 the 30 or so payloads and spawns a subagent or a single coordinateded agent, it can actually do a bunch of different topologies.
+
+A agent, and it will sort of figure out the best way to. You know, efficiently. Distribute the tasks to your. T of agents. So I use Cursor projects a lot, and I also use GropO a lot. And. Crysal projects are my inner loop and Gr is my outer loop. Or takes all the context, externalter context. Gives it to the projects because it can actually just send messages to those projects. You don't even have the open Cursor, you can just tell your okay, create a project for these series of tasks because they're all related. As an example, you know, you had a. A big burst of issues that are all about performance, right your app is slow. And they're all connected, right maybe some of them even have a similar fix.
+
+And you can certainly go off and just spawn one agent per task. Then you've lost that sort of thread between them and you may duplicate work or you may not really think about the higher level problem you know sometimes when you solve bugs, you know it helps you have multiple bug reports that are slightly different because it helps you really you zoom out and see actually you know the problem when I looked at this one report, I thought the bug was here, but actually when I see the other multitude of bugs. Is actually up here. Yeah got you so that's why you have so many agents in that loop then, right, because it's not just you have like you have a bug report comes in, you spawn a single agent to look at that bug report that single agent will be duplicating work with other.
+
+Other agents, right, because if there are multiple bug reports coming in through the same thing, that it can be duplicated work fascinating. That's really fascinating, okay, and so just this endless series of triggers coming from real users reporting real reports. Builds up this sort of and accelerates the factory, sort of adds more orders in. Other than bug reports, are there any other sources that you use for like accelerating for pushing these PRs? Well, finallynily enough, some of it comes from reading the code too. So I guess I have sort of. Like so. To clarify that, you know, the 2500 PRs, they're not obviously like 2500 features, right they are. A lot of the work actually is spent on gardening, like another term that I really love.
+
+Where. So I guess this is more important when you have a big team of engineers, human engineers that you work with. Where. And also this goes back a little bit to what I was talking about with the environment, you know, setting up a really good environment that doesn't just help you and your agents, but everybody on your team right think of a new hire who doesn't have a lot of context on all of your engineering practices, joining your team. And if you have a really good environment, they can be productive from day one, right they can they don't have to like you know make open a bunch of low quality PRs, they can start. They can start just churn out really good code.. And yeah, I think. I sort of last my train of thought got I've got a follow up, which is what are the mechanics of like?
+
+Fggering. Like when do you trigger a? Arian to go and look at the code right because some people might say, well, let's just do that every hour or something or like on a Chon job or what's oh yeah, yeah, yeah. I saw some of your recent tweets as well about like, you know, the some of the tweets you've been doing, which are great for. Sap is routines. I have some routines like that as well. So. One of them is. Looking through. Just another simple example is, you know, react has a lot of foot gunns. So as I'm sure you're aware, and so I have an agent that' is constantly looking for bad patterns and. The interesting thing about that one is that I don't actually tell it to fix the issue first, I tell it to append it to a document.
+
+And then every couple of days, I look at it and I say, actually these are all the same thing, you know, and so that gives me. You know, you almost want like a buffer, A queue. Sometimes it's actually more effective than. Just spawning off a couple of like a lot of sub agents to fix every single thing. Cause when you are in. Kind of pure execution mode and just trying to like., execute on the orders that are coming in very fast. You sometimes miss missed the big picture. So sometimes having a buffer forces you to think about the big picture because you have these. Artifacts and things that you can look at as a human and sort of. Use your own human judgment to, or I guess you can use an agent to do that as well.
+
+But you give the agent and yourself a way to. Identify patterns right that you might otherwise miss if you're just. Onlyly saw 1. And that's also really the benefit of having something like a chief of staff agent is it can. See the forest, right? In addition to actually doing the execution. Fascinating. My brain is exploding a bit there with the sort of chief of staff, the So factory, I think? Might have to change some of the course that I'm filming next week all right, let's talk about let's talk about review right because this is the reply that you get. Did you readDid you taste all 2500 of those dishes as they swept past you? And I assume the answer is a version of no. Yeah, I think you don't want to be in a position where you're not tasting your food ever again.
+
+But you also, you know, for scale, you cannot be tasting every single dish that comes out of your kitchen, especially if you have multiple restaurants, so it becomes more about, Sampling right and thinking about the processes. In the same way that, you know if. I guess maybe this is where the factory. Annay is a bit more apt. You knowAs a quality supervisor on a factory, you can't look at every single item, you sample, right, you take you go in there. Every day and you look at the quality of the pull requests, you look at the code that the agents are writing. And you scrutinize it very rigorously, and you. Think about all the inefficiencies, the bad patterns that the agent are doing. And then you think about.
+
+How to course correct the environment,, not that single agent. Because. Maybe if it was a one off incident, it's fine, that maybe there's nothing to fix there. But if you actually notice that multiple agent are having the same issue, right they're taking the same shortcut, they're propagating the same workaround everywhere. That's a sign that you should go off and think about how to. Amend your kitchen or your factory right like thinking about your skills, your constraints, your lenss, your type systems and. Setting or addressing it so that problem doesn't happen again. And when you do that enough times, then you get to a place where. The code base is, again, like the environment is. So constrained.
+
+And so. It guides you so well. That you can just. You can just step away, right, that's the dream. And I'll definitely say it. It's very hard to get to this point. I don't want to sell this as like, you know, something that. You can just do easily by using PStack, like it takes a lot of time and effort. Think about your code. And where you see your agents failing. And thinking very thoughtfully, intentionally. Setting up guardrails and constraints so that they. Do the right thing by default. And, you know. Like. To go back to the software factory analogy, this isn't a dark factory right this the lights are wrong kind of is actually is it Yeah, well, it's dark in the sense that so it's dark in the sense that, Well, I think if my agents are.
+
+Merging their own pull requests, it's sort of become dark where I go to sleep by my agent now work 24/7. I have. I have the equivalent of more than 10 chief of staff each working on a different area. For example, I have one that's working on performance of the Gbo desktop app, I have one that's working on. Fixing bugs that use this report, I have one that's exploring, rewriting it in a different language just for fun, you know, like what if what if, you know just reimagining what it would be if it was like a native app, it's just a toy. And But the idea is like, yeah, when you spend the time setting up your environment. I've gotten to a point where I review the pull request after it's landed.
+
+I tell my agent full autopilot is something that you can do in PStack. And that will. Tgger off this very intense rigorous verification loop browses on a bunch. Verifier agents for every pull request and it will fuzz right fuzzing meaning that it will actually run the application, it's going to click around and try to use it like a real human, look for regressions, look for bugs in your implementation and. It will try to find issues with the thing and then it will. Fix it itself, it'll do that again and eventually get a PR to a state where it can land. So it is quite token intensive, you can tune this, of course. So you know, instead of like10 fire agents, you might do like one. Or just tell the agent to verify some work.
+
+But yeah, the key thing is. The verification part is really the key piece that gives me a lot of confidence. I guess verification plus the environment it's the combination of these two things that allow me to step away and say agents go off and merge a thing, I'll review it in the morning by looking at my commit history and if I see problems I go in course correct. Alright, and I'll go in. Rvert or modify, add new Li rules and whatever.. So it does take time to get to that point. Once you get it feels so magical. I tell people like I'm sleeping so much better now because, you know, it took the very first day I turned on that sort of a dark factory was very scary because I was like, ohh, what if I caused a s right, what if I break something overnight?
+
+And it took a lot of. It took a lot of bravery, I think, to do that, but somehow I did it and now I'm in a place where. My agent are merging their own code while I suppose it sounds I think it's dark in that sense Yes, it's dark sometimes right you do sometimes that's true that's true because I think of a dark factor is like, If you take the original definition of Karpathy's vibe coding, right, which is the code almost doesn't exist, you forget the code might be a thing. I think your approach is totally different from. Hi is that code and the environment is essential and if the code in the environment are bad, then you will get bad outputs garbage in garbage out. So I think this is. This is a different thing.
+
+You know. I don't know, maybe there's a dimmer switch or something right, like you know, some parts very dark, some parts this is why maybe the kitchen. Is a better analog, the restaurant because you know what? Even as a, as a, as a. As a restaurant restaurantur, you still might go to your restaurants every now and then take a peek in taste of food right yeah I think that the idea of sampling instead of blocking I think is really important I think what would you say to people who are in, I guess you're obviously in a pretty security conscious environment where you're working, very security conscious. Maybe there are folks working in like medical applications or law or finance or something. I think of that like some PRs are kind of like two way doors, which is you can merge it and then revert it right it's cheap to go back through, but there are some PRs that are one way doors right that will cause data loss of some kind that will, Do something that can't be easily walked back.
+
+How do you deal with situations where most of your PRs, let's say are one way doors like is this something you just wouldn't recommend or like, what do you think? Yeah, I think that's a really good question. I think that. It all comes back to me to the quality of the verification that you're able to. Get out of your agent. And I think for domains where the work is verifiable. This is easier, right, and the. One read become three read in a sense. I guess I don't know if you're working on something that is like. Extremely. I's very hard to verify programmatically, then I think yeah, you're definitely in a position where it's very hard to get to that point. So I do think like yeah, verifiability of the domain is an important.
+
+Aspect to be able to do this. And software engineering is one of those things where it's quite verifiable in a lot of cases, maybe not totally. You know, like other domains like mathematics, I think, are another example of. Not all of it, of course,. Some aspects of mathematics can be verifiable. If you write a proof, for example. And so. Yeah, I think it's a great question that I don't really have the answer to, and I think that this is something the industry and us as engineers will have to figure out. Is, you know, my sort of. Hope and prediction for the future is that we'll see more and more. Interesting new. Aggent oriented programming languages and one of the most fascinating ones that I've seen so far is this one called a language and that language is.
+
+One, where it kind of. Mary's. Programming with proofs. There used to be a time. Where you actually had to write your proofs in a different language. And proofs, by the way, for those who aren'tfam is this idea of. That you can sort of formally verify that some code is correct mathematically. Especially if you've written your code in a very functional programming way. But for the longest time, you have to do that in a separate language like leanan or TLA+ or. I'm blanking on some of the other examples. Like languages like that where you would construct a mathematical proof and then use a solver essentially to check that you've covered all the cases, you don't have like a race condition or whatever.
+
+So. Yeah, I think. Trying to sum up the question, I think yeah if you are in a position where you can figure out how your agents can truly verify the work in a way that, Gives you confidence. You can, actually. Have the PRs merge because if it compiles right, if the proofs show you that it's correct. Then why wouldn't you just merge it? Of course, yeah, not all the means are verifiable. It a. And. Okay. I think we've got to think about wrapping up because we are nearly on the hour, have you got something out of this, I mean I've got something to give my son dinner. I can go a bit longer after you, okay, let's give five minutes longer then. I think I just want to have one more question, which is.
+
+Think. I want to ask how. You see PStack. And how you see skills in general. Like in terms of. We talked about this before we went on air, which is like. People think of as like my skills versus your skills. How do you combine frameworks together, How do you use PStack with my stuff, like what should you take from each one and because I think I see skills as sort of. Just derived from process, basically, like they're just processes turned into words and. I would love to know. How you recommend people take PStack and take my stuff as well and turn it into their own processes? I think you shared a tip actually the today that I thought was actually very relevant. Which is this idea that you go off and look at your previous transcripts.
+
+And you sort of mine for information of your own. Look through your own, your own prompts, right to the agents where you correct them. Where you have to constantly intervene and. You know, take that higher level learning and turn that into a reusable skill or right so that agents stop repeating that mistake. I think that. PStack and your skills are very complimentary, I totally agree with you that like a skill is really much just process, I mean it's just at the end of the day skill is just English or language, it's just markeddown. And I think you can. You can definitely weave them, combine them in a way that makes sense to you. But I do think that. Everyone should have their own set of knives.
+
+I keep going back to the cooking analogy, but it's so apt because every chef. When they go to a different job, right, when they go to a different restaurant, they carry, they bring their knives with them, the tools go with them. And so trust to me is really about trust in your own tools. And. When you spend the time sharpening them and understanding them really, really well, you can do great things and everybody's skills and tool set is going to look different. Someone might find a lot of success combining. Like you grill me with docs or wayfinder skill with some of the execution skills in PStack as an example, some people might use more of your skills, some people might use more of my skills.
+
+I think at the end of the day, it really just comes back to. How much do you trust, you know me and Matt, right, like if you trust us both, of course, use our skills? But I also encourage you to look at your own transcripts. Have agent to look through you know some of all of the patterns that you've used, the times you've had to intervene, you know, suggest turning them into Lnt rules or new skills right the past chance I often say is like a treasure trove of context because you know it's, Yeah,, it's like. Process materialized right, like it's the real process, not an abstract. Idea in your head, it's the actual thing. And you can actually see how it happened in practice and extract so much information from that and there's so much so that I actually turn I have a skill in that called recall.
+
+Which is exactly that. Where this was a pattern where. You know, I was working in. I was working on a similar problem so specifically I was working on virtualization for the Cursor application and there were a lot of bugs and so you know every time I started a new chat I was like oh there's so much good context from the last one though you know I want to bring you over to the new chat, how do I do that and that's where the transcript of. You know, looking at the past transcript came about and then recall was just a way for me too. Collapse and compress that workflow into a skill so that I didn't have to just say. I don't have to write a long essay every time go look at all these chats right and you know blah, blah, blah, so I largely think of skills, especially as agents get more capable.
+
+As really encoding workflows. You know,S from last year were really more about like almost like implementation details like here are the exact script. Com you know, you should use, right? I think with the latest models, you can just delete those parts and just really focus on the workflow, right? And tell it's more the skill becomes more of like a series of steps. A series of your process. And I think over time, we'll see that skills get smaller and smaller, you know, more compact and. Yeah, they're very compatible or you can, you know. If you want, why not read? Our skills right and combine them of your own right, combine wayfinder with potato mode and make your own custom mode right like skills are the thing I love about skills are that they're so malleable.
+
+You can do anything you might just language. Absolutely, there's nothing magical in them right they're just words and exactly if there is any magic in them, it's just the words chosen and the phrase is used and. The thinking that's been done to turn those take abstract process and turn them into language. Once that thinking has been done, then it's just there, it's available, it's on the surface and you just nick it. Um. Lauurren, thank you so much. It's been glorious Yeah, this has been super fun. I really enjoyed talking to you hopefully really enjoy we can do it again I'd love to do it again Yeah, I'd love to do again absolutely Yeah, we'll check in. Yeah Monday, let's do it's do it. Well thanks so much, I'm going to close the stream here, Laura and I will chat a little bit and stay here, but thank you guys so much for watching.
+
+
+👋 Hey there, I’m Lenny. Each week, I share deeply researched product, growth, and career advice. For more: Lenny’s Jobs | Lenny’s Podcast | Lennybot | How I AI | Become an AI-Native Builder and my other favorite AI/PM courses
+
+P.S. Get a full free year of Cursor, Notion, Replit, Lovable, Wispr Flow, Linear, ElevenLabs, Factory, PostHog, Granola, Brain.fm, Waking Up, and more, by becoming an Insider subscriber (while supplies last). Learn more.
+
+I’d always thought AI was bad at design. But after reading this mind-blowing post by Anshu Chimala, I realize I was just doing it wrong. Anshu led software engineering and design teams at Apple for 12 years, focusing on research and prototyping for future AI products. He regularly shares design tutorials and demos on X (he’s one of my favorite follows). For deeper dives into crafting distinctive experiences with AI, check out his Substack and connect with him on LinkedIn.
+
+Let’s get into it.
+
+A conversational calorie tracker, built in three prompts with Claude Fable 5:
+
+A space exploration game, built in two prompts with Claude Opus 5:
+
+A dynamic landing page, built in three prompts with Claude Opus 5 + GPT-5.6 Sol:
+
+I often post AI design demos like these on X. Every time I do, someone inevitably asks, “Why does the model create all this incredible stuff for you, but when I try, I only get generic slop? It’s like you’re using a completely different model.”
+
+I’m not using a different model, but I am getting more out of the models I work with. Most people only see 1% of AI’s creative potential. I want to show you how to tap into the other 99%.
+
+AI models are capable of amazing creativity, but that creativity gets stifled by how they’re trained. Large language models are next-token predictors: at each step, they look at a sequence of text and predict what comes next based on millions of examples. The results may be rated by humans, and those ratings fed back into the model. This teaches the model to make consistent, safe choices that fit everyone’s preferences.
+
+This makes typical LLMs great at most tasks but poor designers. To create a design, an LLM has to build it out token by token. Whenever it needs to make a design decision—what colors to use, or how to arrange elements—the model fills in the tokens it thinks are most likely to please everyone. As a result, the design usually ends up being repetitive and bland. It’s like the ultimate case of design-by-committee.
+
+Great design, on the other hand, starts with feeling and aims to create an emotional response. It bends the rules and delights users with memorable, unexpected choices. Great design is exactly the opposite of what an LLM does naturally, which is to make the most predictable choice at every step.
+
+However, if we can get the model to reach beyond the most predictable choices, we can access a vast landscape of creative ideas that most people miss out on.
+
+This is a lesson I learned from managing human designers, before I was managing AI ones. For most of my career at Apple, I led an R&D team designing exploratory future AI products. Early on, our preconceived notions about how user interfaces should work limited our creativity and kept us returning to the same old ideas. Through rigor and new processes, we learned to stop re-creating what’s comfortable and instead look to the fringes of what’s possible, to generate something new. We became experts at polishing the little details to an Apple level of quality.
+
+Since my time at Apple, I’ve been working on applying that same process to my work with AI. In the past couple years, AI agents have become extremely capable. They can do in hours what used to take my team weeks. And with the right guidance, they can create designs that look completely unlike anything else.
+
+Loosely inspired by the Double Diamond design process, I’ve reimagined the design process for a team of AI agents instead of human designers:
+
+- Discover new ideas beyond the average slop by exploring a variety of directions and creating bold, ambitious design briefs.
+
+- Define an individual design identity by pushing AI beyond its familiar patterns and chaining models together to fully realize the design’s potential.
+
+- Deliver a stunning final result by polishing away the sloppy rough edges and focusing on the key elements.
+
+By following these stages and applying the techniques within each one, you can create an incredible design remarkably quickly—and make people ask, “Why does AI create magic for you (and not me)?”
+
+Discover: Explore the space of possibilities
+
+The hardest part of the design process is looking at a blank screen with infinite possibilities. The best way to tackle that moment is to start by going broad before going deep. AI is an excellent tool to explore a wide variety of potential directions.
+
+As we know, though, models tend to overrely on familiar patterns and make conservative choices. To explore the full potential design space, we want to coax a model to do the opposite: be bold, be varied, and take risks. Below are two ways to push it out of its comfort zone.
+
+Technique 1: Use seed strings to inject variety
+
+The idea here is to get the model to find a new source of inspiration for designs, rather than relying on the defaults it learned from training. If you’ve tried to prompt a model to design a website or app, you’ve probably already seen what that default looks like.
+
+As a simple example, I gave four instances of Claude Code the same prompt:
+
+Prompt: 
+
+Build me a landing page for my productivity app.
+
+Claude Opus 5:
+
+Almost every time, we get a purplish gradient, text on the left, graphic on the right, and the exact same structure. It looks like every AI-designed website ever.
+
+We didn’t ask the model to do anything unique or varied, so it makes sense that it keeps falling back on the same patterns it knows well. But just asking for variety doesn’t work:
+
+Prompt: 
+
+Build me a landing page for my productivity app. Give me something totally unique. Make every design decision completely at random.
+
+Claude Opus 5:
+
+The results are different from before, but they’re still not varied. The model always uses the same color scheme, structure, and even the same awkward pottery metaphors. It’s predicting tokens that sound random but aren’t actually random.
+
+The problem is that the model can’t inherently act randomly. It can only predict the most likely token. If we want variety, we have to bring it from outside the model. One technique for this is String Seed of Thought, published by Sakana AI. We make the AI generate a random string and use it as design inspiration. That way, the model is truly making different decisions each time.
+
+Prompt: 
+
+I want you to build me a landing page for my productivity app.
+
+Follow this procedure:
+
+- Generate a long, random alphanumeric string using a shell script.
+
+- Define the creative direction (color scheme, layout, typography, etc.) based on the string. Look beyond the surface for subpatterns, special numbers, anything that inspires you.
+
+- Use your judgment to bring this direction to life and make it look great.
+
+Don’t reveal the string in the design. It’s only for your inspiration.
+
+Claude Opus 5:
+
+Suddenly the outputs are much more varied! Now we’re seeing different color schemes, fonts, and new ideas. The previous designs were ones that any Claude user could get. These designs are one-of-a-kind; no two runs ever produce the same result.
+
+Technique 2: Be much more ambitious with your prompts
+
+Another approach to giving a model a strong push is to get more specific and wild with your prompts. This gives the model a clear vision to base its decisions on, rather than letting it make them up on the fly. The best way to find a unique idea is by bringing your own taste into the equation. You first imagine the inspiration—a video game, an interior design trend, an art installation—and describe how you’d like that inspiration to influence the AI’s outputs. Here are some examples:
+
+“Build me a landing page for my productivity app, with a bold pixel art theme and stunning graphics. Each section should feel like a still from a video game, yet somehow it should all function as a landing page.”
+
+“Build me a landing page for my productivity app, set in an isometric living 3D city, where different features are somehow represented by neighborhoods or buildings.”
+
+“Build me a landing page for my productivity app, with a radically asymmetric layout, dissonant colors and typography, and uncomfortable negative space. Break all the rules but still make it look good.”
+
+Of course, the hard part is coming up with original ideas to ask for. AI can help with this too, but if you simply ask it for ideas, you’ll get the same average ones everyone else gets. Here’s a system I use to find unique prompt ideas with AI:
+
+1. Ask AI to list a bunch of ideas, intentionally lacking detail. The goal is just to inspire your imagination.
+
+I want to come up with a bold, unique design language for my product. Can you list as many ideas as you can, with short, high-level descriptions? Go broad, not deep.
+
+2. Visualize your favorites and note how you react to different directions. Then ask AI to refine them.
+
+Industrial Control Panel:
+
+- I’m imagining something tactile. Clicky, satisfying buttons, nice sounds.
+
+- Initially I pictured something cartoony or skeuomorphic, but this feels tacky to me. Avoid that.
+
+- Instead, want consistent components and little touches that land this look without going overboard.
+
+- Gray gradients would look boring. Need more texture. Maybe we can incorporate some color, while retaining the control panel feel?
+
+Can you sharpen this one based on my tastes?
+
+3. Iterate until you’re satisfied, then ask AI to write the prompt to build it.
+
+Can you write a concise prompt that an AI agent could use to build an initial POC page with this?
+
+If you just paste AI-generated ideas back into AI, it’s hard to get something unique. After all, anyone else could have done the same thing. However, when you actively steer the design direction, you end up with something only you could have created.
+
+Don’t be afraid to try ideas that sound terrible. If you find yourself thinking, “There’s no way this will work,” you’re on the right track. Often, your agent will surprise you, and you’ll realize you were underestimating it. If not, just throw away those results and try something else. But save the prompts that don’t work, and test them again when newer models come out. That way, you’ll know you’re taking full advantage of what the latest models can do.
+
+Define: Deepen your design direction
+
+So far, we’ve looked at how to explore a broad set of ideas and hopefully land on a promising initial design. No matter how we prompt, though, our initial AI-generated designs will usually still feel generic.
+
+For example, look at the designs we came up with using seed strings:
+
+These have promise, but they’re still relying heavily on the same stale patterns: text on the left with a CTA button below, nav bar up top, graphic on the right.
+
+Our next goal is to give each design an individual personality through distinct design choices. Below are my favorite techniques to do that.
+
+Technique 3: Create positive feedback loops with subagents
+
+We need to iterate on our designs to improve them. But simply asking our agent to look at the design and improve it won’t work, because the agent isn’t objective: it reviews its own code, past decisions, and previous rationale. AI can’t easily zoom out, look at the big picture, and “think different.”
+
+To solve this, instead of letting the coding agent decide when the design is good enough, have it ask another agent—a “design critic.” The critic’s job is to look at screenshots of the current design and provide feedback. It doesn’t care how the current design is implemented or how much effort went into it, only if it actually hits the quality bar.
+
+This approach has an extra benefit: we can use a big, expensive model for the critic without breaking the bank, because we’ll only use it for executive decisions. A cheap, fast model can do the grunt work, while the strong critic model provides taste.
+
+Let’s try this on our previous designs, using Claude Fable 5 as the critic:
+
+Prompt: 
+
+I want you to improve this design. To figure out what to focus on, use a Fable 5 subagent as a design critic.
+
+Follow this procedure at each iteration:
+
+- Capture a screenshot of the current design
+
+- Invoke the critic in a fresh context, with just the screenshot, not the code, implementation details, or earlier iterations/critiques
+
+- Ask it to evaluate the aesthetic that the design is going for, imagine how a top design studio would execute this aesthetic, then outline the biggest gaps
+
+- Lastly, it should provide a score out of 10 indicating how close the current design is to that studio-level quality bar
+
+Provide this guidance to the critic in its prompt:
+
+- It should think high-level about the overall structure and composition as well as look at the fine details
+
+- It should watch out for patterns that feel overdone, excessive, or otherwise obviously AI-generated, and penalize them
+
+- It should provide tight, specific feedback, not vague prose
+
+- It should be bold and opinionated, not rely on what’s safe or easy
+
+Your work is only complete when the critic independently deems it 9/10 or higher. Do not put that criterion in the critic prompt; keep it objective in its scoring. Use the same critic prompt each time.
+
+Claude Opus 5:
+
+Instead of the same cookie-cutter layout over and over, each design now has its own identity—but still maintains its original high-level aesthetic.
+
+Notably, in each case, Fable accounted for less than 10% of output tokens. Asking Fable to redesign the page directly would have cost twice as much and taken much longer.
+
+The way you set these loops up matters a lot. Here are some tips:
+
+- Make sure the criteria for the critic are as clear and objective as possible.
+
+- Bad: “Judge if our design looks beautiful, not AI-generated.” This is too subjective, and the results will vary wildly from run to run.
+
+- OK: “Review the aesthetic we’re going for, visualize how a top design studio would execute it, then judge our design’s quality against that bar.” The prompt is still mushy, but it provides a consistent framework and quality bar.
+
+- Great: “Here are 5 designs: 4 professional examples and 1 screenshot of our product. Rank them by polish and taste level.” This instruction is concrete and objective, and gives a visual baseline for judgment.
+
+- Provide example images to demonstrate the target quality bar. You can use comparable screenshots or designs you like, or even AI-generated concept art. Instruct the critic to treat these as a baseline or a moodboard, not a target. You don’t want it to copy other designs outright.
+
+- Set the stopping criteria carefully. Otherwise, the critic may never consider the design good enough, and your agent will helplessly burn tokens trying to please it. Prompt it to do one or two iterations first, and see if it’s converging before adding more.
+
+- Choose the right model for each job. Consider bigger models for the critic role, since more parameters generally translate to better design sense and a wider distribution of ideas. Small models can be effective as the implementer, but don’t go too small. You still need a model that’s capable of executing a design direction well.
+
+Technique 4: Use image generation to enrich designs
+
+Coding agents love to write code, but they usually don’t incorporate images. Instead, they tend to use the easy code-based alternatives: gradients, shapes, and basic patterns. Those are all strong giveaways of an AI-generated design.
+
+Some agents have image tools built in, but they underutilize them. Others don’t have image tools out of the box but can easily use the OpenAI or Gemini APIs to generate images with an API key.
+
+Let’s try this on the designs from the last step:
+
+Prompt:
+
+The design is pretty plain. Add more personality using image generation. Consider shaders or 3D effects in combination with images to create more interesting visuals.
+
+For image generation, use this OpenAI API key (only use it locally, do not store it in the code or product): sk-a1b2c3d4…
+
+Verify that your work looks right frame-by-frame in the browser.
+
+Claude Opus 5 (before and after):
+
+Images and effects like these can quickly add a lot of personality and make a design less obviously AI-generated, since they demonstrate more than surface-level effort.
+
+Depending on your setup, there are different ways to connect your agent to image generation tools:
+
+- If you use Codex, Antigravity, or Grok Build:
+
+- Tell your agent to use its built-in image generation. The agent already knows how to do this but rarely does so until instructed.
+
+- If you use Claude Code or another agent but also have a ChatGPT subscription:
+
+- Tell your agent, “Use the Codex CLI to generate images. Help me install it if it isn’t already present. Make sure it’s billing my subscription, not an API key.” This lets you use your ChatGPT subscription for image generation without extra costs.
+
+- If you only use Claude, or any other tool:
+
+- The simplest path is to give your agent an OpenAI or Gemini API key to generate images. I recommend creating a separate API key with a tight spend limit, just for your agent. That way, your costs are controlled even if the key gets out or the agent misuses it, and you can easily revoke the key without disrupting other work.
+
+- If you find yourself pasting keys into chats frequently, put them in a file instead, and point your agent to it in your project. Tell your agent: “Create a gitignored file called .env.agents, store this API key in it, and note to yourself in AGENTS.md/CLAUDE.md that these keys are for you to use during development (but must not ship with the product).”
+
+Technique 5: For more advanced motion, use video generation
+
+Video generation models are incredibly powerful these days, but most people think of them as tools for generating UGC ads or clips of Will Smith eating spaghetti. They can work wonders for everyday design work too.
+
+There are many video models out there, and the best ones change frequently, so I like to use an aggregator platform like fal.ai. This way, we can give our agent a single API key and let it evaluate different options and choose the best one without needing multiple integrations.
+
+Here are two ways I love to use video models in my designs:
+
+Create stunning animated graphics
+
+The trick is to generate a looping clip with a solid color background, then either chroma key it out (like a green screen) or, in more complex cases, use a video matting model to remove the background. This gives you an animation that you can layer anywhere in your UI without it looking like a video.
+
+For example, I took one of our previous designs and ran this prompt:
+
+Prompt: 
+
+Can you replace the image on this page with a looping video clip that does something more interesting? Have the crystal splinter apart and slowly spin around. It should have awesome glassy effects that refract the page background and cast shadows and light around it.
+
+To get convincing glass refraction effects, render the video of the glass over the page background colors first (so it bakes in the refraction effects), then remove the background with a video matting model.
+
+Use this fal.ai API key: sk-a1b2c3d4…
+
+Find appropriate recent models for video generation and background removal.
+
+GPT-5.6 Sol (before and after):
+
+This is a much richer effect than you can get with code: interesting caustic reflections, glassy refraction effects, and complex physical motion.
+
+Create fluid transitions between states
+
+This is a really underrated use case for video models. In addition to generating video from text, many video models can interpolate between keyframe images. This lets you take two product stills and create a transition clip between them. You can play the clip when the user takes an action (like navigating to another screen of your app) or scrub through it frame-by-frame in response to a gesture (like scrolling or swiping).
+
+Here’s a demo page showing off a scroll effect. I built it with a single prompt using GPT-5.6 Sol in Codex:
+
+Prompt: 
+
+Build a demo page for a suitcase that uses a video model to create interactive transitions between a couple of screens. Each screen should show the suitcase in a different state, with vertical motion that feels appropriate for scrolling:
+
+- Initially, have the suitcase floating high up in the air
+
+- Then have it land on the floor and pop open
+
+- Finally, have its contents neatly land into it from the top
+
+Generate the initial frame using your image generation skill. Then, generate a video clip that starts from that frame and animates to the next state. Use the final frame of that video to seed the next transition so that it continues seamlessly. Scrub through the transitions one by one as the user scrolls.
+
+Use this fal.ai API key: sk-a1b2c3d4…
+
+Use a video model with strong physics and consistency, like Seedance 2.5.
+
+GPT-5.6 Sol:
+
+The transitions between pages scrub fluidly with the user’s scrolling and are fun to play with. Design like this makes the user want to keep scrolling and reading more about your product. And it only took one prompt!
+
+Deliver: Polish your design into something users will love
+
+Once we’ve gotten to a unique, standout design, the final step is to clean up the details and get it ready for production use. AI can build amazing, striking visuals, but your judgment will be key to making sure the design makes sense, flows well, and serves its practical purpose for your users.
+
+Technique 6: Cut out elements that don’t add value
+
+AI loves to add more, but it rarely takes away. One of the biggest signs that a design is AI-generated is that it overexplains everything or contains elements that don’t serve any practical purpose. By contrast, a design that exercises restraint immediately looks premium and tasteful.
+
+When polishing AI designs, most of my effort goes into removing things. For example, when I was building my calorie tracking app, this was my initial design from Claude:
+
+I’d described the app’s functionality and specifically asked for a “clean, minimalist design.” The results weren’t bad, and were certainly impressive for being fully AI-generated. However, despite my asking for minimalism, a lot in the design wasn’t adding value:
+
+- Pink glowy effects in the background and on the progress bar
+
+- Random colors and highlights on text
+
+- Extra labels and empty space when displaying all the foods for a day, when the images already communicate this
+
+- Custom buttons and text fields that look worse than built-in iOS components
+
+I asked Claude to dial things back:
+
+- Simplify the layout into an image-centric grid
+
+- Get rid of gradients, glows, and unnecessary containers
+
+- Aim for a truly minimalist aesthetic that feels Apple-native
+
+This was the result:
+
+To my trained eye, the result is much better. It’s opinionated and allows the visuals to speak for themselves. It uses native iOS components, and the excessive colors and gradients are gone. The text is smaller, simpler, and tighter. This is good design.
+
+Today’s AI models would never think to make these choices on their own. Remember, AI doesn’t like to take risks, and it’s risky to strip down a design and delete code. The model needs a push from you. Look over your design and ask yourself what really needs to be there. Often, putting less on the screen communicates more, because you can hold your users’ attention without overwhelming them with clutter.
+
+Technique 7: Remove AI tells

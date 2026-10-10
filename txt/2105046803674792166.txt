@@ -1,0 +1,9 @@
+https://x.com/chefbrent/status/2105046803674792166
+
+OpenAI DevDay 主题演讲五分钟速览 ｜ Brent Schooley（X） ｜ 5:00 ｜ https://x.com/chefbrent/status/2105046803674792166
+
+这是一段把 OpenAI DevDay 主题演讲剪成五分钟的发布合集，节奏很快，语气是典型的发布会式高能乐观。重头戏是 Dots：能力很强、始终在线的个人 agent，可以搭配新推出的协作页面 ChatGPT Spaces 使用。现场举了一个例子：有人把 bug 报告丢进反馈频道，同事的 Dot 自动接手调查，并直接提交了修复 PR。
+
+模型方面发布了 GPT-6.1 Sol，智能接近 Astra 级别，价格约为其五分之一。新的 Ultrafast 档位速度是标准档的 8 倍，价格是 6 倍，约每秒 300 token，演示里两枚"火箭"一快一慢、对比鲜明。Decisions API 让 Luna 模型从预设选项中做选择，从而实现亚秒级响应。
+
+面向开发者的更新还有：一个"AI 研究实习生"；Codex 全面上云，可以跨设备接续任务；Codex Security Cloud 持续扫描漏洞并准备修复；公测中的 Agents API，提供 harness、托管、记忆、多 agent 等组件，并支持电脑操作；以及加强数据控制的 Private Intelligence。另一段演示中，Astra 根据一张纸上的草图做出 3D 太空游戏，再自己学会玩。分发和商业化方面推出了"用 ChatGPT 登录"（用户可以把订阅里的 token 带到第三方应用）、插件扩展和 OpenAI Marketplace（首批 30 多家合作方，企业可以用 OpenAI 额度采购）。最后 Sam Altman 收尾：AI 若做对了，带来的会更像一场"新文艺复兴"，而不是又一次工业革命。

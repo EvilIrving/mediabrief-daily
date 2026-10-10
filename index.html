@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediaBrief</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;max-width:760px;margin:2em auto;padding:0 1em;color:#222}
+details{border-bottom:1px solid #ddd;padding:.6em 0}summary{cursor:pointer}small{color:#777}
+pre{white-space:pre-wrap;background:#f6f6f6;padding:.8em;max-height:30em;overflow:auto}audio{width:100%}</style>
+<h1>MediaBrief</h1><div id="list">加载中…</div>
+<script>
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+fetch('items.json').then(r=>r.json()).then(items=>{
+ list.innerHTML=items.map(i=>`<details><summary><b>${esc(i.title)}</b><br><small>${esc(i.date.slice(0,10))} · ${esc(i.source)}</small></summary>
+ ${i.link?`<p><a href="${esc(i.link)}">原链接</a></p>`:''}
+ ${i.audio_url?`<p><a href="${esc(i.audio_url)}">音频链接</a></p>`:''}
+ ${i.txt.map(t=>`<h4>${esc(t.label)}</h4><pre data-src="${esc(t.url)}">展开后加载…</pre>`).join('')}</details>`).join('');
+ document.querySelectorAll('details').forEach(d=>d.addEventListener('toggle',()=>d.querySelectorAll('pre[data-src]').forEach(p=>{
+  fetch(p.dataset.src).then(r=>r.text()).then(t=>p.textContent=t);p.removeAttribute('data-src')})));
+});
+</script></html>

@@ -1,0 +1,101 @@
+https://youtu.be/KVD_2SDDCzM
+
+A year from now, the same thing I think is very obvious now, which is that design is the new code.
+
+Mhm.
+
+If you believe that coding models will continue to get better, then you also believe that it's more outer loop architecture, decisions you make about how to go build a system that matter, not the code itself. The code is material, and the value rises to the top. And that becomes brand, it becomes product design, your marketing, your point of view in the world. And overall, the way you'll shape products is through design.
+
+Hello everyone, and welcome back to MTS. Today I am joined with the Dylan Field. He is the co-founder and CEO of Figma. And today's an exciting day. They just announced that their Figma design agent is moving from beta to general availability. It's now generally available for everyone. So, you can now use this agent to design rules and contacts, work alongside other people that I'm excited about, and also use all of these agents on the same canvas. So, Dylan, welcome to MTS.
+
+Thank you for having me. Good to see you.
+
+Great to see you. Great to actually chat about this agent that I know went in beta in May, but then since then you've gotten a lot of testing. Now you're actually going live. Tell me about these last few months. What did you learn about this agent in beta, and what's actually getting launched today?
+
+Well, most importantly, and first of all, so we learned that this is already something we kind of knew, and then we viscerally learned it. We viscerally learned how I think designers, product managers, they're willing to deal with the terminal, the IDE. It is not the preferred way of working. It doesn't feel like home. And they want home. They want a better way. And so, I think that agent is a part of that, code layers, which we announced at Config as well, will also be a part of that. And can't wait to be able to share more on that, but the we also, I think, learned how you really need to just go back to the basics when building non-deterministic software, and this is also obvious. But building with non-determinism, building with models, none of it's rocket science.
+
+It's just a little bit different than working with determinism. And in order to do it right, you have to know the obvious thing is like, Okay, I made a change. Did it get better? Did it get worse? Where did it get better? Where did it get worse? And so things like that, we had to get really dial in. We already thought we had dialed it in, but not enough. And based on all of our changes and improvements and the team's hard work, I'm really excited about this GA launch and being able to bring it to GA. It's faster, higher quality, works better with context, it just in general can understand better what you're trying to go for. And I think understands how to work with Figma better.
+
+Mhm.
+
+Which people obviously really want. And I think that we've also seen improvement on design system adherence, but more to go there and in all the places. This is still very much the start, and also it's something that we're really proud of.
+
+That's awesome. I know you guys mentioned that there's still a lot to improve. You just alluded to it as well here that there's certain areas that are good, but you want to make them even greater. What do you expect to come in the next maybe few months around? What are the specific areas that you're trying to improve?
+
+Well, I think it number one is design systems in general. I think that there's so much more to do there, and using the context of how you're designing locally in your canvas, as well as what you've done in the past. We do some of that now, and we'll do a lot more in the future. I and I think that, you know, these tasks are hard. You want to hallucinate, and you also need to be able to use the right things in the right times in the right ways.
+
+Yeah.
+
+And the bar This is one of those things where the bar for the machine is even higher than the bar for the human. You know, humans don't get this right all the time either, but we expect more from machines, and we should expect more. So, we are really working towards that like you know, superhuman design system human usage. But, I also overall just want to point out like the entire goal is empowering designers to the max. Like, this is not a designer replacement. And I think there's some things where you can do tasks that are tedious and you know, will take hours for a designer, and you can do them just like instantly now. And there's other things where designers with lateral thinking and like context and past experience, they just have these skills that models do not have and are able to make associations with real-world sort of inputs that are moments in culture or the feeling that you're trying to evoke.
+
+And these are just things that I think we will continue to see that brand and product design and point of view are differentiators and craft is a differentiator. And I think that the well-crafted experiences will stand out. And so, Agent is about empowering helping you. It's not a replacement, and working together with the agent, with multiple agents, multiple people, I think is the future.
+
+I want to shout out our sponsor, Lovable. You know that app you've been meaning to build, the internal tool, side project, or product you'd otherwise lose a weekend to? With Lovable, you get software you can ship today.
+
+That includes an editable codebase you can inspect and change, plus two-way GitHub sync. Lovable also handles the backend and infrastructure, including managed Postgres, auth, storage, hosting, payments, and more, so you don't have to wire it all up yourself. And through Lovable's MCP server, you can create and deploy your project directly from the agents you already use. Turn ideas into software people love with Lovable. Lovable.dev. Now, onto the episode.
+
+I really like that you put emphasis on that. It's not a replacement, especially for tools like Figma, where you have designers, you have artists, you have people that in the mainstream, often they hear AI and they go, that replaces me. This tool makes my entire craft obsolete. But, I really appreciated something you said at Config. You said, "Okay, sure, AI's coming in, but what AI does is it lowers the floor, but it has not raised the ceiling." So, can you tell me a little bit more about what you mean by that?
+
+Well, in the past I felt that in the you know years past, I said, "AI will lower the floor and raise the ceiling." And then I had to kind of correct myself cuz I'm like, "Actually, that's not what we're seeing yet. We're seeing it lower the floor. It's more democratized to do something." but, the ceiling really doesn't seem to have changed. And despite like all the amazing math results and the formal domain results, where you're able to formally verify something, you know, anything you can verify, AI is great at, math being number one, maybe cybersecurity number two. You can test to see deter- you know, like binary yes or no to this work. You get five designers in a room, they can't agree all the time on exactly what they should do.
+
+And that's what's interesting about design. There is not one solution, there's many solutions. And I think that overall, that said, I the we're getting a lot of center distribution, we're getting a lot of sort of average the mean work being created. Another word for it might be slop. You know, it's funny though, because a lot of the stuff that we call slop, you know, it wouldn't be stuff we called slop a month ago or two months ago. And so, as the models change, our definition of slop changes. Overall, I think that the craft that you imbue into something that you're creating, it is reflective of your thinking. It's reflective of your care. And because of that, people pick up on it, whether they can articulate it or not.
+
+They can tell, and they will judge appropriately. So, I do think it creates a lower bound that you have to exceed, but it doesn't define the upper bound. You define the upper bound. You define the ceiling.
+
+Yeah, you define the upper bound. It reminds me a lot of kind of the philosophy of David Deutsch where it's almost like we're always at the beginning of infinity. Once you think that you've reached the ceiling of maybe creative design, whatever it is, knowledge, or what whatever that cap is, you realize you're just at the beginning, and that there's so much more that you can continue to do. And you know, us as humans, we're especially entrepreneurs, you're always trying to figure out what is the most valuable part. What is the thing that nobody else is doing? And so, in this world where a lot of things are converging to the meme, to the mean, you get
+
+The meme, too, sometimes.
+
+I know. It's like the meme and the and the mean. You get people who want to figure out what is that unique thing that's valuable, and often right now, that's the thing that's uniquely human. And so, I'm curious to just get your like wider macro trends. Like, do you feel like these AI tools are actually creating more humanity?
+
+Mm. I think we're in a period of time, and it's interesting because people I think are going through the sort of AI loop of like, "Oh my gosh, the models they can do what?" And then kind of come out the other side, and sometimes it's repeated, but people are going through it at different intervals. And in a group setting, I've seen some companies that like have completed this loop end of last year, and some companies are just starting to go through the loop and, "Oh my gosh, what can I do? And so I think as people come in and come out the other side, there is just this return to okay, we still have employees. Like people still have jobs. We believe that the folks that are at our company, I mean I certainly do for Figma, they're great thinkers.
+
+And because they're great thinkers, I want them at Figma. And I want to hear their thoughts and I want to challenge their thoughts. I want to hear their second, third order thinking. I want to see how they're going to plan around corners and you know, what their predictions for the future are and what their judgment is. And I want to push further with them and explore things that have never been explored, like you said. So I think it's back to that and as long as you say that you can't use AI to help you there, I think the danger is if AI is doing the thinking for you. And you just kind of throw it over a wall. Whereas it's way better if you are using AI to learn faster, try things you've never been able to try before, and just generally be more daring.
+
+Yeah. And on the other end, I mean I come from a little bit of a product design background and so I've been pretty familiar with the Figma tool, but it's like new types of people who maybe historically didn't see themselves as designers are now getting involved with this tool. And so I wanted to get your perspective since you get to see the entire landscape, this entire industry from a very bird's eye view. What do you think might be true in a year from now when it comes to designers and what do you think will be true in a decade from now?
+
+Well, decade is hard sometimes in this world. But a year from now, the same thing I think is very obvious now, which is that design is the new code.
+
+Mhm.
+
+If you believe that coding models will continue to get better, then you also believe that it's more outer loop architecture, the decisions you make about how to go build a system that matter, not the code itself. The code is material. And then it the value rises to the top. And that becomes brand, it becomes product design, your marketing, your point of view on the world. And I think overall your judgment calls and strategy. And product design is really at the center of a lot of that. And so I think that for designers they will have a bigger role to play. If they step up, step up. Not everyone will step up. Some people will be like, "But I like what I was doing." And overall the way you'll shape products is through design.
+
+Yeah. All right, the 10-year the 10-year one now.
+
+10 years.
+
+Who even know where the knows where the world will be in 10?
+
+So it's 2036.
+
+Yeah.
+
+I think we'll have you know, 10K logical qubit quantum computers, we'll have a Mars colony or a start of one. I think that we'll have BCI working. We'll have a human connectome. And we'll have entirely new ways of interfacing with media and digital experiences. And you know, I think that the way we experience the world will feel very similar and also if you choose to experience the world very differently, it could also be very different. But that's opt-in.
+
+Yeah, that's pretty cool. I was thinking you're planning out our entire nation states on FigJam boards. That's kind of what I was picturing, but this too.
+
+I do have a FigJam board that has a timeline on it, but you know,
+
+It's I'm not sure I got to revisit that one. I'm not sure it's quite right anymore. It's already maybe been invalidated.
+
+Completely. Well, Dylan, things move pretty fast. I wanted to thank you for joining us on MTS today. For people who are just following along with Figma, following along with your journey, what can they expect to see from the company in the next few months?
+
+So much. I think that if you kind of follow the logical conclusion of agent and us announcing code layers, you can see how code is material on the canvas, and overall you'll be able to as a designer riff in a creative canvas-like space and be able to get all the way to a PR, and with that contribute technically to the code base, assuming that your engineers allow it. But all that will be possible with tooling, and all of it will, I think, be something that unlocks like a whole new wave of creativity, and I'm really excited for it.
+
+Completely agree. Even just the little things of how people are now thinking in terms of maps instead of in terms of letters and linearly, you can now think in your brain in terms of just like, "Okay, how it connects, how it everything can be true at once." Just completely I That's how I take notes, that's why I do everything on a FigJam board. Like my first when
+
+I got to see your notes sometime.
+
+Approach I'll show you. I post them a little bit on Twitter. They're all these like big mind maps of everything connected. I only used FigJam boards for everything, from research to whatever, it's all on a FigJam board because my brain can't think linearly. My brain is thinking in all different planes at once, and so FigJam is the only way that I can communicate with what's in my head and put it down on paper and convince it to another. And now I'm thinking like, "What does that mean when now I can communicate to an agent in that same way and communicate to my team, and agents can communicate to each other?" So excited. Possibilities are endless.
+
+Okay, we got to riff more on that. That's awesome.
+
+Well, we'll definitely have to riff more.
+
+See you. Thank you again for having me.
+
+Thank you, and likewise. Thank you so much, Dylan.
+
+A huge thanks to MTS sponsors. Blitzcy, autonomous software development for enterprise code bases. Ship 5x faster. Blitzcy.com. AdQuick, make your brand a billboard. Out-of-home advertising as easy to scale as digital. Adquick.com Arena, measuring AI performance in the real world. Arena.ai Support for the show comes from VCX, the public ticker for private tech. The US stock market started history's greatest wave of wealth creation. From factory workers in Detroit to farmers in Omaha, anyone could own a piece of the great American companies. But today, our most innovative companies are staying private longer, which means everyday Americans are missing out. Until now. Introducing VCX, a public ticker for private tech.
+
+Visit getvcx.com for more info. That's getv.cx.com Carefully consider the investment material before investing, including objectives, risk, charges, and expenses. This and other information can be found in the Innovations Fund prospectus at getvcx.com. This is a paid sponsorship.
