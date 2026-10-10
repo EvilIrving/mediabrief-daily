@@ -1,93 +1,276 @@
 https://martinfowler.com/articles/llm-and-dsls.html
 
-DSL 让大语言模型用得更可靠
+# DSL 让 LLM 的使用变得可靠
 
-大语言模型生成代码的速度惊人，但要确保它们生成的恰好是意图中的东西，它们需要清晰的边界。抽象和领域特定语言（DSL）提供了一条从一开始就引导大语言模型的牢固安全带。Tickloom——一个用于说明分布式系统行为的领域模型和 DSL——的例子表明，我们可以把大语言模型既当作迭代构建 DSL 的伙伴，又当作使用它的自然语言接口。在大语言模型的世界里，这样的 DSL 可以成为软件系统的关键真相来源。
+*LLM 生成代码的速度快得惊人，但要确保它们准确生成我们想要的东西，就需要清晰的边界。抽象和领域特定语言（DSL）提供了一副强有力的"挽具"（harness），从一开始就引导 LLM。Tickloom——一个用来演示分布式系统行为的领域模型和 DSL——这个例子展示了我们如何把 LLM 当作搭档来迭代地构建 DSL，又如何把它当作使用该 DSL 的自然语言接口。在 LLM 的世界里，这样的 DSL 可以成为软件系统关键的真相来源（source of truth）。*
 
 2026 年 7 月 14 日
 
-现代大语言模型拥有惊人的能力。它们可以从一段高层次的自然语言描述生成大量代码，有时甚至是整套系统。这里有一个重要前提：需要构建什么的"意图"要被清晰表达出来，用大语言模型能够映射到编码构建块的精确用语。不过有两点值得注意：事先规格的局限，以及设计是如何通过实现被发现的。
+现代 LLM 拥有一项惊人的能力。它们只凭一段高层次的自然语言描述，就能生成大量代码，有时甚至是整个系统。这里有一个重要的前提：要构建的东西的"意图"被清楚地表达出来了，用的是 LLM 能够映射到编码构件上的精确词语。然而，有两点值得注意：事先规格的局限，以及设计是如何在实现过程中被发现的。
 
-事先规格的局限
+## 事先规格的局限
 
-构建大型系统涉及许许多多细小的设计决策，这些决策不可能事先全部知道，也不可能完全由一份高层次规格驱动。规格充其量是一个起始假设：真正的约束、权衡和边界情况，是在我们推进实现时迭代地发现的。我们在更早的一篇文章里详细讨论过这一点，并称之为"事先规格不可能"（Upfront Specification Impossibility）。重点不是规格毫无价值，而是第一份规格是有待修订的假设，从来不是完成的蓝图。
+构建大型系统涉及大量细小的设计决策，这些决策不可能全部事先知道，也不可能完全由一份高层规格来驱动。规格充其量只是一个起始假设：真正的约束、权衡和边界情况，是在我们推进实现的过程中迭代地发现的。我们在之前的一篇文章里详细讨论过这一点，称之为"事先规格不可能性"（Upfront Specification Impossibility）。重点不是说规格毫无价值，而是第一份规格是一个有待修订的假设，永远不是一份完工的蓝图。
 
-自然的应对是迭代：细化规格，生成代码，审阅返回的结果，把学到的东西喂进下一轮。当每一轮产生的是小而可审阅的改动时，这个循环效果很好。
+自然的应对方式就是迭代：完善规格、生成代码、审查返回的结果，再把学到的东西反馈到下一轮。当每一轮都只产生一个小的、可审查的改动时，这个循环运转良好。
 
-设计是通过实现被发现的
+## 设计是在实现中被发现的
 
-在我们仍在发现设计时审阅代码，和写代码不是一回事。审阅生成的代码时，我们是一块块地核对它是否映射到意图，并寻找可能的陷阱。但审阅很少逼我们真正和设计决策较劲。写代码则相反，它逼我们思考具体的决策——比如职责该落在哪里，或者为了让设计能继续扩展该暴露哪些边界。正是在做这些决策时，设计才最充分地显现出来。
+审查代码——尤其是在我们仍在摸索设计的时候——和编写代码不是一回事。审查生成的代码时，我们一块一块地看，验证它是否符合我们的意图，并寻找可能的陷阱。但审查很少迫使我们去与设计决策较劲。相比之下，编写代码会迫使我们想清楚具体的决策——比如某个职责应该归属哪里，或者应该暴露哪些边界才能让设计进一步扩展。正是在做出这些决策的过程中，设计才最充分地显露出来。
 
-我们用来编码的语言和范式，会塑造我们得到的设计洞见。函数式设计路线或面向对象设计路线会揭示设计的不同侧面，以及该范式自然带有的惯用法与模式。
+我们编码所用的编程语言和范式，塑造了我们获得的设计洞见。函数式设计方法和面向对象设计方法会揭示设计的不同侧面，以及各自范式中自然而然的惯用法和模式。
 
-那么大语言模型该放在哪里？我认为它们扮演两个角色。在我们塑造设计及其词汇时，它们是很好的帮手，充当头脑风暴的伙伴，帮我们探索设计空间、发现正确的抽象。一旦词汇确立，大语言模型就成了通向它的出色自然语言接口。
+那么 LLM 适合放在哪里？我认为 LLM 扮演两种角色。在我们塑造设计及其词汇的时候，它们是很好的帮手，作为头脑风暴的伙伴帮助我们探索设计空间、发现正确的抽象。一旦词汇确立下来，LLM 就是它的一个出色的自然语言接口。
 
-领域抽象与 DSL
+## 领域抽象与 DSL
 
-一个有用的框架是领域驱动设计。它的核心洞见是在代码中构建领域的共享概念模型，然后用这个模型——DDD 称之为通用语言（Ubiquitous Language）——既演化代码库，又给团队一套思考和沟通的词汇。在这个模型之上构建一门领域特定语言往往非常有效：一种表达领域概念与操作的受约束语法。如此看来，大多数开发就是构建领域模型并用它演化系统的过程。大语言模型扮演两个截然不同的角色，取决于领域模型是否已经存在。本文将聚焦领域特定语言（DSL）如何与大语言模型协作。
+一个有用的框架是领域驱动设计（Domain Driven Design，DDD）。它的核心洞见是：在代码中构建一个共享的领域概念模型，然后使用这个模型——DDD 称之为"通用语言"（Ubiquitous Language）——既用来演进代码库，也为团队提供一套思考和交流的词汇。通常，在这个模型之上构建一门领域特定语言是非常有效的：一种受约束的语法，用来表达领域的概念和操作。这样看来，大多数开发工作就是构建领域模型、并用它来演进系统的过程。根据领域模型是否已经存在，LLM 扮演两种截然不同的角色。在本文中，我将重点讨论领域特定语言（DSL）如何与 LLM 协同工作。
 
-为什么 DSL 与大语言模型如此合拍
+## 为什么 DSL 与 LLM 如此契合
 
-DSL 和大语言模型合拍，是一种常见体验。PlantUML、Mermaid 和 Graphviz 是用于可视化建模的领域特定语言；SQL 是查询数据库的 DSL；Kubernetes YAML 是描述云基础设施的 DSL。它们不是通用编程语言——它们被故意收窄，用来在一个领域里表达一小套概念。大语言模型擅长从一段普通英文描述生成 Mermaid 图、SQL 查询或 Kubernetes 清单，也就不足为奇。
+DSL 与 LLM 配合良好，这是一种普遍的经验。PlantUML、Mermaid 和 Graphviz 是用于可视化建模的领域特定语言；SQL 是用于查询数据库的 DSL；Kubernetes YAML 是用于描述云基础设施的 DSL。它们不是通用编程语言——它们是刻意受限的，设计用来表达某一领域中一小组概念。所以 LLM 极其擅长根据一段普通英语描述生成 Mermaid 图、SQL 查询或 Kubernetes 清单，也就不足为奇了。
 
-我的观察是：DSL 让大语言模型更可靠，是因为它们对少量上下文示例反应极好。像 Java 这样的通用语言，表达同一意图有很多合法方式。DSL 把这种变化削掉了。给模型几个例子，就足以可靠地生成正确语法。值得注意的是，一线模型在训练时已经大量接触过 PlantUML 或 Java 的流式接口，所以它们并非从零开始。有意思的是，更小、更受约束的模型在面对一门真正新颖的 DSL 时表现会如何。
+我的观察是，DSL 让 LLM 更可靠，是因为它们对少量上下文示例的反应非常好。像 Java 这样的通用语言提供了许多表达同一意图的合法方式。DSL 把这些变化都剥离掉了。给模型几个示例，就足以让它可靠地生成正确的语法。值得一提的是，前沿模型在训练中已经大量接触过 PlantUML 或 Java 流式接口（fluent interface），所以它们并不是从零开始。看看更小、更受限的模型在面对一门真正全新的 DSL 时表现如何，会是一件有趣的事。
 
-对 agent——在自主的"生成并检查"循环中运行的大语言模型，而不是一次性生成——还有一个好处。DSL 几乎总自带确定性的校验器：解析器、JSON Schema、类型检查器或编译器。agent 可以生成一个候选，拿去过校验器，再根据错误修复，全程不必有人介入。关键的是，错误是用领域层面的话表述的——"选客户端之前不能选操作"——而不是深埋在生成代码里的堆栈跟踪。DSL 的工具链本身就是出色的安全带。我们会在下面的 Tickloom 例子里具体看到：DSL 的语法由宿主语言的编译器强制执行，运行结果也会被自动检查。
+对于 agent——在一个自主的"生成—检查"循环中运行的 LLM，而不是单次生成——还有一个额外的好处。DSL 几乎总是附带一个确定性的校验器：解析器、JSON schema、类型检查器或编译器。agent 可以生成一个候选结果，交给校验器检查，再根据错误进行修复，整个过程不需要人参与。关键在于，这些错误是在领域层面表述的——"选择客户端之前不能选择操作"——而不是深埋在生成代码里的一段堆栈跟踪。DSL 的工具集本身就是一副出色的挽具。我们会在下面的 Tickloom 示例中具体看到这一点：DSL 的语法由宿主语言的编译器强制执行，运行结果也会被自动检查。
 
-需要指出，这不是放之四海而皆准的方案。优势只在 DSL 足够小、足够受约束、几条上下文示例就能传达用法时成立。设计和维护这门语言及其语义模型也有真实的前置成本。因此回报集中在结构良好、真正受约束、并有校验器支撑的 DSL 上。
+需要强调的是，这并不是一个放之四海而皆准的方案。只有当 DSL 保持足够小、足够受约束，以至于几个上下文示例就能传达它的用法时，这种优势才成立。设计和维护这门语言及其语义模型也有实实在在的前期成本。因此，收益集中在那些分解良好、真正受约束、并且有校验器支撑的 DSL 上。
 
-例子：用大语言模型生成富含图表的 PowerPoint 演示文稿
+## 示例：用 LLM 生成富含图表的 PowerPoint 演示文稿
 
-大语言模型让定制工具变得很容易。我教分布式系统时经常需要做演示文稿，里面大多是解释集群中分布式操作的图。UML 序列图对此很合适，但在讲解消息如何流过集群时，一次性展示完整序列图并不太有用。我需要一个工具，能在 PowerPoint 里一步步展示序列图。在大语言模型帮助下，我做了一个工具：它处理一份描述演示结构、并引用 PlantUML 图的 YAML，然后生成 PowerPoint。PlantUML 图用步骤标记，工具为每一步生成一张单独的幻灯片。这样创建富含图表的演示就很容易了。
+LLM 让构建定制工具变得非常容易。在教授分布式系统时，我经常需要制作演示文稿，里面大多是解释集群中分布式操作的图。UML 序列图在这方面一直很好用，但在讲解消息在集群中的流转时，一下子展示完整的序列图并不太有用。我需要一个工具，在 PowerPoint 演示文稿中一步一步地展示序列图。在 LLM 的帮助下，我构建了一个工具，它处理一个描述演示文稿结构、并引用 PlantUML 图的 YAML，然后生成 PowerPoint 演示文稿。PlantUML 图中标有步骤，工具会为每个步骤生成一张单独的幻灯片。这让制作富含图表的演示文稿变得非常容易。
 
-提示词会生成带步骤标记的 PlantUML；另有一小段 YAML 描述幻灯结构（例如标题与所用图的引用）。即便提示说的是"创建幻灯 YAML"，也不是任意 YAML：因为生成 PowerPoint 的工具及其理解的规格被放进了提示上下文，模型才能直接产出可被工具使用的正确规格。
+> 生成一张 PlantUML 序列图，展示由 athens、byzantium 和 cyrene 三个节点组成的集群。用一个框标出集群。参与者 Alice 向 athens 发送消息"title"、"After Dawn"，Athens 给自己发送一条消息。放一个注释显示状态 'title: After Dawn'。Athens 向 byzantium 发送消息，发送失败。Athens 向 cyrene 发送消息。在 cyrene 右侧放一个注释。然后 athens 用 isQuorumReached 进行检查，并向 Alice 返回一个同步的 Success 箭头。在每条消息后面放一个 '[step] 标记。
 
-注意：在这一个例子里，大语言模型扮演了两个不同角色。首先它是共同设计者——帮忙塑造带步骤标记的 PlantUML 扩展，以及叠在现有 PlantUML 工具之上的幻灯 YAML。然后，一旦这个小 DSL 存在，它就变成把英文请求变成合法规格的自然语言接口。文章结尾我们还会回到这种分工。
+这个提示词生成了下面这段带步骤标记的 PlantUML 代码：
 
-构建语义模型
+```
+@startuml
+actor Alice
+box "Cluster" #lightblue
+participant athens
+participant byzantium
+participant cyrene
+end box
+'[step]
+Alice -> athens: "title", "After Dawn"
+'[step]
+athens -> athens: save()
+note right of athens
+  state:
+  title: After Dawn
+end note
+'[step]
+athens -[#red]x byzantium: "title", "After Dawn"
+'[step]
+athens -> cyrene: "title", "After Dawn"
+note right of cyrene
+  state:
+  title: After Dawn
+end note
+'[step]
+athens -> athens: isQuorumReached()
+'[step]
+athens --> Alice: Success
+@enduml
+          
+```
 
-上一节的例子很直接。YAML 被用作载体语法，我直接处理解析后的语法树，实际上把语法树本身当作语义模型（尽管这会把语法和执行语义耦合在一起）。但在更复杂的领域，比如分布式系统，我们需要更复杂的语义模型，来表示领域中的概念以及我们在代码库中做出的设计决策。下面看一个基于我构建的小型框架的例子，用来快速构建和测试分布式系统。
+我用它制作了 PowerPoint 演示文稿中的一系列幻灯片。为此，我开发了一个小型 YAML 规格，用来描述演示文稿的结构以及每张幻灯片要使用的图。这让我可以用 LLM 制作讲解复杂分布式系统概念的演示文稿，而不必在幻灯片上手动制作动画。生成一份幻灯片 YAML 规格的示例提示词简单得就像下面这样。
 
-例子：Tickloom——分布式系统的语义模型
+> 创建一份幻灯片 YAML，引用图 'quorum-write'，标题为 'Quorum Write Example'
 
-实现法定人数键值存储或 Raft、Paxos 这类共识协议是艰巨的任务。即便实现由提示词、规格或精心构造的 .md skill 文件增量引导，异步运行时仍会暴露大得吓人的实现决策空间。线程模型、网络模式、存储协调、重试行为和时间语义全都缠在生成的代码里。问题不只是代码生成的复杂度，更是验证的复杂度。线程调度、网络延迟、进程暂停和时钟偏移所有可能交错所形成的状态空间太大，系统性地审阅和验证所有交互行为的正确性几乎不可能。这正是即便在最久经考验的分布式系统里，Jepsen 测试仍能找到 bug 的原因。
+它会生成像下面这样的幻灯片规格 YAML：
 
-这正是语义模型有益之处。Tickloom 是我构建的一个小框架，用来构造和测试分布式算法。它的抽象不是通用运行时；它们是关于分布式进程如何行为的一套设计决策。每个节点运行在单线程的 tick 循环中：每次调用 tick() 将逻辑时钟推进一格，并按固定、确定的顺序处理待办工作（网络，然后消息总线，然后进程，然后存储）。时间以 tick 计量，而不是毫秒。消息是普通的 Java record。跨副本的协调通过一个已经了解同伴、广播和法定人数的 Replica 基类来表达。
+```
+          - slide:
+              title: "Quorum Write Example"
+              diagram: "quorum-write"
+        
+```
 
-线程、计时、网络投递不再是每条提示词里要重新决定的开放问题。留给算法作者的是真正的协议逻辑。例如，一个法定人数副本不过是用框架词汇表达的一组消息处理程序。
+需要注意的是，即使提示词说的是"创建一份幻灯片 YAML"，它也不是随便什么 YAML 规格。由于生成 PowerPoint 演示文稿的工具以及该工具能理解的 YAML 规格被作为上下文放进了提示词，LLM 能够生成正确的 YAML 规格，并可直接交给工具生成 PowerPoint 演示文稿。
 
-因为框架提供了词汇——Replica、quorumRequest、countResponseIf、MessageType、Handler——提示词可以停留在协议层面，而不是底层管道。语义模型本身充当上下文。提示词点名的概念在代码库里都有具体类型，所以大语言模型不是在发明线程模型或网络层——它是在固定、被充分理解的基底上填写协议逻辑。
+完整的 YAML 规格可以在这个 GitHub 仓库中查看。
 
-即便没有 DSL，好的抽象也有帮助
+请注意，在这一个例子里，LLM 扮演了两种不同的角色。首先它是共同设计者——在现有 PlantUML 工具之上，帮助塑造带步骤标记的 PlantUML 扩展和幻灯片 YAML。然后，一旦这门小 DSL 存在了，它就成了把英语请求转换成合法规格的自然语言接口。我们会在文章末尾回到这种分工。
 
-DSL 是光谱的一端，而且并不容易构建。在动手做自己的语言之前，值得注意：一套干净的抽象已经是同一思路的轻量版——正如框架为上面的法定人数存储提供了词汇，库的具名类型和方法本身就是模型可以锚定的词汇。Tickloom 的语义模型其实就是四条接缝——负责计算与消息处理的 Process/Replica、负责通信的 Network、负责持久化的 Storage，以及负责时间的逻辑 Clock——这种分解在不引入任何新语法的情况下就做了大部分工作。
+## 构建语义模型
 
-这就是为什么抽象，而不仅仅是 DSL，与大语言模型合拍。一条"把 Raft 实现为 Tickloom Replica"的提示词，可探索的状态空间有限。现有的 QuorumReplica 还可以作为上下文中的范例。
+上一节讨论的例子很简单。YAML 被用作载体语法（carrier syntax），我直接处理它解析后的语法树，实际上是把语法树本身当作我的语义模型（Semantic Model）（尽管这会把语法和执行语义耦合在一起）。但在更复杂的领域，比如分布式系统，我们需要更复杂的语义模型，来表示领域中的概念以及我们在代码库中做出的设计决策。我们来看一个例子，它基于我为快速构建和测试分布式系统而做的一个小框架。
 
-例子：为测试分布式系统场景构建 DSL
+## 示例：Tickloom——分布式系统的语义模型
 
-实现算法是一回事；演练它是另一回事。分布式系统中的微妙 bug 藏在特定的次序里：一次写入在读者的法定人数转移之前复制到某一个节点，一次在错误时刻愈合的分区，两个时钟已经漂移的协调者。直接针对测试套件写这样的场景，要摆弄 future，还要手写 tick() 循环。意图——"Bob 经 Byzantium 写入，Alice 经 Athens 写入，读者看到 Bob 的值因为 Byzantium 的时钟更快"——被埋在机械细节下。这样的代码也很难验证：有几十个附带决策（何时 tick、如何编码字节、调用哪个工厂重载）可能被大语言模型弄错，审阅者必须逐个检查。
+实现分布式系统——比如基于法定人数（quorum）的键值存储，或者 Raft、Paxos 这样的共识协议——是一项令人生畏的任务。即使通过提示词、规格或精心编写的 .md 技能文件来逐步引导实现，异步运行时仍然会暴露出一个庞大到令人难以招架的可能实现决策空间。线程模型、网络模式、存储协调、重试行为和时序语义，全都纠缠在生成的代码里。问题不仅仅是代码生成的复杂性，更是验证的复杂性。线程调度、网络延迟、进程暂停和时钟偏移之间所有可能的交错所产生的状态空间如此之大，以至于系统地审查和验证所有交互行为的正确性几乎是不可能的。这就是为什么我们看到，即使是最久经考验的分布式系统，Jepsen 测试也能找到 bug。
 
-于是我在语义模型之上构建了一门内部 DSL，其词汇就是场景本身的词汇——服务器、客户端、谁连到谁、每个客户端做什么、做的时候生效的是哪些故障。同一个场景变成声明式的 Scenario：给定服务器与客户端拓扑、给定各服务器时间，再写出 Bob 写入、Alice 写入、READER 读到 "B" 等步骤。故障读起来也像英语：partition(BYZANTIUM).from(CYRENE)、reconnect(BYZANTIUM)、delay(...).byTicks(100)。语法通过渐进式接口由类型系统强制执行——不能在拓扑之前声明步骤，也不能在选定客户端之前声明操作——整类畸形场景根本编译不过。因为这是建在 Java 里的内部 DSL，宿主编译器免费校验语法，畸形生成会以恰好钉在非法步骤上的编译错误返回，而不是运行时惊喜。
+这正是语义模型发挥作用的地方。Tickloom 是我为构建和测试分布式算法而做的一个小框架。它的抽象不是一个通用运行时；它们是关于分布式进程如何运作的一组设计决策。每个节点都运行在一个*单线程 tick 循环*中：每次调用 `tick()` 都会让逻辑时钟前进一格，并按照固定、确定的顺序处理待办工作（先网络，再消息总线，再进程，最后存储）。时间以 tick 计量，而不是毫秒。消息是普通的 Java record。副本之间的协调通过一个 `Replica` 基类来表达，它已经知道同伴节点、广播和法定人数。
 
-DSL 一旦存在，对故障场景的自然语言描述几乎直接映射到它上。像"复现不可线性化的法定人数读"这样的提示，会得到完全落在 DSL 受约束词汇内的场景。因为表面如此之小——它能生成的合法代码空间远小于合法 Java 程序的空间——大语言模型几乎没有幻觉空间，审阅者可以把结果当作实验描述来读，而不是逐行审计的代码。即便模型产生幻觉，内部 DSL 也会编译失败，从而让模型有机会修正错误。
+线程、时序、网络投递不再是每次写提示词都要重新决定的开放问题。留给算法作者的，就只有真正的协议逻辑。例如，一个法定人数副本就只是一组用框架词汇表达的消息处理器。
 
-与大语言模型协作的两个阶段
+因为框架提供了词汇——`Replica`、`quorumRequest`、`countResponseIf`、`MessageType`、`Handler`——提示词就可以停留在协议层面，而不必涉及底层管道：
 
-从上面的例子里浮现出一个模式：在每一个例子中，大语言模型都以两种相当不同的方式有用。
+> 使用 Tickloom 的 Replica 抽象，实现一个基于法定人数的键值存储。客户端 GET 应该从多数节点收集值，并返回时间戳最高的那个（最后写入者胜出，last-writer-wins）。只有当写入的时间戳比已存储的更新时，才在本地应用这次写入。
 
-第一阶段是设计抽象或 DSL 本身。这里最好把大语言模型当作头脑风暴伙伴，而不是代码生成器。正如本文开头所主张的，构成语义模型的设计决策不可能全部事先规定——我们是在实现它们时发现约束、权衡和边界情况的。所以这个阶段天生是迭代的、由反馈驱动的：你提出一个结构，拿真实案例去试，看看哪里别扭，再把学到的东西喂回下一轮。大语言模型加快这个循环——它草拟替代方案、批评设计、把一个想法从一种语言移植到另一种——但你牢牢坐在驾驶座上，因为这些正是你需要理解和拥有的决策。让 DSL 好用的结构，比如让非法场景编译失败的渐进式接口，或与生成它的构建器分开保存的语义模型，是靠迭代收敛出来的，不是靠写规格再生成代码得来的。
+这段高层描述生成了像下面这样的代码：
 
-第二阶段在抽象或 DSL 就位之后开始。大语言模型做的事变了：它成为你所构建之物的自然语言接口。本文中的提示词都是例子——"把法定人数存储实现为 Tickloom Replica"、"写一个复现 DDIA §10.6 那次读的场景"、"为这张图创建幻灯 YAML"。在每一种情况下，英文描述几乎直接映射到你定义的词汇，大语言模型之所以是可靠的生成器，正是因为抽象既提供了锚定提示词的上下文，也提供了检查结果的安全带。
+```
+@Override
+protected Map<MessageType, Handler> initialiseHandlers() {
+    return Map.of(
+            LWWMessageType.CLIENT_SET_REQUEST, this::handleClientSetRequest,
+            LWWMessageType.CLIENT_GET_REQUEST, this::handleClientGetRequest,
+            LWWMessageType.INTERNAL_SET_REQUEST, this::handleInternalSetRequest,
+            LWWMessageType.INTERNAL_GET_REQUEST, this::handleInternalGetRequest,
+            LWWMessageType.INTERNAL_SET_RESPONSE, this::handleInternalSetResponse,
+            LWWMessageType.INTERNAL_GET_RESPONSE, this::handleInternalGetResponse
+    );
+}
+private void handleClientGetRequest(Message message) {
+    var req = deserializePayload(message.payload(), ClientGetRequest.class);
+    var internalReq = new InternalGetRequest(req.key());
+    this.<InternalGetResponse>quorumRequest(LWWMessageType.INTERNAL_GET_REQUEST, internalReq)
+            .countResponseIf(r -> true) // 任何响应都可以，只需要多数
+            .send()
+            .whenComplete((responses, error) -> {
+                if (error != null) {
+                    send(createMessage(message.source(), 
+                                       message.correlationId(), 
+                                       new ClientGetResponse(req.key(), null, false),
+                                       LWWMessageType.CLIENT_GET_RESPONSE));
+                    return;
+                }
+                byte[] highestValue = null;
+                long highestTimestamp = -1;
+                for (InternalGetResponse r : responses.values()) {
+                    if (r.value() != null && r.timestamp() > highestTimestamp) {
+                        highestTimestamp = r.timestamp();
+                        highestValue = r.value();
+                    }
+                }
+                boolean found = highestValue != null;
+                send(createMessage(message.source(), 
+                                   message.correlationId(), 
+                                   new ClientGetResponse(req.key(), highestValue, found),
+                                   LWWMessageType.CLIENT_GET_RESPONSE));
+            });
+}
+```
 
-作为真相来源的 DSL
+语义模型本身就充当了上下文。提示词点名的概念在代码库中以具体类型存在，所以 LLM 不是在发明线程模型或网络层——它是在一个固定的、充分理解的基底上填写协议逻辑。
 
-有一种日益增长的趋势，是把提示词当作主要的真相来源。设计良好的 DSL 从根本上改变了这种动态。我观察到的与 DSL 协作的关键优势之一是：生成的程序本身往往成为人类维护的工件。因为 DSL 密集、富有表现力，且基本没有附带样板，它以一种在生成很久之后仍然可读的形式捕捉解决方案的本质意图。如果大语言模型根据自然语言请求生成了一个 Tickloom 故障场景，所得场景已经用领域词汇表达。如果下个月场景需要改动，不必找回原来的提示词再整段重生成。DSL 有足够的上下文让大语言模型知道意图并在此基础上工作。持久的资产不是提示词，而是 DSL 和语义模型。
+## 即使没有 DSL，好的抽象也有帮助
 
-致谢
+DSL 是光谱的一端，而且它并不容易构建。在着手做一门自己的语言之前，值得注意到：一套干净的抽象本身就已经是同一思想的轻量版本——而且，正如上面框架为法定人数存储提供了词汇一样，一个库中有名字的类型和方法本身就是一套可以让模型扎根的词汇。Tickloom 的语义模型其实只是四条这样的接缝——`Process`/`Replica` 负责计算和消息处理，`Network` 负责通信，`Storage` 负责持久化，逻辑 `Clock` 负责时间——这种分解在完全不引入新语法的情况下就完成了大部分工作。
 
-感谢 Martin Fowler 和 Rebecca Parsons 宝贵的反馈与建议。
+这就是为什么不只是 DSL，抽象也与 LLM 很搭。一个"把 Raft 实现为 Tickloom Replica"的提示词，需要探索的状态空间是有限的。现有的 `QuorumReplica` 可以放进上下文，作为一个现成的示例。
 
-重要修订
+## 示例：构建一门用于测试分布式系统场景的 DSL
 
-2026 年 7 月 14 日：发布
+实现算法是一回事；演练它是另一回事。分布式系统中那些微妙的 bug 藏在特定的顺序里：一次写入在读者的法定人数发生变化之前复制到了某个节点，一次分区恰好在最糟糕的时刻愈合，两个协调者的时钟已经漂移开了。直接针对测试套件编写这样的场景，需要摆弄 future 和手动的 `tick()` 循环。下面是用这种方式写的一个时钟偏移场景：
+
+```
+Cluster cluster = new Cluster()
+        .withProcessIds(Arrays.asList(ATHENS, BYZANTIUM, CYRENE))
+        .useSimulatedNetwork()
+        .build(QuorumReplica::new);
+cluster.start();
+try {
+    cluster.tickUntil(cluster::areAllNodesInitialized);
+    cluster.setTimeForProcess(ATHENS, 1000L);
+    cluster.setTimeForProcess(BYZANTIUM, 2000L);
+    QuorumReplicaClient alice = cluster.newClientConnectedTo(ALICE, ATHENS, QuorumReplicaClient::new);
+    QuorumReplicaClient bob = cluster.newClientConnectedTo(BOB, BYZANTIUM, QuorumReplicaClient::new);
+    QuorumReplicaClient reader = cluster.newClientConnectedTo(READER, ATHENS, QuorumReplicaClient::new);
+    TickCompletableFuture<SetResponse> bobWrite = bob.set(KEY.getBytes(StandardCharsets.UTF_8), "B".getBytes(StandardCharsets.UTF_8));
+    cluster.tickUntilComplete(bobWrite);
+    TickCompletableFuture<SetResponse> aliceWrite = alice.set(KEY.getBytes(StandardCharsets.UTF_8), "A".getBytes(StandardCharsets.UTF_8));
+    cluster.tickUntilComplete(aliceWrite);
+    TickCompletableFuture<GetResponse> read = reader.get(KEY.getBytes(StandardCharsets.UTF_8));
+    cluster.tickUntilComplete(read);
+    assertEquals("B", new String(read.getResult().value(), StandardCharsets.UTF_8));
+} finally {
+    cluster.close();
+}
+```
+
+意图——"Bob 通过 Byzantium 写入，Alice 通过 Athens 写入，读者看到的是 Bob 的值，因为 Byzantium 的时钟走在前面"——被埋在了机械细节下面。这也是难以验证的代码：其中有几十个附带决策（什么时候 tick、怎么编码字节、调用哪个工厂重载），LLM 可能在任何一个上犯下微妙的错误，而审查者必须逐一检查。
+
+所以我在语义模型之上构建了一门内部 DSL，它的词汇就是场景本身的词汇——服务器、客户端、谁连接到谁、每个客户端做什么，以及在它做这些事时有哪些故障在生效。同一个场景变成了：
+
+```
+        Scenario<QuorumReplicaClient> scenario =                        
+                        QuorumStepBuilder.scenario("LWW lost update via server clock skew")
+                        .servers(ATHENS, BYZANTIUM, CYRENE)
+                        .clients(ALICE, BOB, READER)
+                        .client(ALICE).connectedTo(ATHENS)
+                        .client(BOB).connectedTo(BYZANTIUM)
+                        .given(g -> g.serverTimeAt(ATHENS, 1_000L)
+                                     .serverTimeAt(BYZANTIUM, 2_000L))
+                        .steps(s -> {
+                            s.client(BOB).writes(KEY, "B").expectSuccess();
+                            s.client(ALICE).writes(KEY, "A").expectSuccess();
+                            s.client(READER).reads(KEY)
+                                    .expectResponse(v -> "B".equals(v));
+                        });
+```
+
+这门 DSL 是一层薄薄的声明式表层，它编译成一种纯粹的中间表示——一个由若干 `Step` 组成的 `Scenario`，每个步骤携带一个 `Action`（读或写）和可选的 `ClusterEvent`（分区、消息延迟这类故障）。故障读起来也像英语：`partition(BYZANTIUM).from(CYRENE)`、`reconnect(BYZANTIUM)`、`delay(INTERNAL_SET_REQUEST).from(ATHENS).to(BYZANTIUM, CYRENE).byTicks(100)`。语法通过渐进式接口（progressive interfaces）由类型系统强制执行——你不能在声明拓扑之前声明步骤，也不能在选择客户端之前声明操作——所以整类格式错误的场景根本无法通过编译。因为这门 DSL 是用 Java 构建的内部 DSL，宿主编译器免费替你校验语法，格式错误的生成结果会以编译错误的形式返回，并精确定位到那个非法步骤，而不是在运行时给你一个意外。
+
+一旦有了这门 DSL，对故障场景的自然语言描述几乎可以直接映射到它上面。像这样的提示词：
+
+> 使用 Tickloom 场景 DSL，写一个场景，复现 DDIA §10.6 中的非线性一致法定人数读。连接到 Athens 的写入者设置这个键，然后在从 Athens 到其他副本的复制被延迟时更新它。通过 Byzantium 读取的 Alice 被强制使用一个包含 Athens 的法定人数，看到了新值；稍后通过 Byzantium 和 Cyrene 组成的法定人数读取的 Bob，看到的仍然是旧值。
+
+会产出一个完全停留在 DSL 受限词汇之内的场景：
+
+```
+Scenario<QuorumReplicaClient> scenario =
+        QuorumStepBuilder.scenario("Non-linearizable quorum read")
+                .servers(ATHENS, BYZANTIUM, CYRENE)
+                .clients(WRITER, ALICE, BOB)
+                .client(WRITER).connectedTo(ATHENS)
+                .client(ALICE).connectedTo(BYZANTIUM)
+                .client(BOB).connectedTo(BYZANTIUM)
+                .steps(s -> {
+                    // 写入者先把键设为 VOLD，并完整复制
+                    s.client(WRITER).writes(KEY, VOLD).expectSuccess();
+                    // 写入者更新为 VNEW，但从 Athens 发出的复制被延迟
+                    s.client(WRITER).writes(KEY, VNEW)
+                            .whileClusterEvent(delay(QuorumMessageTypes.INTERNAL_SET_REQUEST)
+                                    .from(ATHENS).to(BYZANTIUM, CYRENE).byTicks(100))
+                            .expectSuccess();
+                    // Alice 通过 Byzantium 读取。通过把 Cyrene 分区隔开，强制法定人数包含 Athens。
+                    // 她会从 Athens 读到 VNEW。
+                    s.client(ALICE).reads(KEY)
+                            .whileClusterEvent(partition(BYZANTIUM).from(CYRENE))
+                            .expectResponse(v -> VNEW.equals(v));
+                    // Bob 稍后通过 Byzantium 读取。强制法定人数包含 Cyrene（并排除 Athens）。
+                    // 被延迟的 VNEW 复制还没到达 Cyrene，所以 Bob 读到 VOLD。
+                    s.client(BOB).reads(KEY)
+                            .whileClusterEvent(reconnect(BYZANTIUM))
+                            .whileClusterEvent(partition(BYZANTIUM).from(ATHENS))
+                            .expectResponse(v -> VOLD.equals(v));
+                });
+ScenarioResult result = scenario.run();
+```
+
+因为这层表面如此之小——它能生成的合法代码空间比合法 Java 程序的空间小得多——LLM 几乎没有产生幻觉的余地，审查者也可以把结果当作一份实验描述来读，而不是一段需要逐行审计的代码。即使 LLM 产生了幻觉，内部 DSL 也会编译失败，让 LLM 得以纠正自己犯的错误。
+
+## 与 LLM 协作的两个阶段
+
+从上面讨论的例子中浮现出一个模式：在每一个例子里，LLM 都以两种截然不同的方式发挥作用。
+
+第一个阶段是*设计抽象或 DSL 本身*。在这里，最好把 LLM 当作头脑风暴的伙伴，而不是代码生成器。正如本文开头所论证的，构成语义模型的设计决策不可能全部事先规定——我们是在实现的过程中发现约束、权衡和边界情况的。所以这个阶段本质上是迭代的、由反馈驱动的：你提出一个结构，拿一个真实案例去试，看它在哪里变得别扭，再把学到的东西反馈到下一轮。LLM 加快了这个循环——它勾勒备选方案、评论设计、把一个想法从一种语言移植到另一种语言——但你牢牢坐在驾驶座上，因为这些恰恰是你需要理解和掌控的决策。那些让 DSL 用起来顺手的结构，比如让非法场景无法编译的渐进式接口，或者与生成它的构建器保持分离的语义模型，都是你通过迭代收敛出来的东西，而不是靠写一份规格再生成代码得来的。
+
+第二个阶段在抽象或 DSL 就位之后开始。这时 LLM 所做的事情变了：它成了你所构建之物的*自然语言接口*。本文中的提示词就是例子——"把法定人数存储实现为 Tickloom Replica"、"写一个复现 DDIA §10.6 读操作的场景"、"为这张图创建一份幻灯片 YAML"。在每种情况下，英语描述几乎都直接映射到你定义的词汇上，而 LLM 之所以是一个可靠的生成器，恰恰是因为抽象既提供了让提示词扎根的上下文，也提供了检查结果的挽具。
+
+## DSL 作为真相来源
+
+现在有一种日益增长的趋势，把提示词当作主要的真相来源。一门设计良好的 DSL 从根本上改变了这种格局。我观察到使用 DSL 的关键优势之一是，生成出来的程序本身往往就成了人类维护的工件。因为 DSL 紧凑、富有表现力，而且基本没有附带的样板代码，它以一种在生成之后很久仍然可读的形式，捕捉了解决方案的本质意图。如果 LLM 根据自然语言请求生成了一个 Tickloom 故障场景，得到的场景已经是用领域词汇表达的了。如果下个月这个场景需要修改，没有必要去找回原始提示词、再把一切重新生成一遍。DSL 本身就有足够的上下文，让 LLM 了解意图并在此基础上工作。持久的资产不是提示词，而是 DSL 和语义模型。
+
+## 致谢
+
+感谢 Martin Fowler 和 Rebecca Parsons 提供的宝贵反馈和建议。
+
+## 重要修订
+
+*2026 年 7 月 14 日：*发布

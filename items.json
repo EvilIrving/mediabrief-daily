@@ -1554,8 +1554,8 @@
     "url": "txt/cur-13a6bc139eee.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-13a6bc139eee.m4a",
-  "title_zh": "SE Radio 710 ： Marc Brooker谈规范驱动的AI开发"
+  "title_zh": "SE Radio 710 ： Marc Brooker谈规范驱动的AI开发",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-13a6bc139eee.m4a"
  },
  {
   "id": "moXqSeVQ1Fk",
@@ -4057,6 +4057,28 @@
    }
   ],
   "title_zh": "AHA编程 💡"
+ },
+ {
+  "id": "cur-a3d03cc6ae0c",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Changelog",
+  "title": "The 10x developer myth (Interview)",
+  "link": "https://changelog.com/podcast/388",
+  "date": "2020-03-31",
+  "audio_url": "https://op3.dev/e/https://pscrb.fm/rss/p/https://cdn.changelog.com/uploads/podcast/388/the-changelog-388.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-a3d03cc6ae0c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-a3d03cc6ae0c.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-a3d03cc6ae0c.m4a",
+  "title_zh": "10倍开发者神话（面试）"
  },
  {
   "id": "cur-92a94e7953b1",

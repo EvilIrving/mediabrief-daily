@@ -1,8 +1,6 @@
 https://martinfowler.com/articles/llm-and-dsls.html
 
-DSL 让大语言模型用得更可靠（DSLs Enable Reliable Use of LLMs） ｜ Unmesh Joshi（刊于 Martin Fowler 网站） ｜ 文章 ｜ https://martinfowler.com/articles/llm-and-dsls.html
-
-Thoughtworks 杰出工程师、《分布式系统模式》作者 Unmesh Joshi 2026 年 7 月发在 martin fowler.com 上的长文。论点很集中：大语言模型写代码极快，但要把意图写准，需要清晰边界；领域抽象和领域特定语言（DSL）就是从一开始引导模型的安全带。他以自己做的分布式系统框架 Tickloom 为例，说明可以先和模型一起迭代设计 DSL，再用自然语言当接口去使用它；这样的 DSL 甚至能成为 LLM 时代系统的真正"真相来源"。文末感谢 Martin Fowler 和 Rebecca Parsons 的反馈。
+Thoughtworks 杰出工程师、《分布式系统模式》作者 Unmesh Joshi 2026 年 7 月发在 martinfowler.com 上的长文。论点很集中：大语言模型写代码极快，但要把意图写准，需要清晰边界；领域抽象和领域特定语言（DSL）就是从一开始引导模型的安全带。他以自己做的分布式系统框架 Tickloom 为例，说明可以先和模型一起迭代设计 DSL，再用自然语言当接口去使用它；这样的 DSL 甚至能成为 LLM 时代系统的真正"真相来源"。文末感谢 Martin Fowler 和 Rebecca Parsons 的反馈。
 
 他先摆清两个前提。大系统有大量细小设计决策，无法全部写进事先规格——规格最多是待修订的假设（他称为"事先规格不可能"）。设计是在实现里被发现的：审代码很少逼你真正较劲设计决策，写代码才会。语言和范式会塑造你看见什么。因此 LLM 有两个角色：设计词汇时当头脑风暴搭档；词汇稳定后当自然语言接口。
 
