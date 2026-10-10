@@ -14,8 +14,8 @@ a{color:var(--act)}
 .day{font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim);padding:10px 14px 2px}
 .it{display:block;padding:5px 14px 5px 11px;border-left:3px solid transparent;text-decoration:none;color:var(--tx);content-visibility:auto;contain-intrinsic-size:auto 44px}
 .it:hover{background:var(--sf2)}.it.on{background:var(--sf2);border-left-color:var(--ac)}
-.it .t{display:block;font-size:13.8px;line-height:1.35;font-weight:600}
-.it .s{display:block;margin-top:1px;font:10px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim)}
+.it .t{display:block;font-size:13.8px;line-height:19px;height:19px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .s{display:block;margin-top:1px;height:13px;white-space:nowrap;overflow:hidden;font:10px/13px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim)}
 .it.read .t{color:var(--mu);font-weight:400}.it.read .s::before{content:"✓ ";color:var(--ac)}
 #main{flex:1;overflow-y:auto;height:100%}
 #rd{max-width:720px;margin:0 auto;padding:0 28px 80px}
@@ -78,4 +78,20 @@ addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTARE
  else if(k==='Escape')document.body.classList.remove('reading')});
 if(location.hash)fromHash();else{const n=ITEMS.findIndex(i=>i.id===localStorage.getItem(LK));
  if(innerWidth>760)show(n>=0?n:0,true);else if(n>=0)els[n].scrollIntoView({block:'center'})}
+</script>
+<script type="module">
+// Fit each title on ONE line: one font size per row so original AND Chinese both fit (zero shift on swap).
+const FAM='"LXGW WenKai Screen",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif',REF=100,MIN=11,MAX=14;
+let measure;
+try{const P=await import('https://cdn.jsdelivr.net/npm/@chenglou/pretext@0.0.9/+esm');
+ measure=(t,f)=>P.measureNaturalWidth(P.prepareWithSegments(t,f));window.__fitEngine='pretext'}
+catch(e){const c=document.createElement('canvas').getContext('2d');measure=(t,f)=>{c.font=f;return c.measureText(t).width};window.__fitEngine='canvas'}
+const ts=[...document.querySelectorAll('#list .it .t')];let cache=new Map();
+const wOf=t=>{const f=`600 ${REF}px ${FAM}`,k=t;if(!cache.has(k))cache.set(k,measure(t,f));return cache.get(k)};
+function fit(){const sample=ts[0];if(!sample)return;const avail=sample.clientWidth-2;
+ for(const el of ts){const a=el.dataset.en||el.textContent,z=el.dataset.zh||'';const w=Math.max(wOf(a),z?wOf(z):0);
+  el.style.fontSize=Math.max(MIN,Math.min(MAX,Math.floor(avail*REF/w*10)/10))+'px'}window.__fitDone=(window.__fitDone||0)+1}
+fit();
+document.fonts.load('600 14px "LXGW WenKai Screen"',ts.map(e=>e.textContent+(e.dataset.zh||'')).join('')).then(()=>document.fonts.ready).then(()=>{cache=new Map();fit()});
+let lw=0;new ResizeObserver(()=>{const w=document.querySelector('#side').clientWidth;if(w!==lw){lw=w;fit()}}).observe(document.querySelector('#side'));
 </script></body></html>
