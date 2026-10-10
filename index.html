@@ -1,5 +1,5 @@
 <!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MediaBrief</title><meta name="color-scheme" content="light dark">
+<title>MediaBrief</title><link rel="icon" href="data:,"><meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.7.0/lxgwwenkaigbscreen.css">
 <style>
 :root{--bg:#FFF;--sf2:#F6F2E9;--bd:#D9D6CE;--ac:#6B5B4A;--act:#6B5B4A;--tx:#1E1D1B;--mu:#6E6C66;--dim:#9C9A91}
@@ -90,7 +90,8 @@ const ts=[...document.querySelectorAll('#list .it .t')];let cache=new Map();
 const wOf=t=>{const f=`600 ${REF}px ${FAM}`,k=t;if(!cache.has(k))cache.set(k,measure(t,f));return cache.get(k)};
 function fit(){const sample=ts[0];if(!sample)return;const avail=sample.clientWidth-2;
  for(const el of ts){const a=el.dataset.en||el.textContent,z=el.dataset.zh||'';const w=Math.max(wOf(a),z?wOf(z):0);
-  el.style.fontSize=Math.max(MIN,Math.min(MAX,Math.floor(avail*REF/w*10)/10))+'px'}window.__fitDone=(window.__fitDone||0)+1}
+  const fs=Math.floor(avail*REF/w*10)/10;el.style.fontSize=Math.max(MIN,Math.min(MAX,fs))+'px';
+  if(fs<MIN){el.classList.add('clip');el.parentNode.title=a+(z?'\n'+z:'')}else{el.classList.remove('clip');el.parentNode.removeAttribute('title')}}window.__fitDone=(window.__fitDone||0)+1}
 fit();
 document.fonts.load('600 14px "LXGW WenKai Screen"',ts.map(e=>e.textContent+(e.dataset.zh||'')).join('')).then(()=>document.fonts.ready).then(()=>{cache=new Map();fit()});
 let lw=0;new ResizeObserver(()=>{const w=document.querySelector('#side').clientWidth;if(w!==lw){lw=w;fit()}}).observe(document.querySelector('#side'));
