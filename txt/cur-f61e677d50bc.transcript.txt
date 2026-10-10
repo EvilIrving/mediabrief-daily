@@ -1,0 +1,807 @@
+https://magazine.sebastianraschka.com/p/llm-evaluation-4-approaches
+
+从零理解评估大模型的四种主要方法
+副标题：多项选择基准、验证器、排行榜和大模型裁判（附代码示例）
+
+**我们究竟该如何评估大模型？**
+这是个简单的问题，但往往会引出一场大得多的讨论。
+
+在为项目提供咨询或合作时，我最常被问到的问题之一，就是如何在不同模型之间做选择，以及如何理解外面那些评估结果。（当然，还有在微调或开发自己的模型时如何衡量进展。）
+
+既然这个问题出现得如此频繁，我想不妨简要概述一下人们用来比较大模型的几种主要评估方法。当然，大模型评估是个非常大的话题，不可能在一份材料里讲全，但我认为，对这些主要方法有一张清晰的心智地图，会让解读基准测试、排行榜和论文容易得多。
+
+我原本打算把这些评估技术放进我即将出版的新书《从零构建推理模型》（Build a Reasoning Model (From Scratch)，https://mng.bz/Nwr7）中，但它们最终有点超出了本书的主要范围。（这本书本身更侧重基于验证器的评估。）所以我想，把它写成一篇附有从零实现代码示例的长文来分享也不错。
+
+在《从零构建推理模型》（https://mng.bz/Nwr7）中，我采取动手实践的方式，从零构建一个推理大模型。
+如果你喜欢《从零构建大语言模型》（Build A Large Language Model (From Scratch)），这本书也采用类似的风格，用纯 PyTorch 从零构建一切。
+
+[图：《从零构建推理模型》封面]
+
+推理是近来改进大模型方面最令人兴奋、也最重要的进展之一，但如果你只听过"推理"这个词、只在理论上读过它，也很容易误解它。所以在这本书（https://mng.bz/Nwr7）中，我采取动手实践的方式从零构建一个推理大模型。
+
+这本书目前处于抢先阅读阶段，已有超过 100 页上线，我刚刚又写完了 30 页，排版团队正在把它们加进去。如果你参加了抢先阅读计划（非常感谢你的支持！），这些内容上线时你应该会收到邮件。
+
+_附注：大模型研究前沿现在正发生很多事情。我还在追赶我那份越来越长的论文收藏清单，打算在下一篇文章中重点介绍其中最有意思的几篇。_
+
+好了，现在我们来讨论大模型的四种主要评估方法，并结合从零实现的代码，更好地理解它们各自的优缺点。
+
+# 理解大模型的主要评估方法
+
+在实践中，评估训练好的大模型有四种常见方式：多项选择、验证器、排行榜和大模型裁判，如下图 1 所示。研究论文、营销材料、技术报告和模型卡（model card，指大模型专用的技术报告）通常会包含其中两类或更多类别的结果。
+
+[图 1：本文涵盖的 4 种不同评估方法概览。]
+
+此外，这里介绍的四个类别又可分为两组：基于基准的评估和基于判断的评估，如上图所示。
+
+（还有其他一些指标，比如训练损失、困惑度和奖励，但它们通常是在模型开发过程中内部使用的。）
+
+下面各小节将简要概述并举例说明这四种方法。
+
+# 方法 1：评估答案选项的准确率
+
+我们从一种基于基准的方法开始：多项选择问答。
+
+历史上，最广泛使用的评估方法之一是多项选择基准，比如 MMLU（Massive Multitask Language Understanding，大规模多任务语言理解的缩写，https://huggingface.co/datasets/cais/mmlu）。为了说明这种方法，图 2 展示了 MMLU 数据集中的一道典型题目。
+
+[图 2：通过将大模型的多项选择预测与数据集中的正确答案进行比较，在 MMLU 上评估大模型。]
+
+图 2 只展示了 MMLU 数据集中的一个例子。完整的 MMLU 数据集涵盖 57 个科目（从高中数学到生物学），共约 1.6 万道多项选择题，性能以准确率（答对题目的比例）来衡量，例如在 16,000 道题中答对 14,000 道，准确率就是 87.5%。
+
+像 MMLU 这样的多项选择基准，以一种直接、可量化的方式测试大模型的知识回忆能力，类似于标准化考试、很多学校考试或驾照理论考试。
+
+> 注意，图 2 展示的是多项选择评估的简化版本，即把模型预测的答案字母直接与正确答案比较。另外还有两种流行的方法，涉及对数概率打分（log-probability scoring）。我在 GitHub 上实现了它们（https://github.com/rasbt/reasoning-from-scratch/tree/main/chF/02_mmlu）。（由于它们建立在本文所讲的概念之上，我建议读完本文后再去看。）
+
+下面各小节说明如何用代码实现图 2 所示的 MMLU 打分。
+
+## 1.2 加载模型
+
+首先，在 MMLU 上评估之前，我们必须加载预训练模型。这里我们将使用一个用纯 PyTorch 从零实现的 Qwen3 0.6B，它只需要大约 1.5 GB 内存。
+
+注意，Qwen3 模型的实现细节在这里并不重要，我们只是把它当作一个想要评估的大模型。不过如果你感兴趣，可以在我之前的文章《从零理解并实现 Qwen3》（Understanding and Implementing Qwen3 From Scratch，https://magazine.sebastianraschka.com/p/qwen3-from-scratch）中找到从零实现的逐步讲解，源代码也可以在 GitHub 上找到（https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py）。
+
+我们不把大量 Qwen3 源代码复制粘贴过来，而是从我的 reasoning_from_scratch Python 库（https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch）中导入它，可以通过以下命令安装：
+
+`pip install reasoning_from_scratch`
+或
+`uv add reasoning_from_scratch`
+
+#### 代码块 1：加载预训练模型
+
+```
+from pathlib import Path
+import torch
+from reasoning_from_scratch.ch02 import get_device
+from reasoning_from_scratch.qwen3 import (
+    download_qwen3_small, Qwen3Tokenizer,
+    Qwen3Model, QWEN_CONFIG_06_B
+)
+
+device = get_device()
+
+# Set matmul precision to "high" to 
+# enable Tensor Cores on compatible GPUs
+torch.set_float32_matmul_precision("high")
+
+# Uncomment the following line 
+# if you encounter device compatibility issues
+# device = "cpu"
+
+# Use the base model by default
+WHICH_MODEL = "base"
+
+if WHICH_MODEL == "base":
+    download_qwen3_small(
+        kind="base", tokenizer_only=False, out_dir="qwen3"
+    )
+    tokenizer_path = Path("qwen3") / "tokenizer-base.json"
+    model_path = Path("qwen3") / "qwen3-0.6B-base.pth"
+    tokenizer = Qwen3Tokenizer(tokenizer_file_path=tokenizer_path)
+
+elif WHICH_MODEL == "reasoning":
+    download_qwen3_small(
+        kind="reasoning", tokenizer_only=False, out_dir="qwen3"
+    )
+    tokenizer_path = Path("qwen3") / "tokenizer-reasoning.json"
+    model_path = Path("qwen3") / "qwen3-0.6B-reasoning.pth"
+    tokenizer = Qwen3Tokenizer(
+        tokenizer_file_path=tokenizer_path,
+        apply_chat_template=True,
+        add_generation_prompt=True,
+        add_thinking=True,
+    )
+
+else:
+    raise ValueError(f"Invalid choice: WHICH_MODEL={WHICH_MODEL}")
+
+model = Qwen3Model(QWEN_CONFIG_06_B)
+model.load_state_dict(torch.load(model_path))
+model.to(device)
+
+# Optionally enable model compilation for potential performance gains
+USE_COMPILE = False
+if USE_COMPILE:
+    torch._dynamo.config.allow_unspec_int_on_nn_module = True
+    model = torch.compile(model)
+```
+
+## 1.3 检查生成的答案字母
+
+本节我们实现最简单、也许也是最直观的 MMLU 打分方法：检查生成的多项选择答案字母是否与正确答案一致。这与前面图 2 所示的类似，为方便起见再次展示如下。
+
+[图 3：通过将大模型的多项选择预测与数据集中的正确答案进行比较，在 MMLU 上评估大模型。]
+
+为此，我们将使用 MMLU 数据集中的一个例子：
+
+```
+example = {
+    "question": (
+        "How many ways are there to put 4 distinguishable"
+        " balls into 2 indistinguishable boxes?"
+    ),
+    “choices”: ["7", "11", "16", "8"],
+    “answer”: "D",
+}
+```
+
+接下来，我们定义一个函数来格式化大模型的提示词。
+
+#### 代码块 2：加载预训练模型（原文小标题如此，实为格式化提示词）
+
+```
+def format_prompt(example):
+    return (
+        f"{example['question']}\n"
+        f"A. {example['choices'][0]}\n"
+        f"B. {example['choices'][1]}\n"
+        f"C. {example['choices'][2]}\n"
+        f"D. {example['choices'][3]}\n"
+        "Answer: "
+    )
+# Trailing space in "Answer: " encourages a single-letter next token
+```
+
+我们在这个 MMLU 例子上执行该函数，看看格式化后的大模型输入是什么样子：
+
+```
+prompt = format_prompt(example)
+print(prompt)
+```
+
+输出为：
+
+```
+How many ways are there to put 4 distinguishable balls into 2
+indistinguishable boxes?
+A. 7
+B. 11
+C. 16
+D. 8
+Answer:
+```
+
+如上所示，这个模型提示词给出了不同答案选项的列表，并以 `"Answer: "` 文本结尾，鼓励模型生成正确答案。
+
+虽然并非绝对必要，但有时额外提供一些附带正确答案的问题作为输入也会有帮助，这样模型就能看到它应该如何解决这个任务。（例如，提供 5 个例子的情况也被称为 5-shot MMLU。）不过，对于当前这一代大模型来说，即使是基座模型也已相当强，这并不是必需的。
+
+> #### **加载不同的 MMLU 样本**
+>
+> 你可以通过 datasets 库直接加载 MMLU 数据集中的样本（可以通过 `pip install datasets` 或 `uv add datasets` 安装）：
+>
+> ```
+> from datasets import load_dataset
+> 
+> configs = get_dataset_config_names("cais/mmlu")
+> dataset = load_dataset("cais/mmlu", "high_school_mathematics")
+> # Inspect the first example from the test set:
+> example = dataset["test"][0]
+> print(example)
+> ```
+>
+> 上面我们使用的是 `"high_school_mathematics"`（高中数学）子集；要获取其他子集的列表，可以使用以下代码：
+>
+> ```
+> from datasets import get_dataset_config_names
+> 
+> subsets = get_dataset_config_names("cais/mmlu")
+> print(subsets)
+> ```
+
+接下来，我们对提示词进行分词，并把它包装成一个 PyTorch 张量对象，作为大模型的输入：
+
+```
+prompt_ids = tokenizer.encode(prompt)
+prompt_fmt = torch.tensor(prompt_ids, device=device)
+# Add batch dimension:
+prompt_fmt = prompt_fmt.unsqueeze(0)
+```
+
+把这些准备工作都做完之后，我们在下面定义主要的打分函数。它会生成几个 token（这里默认是 8 个），并提取模型输出中第一次出现的字母 A/B/C/D。
+
+#### 代码块 3：提取生成的字母
+
+```
+from reasoning_from_scratch.ch02_ex import (
+    generate_text_basic_stream_cache
+)
+
+def predict_choice(
+    model, tokenizer, prompt_fmt, max_new_tokens=8
+):
+    pred = None
+    for t in generate_text_basic_stream_cache(
+        model=model,
+        token_ids=prompt_fmt,
+        max_new_tokens=max_new_tokens,
+        eos_token_id=tokenizer.eos_token_id,
+    ):
+        answer = tokenizer.decode(t.squeeze(0).tolist())
+        for letter in answer:
+            letter = letter.upper()
+            # stop as soon as a letter appears
+            if letter in "ABCD":
+                pred = letter
+                break
+        if pred:
+            break
+    return pred
+```
+
+然后，我们可以用上面代码块中的函数检查生成的字母，如下：
+
+```
+pred1 = predict_choice(model, tokenizer, prompt_fmt)
+print(
+    f"Generated letter: {pred1}\n"
+    f"Correct? {pred1 == example['answer']}"
+)
+```
+
+结果是：
+
+```
+Generated letter: C
+Correct? False
+```
+
+可以看到，在这个例子中生成的答案是错误的（`False`）。
+
+这只是 MMLU 中 `high_school_mathematics` 子集 270 个例子中的一个。下面的截图（图 4）展示了基座模型和推理变体在完整子集上运行时的表现。相关代码可以在 GitHub 上找到（https://github.com/rasbt/reasoning-from-scratch/blob/main/chF/02_mmlu/1_letter_matching.py）。
+
+[图 4：基座模型和推理模型在 MMLU `high_school_mathematics` 子集上的表现]
+
+假设各题的正确答案在各选项上分布均匀，一个随机猜测者（以均等概率选择 A、B、C 或 D）预期能达到 25% 的准确率。所以基座模型和推理模型的表现都不太好。
+
+> #### **多项选择的答案格式**
+>
+> 注意，为了便于说明，本节实现的是多项选择评估的简化版本，即把模型预测的答案字母直接与正确答案比较。在实践中，还有一些使用更广泛的变体，比如对数概率打分：我们衡量模型认为每个候选答案有多大可能，而不仅仅检查最后选的字母。（我们会在第 4 章讨论基于概率的打分。）对于推理模型，评估还可以包括：在把正确答案作为输入提供时，评估模型生成该正确答案的可能性。
+>
+> [图 5：其他 MMLU 打分方法的介绍与代码见 GitHub（https://github.com/rasbt/reasoning-from-scratch/tree/main/chF/02_mmlu）]
+>
+> 不过，无论我们使用哪种 MMLU 打分变体，评估本质上仍是在检查模型是否从预先给定的答案选项中做出了正确选择。
+
+**像 MMLU 这样的多项选择基准有一个局限：它们只衡量大模型从预定义选项中做选择的能力，因此除了检查模型相比基座模型是否遗忘了知识、遗忘了多少之外，对评估推理能力并没有太大用处。** 它也无法反映自由写作能力或现实中的实用性。
+
+尽管如此，多项选择基准仍是简单而有用的诊断手段：例如，MMLU 分数高并不一定意味着模型在实际使用中很强，但分数低则可以揭示潜在的知识缺口。
+
+# 方法 2：使用验证器检查答案
+
+与上一节讨论的多项选择问答相关，基于验证的方法也通过准确率指标来量化大模型的能力。不过与多项选择基准不同，验证方法允许大模型给出自由形式的答案。然后我们提取出相关的答案部分，并用一个所谓的验证器（verifier）把这部分答案与数据集中提供的正确答案进行比较，如下图 6 所示。
+
+[图 6：在自由形式问答中用基于验证的方法评估大模型。模型生成一个自由形式的回答（可能包含多个步骤）以及一个用方框标出的最终答案，提取该答案并与数据集中的正确答案比较。]
+
+如上图所示，在把提取出的答案与给定答案比较时，我们可以借助外部工具，比如代码解释器或类似计算器的工具/软件。
+
+缺点是，这种方法只能应用于那些容易（并且最好是可以确定性地）验证的领域，比如数学和代码。此外，这种方法可能引入额外的复杂性和依赖，而且可能把一部分评估负担从模型本身转移到外部工具上。
+
+不过，由于它允许我们以编程方式生成无限多的数学题变体，并能受益于逐步推理，它已经成为推理模型评估和开发的基石。
+
+我在《从零构建推理模型》一书中就这个主题写了长达 35 页的完整章节，所以这里跳过代码实现。（我上周提交了这一章。如果你拥有抢先阅读版，它上线时你会收到邮件，届时就能阅读。在此期间，你可以在 GitHub 上找到逐步的代码：https://github.com/rasbt/reasoning-from-scratch/blob/main/ch03/01_main-chapter-code/ch03_main.ipynb。）
+
+[图 7：基于验证的评估方法摘录，见 GitHub（https://github.com/rasbt/reasoning-from-scratch/blob/main/ch03/01_main-chapter-code/ch03_main.ipynb）]
+
+# 方法 3：通过偏好和排行榜比较模型
+
+到目前为止，我们介绍了两种能提供易于量化指标（如模型准确率）的方法。然而，上述方法都没有以更整体的方式评估大模型，包括评判回答的风格。本节如下图 8 所示，我们讨论一种基于判断的方法，即大模型排行榜。
+
+[图 8：本书所涵盖主题的心智模型，重点是本附录介绍的基于判断和基于基准的评估方法。上一节已经介绍了基于基准的方法（多项选择、验证器），现在我们介绍衡量大模型性能的基于判断的方法，本小节聚焦于排行榜。]
+
+这里介绍的排行榜方法是一种基于判断的方法，模型的排名不是依据准确率或其他固定的基准分数，而是依据用户（或其他大模型）对其输出的偏好。
+
+一个流行的排行榜是 LM Arena（https://lmarena.ai/，原名 Chatbot Arena），用户在这里比较两个由用户选定或匿名的模型给出的回答，并投票选出自己更喜欢的那个，如图 9 所示。
+
+[图 9：基于判断的排行榜界面示例（LM Arena）。两个大模型收到相同的提示词，它们的回答并排显示，用户投票选出更喜欢的答案。]
+
+如上图所示收集到的这些偏好投票，随后会在所有用户之间汇总成一个排行榜，按用户偏好对不同模型进行排名。下面的图 10 是 LM Arena 排行榜的当前快照（访问于 2025 年 10 月 3 日）。
+
+[图 10：LM Arena 排行榜截图，展示了基于用户在文本任务上的偏好、当前领先的大模型]
+
+本节剩下的部分，我们将实现一个简单的排行榜示例。
+
+举一个具体的例子：设想用户在类似图 9 的设置中向不同的大模型提问。下面的列表代表成对投票，其中第一个模型是胜者：
+
+#### 代码块 4：构建排行榜
+
+```
+votes = [
+    ("GPT-5", "Claude-3"),
+    ("GPT-5", "Llama-4"),
+    ("Claude-3", "Llama-3"),
+    ("Llama-4", "Llama-3"),
+    ("Claude-3", "Llama-3"),
+    ("GPT-5", "Llama-3"),
+]
+```
+
+在上面的列表中，votes 列表里的每个元组代表两个模型之间的一次成对偏好，写作 `(winner, loser)`（胜者，败者）。因此，`("GPT-5", "Claude-3")` 表示某个用户在 GPT-5 和 Claude-3 的回答中更喜欢 GPT-5 的。
+
+本节剩下的部分，我们将把 `votes` 列表变成一个排行榜。为此，我们会使用流行的 Elo 等级分系统（https://en.wikipedia.org/wiki/Elo_rating_system），它最初是为国际象棋棋手排名而开发的。
+
+在看具体代码实现之前，先简单说一下它的工作原理。每个模型从一个基准分数开始。然后，在每次比较和偏好投票之后，更新该模型的评分。（在 Elo 中，更新幅度取决于结果有多出人意料。）
+
+具体来说，如果用户在当前模型和一个排名很高的模型之间更喜欢当前模型，当前模型就会获得相对较大的分数更新，在排行榜上排得更高。反之，如果它赢的是一个排名很低的对手，更新幅度就较小。（如果当前模型输了，也以类似方式更新，只是分数被扣除而非增加。）
+
+把这些成对排名转换成排行榜的代码如下面的代码块所示。
+
+```
+def elo_ratings(vote_pairs, k_factor=32,
+                initial_rating=1000):
+    # Initialize all models with the same base rating
+    ratings = {
+        model: initial_rating
+        for pair in vote_pairs
+        for model in pair
+    }
+
+    # Update ratings after each match
+    for winner, loser in vote_pairs:
+
+        # Expected score for the current winner
+        expected_winner = 1.0 / (
+            1.0 + 10 ** (
+                (ratings[loser] - ratings[winner])
+                / 400.0
+            )
+        )
+
+        # k_factor determines sensitivity of updates
+        ratings[winner] = (
+            ratings[winner]
+            + k_factor * (1 - expected_winner)
+        )
+        ratings[loser] = (
+            ratings[loser]
+            + k_factor * (0 - (1 - expected_winner))
+        )
+
+    return ratings
+```
+
+上面定义的 `elo_ratings` 函数以投票作为输入，并把它转换成一个排行榜，如下：
+
+```
+ratings = elo_ratings(votes, k_factor=32, initial_rating=1000)
+for model in sorted(ratings, key=ratings.get, reverse=True):
+    print(f"{model:8s} : {ratings[model]:.1f}")
+```
+
+这会得到下面的排行榜排名，分数越高越好：
+
+```
+GPT-5 : 1043.7
+Claude-3 : 1015.2
+Llama-4 : 1000.7
+Llama-3 : 940.4
+```
+
+那么，这是怎么运作的呢？对于每一对，我们用以下公式计算胜者的预期得分：
+
+`expected_winner = 1 / (1 + 10 ** ((rating_loser - rating_winner) / 400))`
+
+这个 `expected_winner` 值是在不允许平局的设定下，基于当前评分预测的该模型获胜概率。它决定了评分更新的幅度。
+
+首先，每个模型都从 `initial_rating = 1000` 开始。如果两个评分（胜者和败者）相等，就有 `expected_winner = 0.5`，表示势均力敌。这种情况下，更新为：
+
+```
+rating_winner + k_factor * (1 - 0.5) = rating_winner + 16
+
+rating_loser + k_factor * (0 - (1 - 0.5)) = rating_loser - 16
+```
+
+现在，如果一个大热门（评分很高的模型）获胜，就有 `expected_winner ≈ 1`。热门方只会获得很少的分数，败者也只会损失一点：
+
+```
+rating_winner + 32 * (1 - 0.99) = rating_winner + 0.32
+
+rating_loser + 32 * (0 - (1 - 0.99)) = rating_loser - 0.32
+```
+
+然而，如果一个冷门（评分很低的模型）获胜，就有 `expected_winner ≈ 0`，胜者几乎获得完整的 `k_factor` 分数，而败者损失大致相同的幅度：
+
+```
+rating_winner + 32 * (1 - 0.01) = rating_winner + 31.68
+
+rating_loser + 32 * (0 - (1 - 0.01)) = rating_loser - 31.68
+```
+
+> #### **顺序很重要**
+>
+> Elo 方法在每场比赛（模型比较）之后更新评分，所以后面的结果建立在已经更新过的评分之上。这意味着同一组结果，如果以不同顺序呈现，最终得分可能会略有不同。这种影响通常很轻微，但尤其在爆冷发生在早期还是晚期时，就可能出现差别。
+>
+> 为了减少这种顺序效应，我们可以把投票对打乱顺序，多次运行 `elo_ratings` 函数，然后对评分取平均。
+
+像上面这样的排行榜方法，比静态的基准分数提供了对模型质量更动态的视角。然而，结果可能受到用户群体构成、提示词选择和投票偏差的影响。基准和排行榜也可能被刷分操纵，用户也可能依据风格而非正确性来选择回答。最后，与自动化的基准测试框架相比，排行榜无法对新开发的变体提供即时反馈，这使得它们在模型的活跃开发阶段更难使用。
+
+> #### **其他排名方法**
+>
+> LM Arena 最初使用本节介绍的 Elo 方法，但最近转向了一种基于 Bradley–Terry 模型的统计方法。Bradley-Terry 模型的主要优点是它有统计学基础，因此可以构建置信区间来表达排名中的不确定性。此外，与 Elo 评分不同，Bradley-Terry 模型通过对整个数据集进行统计拟合来联合估计所有评分，因此不受顺序效应的影响。
+>
+> 为了让报告的分数保持在大家熟悉的范围内，Bradley-Terry 模型的拟合会产生与 Elo 可比的数值。尽管排行榜已不再正式使用 Elo 评分，"Elo"这个词仍被大模型研究者和从业者在比较模型时广泛使用。展示 Elo 评分的代码示例可以在 GitHub 上找到（https://github.com/rasbt/reasoning-from-scratch/tree/main/chF/03_leaderboards）。
+>
+> [图 11：Elo 与 Bradley-Terry 排名的比较；源代码见 GitHub（https://github.com/rasbt/reasoning-from-scratch/tree/main/chF/03_leaderboards）。]
+
+# 方法 4：用其他大模型评判回答
+
+在早期，大模型是用统计和启发式方法来评估的，包括一个叫 BLEU 的指标，它粗略地衡量生成文本与参考文本的匹配程度。这类指标的问题在于，它们要求词语完全匹配，没有考虑同义词、词形变化等等。
+
+如果我们想把书面回答作为一个整体来评判，解决这个问题的一个办法就是使用上一节讨论的相对排名和基于排行榜的方法。然而，排行榜的一个缺点是基于偏好的比较具有主观性，因为它涉及人类反馈（以及收集这些反馈所带来的种种挑战）。
+
+一个相关的方法是使用另一个大模型，配合预先定义的评分细则（rubric，即评估指南），把某个大模型的回答与参考回答进行比较，并依据预定义的细则评判回答质量，如图 12 所示。
+
+[图 12：大模型裁判评估示例。待评估的模型生成一个答案，然后由另一个独立的裁判大模型依据评分细则和提供的参考答案为其打分。]
+
+在实践中，当裁判大模型足够强时，图 12 所示的基于裁判的方法效果很好。常见的设置是通过 API 使用领先的专有大模型（例如 GPT-5 API），不过也有专门的裁判模型。（例如，众多例子之一是 Phudge（https://arxiv.org/abs/2405.08029）；说到底，这些专门模型大多只是经过微调、打分行为与专有 GPT 模型相似的较小模型。）
+
+裁判之所以效果这么好，原因之一还在于评估一个答案往往比生成一个答案更容易。
+
+要用 Python 以编程方式实现图 12 所示的基于裁判的模型评估，我们可以在 PyTorch 中加载一个更大的 Qwen3 模型，用评分细则和我们想要评估的模型答案去提示它。
+
+或者，我们也可以通过 API 使用其他大模型，例如 ChatGPT 或 Ollama 的 API。
+
+由于我们已经知道如何在 PyTorch 中加载 Qwen3 模型，为了更有意思一些，本节剩下的部分将用 Python 调用 Ollama API 来实现图 12 所示的基于裁判的评估。
+
+具体来说，我们将使用 OpenAI 的 200 亿参数开放权重模型 gpt-oss，因为它在能力和效率之间取得了很好的平衡。关于 gpt-oss 的更多信息，请参阅我的文章《从 GPT-2 到 gpt-oss：分析架构上的进步》（From GPT-2 to gpt-oss: Analyzing the Architectural Advances）。
+
+## 4.1 在 Ollama 中实现大模型裁判（LLM-as-a-judge）方法
+
+Ollama（https://ollama.com/）是一个高效的开源应用，用于在笔记本电脑上运行大模型。它是开源 llama.cpp 库（https://github.com/ggerganov/llama.cpp）的封装，该库用纯 C/C++ 实现大模型以最大化效率。不过要注意，Ollama 只是一个用大模型生成文本（推理）的工具，不支持训练或微调大模型。
+
+要执行下面的代码，请访问官方网站 https://ollama.com 安装 Ollama，并按照针对你操作系统的说明操作：
+
+* 对于 macOS 和 Windows 用户：打开下载的 Ollama 应用。如果提示安装命令行工具，选择"是"。
+* 对于 Linux 用户：使用 Ollama 网站上提供的安装命令。
+
+在实现模型评估代码之前，我们先下载 gpt-oss 模型，并在命令行终端中使用它，验证 Ollama 是否正常工作。
+
+在命令行（而不是 Python 会话）中执行以下命令，试用 200 亿参数的 gpt-oss 模型：
+
+`ollama run gpt-oss:20b`
+
+第一次执行这个命令时，会自动下载 200 亿参数的 gpt-oss 模型，它占用 14 GB 存储空间。输出如下所示：
+
+```
+$ ollama run gpt-oss:20b
+pulling manifest 
+pulling b112e727c6f1: 100% ▕██████████████████████▏  13 GB                         
+pulling fa6710a93d78: 100% ▕██████████████████████▏ 7.2 KB                         
+pulling f60356777647: 100% ▕██████████████████████▏  11 KB                         
+pulling d8ba2f9a17b3: 100% ▕██████████████████████▏   18 B                         
+pulling 55c108d8e936: 100% ▕██████████████████████▏  489 B                         
+verifying sha256 digest 
+writing manifest 
+removing unused layers 
+success
+```
+
+> #### **其他可选的 Ollama 模型**
+>
+> 注意，`ollama run gpt-oss:20b` 命令中的 gpt-oss:20b 指的是 200 亿参数的 gpt-oss 模型。用 Ollama 运行 gpt-oss:20b 模型大约需要 13 GB 内存。如果你的机器内存不够，可以尝试使用更小的模型，比如通过 `ollama run qwen3:4b` 运行 40 亿参数的 qwen3:4b 模型，它只需要大约 4 GB 内存。
+>
+> 对于性能更强的电脑，也可以把 gpt-oss:20b 换成 gpt-oss:120b，使用更大的 1200 亿参数 gpt-oss 模型。不过要记住，这个模型需要多得多的计算资源。
+
+模型下载完成后，会出现一个命令行界面，让我们可以与模型交互。例如，试着问模型"What is 1+2?"（1+2 等于几？）：
+
+```
+>>> What is 1+2?
+
+Thinking...
+
+User asks: “What is 1+2?” This is simple: answer 3. Provide explanation? Possibly ask for simple
+
+arithmetic. Provide answer: 3.
+
+...done thinking.
+
+1 + 2 = **3**
+```
+
+你可以输入 `/bye` 来结束这个 `ollama run gpt-oss:20b` 会话。
+
+本节剩下的部分，我们将使用 ollama API。这种方式要求 Ollama 在后台运行。有三种不同的方式可以做到：
+
+1. 在终端中运行 `ollama serve` 命令（推荐）。这会把 Ollama 后端作为一个服务器运行，通常位于 `http://localhost:11434`。注意，在通过 API 调用之前（本节稍后），它不会加载模型。
+
+2. 像之前那样运行 `ollama run gpt-oss:20b` 命令，但保持它开着，不要用 `/bye` 退出会话。如前所述，这会打开一个围绕本地 Ollama 服务器的极简便捷封装。在幕后，它使用的是与 ollama serve 相同的服务器 API。
+
+3. Ollama 桌面应用。打开桌面应用会自动运行同样的后端，并在其上提供一个图形界面，如前面图 12 所示。
+
+[图 13：保持 Ollama 服务器（应用）运行的两种不同方式，这样我们就能在 Python 中通过 Ollama API 使用它。]
+
+> #### **Ollama 服务器 IP 地址**
+>
+> Ollama 通过启动一个本地的类服务器进程在我们的机器上运行。按上面所述在终端中运行 ollama serve 时，你可能会遇到一条错误信息：`Error: listen tcp 127.0.0.1:11434: bind: address already in use`（地址已被占用）。
+>
+> 如果是这种情况，试试使用命令 `OLLAMA_HOST=127.0.0.1:11435 ollama serve`（如果这个地址也被占用，就把数字逐个加一，直到找到未被占用的地址。）
+
+#### 代码块 5：检查 Ollama 是否在运行
+
+下面的代码在我们用 Ollama 评估上一节生成的测试集回答之前，先验证 Ollama 会话是否正常运行：
+
+```
+import psutil
+
+def check_if_running(process_name):
+    running = False
+    for proc in psutil.process_iter(["name"]):
+        if process_name in proc.info["name"]:
+            running = True
+            break
+    return running
+
+ollama_running = check_if_running("ollama")
+
+if not ollama_running:
+    raise RuntimeError(
+        "Ollama not running. "
+        "Launch ollama before proceeding."
+    )
+print("Ollama running:", check_if_running("ollama"))
+```
+
+确保执行上面代码的输出显示 Ollama running: `True`。如果显示 `False`，请确认 `ollama serve` 命令或 Ollama 应用正在运行（见图 13）。
+
+#### 代码块 6：查询本地 Ollama 模型
+
+在本文剩下的部分，我们将用 Python 通过 Ollama REST API 与运行在本机上的 gpt-oss 模型交互。下面的 `query_model` 函数演示了如何使用这个 API：
+
+```
+import json
+import urllib.request
+
+def query_model(
+    prompt,
+    model="gpt-oss:20b",
+    # If you used 
+    # OLLAMA_HOST=127.0.0.1:11435 ollama serve
+    # update the address below
+    url="http://localhost:11434/api/chat"
+):
+    # Create the data payload as a dictionary:
+    data = {
+        "model": model,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        # Settings required for deterministic responses:
+        "options": {
+            "seed": 123,
+            "temperature": 0,
+            "num_ctx": 2048
+        }
+    }
+
+    # Convert the dictionary to JSON and encode it to bytes
+    payload = json.dumps(data).encode("utf-8")
+
+    # Create a POST request and add headers
+    request = urllib.request.Request(  
+        url,
+        data=payload,
+        method="POST"
+    )
+    request.add_header("Content-Type", "application/json")
+
+    response_data = ""
+
+    # Send the request and capture the streaming response
+    with urllib.request.urlopen(request) as response:
+        while True:
+            line = response.readline().decode("utf-8")
+            if not line:
+                break
+            # Parse each line into JSON
+            response_json = json.loads(line)
+            response_data += response_json["message"]["content"]
+
+    return response_data
+```
+
+下面是如何使用我们刚刚实现的 `query_model` 函数的示例：
+
+```
+ollama_model = "gpt-oss:20b"
+result = query_model("What is 1+2?", ollama_model)
+print(result)
+```
+
+得到的回答是"3"。（由于默认设置不同，它与我们运行 Ollama run 或使用 Ollama 应用时得到的结果有所不同。）
+
+借助 `query_model` 函数，我们可以用一个包含评分细则的提示词来评估我们的模型生成的回答：让 gpt-oss 模型以一个正确答案作为参考，在 1 到 5 分的范围内为目标模型的回答打分。
+
+#### 代码块 7：设置包含评分细则的提示词模板
+
+我们为此使用的提示词如下所示：
+
+```
+def rubric_prompt(instruction, reference_answer, model_answer):
+    rubric = (
+        "You are a fair judge assistant. You will be "
+        "given an instruction, a reference answer, and "
+        "a candidate answer to evaluate, according to "
+        "the following rubric:\n\n"
+        "1: The response fails to address the "
+        "instruction, providing irrelevant, incorrect, "
+        "or excessively verbose content.\n"
+        "2: The response partially addresses the "
+        "instruction but contains major errors, "
+        "omissions, or irrelevant details.\n"
+        "3: The response addresses the instruction to "
+        "some degree but is incomplete, partially "
+        "correct, or unclear in places.\n"
+        "4: The response mostly adheres to the "
+        "instruction, with only minor errors, "
+        "omissions, or lack of clarity.\n"
+        "5: The response fully adheres to the "
+        "instruction, providing a clear, accurate, and "
+        "relevant answer in a concise and efficient "
+        "manner.\n\n"
+        "Now here is the instruction, the reference "
+        "answer, and the response.\n"
+    )
+
+    prompt = (
+        f"{rubric}\n"
+        f"Instruction:\n{instruction}\n\n"
+        f"Reference Answer:\n{reference_answer}\n\n"
+        f"Answer:\n{model_answer}\n\n"
+        f"Evaluation: "
+    )
+    return prompt
+```
+
+`rubric_prompt` 中的 `model_answer` 在实践中代表我们自己的模型生成的回答。为了便于说明，这里我们硬编码了一个合理的模型答案，而不是动态生成它。（不过，你也完全可以用本文开头加载的 Qwen3 模型来生成一个真实的 `model_answer`。）
+
+接下来，我们为 Ollama 模型生成渲染后的提示词：
+
+```
+rendered_prompt = rubric_prompt(
+    instruction=(
+        "If all birds can fly, and a penguin is a bird, "
+        "can a penguin fly?"
+    ),
+    reference_answer=(
+        "Yes, according to the premise that all birds can fly, "
+        "a penguin can fly."
+    ),
+    model_answer=(
+        "Yes – under those premises a penguin would be able to fly."
+    )
+)
+print(rendered_prompt)
+```
+
+输出如下：
+
+```
+You are a fair judge assistant. You will be given an instruction, a
+reference answer, and a candidate answer to evaluate, according to the
+following rubric:
+
+1: The response fails to address the instruction, providing irrelevant,
+incorrect, or excessively verbose content.
+2: The response partially addresses the instruction but contains major
+errors, omissions, or irrelevant details.
+3: The response addresses the instruction to some degree but is
+incomplete, partially correct, or unclear in places.
+4: The response mostly adheres to the instruction, with only minor
+errors, omissions, or lack of clarity.
+5: The response fully adheres to the instruction, providing a clear,
+accurate, and relevant answer in a concise and efficient manner.
+
+Now here is the instruction, the reference answer, and the response.
+
+Instruction:
+If all birds can fly, and a penguin is a bird, can a penguin fly?
+
+Reference Answer:
+Yes, according to the premise that all birds can fly, a penguin can
+fly.
+
+Answer:
+Yes – under those premises a penguin would be able to fly.
+
+Evaluation:
+```
+
+以 `"Evaluation: "` 结尾的提示词会促使模型生成答案。我们来看看 gpt-oss:20b 模型如何评判这个回答：
+
+```
+result = query_model(rendered_prompt, ollama_model)
+print(result)
+```
+
+回答如下：
+
+```
+**Score: 5**
+
+The candidate answer directly addresses the question, correctly applies the given premises, and concisely states that a penguin would be able to fly. It is accurate, relevant, and clear.
+```
+
+可以看到，这个答案得到了最高分，这是合理的，因为它确实是正确的。虽然这只是一个手动逐步走完整个流程的简单例子，但我们可以把这个思路进一步推广，实现一个 for 循环：用评估数据集中的问题反复询问模型（例如我们之前加载的 Qwen3 模型），再通过 gpt-oss 对其进行评估并计算平均分。你可以在 GitHub 上找到这样一个脚本的实现，我们在其中用 MATH-500 数据集评估 Qwen3 模型（https://github.com/rasbt/reasoning-from-scratch/tree/main/chF/04_llm-judge）。
+
+[图 14：以 gpt-oss:20b 作为裁判，在 MATH-500 前 10 个例子上比较 Qwen3 0.6B 基座版和推理版。代码见 GitHub（https://github.com/rasbt/reasoning-from-scratch/tree/main/chF/04_llm-judge）。]
+
+> #### **用过程奖励模型为中间推理步骤打分**
+>
+> 与符号验证器和大模型裁判相关，还有一类学习得到的模型，称为过程奖励模型（process reward models，PRM）。和裁判一样，PRM 可以评估推理过程，而不只是最终答案；但与通用裁判不同，它们专门关注推理的中间步骤。而与通过符号方式检查正确性、通常只在结果层面检查的验证器不同，PRM 在强化学习训练过程中提供逐步的奖励信号。我们可以把 PRM 归类为"步骤级裁判"，它们主要是为训练而开发的，而不是纯粹用于评估。（在实践中，PRM 很难大规模可靠地训练。例如，DeepSeek R1 就没有采用 PRM，而是在推理训练中结合使用了验证器。）
+
+与基于偏好的排行榜相比，基于裁判的评估具有可扩展性和一致性等优势，因为它们不依赖大量的人类投票者。（从技术上讲，也可以把排行榜背后基于偏好的评分外包给大模型裁判。）然而，大模型裁判也和人类投票者有类似的弱点：结果可能受到模型偏好、提示词设计和回答风格的影响而产生偏差。此外，它们高度依赖裁判模型和评分细则的选择，也缺乏固定基准那样的可复现性。
+
+# 结论
+
+本文介绍了四种不同的评估方法：多项选择、验证器、排行榜和大模型裁判。
+
+我知道这是一篇很长的文章，但希望它能帮你对大模型是如何被评估的有一个整体的了解。像这样从零开始的方式可能有些冗长，但它是理解这些方法底层如何运作的好办法，而这反过来又能帮助我们发现其中的弱点和改进空间。
+
+话虽如此，你可能在想："评估大模型的最佳方法是什么？"遗憾的是，并没有单一的最佳方法，因为正如我们所看到的，每种方法都有不同的取舍。简而言之：
+
+**多项选择**
+(+) 大规模运行相对快速且便宜
+(+) 标准化，在不同论文（或模型卡）之间可复现
+(-) 衡量的是基本的知识回忆
+(-) 不能反映大模型在现实世界中的使用方式
+
+**验证器**
+(+) 对有标准答案的领域提供标准化、客观的评分
+(+) 允许自由形式的答案（对最终答案格式有一些限制）
+(+) 如果使用过程验证器或过程奖励模型，也可以为中间步骤打分
+(-) 需要可验证的领域（例如数学或代码），而且构建好的验证器可能很棘手
+(-) 只看结果的验证器只评估最终答案，不评估推理质量
+
+**竞技场式排行榜（人类成对偏好）**
+(+) 在真实提示词上直接回答"人们更喜欢哪个模型？"
+(+) 允许自由形式的答案，并隐式地考虑了风格、有用性和安全性
+(-) 对人类来说昂贵且耗时
+(-) 衡量的不是正确性，只是偏好
+(-) 投票人群不断变化，可能影响稳定性
+
+**大模型裁判（LLM-as-a-judge）**
+(+) 可扩展到许多任务
+(+) 允许自由形式的答案
+(-) 依赖裁判的能力（用多个裁判组成集成可以让它更稳健）
+(-) 依赖评分细则的选择
+
+虽然我通常不太喜欢雷达图，但在这里用一张来可视化这些不同的评估维度会有帮助，如下所示。
+
+[图 15：一张雷达图，从概念上说明在评估大模型时，理想情况下我们要关注不同的维度，以识别其优势和弱点。]
+
+例如，多项选择评分高说明模型有扎实的通用知识。再加上验证器得分高，这个模型很可能也能正确回答技术问题。然而，如果模型在大模型裁判和排行榜评估中表现不佳，它可能难以有效地写出或表达回答，或许可以通过一些 RLHF 来改善。
+
+所以，最好的评估是结合多个维度的。但理想情况下，它还应使用与你的目标或业务问题直接相关的数据。例如，假设你正在部署一个大模型来协助处理法律或与法律相关的任务。在 MMLU 这样的标准基准上运行一下模型作为快速的合理性检查是有意义的，但最终你会希望针对目标领域（比如法律）定制评估。你可以在网上找到一些可以作为良好起点的公开基准，但到头来，你还是会想用自己的专有数据来测试。只有这样，你才能比较有把握地确定模型在训练期间没有见过测试数据。
+
+无论如何，模型评估都是一个非常大、非常重要的话题。我希望本文有助于解释这些主要方法是如何运作的，也希望下次你查看模型评估结果或自己动手评估时，能从中获得一些有用的启发。
+
+一如既往，
+动手愉快！
+
+---
+
+_这份刊物是我个人的热情所在，你的支持让它得以延续。_
+
+_如果你想支持我的工作，请考虑我的《从零构建大语言模型》（Build a Large Language Model (From Scratch)，https://amzn.to/4fqvn0D）一书，或它的续作《从零构建推理模型》（Build a Reasoning Model (From Scratch)，https://mng.bz/Nwr7）。（我相信你会从中收获很多；它们对大模型工作原理的讲解深度是别处找不到的。）_
+
+_感谢阅读，也感谢你支持独立研究！_
+
+如果你读了这本书并且有几分钟空闲，我会非常感激你写一篇简短的书评（https://www.amazon.com/Build-Large-Language-Model-Scratch/dp/1633437167）。这对我们作者帮助很大！
+
+**你的支持意义重大！谢谢！**

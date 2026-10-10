@@ -1,0 +1,19 @@
+https://changelog.com/podcast/599
+
+The Changelog 第 599 期，Adam Stacoviak 和 Jerod Santo 时隔两年半再次请来 Supabase CEO Paul Copplestone（两位主持人是 Supabase 的天使投资人）。节目从一个玩笑开场：一年前 Supabase 作为 Redpoint InfraRed 100 的一员登上时代广场大屏，Paul 发推说公司“悄悄上市了”，Adam 在 Changelog News 里照搬了这个标题，结果那期的收听量是平时的两倍。
+
+正题从新标语“周末搭起来，扩展到百万级”开始。Paul 说这不是夸张：当时已有 12 家公司在 Supabase 上从零用户涨到百万以上，大多是 AI 应用。被问到在各家开源公司接连“抽地毯”改协议的背景下是否动摇，他说开源从来没讨论过，他和联合创始人在理念上就是开源的人，商业化风险也已经消除，“只要我还是 CEO，就终身开源”。AWS 也很难照搬，因为 Supabase 是一整套服务，不是一个镜像。自托管的人其实很多，最低付费档每月 25 美元，嫌贵的人自托管也无妨，官方支持就是一个 Docker Compose。
+
+Paul 梳理了产品线。Postgres 是基底，自带 PostGIS、pg_cron 等扩展；认证服务把用户存进数据库的 auth schema；文件存储放在 S3 兼容存储里，再把目录映射进 Postgres，这样权限可以统一用行级安全（RLS）策略控制；PostgREST 根据表结构自动生成 REST API，另有 GraphQL 扩展；基于 Deno 的边缘函数主要当后台任务用；向量产品就是 pgvector 加一套工具，embedding 交给边缘函数异步生成，不压在数据库上。pgvector 的来历是 2023 年 2 月一位叫 Greg 的开发者发来 PR，Paul 请他用 RAG 给文档做了个问答机器人，因为担心它乱编，起名叫 Clippy。结果大受欢迎，Greg 后来全职加入，Supabase 也成了第一家提供 pgvector 的 Postgres 托管商。
+
+他把这些称为“一阶原语”，组合起来就是“二阶原语”，比如向量、队列，以及配合 Protomaps 在 S3 里存地图瓦片。他也讲了一次失败：社区每次发布周都喊着要函数，他不想做，转而做了一个兼容 AWS Step Functions 语言的开源工作流服务，用 Elixir 实现，并且已经宣布了。最后他还是撤回了，因为工作流会产生海量日志，长期运行的流程又很难调试，他们给不出好的体验。他由此得出的教训是：有了产品市场契合之后，要让用户的问题带着路线图走，而且团队大多比他更懂。
+
+公司现在 85 人，分布在 30 个国家，只在出现“火烧眉毛”、团队里没人能解决的问题时才招人。为找一个把构建迁到 Nix 的人花了七个月。公司完全异步办公，产品团队每周只开一次 30 分钟的会，所以偏爱能自我管理的前创始人，一度占到全员四分之一，而且至今没有前创始人离职。Paul 认为前创始人最懂产品市场契合来之不易，他也承认成功有很大的运气和时机成分。
+
+市场策略上，他效仿 MongoDB：不去说服大企业换掉现有数据库，而是先抓住开发者和新项目，好到他们规模变大也没理由迁走。所以早期拒绝了不少会提一堆要求的大牌客户，官网上也不放 logo。Adam 批评首页只列功能，不展示真实界面。Paul 说团队用丰田式的 Kaizen 持续迭代，从不推倒重来，他自己也承认这可能卡在局部最优，设计负责人 Jonny 就想彻底翻新仪表盘。Adam 顺带吐槽了 Sonos 新版 App 一次性大改、砍掉睡眠定时器等核心功能。
+
+谈到竞争，Paul 说早期每个月都有新公司自称“开源 Firebase 替代品”，现在每个月都有新的 Postgres 公司，他视之为好事，下一个对标对象是 MongoDB。Neon 通过替换 Postgres 的存储层实现计算存储分离，用 Rust 写的中间层架构很难回馈上游。Supabase 则走表访问方法和可插拔存储的路线，赞助并最近收购了 OrioleDB，作者 Alexander 也在向 Postgres 核心提交补丁。OrioleDB 已经有实验性的 S3 后端，读写比默认的堆存储快约四倍半。Jerod 问 Supabase 是否其实在和 Rails、Django 这类应用框架竞争，Paul 说他更愿意把 Supabase 看作“数据云”，以后可能支持 OLAP 和 Apache Iceberg。用户从“Postgres 极端信徒”到完全的新手都有，而 Supabase 主要是给新手的平台：索引顾问用 HypoPG 模拟索引，有人点一下查询就快了 98%。产品原则里写着可移植性，以及“既集成又隔离”，类比苹果生态。
+
+对 Appwrite、Convex 这类对手，Paul 引用董事 Caryn Marooney 的比喻：经营初创公司像开车，大部分时间看前方，偶尔看后视镜。他还说每次去硅谷都会带回一身焦虑，过几周才发现大多不重要。Adam 以 Changelog 自己在找托管 Postgres 为例，谈到 Neon 的分支、缩容到零，以及 Retool 用 Neon Fleets 给每个用户开数据库。Paul 说 Supabase 也有分支功能，已经上线约一年，分支数据库会在 Fly 的 Firecracker 上缩容到零。生产库暂不提供缩容到零，因为冷启动做不到无感，而真正在扩容的产品也不需要缩到零。他又提到 Neon 可能还不支持逻辑复制，所以跑不了 Supabase 的实时引擎，并请听众自行核实。
+
+“发布周”的集中发布思路来自 Cloudflare，“一周每天发布一个功能”的形式出自 Supabase。现在每年三次，相当于内部的强制机制：固定时间线、可变范围，Supabase 不做冲刺。最后 Paul 说，已有超过一百万个数据库在 Supabase 上启动，很多是千篇一律的 AI 应用，就像 iPhone 早期遍地的手电筒 App。他最期待的是接下来的整体趋势，包括和 ElectricSQL 合作、能在浏览器里通过 WASM 运行的 Postgres，也就是 PGlite，以及 OrioleDB 的新进展。

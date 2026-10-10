@@ -1194,9 +1194,35 @@
    {
     "label": "总结",
     "url": "txt/cur-f35f1062ecd8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f35f1062ecd8.transcript.txt"
    }
   ],
   "title_zh": "通过创建数据分析代理来设计我学到的上下文"
+ },
+ {
+  "id": "cur-aadfd31a222b",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "ShopTalk Show",
+  "title": "734: Web Performance with Ben Schwarz",
+  "link": "https://shoptalkshow.com/734/",
+  "date": "2026-09-28",
+  "audio_url": "https://cdn.simplecast.com/media/audio/transcoded/2f3c0314-dd01-4f5a-9961-8e71ed7860a7/167887a0-ac00-4cf9-bc69-b5ca845997db/episodes/audio/group/0f058f1d-d853-41bc-a554-02076f77ead7/group-item/5ba0885a-0939-41d0-94b1-a546fd2cb15d/128_default_tc.mp3?nocache",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-aadfd31a222b.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-aadfd31a222b.transcript.txt"
+   }
+  ],
+  "title_zh": "734 ：与Ben Schwarz的网络表演",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aadfd31a222b.m4a"
  },
  {
   "id": "cur-4b83598dbd94",
@@ -1232,6 +1258,10 @@
    {
     "label": "总结",
     "url": "txt/cur-fccabe30e41d.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-fccabe30e41d.transcript.txt"
    }
   ],
   "title_zh": "布朗菲尔德代理工程"
@@ -1396,6 +1426,10 @@
    {
     "label": "总结",
     "url": "txt/cur-c4e116577a69.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c4e116577a69.transcript.txt"
    }
   ],
   "title_zh": "实用回路工程"
@@ -1672,8 +1706,8 @@
     "url": "txt/cur-924729b6849e.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-924729b6849e.m4a",
-  "title_zh": "生物群落和JavaScript工具的未来"
+  "title_zh": "生物群落和JavaScript工具的未来",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-924729b6849e.m4a"
  },
  {
   "id": "cur-2a8737247b26",
@@ -1738,6 +1772,27 @@
    }
   ],
   "title_zh": "在阅读任何代码之前运行Git命令"
+ },
+ {
+  "id": "cur-193f8d8e77cd",
+  "kind": "curated",
+  "type": "article",
+  "source": "Latent Space",
+  "title": "Extreme Harness Engineering for Token Billionaires: 1M LOC, 1B toks/day, 0% human code, 0% human review — Ryan Lopopolo, OpenAI Frontier & Symphony",
+  "link": "https://www.latent.space/p/harness-eng",
+  "date": "2026-04-07",
+  "audio_url": "https://api.substack.com/api/v1/audio/upload/bac92fb4-46a2-4c8a-b189-083c263423fd/src",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-193f8d8e77cd.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-193f8d8e77cd.transcript.txt"
+   }
+  ],
+  "title_zh": "面向代币亿万富翁的极限线束工程： 100万个LOC ，每天10亿个代币， 0%人工代码， 0%人工审核— Ryan Lopopolo ， OpenAI Frontier & Symphony"
  },
  {
   "id": "cur-d0c7d5449da9",
@@ -2025,9 +2080,35 @@
    {
     "label": "总结",
     "url": "txt/cur-f61e677d50bc.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f61e677d50bc.transcript.txt"
    }
   ],
   "title_zh": "了解LLM评估的4种主要方法（从零开始）"
+ },
+ {
+  "id": "cur-c1256801dc58",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Changelog",
+  "title": "npm under siege (what to do about it) (Friends)",
+  "link": "https://changelog.com/friends/111",
+  "date": "2025-10-03",
+  "audio_url": "https://op3.dev/e/https://pscrb.fm/rss/p/https://cdn.changelog.com/uploads/friends/111/changelog--friends-111.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-c1256801dc58.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c1256801dc58.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c1256801dc58.m4a",
+  "title_zh": "被围困的npm （该怎么办） （朋友）"
  },
  {
   "id": "cur-d006fe49e0b0",
@@ -2042,6 +2123,10 @@
    {
     "label": "总结",
     "url": "txt/cur-d006fe49e0b0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d006fe49e0b0.transcript.txt"
    }
   ],
   "title_zh": "动物与鬼魂"
@@ -2320,8 +2405,8 @@
     "url": "txt/cur-0548e04113fe.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0548e04113fe.m4a",
-  "title_zh": "模型上下文协议深入探讨"
+  "title_zh": "模型上下文协议深入探讨",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0548e04113fe.m4a"
  },
  {
   "id": "cur-93eae5222109",
@@ -2766,6 +2851,28 @@
   "title_zh": "构建生成式AI平台"
  },
  {
+  "id": "cur-1198e993d447",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Changelog",
+  "title": "It all starts with Postgres (Interview)",
+  "link": "https://changelog.com/podcast/599",
+  "date": "2024-07-11",
+  "audio_url": "https://op3.dev/e/https://pscrb.fm/rss/p/https://cdn.changelog.com/uploads/podcast/599/the-changelog-599.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1198e993d447.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1198e993d447.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1198e993d447.m4a",
+  "title_zh": "这一切都始于Postgres （面试）"
+ },
+ {
   "id": "cur-56a43a86fa41",
   "kind": "curated",
   "type": "article",
@@ -2954,6 +3061,28 @@
    }
   ],
   "title_zh": "两个反应"
+ },
+ {
+  "id": "cur-0435aec0d892",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Radio",
+  "title": "SE Radio 596: Maxim Fateev on Durable Execution with Temporal",
+  "link": "https://se-radio.net/2023/12/se-radio-596-maxim-fateev-on-durable-execution-with-temporalse-radio-596/",
+  "date": "2023-12-27",
+  "audio_url": "https://traffic.libsyn.com/secure/seradio/596_Maxim_Fateev_on_Durable_Execution_with_Temporal.mp3?dest-id=23379",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0435aec0d892.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0435aec0d892.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0435aec0d892.m4a",
+  "title_zh": "SE Radio 596 ：马克西姆·法蒂耶夫（ Maxim Fateev ）关于与时间的持久执行"
  },
  {
   "id": "cur-149072c1ad65",
@@ -3208,6 +3337,28 @@
    }
   ],
   "title_zh": "提示词工程"
+ },
+ {
+  "id": "cur-afb42041661b",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "JS Party",
+  "title": "Web development's lost decade",
+  "link": "https://changelog.com/jsparty/263",
+  "date": "2023-02-17",
+  "audio_url": "https://op3.dev/e/https://cdn.changelog.com/uploads/jsparty/263/js-party-263.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-afb42041661b.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-afb42041661b.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-afb42041661b.m4a",
+  "title_zh": "Web开发失去的十年"
  },
  {
   "id": "cur-463897804367",
@@ -3476,6 +3627,10 @@
    {
     "label": "总结",
     "url": "txt/cur-d44c6270a8c9.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d44c6270a8c9.transcript.txt"
    }
   ],
   "title_zh": "机械腕表"
@@ -3921,6 +4076,27 @@
   ],
   "title_zh": "61 ：萨米",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-92a94e7953b1.m4a"
+ },
+ {
+  "id": "cur-20bf2a9380b4",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Darknet Diaries",
+  "title": "57: MS08-067",
+  "link": "https://darknetdiaries.com/episode/57/",
+  "date": "2020-01-21",
+  "audio_url": "https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/7057/65d904e4-8a6c-4c33-ac40-c47a245cca39/darknet-diaries-ep57-ms08067.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-20bf2a9380b4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-20bf2a9380b4.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-20bf2a9380b4.m4a"
  },
  {
   "id": "cur-fe37d948c087",
