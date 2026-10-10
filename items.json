@@ -875,6 +875,48 @@
   "title_zh": "实用回路工程"
  },
  {
+  "id": "cur-0d3bab75e5d5",
+  "kind": "curated",
+  "type": "article",
+  "source": "Martin Fowler",
+  "title": "TDD inside the agent loop - theater or actual value?",
+  "link": "https://martinfowler.com/articles/exploring-gen-ai/tdd-in-the-agent-loop.html",
+  "date": "2026-08-11",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0d3bab75e5d5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0d3bab75e5d5.transcript.txt"
+   }
+  ],
+  "title_zh": "代理循环内的TDD -大区还是实际值？"
+ },
+ {
+  "id": "cur-6c51c93f8ef4",
+  "kind": "curated",
+  "type": "article",
+  "source": "NAVER D2",
+  "title": "우리 팀만의 vLLM 플러그인 만들기 2편 - 모델 변환부터 배포까지 AI-native로 자동화하기",
+  "link": "https://d2.naver.com/helloworld/7337586",
+  "date": "2026-08-10",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-6c51c93f8ef4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-6c51c93f8ef4.transcript.txt"
+   }
+  ],
+  "title_zh": "创建您自己的vLLM插件第2部分-使用AI原生实现从模型转换到部署的自动化"
+ },
+ {
   "id": "cur-1130e94af268",
   "kind": "curated",
   "type": "article",
@@ -1009,6 +1051,10 @@
    {
     "label": "总结",
     "url": "txt/cur-d9c9ed7a60ba.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d9c9ed7a60ba.transcript.txt"
    }
   ],
   "title_zh": "1020 ：你读代码吗？",
@@ -1034,6 +1080,27 @@
    }
   ],
   "title_zh": "锚点定位入门"
+ },
+ {
+  "id": "cur-2462892d260e",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Scaling Laws, Carefully",
+  "link": "https://lilianweng.github.io/posts/2026-06-24-scaling-laws/",
+  "date": "2026-06-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-2462892d260e.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-2462892d260e.transcript.txt"
+   }
+  ],
+  "title_zh": "谨慎地扩展法律"
  },
  {
   "id": "cur-2a8737247b26",
@@ -1111,6 +1178,27 @@
    }
   ],
   "title_zh": "编码代理的组成部分"
+ },
+ {
+  "id": "cur-1ea34ba04923",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "A Visual Guide to Attention Variants in Modern LLMs",
+  "link": "https://magazine.sebastianraschka.com/p/visual-attention-variants",
+  "date": "2026-03-22",
+  "audio_url": "https://substack-post-media.s3.amazonaws.com/public/images/51d52b9a-e820-45d6-8135-f94496ec1745_1600x900.png",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1ea34ba04923.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1ea34ba04923.transcript.txt"
+   }
+  ],
+  "title_zh": "现代LLM中的注意力变体视觉指南"
  },
  {
   "id": "cur-a4ec18135cb6",
@@ -1399,6 +1487,48 @@
   "title_zh": "认知： Devin在细节中"
  },
  {
+  "id": "cur-6d3011a0c9c8",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "From GPT-2 to gpt-oss: Analyzing the Architectural Advances",
+  "link": "https://magazine.sebastianraschka.com/p/from-gpt-2-to-gpt-oss-analyzing-the",
+  "date": "2025-08-09",
+  "audio_url": "https://substack-post-media.s3.amazonaws.com/public/images/529c4cc7-161c-4d7c-b186-06e68c771776_1564x926.png",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-6d3011a0c9c8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-6d3011a0c9c8.transcript.txt"
+   }
+  ],
+  "title_zh": "从GPT-2到gpt-oss ：分析架构进展"
+ },
+ {
+  "id": "cur-3b1209689611",
+  "kind": "curated",
+  "type": "article",
+  "source": "Stratechery",
+  "title": "Paradigm Shifts and the Winner’s Curse",
+  "link": "https://stratechery.com/2025/paradigm-shifts-and-the-winners-curse/",
+  "date": "2025-08-06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3b1209689611.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3b1209689611.transcript.txt"
+   }
+  ],
+  "title_zh": "范式转变和胜利者的诅咒"
+ },
+ {
   "id": "cur-f860d82c521a",
   "kind": "curated",
   "type": "podcast",
@@ -1553,6 +1683,27 @@
   "title_zh": "“使用客户”做什么？"
  },
  {
+  "id": "cur-7b05b9b64a58",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "The State of Reinforcement Learning for LLM Reasoning",
+  "link": "https://magazine.sebastianraschka.com/p/the-state-of-llm-reasoning-model-training",
+  "date": "2025-04-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-7b05b9b64a58.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-7b05b9b64a58.transcript.txt"
+   }
+  ],
+  "title_zh": "LLM推理的强化学习现状"
+ },
+ {
   "id": "cur-5699439df571",
   "kind": "curated",
   "type": "article",
@@ -1668,6 +1819,28 @@
    }
   ],
   "title_zh": "构建生成式人工智能应用程序时的常见陷阱"
+ },
+ {
+  "id": "cur-5eb8ac407733",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Practical AI",
+  "title": "Creating tested, reliable AI applications",
+  "link": "https://changelog.com/practicalai/295",
+  "date": "2024-11-13",
+  "audio_url": "https://op3.dev/e/https://pscrb.fm/rss/p/https://cdn.changelog.com/uploads/practicalai/295/practical-ai-295.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5eb8ac407733.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5eb8ac407733.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5eb8ac407733.m4a",
+  "title_zh": "创建经过测试、可靠的人工智能应用程序"
  },
  {
   "id": "cur-fb8757e9a46d",
@@ -1986,6 +2159,27 @@
   "title_zh": "人工智能工程师的崛起"
  },
  {
+  "id": "cur-97b2c5f4478d",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "LLM Powered Autonomous Agents",
+  "link": "https://lilianweng.github.io/posts/2023-06-23-agent/",
+  "date": "2023-06-23",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-97b2c5f4478d.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-97b2c5f4478d.transcript.txt"
+   }
+  ],
+  "title_zh": "由法学硕士提供支持的自主代理"
+ },
+ {
   "id": "cur-e3fa9e6175a1",
   "kind": "curated",
   "type": "article",
@@ -2064,6 +2258,27 @@
    }
   ],
   "title_zh": "为什么我不是单页应用程序的最大粉丝"
+ },
+ {
+  "id": "cur-4dab64a7e3ce",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Large Transformer Model Inference Optimization",
+  "link": "https://lilianweng.github.io/posts/2023-01-10-inference-optimization/",
+  "date": "2023-01-10",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-4dab64a7e3ce.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-4dab64a7e3ce.transcript.txt"
+   }
+  ],
+  "title_zh": "大型变压器模型推理优化"
  },
  {
   "id": "cur-30e12c438296",
@@ -2162,6 +2377,10 @@
    {
     "label": "总结",
     "url": "txt/cur-e2b191b5e4d9.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e2b191b5e4d9.transcript.txt"
    }
   ],
   "title_zh": "SPA是一个大错误吗？",
@@ -2263,6 +2482,27 @@
    }
   ],
   "title_zh": "如何在多个GPU上训练真正的大型模型？"
+ },
+ {
+  "id": "cur-93e53a97f2e3",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "What are Diffusion Models?",
+  "link": "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/",
+  "date": "2021-07-11",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-93e53a97f2e3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-93e53a97f2e3.transcript.txt"
+   }
+  ],
+  "title_zh": "什么是扩散模型？"
  },
  {
   "id": "cur-512782471c98",
@@ -2750,6 +2990,27 @@
    }
   ],
   "title_zh": "小型聚焦模块"
+ },
+ {
+  "id": "cur-1c9291c74af3",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Attention? Attention!",
+  "link": "https://lilianweng.github.io/posts/2018-06-24-attention/",
+  "date": "2018-06-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1c9291c74af3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1c9291c74af3.transcript.txt"
+   }
+  ],
+  "title_zh": "哔哔！"
  },
  {
   "id": "cur-63bd5d53fbe9",

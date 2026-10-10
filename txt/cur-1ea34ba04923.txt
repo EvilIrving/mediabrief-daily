@@ -1,0 +1,21 @@
+https://magazine.sebastianraschka.com/p/visual-attention-variants
+
+现代大语言模型注意力变体图解指南 A Visual Guide to Attention Variants in Modern LLMs ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/visual-attention-variants
+
+Sebastian Raschka 在等待 DeepSeek V4 发布期间整理了一个“LLM 架构图鉴”（撰文时收录 45 个条目，每个配有可视化模型卡，另有 Redbubble 海报版），这篇文章则是配套的讲解：系统梳理近年主流开源权重模型中实际使用的注意力变体，兼作参考资料和入门教程。
+
+一、多头注意力（MHA）。注意力早于 Transformer，起源于翻译用的编码器-解码器 RNN：把整句压进有限的隐藏状态会形成瓶颈，于是让解码器能直接回看相关输入词。Transformer 去掉了循环，让注意力成为主要机制。他讲解了因果掩码下的 T×T 注意力矩阵、Q/K/V 投影、softmax 归一化，以及多个头并行、各自专注不同关系的原理。代表：GPT-2、OLMo 2/3 7B。
+
+二、分组查询注意力（GQA，Ainslie 等 2023 年提出）：多个查询头共享同一组键值，大幅降低 KV 缓存。它是一个谱系，一端是只有一组 KV 的多查询注意力，另一端是 MHA，中间是最佳点。即使 MLA 兴起，GQA 仍因稳健、易实现、易训练而广泛使用（Llama 3、Qwen3、Gemma 3、MiniMax M2.5 等）。
+
+三、多头潜在注意力（MLA，源自 DeepSeek-V2）：不靠共享而靠压缩，缓存潜在表示、用时再重建。DeepSeek-V2 的消融显示 GQA 不如 MHA，而 MLA 调好后甚至优于 MHA，这比“省内存”更有说服力；但有同行告诉他 MLA 在约 1000 亿参数以下的模型上不如 GQA 好调。Kimi K2、GLM-5、Ling 2.5、Mistral Large 3 相继采用；Sarvam 30B 用 GQA、105B 改用 MLA，说明 MLA 是规模扩大后的升级路径。
+
+四、滑动窗口注意力（SWA）：每个 token 只看固定窗口内的近邻，通常与少量全局层交替。Gemma 2 是 1:1、窗口 4096，Gemma 3 激进到 5:1、窗口 1024，消融显示性能只略降；小米 MiMo 的窗口仅 128。SWA 常与 GQA 合用，分别减少需考虑的上下文和每 token 的缓存。
+
+五、DeepSeek 稀疏注意力（DSA，DeepSeek V3.2，后被 GLM-5 采用）：同样只关注部分历史 token，但不是固定窗口，而是由“闪电索引器”基于 MLA 压缩表示打分、再由选择器保留 top-k，让模型自己学该回看哪些位置。MLA 优化缓存表示，DSA 优化其上的注意力模式。
+
+六、门控注意力：本质是在全注意力块上加输出门、零中心 QK-Norm 和部分 RoPE 等稳定性改动，多见于混合架构中保留的全注意力层（Qwen3-Next、Qwen3.5），非混合的 Trinity 也用了类似思路。
+
+七、混合注意力：保留 Transformer 骨架，但把大多数昂贵的全注意力层换成线性或状态空间模块，以换取长上下文效率（有一定性能代价）。Qwen3-Next 以 3:1 混合 Gated DeltaNet（与 Mamba-2 相近的门控快速权重记忆）和门控注意力，Qwen3.5 把它带进旗舰系列，说明这条路走通了；Kimi Linear 改用通道级门控的 Kimi Delta Attention 和门控 MLA；Ling 2.5 用 Lightning Attention 加 MLA，32k 长度下明显快于 Kimi K2；英伟达 Nemotron 3 则更激进，以 Mamba-2 为主，只在少数层用注意力。
+
+结论：很难说哪种架构“最好”，因为没有公开实验在相同数据上训练不同架构。他认为混合架构仍是新事物，卖点主要是长上下文效率，适合智能体场景（如 OpenClaw）；但其推理栈尚未充分优化，本地运行时 GPT-OSS 这类经典 GQA 模型吞吐更高。他期待 Mamba-3 进入混合架构、注意力残差得到普及，也好奇作为近两年潮流引领者的 DeepSeek 会在 V4 中带来什么。

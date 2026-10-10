@@ -1,0 +1,11 @@
+https://lilianweng.github.io/posts/2023-01-10-inference-optimization/
+
+Lilian Weng 这篇 2023 年综述回答：大型 Transformer 推理为何又贵又慢，以及如何压成本。除模型本身膨胀外，两大硬约束是内存与不可并行——批 512、上下文 2048 时 KV cache 可到约 3TB（约三倍于模型体积）；注意力随长度平方涨；自回归解码又很难并行。目标无非三件事：少占显存、少算 FLOPs、降延迟。张量/流水线并行与 CPU 卸载留给她的训练文；本文聚焦网络压缩与架构特化改动。
+
+蒸馏最直接：用学生模仿教师的软分布（高温 softmax），常再加硬标签损失。DistilBERT 参数减约 40%、下游约 97%、提速约 71%，并可用余弦损失对齐隐状态；也易与量化、剪枝联用——教师全精度稠密，学生低比特或稀疏。
+
+量化分 PTQ 与 QAT。Transformer 的麻烦在激活：FFN 残差动态范围悬殊，上到数十亿参数后异常特征遍布各层，少数维可比其他值大约百倍（Dettmers 等在 >6.7B OPT 上观察到），朴素 8-bit PTQ 会塌。应对包括混合精度（问题激活留 16-bit；`LLM.int8()` 对内积做 INT8、把极端异常留 FP16）、更细粒度（按头的 Q-BERT、按嵌入组的 PEG、按 token 的 ZeroQuant 并融合 kernel）、用 Hessian 找敏感权重（HAWQ；GPTQ 可把 OPT-175B 权重量到 3–4 bit 但不碰激活）、以及 SmoothQuant 把激活异常等价“抹”到权重上以实现更友好硬件的 W8A8（α≈0.5 常是甜点）。QAT 则在训练中学低比特，或逐层以 NLP 未量化层为教师做 LKD。理论最优仍受 GPU kernel 支持限制——缺 INT4×FP16 时纸面加速变不成墙钟加速。
+
+剪枝上她区分无结构（难真正加速）与有结构，强调幅度剪枝往往不输变分 dropout 等复杂方法；大稀疏可优于小稠密（Zhu & Gupta）；GMP 渐进提高稀疏度；再训练可用权重回绕或学习率回绕，后者常不输前者。稀疏一章讲契合 A100 的 N:M（如 2:4）模式、剪前置换、SR-STE 与 Top-KAST；Scaling Transformer 对 FFN/注意力做结构化稀疏（先算控制器再决定不加载零列）并催生 Terraformer；MoE 则用容量因子 C 与 top-k 路由换“只激活部分参数”。路由侧有 ViT 上的 V-MoE 与批优先级路由（先保关键 token）、翻译上的任务级 Task MoE（静态预载 k 专家、吞吐大增），以及后期层更多专家的 PR-MoE；通信侧用分层 all-to-all、DynaMoE 动态重编译等减 all-to-all 痛点。
+
+架构优化一章按 Tay 等的高效 Transformer 脉络归类：固定/组合/可学习的稀疏注意力（分块、跨步、Longformer/Big Bird、LSH、k-means、Sinkhorn），Transformer-XL、Universal、Compressive 等循环设计，Linformer、多查询注意力、Performer 等省内存形式，以及自适应跨度与早退（CALM 等）。全文是一张方法地图：推理贵在 KV 与平方注意力，省钱则从压精度、剪连接、稀疏激活专家，一直改到注意力本身的形状。
