@@ -1,11 +1,11 @@
 https://syntax.fm/921
 
-第 921 期：写给新手（和怀疑者）的 AI 编程路线图（921: AI Coding Roadmap for Newbies (And Skeptics)） ｜ Syntax ｜ 播客 ｜ https://syntax.fm/921
+这一期 Syntax 是 Wes Bos 和 Scott Tolinski 给 AI 编程新手和怀疑者准备的路线图：先讲用 AI 写代码的几种方式，再讲自己动手做一个 AI 应用，借此弄懂上下文、提示词、流式输出、嵌入、RAG、MCP 等概念。
 
-《Syntax》2025 年 7 月的一期，主持人 Wes Bos 和 Scott Tolinski 给还没上手、或者对 AI 编程心存怀疑的开发者画一张路线图：先讲用 AI 写代码的各种交互方式，再讲给 agent 补充上下文的工具，最后讲想自己做 AI 应用需要了解的概念和库。开场 Scott 先显摆了一下自己把采集卡上脱焊的 USB 接口焊了回去。
+写代码的方式按"吓人程度"从低到高排列：编辑器里的幽灵文本自动补全；IDE 侧边栏的 agent 模式聊天，改动先暂存，可逐条接受或回滚，Scott 主要用这种；终端里的 CLI agent，Claude Code 领先，另有 Gemini CLI、Codex、OpenCode 和 Warp，适合并行派任务。两人承认 Claude Code 质量更高，但仍偏爱 IDE 的图形界面看 diff。补上下文推荐 Context7，能注入 Tailwind 4、Svelte 5 等库的最新文档；AI 只熟悉特定时期的工具，Svelte 把 on:click 改成 onclick 它就不认识。Wes 的原则是：觉得 AI 蠢时，多半该通过 MCP 给它补个工具。v0、Lovable、Bolt.new、Replit 适合主要做 UI、不想碰代码的人，别小看它们；在 ChatGPT 里复制粘贴最原始，Scott 现在改用能引用多个标签页的 Dia 浏览器。
 
-交互方式按"吓人程度"由低到高排。最入门的是编辑器里的幽灵文本自动补全，VS Code、Windsurf、Cursor 都有，接受与否全由你决定，门槛最低、最不让人反感，用惯之后在没有补全的地方反而会想念它。再往上是编辑器里的聊天面板，可以针对选中的代码提问或让它修改，他们认为这是新手最不吓人的起点，可以小剂量地用。然后是 agent 模式，让它自主改多个文件、跑命令。还有 Claude Code 这类终端里的 agent：你输入"做 X、Y、Z"，它制定计划然后去执行，设计初衷是同时开好几个并行跑；他们承认 Claude Code 的质量明显更好，但其中一人不喜欢终端界面，按错键整个就退出了，看 diff、回滚都不如 Cursor 或 VS Code 里有完整图形界面方便。此外还有 v0、Bolt、Lovable、Replit 这类面向非程序员、从一句话生成应用的工具，他们提醒别因为在程序员圈子里不流行就小看它们，自己不擅长的领域也会用类似的工具，比如用 ElevenLabs 生成游戏音效。最后是在 ChatGPT 这类聊天应用里来回复制粘贴，这曾是最主流的方式，但效率远不如新工具。
+做应用部分：系统提示词设定角色；借助 AI SDK，结构化输出已不成问题，模型最擅长 JSON 和 Markdown；响应慢就要流式解析，JSONL 每行一个对象最安全。RAG 是把问题和近千期文字稿片段转成嵌入向量，取最接近的几段交给模型。MCP 让 AI 操作 Figma、Godot、DaVinci Resolve 等程序。Wes 做过的玩具：拍照后让 OpenAI 用《拖车公园男孩》Ricky 的口吻描述，再用 ElevenLabs 的声音念出来，借此体会各模型在速度、价格、质量上的取舍。
 
-上下文工具方面，他们推荐 Context7：说一句"去读 Tailwind 4 或 Svelte 5 的文档"，它就把最新文档拉进提示里，他们觉得比 Cursor 内置的文档功能好用，后者经常要在每条消息里手动 @ 文档；还有 llms.txt，各类规则文件，以及 MCP：让 agent 操作其他应用，比如 Adam Wathan 用 Figma 的 MCP 把设计稿近乎像素级地转成 Tailwind 代码，Scott 用 MCP 操控 Godot 游戏引擎，还有 DaVinci Resolve 的 MCP，以及赞助商 Sentry 的 MCP 和 AI 调试工具 Seer。
+工具库推荐 OpenAI SDK、Vercel AI SDK（统一对接各家模型并提供流式 UI）、Cloudflare Agents SDK（状态持久化、长任务）；LangChain 他们很久没用了；Transformers.js 可本地跑 Hugging Face 小模型，Wes 用它从六千张截图里挑出笑得最开心的一张。
 
-关于自己做 AI 应用，他们讲了几个概念：各家模型接口大多兼容 OpenAI 的格式，不必绑定一家；模型最擅长返回 JSON 和 Markdown；流式输出很重要，因为模型很慢，要边收边显示，这也是为什么有时会看到半截没格式化好的 Markdown 表格，而 JSONL 每行一个对象，可以安全地逐行解析，在微调数据里也很常见；多模态模型可以输入图片、生成图像和视频、语音转文字和文字转语音，Wes 讲了他一年多前做的恶搞项目：用摄像头拍自己，让 OpenAI 以《拖车公园男孩》里 Ricky 的口吻描述照片，再用 ElevenLabs 训练的 Ricky 声音念出来。工具库方面，他们提到 Vercel AI SDK、OpenAI SDK、Cloudflare 的 Agents SDK（适合定时任务和持久状态）、LangChain，以及能在浏览器里跑 Hugging Face 模型的 Transformers.js；他们承认 Hugging Face 内容多得会让新手望而生畏，但值得逛逛。他们的建议是不必全部用上，从最简单的开始，挑一个真实的小项目动手。
+最后建议多探索，把 AI 当作有趣的机器学习来玩，Scott 专门有个自动清空的 temp 文件夹放试验。两人承认 AI 在版权、能耗上有问题，但它确实在改变行业；尽量用自己熟悉的技术，才能判断生成的代码值不值得留。本期没有 Sick Picks。

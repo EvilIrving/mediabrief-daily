@@ -1,0 +1,11 @@
+https://magazine.sebastianraschka.com/p/understanding-multimodal-llms
+
+理解多模态大语言模型 Understanding Multimodal LLMs ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/understanding-multimodal-llms
+
+Sebastian Raschka 这篇文章先从概念上讲解多模态大语言模型如何工作，再横向点评 2024 年秋发布的约十个多模态模型。他以图像加文本为主线，典型应用如图像描述、解释梗图、把 PDF 表格转成 LaTeX 或 Markdown。
+
+构建多模态 LLM 主要有两条路。方法 A 是“统一嵌入解码器架构”：把图像切成小块，用预训练的视觉 Transformer（常用 CLIP 或 OpenCLIP）编码，再经投影层（又称适配器或连接器）映射到与文本 token 相同的嵌入维度，与文本 token 拼接后输入一个未经修改的解码器 LLM。他附上 PyTorch 代码演示图像块的线性投影，以及如何用等价的卷积一步完成切块和投影；Fuyu 则干脆不用图像编码器，直接把图像块线性投影。方法 B 是“跨模态注意力架构”：图像编码不进入输入序列，而是在注意力层中通过交叉注意力与文本融合，思路源自原始 Transformer 中解码器关注编码器输出的机制，查询来自文本、键和值来自图像。训练上，多模态模型通常从已指令微调的纯文本 LLM 起步，分预训练和指令微调两阶段：图像编码器常被冻结，预训练时只训练投影层，指令微调时再解冻 LLM；方法 B 的交叉注意力层则全程训练。两者各有取舍：方法 A 无需改动 LLM、更易实现；方法 B 不把大量图像 token 塞进上下文，计算更高效，且冻结 LLM 时能保住纯文本能力。
+
+随后的模型点评勾勒出多样的做法：Llama 3.2（11B、90B）采用交叉注意力，反常地训练自研的 ViT-H/14 图像编码器而冻结语言模型，以便直接替换 Llama 3.1 文本模型，并只在每四个 Transformer 块加一层交叉注意力；Molmo 连数据集和代码一起开源，用一个简单流程同时更新全部参数；英伟达 NVLM 难得地在同等条件下对比了两种方法及混合版，发现交叉注意力版处理高分辨率图像更高效、解码器版 OCR 更准、混合版兼得其长；Qwen2-VL 以“朴素动态分辨率”和 2D-RoPE 原生支持任意分辨率；Mistral 的 Pixtral 12B 从零训练了 4 亿参数的图像编码器；苹果 MM1.5 提供 1B 到 30B 的稠密和混合专家模型，并加入坐标 token 表示边界框；Aria 是交叉注意力式的混合专家模型；Baichuan-Omni 分三阶段逐步解冻投影层、视觉编码器和 LLM；Emu3 证明纯解码器 Transformer 也能做图像生成，可替代扩散模型；DeepSeek 的 Janus 则把理解和生成的视觉编码通路解耦，统一在一个 LLM 中。
+
+他坦言没有比较各模型的性能：公开基准普遍存在数据污染，各模型组件差异大，难以公平比较，因此特别称赞 NVLM 的对照实验。他的主要结论是：多模态 LLM 可以用许多不同方式成功构建。文中也推广了他的新书《从零构建大语言模型》。

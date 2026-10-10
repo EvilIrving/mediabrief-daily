@@ -1,0 +1,1665 @@
+https://overreacted.io/a-complete-guide-to-useeffect/
+
+useEffect 完全指南
+
+Dan Abramov，Overreacted，2019 年 3 月 9 日
+
+你已经用 [Hooks](https://reactjs.org/docs/hooks-intro.html) 写了几个组件，也许甚至写了一个小应用。你基本满意。你对这套 API 已经很熟悉，一路上还学到了一些技巧。你甚至写了几个[自定义 Hook](https://reactjs.org/docs/hooks-custom.html) 来抽取重复逻辑（删掉了 300 行！），还拿去给同事炫耀。“干得漂亮”，他们说。
+
+但有时候你用 `useEffect` 时，总觉得有些地方拼不起来。你隐隐觉得自己漏掉了什么。它看起来和 class 的生命周期很像……可真的是这样吗？你发现自己会问这样的问题：
+
+*   🤔 怎么用 `useEffect` 实现 `componentDidMount`？
+*   🤔 怎么在 `useEffect` 里正确地获取数据？`[]` 是什么？
+*   🤔 我需不需要把函数列为 effect 的依赖？
+*   🤔 为什么我有时会陷入无限重复请求的循环？
+*   🤔 为什么我有时在 effect 里拿到的是旧的 state 或 prop 值？
+
+我刚开始用 Hooks 的时候，也被这些问题弄糊涂过。甚至在撰写最初的文档时，我对其中一些微妙之处也没有牢牢掌握。之后我有过几次“恍然大悟”的时刻，想和你分享。**这次深入探讨会让这些问题的答案在你看来显而易见。**
+
+为了_看清_答案，我们需要退后一步。本文的目的不是给你一张要点式的菜谱清单，而是帮你真正“领会”（grok）`useEffect`。要学的东西不会太多。事实上，我们大部分时间都会花在_忘掉_已学的东西上。
+
+**直到我不再透过熟悉的 class 生命周期方法这块棱镜去看 `useEffect` Hook，一切才在我脑中串了起来。**
+
+> “忘掉你已经学到的。”——尤达
+
+![图 1：尤达在嗅空气。配文：“我闻到了培根味。”](https://overreacted.io/a-complete-guide-to-useeffect/yoda.jpg)
+
+* * *
+
+**本文假设你对 [`useEffect`](https://reactjs.org/docs/hooks-effect.html) API 已经有一定了解。**
+
+**它也_非常_长，像一本小书。这正是我偏爱的形式。不过如果你赶时间或者并不太在意，下面我写了一个 TLDR（太长不看版）。**
+
+**如果你不习惯这种深入探讨，也许可以等这些解释出现在别的地方再看。就像 2013 年 React 刚推出时一样，人们需要一些时间来认识一种不同的心智模型并把它教给别人。**
+
+* * *
+
+## [TLDR（太长不看版）](https://overreacted.io/a-complete-guide-to-useeffect/#tldr)
+
+如果你不想读完全文，这里有一个简短的 TLDR。如果某些部分看不明白，你可以往下翻，直到找到相关内容。
+
+如果你打算读完整篇文章，可以跳过这一节。我会在文末链接回这里。
+
+**🤔 问题：怎么用 `useEffect` 实现 `componentDidMount`？**
+
+虽然你可以写 `useEffect(fn, [])`，但它并不完全等价。与 `componentDidMount` 不同，它会_捕获_ props 和 state。所以即使在回调里，你看到的也是初始的 props 和 state。如果你想看到某个东西的“最新”值，可以把它写进一个 ref。但通常有更简单的代码组织方式，让你不必这样做。记住，effect 的心智模型与 `componentDidMount` 及其他生命周期不同，试图找到它们之间的精确对应，可能弊大于利，只会让你更困惑。要高效地工作，你需要“用 effect 的方式思考”，而它的心智模型更接近于实现同步，而不是响应生命周期事件。
+
+**🤔 问题：怎么在 `useEffect` 里正确地获取数据？`[]` 是什么？**
+
+[这篇文章](https://www.robinwieruch.de/react-hooks-fetch-data/)是用 `useEffect` 获取数据的一篇不错的入门介绍。一定要读到最后！它没有本文这么长。`[]` 表示这个 effect 没有使用任何参与 React 数据流的值，因此只执行一次是安全的。但当这个值实际上_确实_被用到时，它也是常见的 bug 来源。你需要学会几种策略（主要是 `useReducer` 和 `useCallback`），它们能_消除对某个依赖的需要_，而不是错误地把它省略掉。
+
+**🤔 问题：我需不需要把函数列为 effect 的依赖？**
+
+建议是：把不需要 props 或 state 的函数提升到组件_外部_，把只被某个 effect 使用的函数挪到该 effect _内部_。如果这样做之后，你的 effect 仍然用到了渲染作用域中的函数（包括来自 props 的函数），就在定义它们的地方用 `useCallback` 包起来，然后重复这个过程。为什么这很重要？因为函数能“看到” props 和 state 中的值——所以它们参与了数据流。我们的 FAQ 里有[更详细的回答](https://reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies)。
+
+**🤔 问题：为什么我有时会陷入无限重复请求的循环？**
+
+如果你在 effect 里获取数据却没有传第二个依赖参数，就可能发生这种情况。没有它，effect 会在每次渲染后运行——而设置 state 又会再次触发 effect。如果你在依赖数组里指定了一个_总是_变化的值，也可能导致无限循环。你可以逐个移除依赖来判断是哪一个。然而，移除一个你确实用到的依赖（或者盲目地指定 `[]`）通常是错误的修法。正确的做法是从根源上解决问题。例如，函数可能导致这个问题，把它们放进 effect 内部、提升到外部，或者用 `useCallback` 包起来都会有帮助。为了避免重复创建对象，`useMemo` 可以起到类似的作用。
+
+**🤔 为什么我有时在 effect 里拿到的是旧的 state 或 prop 值？**
+
+Effect 总是“看到”定义它的那次渲染中的 props 和 state。这[有助于避免 bug](https://overreacted.io/how-are-function-components-different-from-classes/)，但在某些情况下也会让人恼火。对于这些情况，你可以显式地在一个可变的 ref 中维护某个值（链接的文章在末尾有讲解）。如果你觉得自己看到了来自旧渲染的 props 或 state，而这并不在你预期之中，那你可能漏掉了一些依赖。试试用这条 [lint 规则](https://github.com/facebook/react/issues/14920)来训练自己发现它们。几天之后，这就会成为你的第二天性。另见我们 FAQ 中的[这个回答](https://reactjs.org/docs/hooks-faq.html#why-am-i-seeing-stale-props-or-state-inside-my-function)。
+
+* * *
+
+希望这个 TLDR 对你有帮助！否则，我们开始吧。
+
+* * *
+
+## [每次渲染都有它自己的 Props 和 State](https://overreacted.io/a-complete-guide-to-useeffect/#each-render-has-its-own-props-and-state)
+
+在讨论 effect 之前，我们需要先谈谈渲染。
+
+这是一个计数器。仔细看高亮的那一行：
+
+```
+function Counter() {
+  const [count, setCount] = useState(0);
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+它是什么意思？`count` 是不是以某种方式“监听”着 state 的变化并自动更新？刚学 React 时，这或许是一种有用的初步直觉，但它_并不是_一个[准确的心智模型](https://overreacted.io/react-as-a-ui-runtime/)。
+
+**在这个例子里，`count` 只是一个数字。**它不是什么神奇的“数据绑定”、“监听器”、“代理”或其他任何东西。它就是一个普普通通的数字，就像这样：
+
+```
+const count = 42;
+// ...
+<p>You clicked {count} times</p>
+// ...
+```
+
+组件第一次渲染时，我们从 `useState()` 拿到的 `count` 变量是 `0`。当我们调用 `setCount(1)` 时，React 会再次调用我们的组件。这一次，`count` 是 `1`。以此类推：
+
+```
+// During first render
+function Counter() {
+  const count = 0; // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+ 
+// After a click, our function is called again
+function Counter() {
+  const count = 1; // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+ 
+// After another click, our function is called again
+function Counter() {
+  const count = 2; // Returned by useState()
+  // ...
+  <p>You clicked {count} times</p>
+  // ...
+}
+```
+
+**每当我们更新 state，React 就会调用我们的组件。每次渲染结果都“看到”它自己的 `counter` state 值，这个值在我们的函数内部是一个_常量_。**
+
+所以这一行并没有做任何特殊的数据绑定：
+
+`<p>You clicked {count} times</p>`
+**它只是把一个数字值嵌入到渲染输出中。**这个数字由 React 提供。当我们调用 `setCount` 时，React 会用一个不同的 `count` 值再次调用我们的组件。然后 React 更新 DOM，使之与我们最新的渲染输出一致。
+
+关键的结论是：任何一次特定渲染中的 `count` 常量都不会随时间改变。是我们的组件被再次调用了——而每次渲染都“看到”它自己的 `count` 值，这些值在各次渲染之间是相互隔离的。
+
+_（想深入了解这个过程，可以看我的文章 [React as a UI Runtime](https://overreacted.io/react-as-a-ui-runtime/)。）_
+
+## [每次渲染都有它自己的事件处理函数](https://overreacted.io/a-complete-guide-to-useeffect/#each-render-has-its-own-event-handlers)
+
+到目前为止一切都好。那事件处理函数呢？
+
+看这个例子。它会在三秒后弹出一个显示 `count` 的提示框：
+
+```
+function Counter() {
+  const [count, setCount] = useState(0);
+ 
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+      <button onClick={handleAlertClick}>
+        Show alert
+      </button>
+    </div>
+  );
+}
+```
+
+假设我按以下步骤操作：
+
+*   把计数器**增加**到 3
+*   **点击**“Show alert”
+*   在定时器触发之前把它**增加**到 5
+
+![图 2：计数器演示](https://overreacted.io/a-complete-guide-to-useeffect/counter.gif)
+
+你觉得提示框会显示什么？会显示 5——弹出提示时计数器的 state？还是显示 3——我点击时的 state？
+
+* * *
+
+_前方剧透_
+
+* * *
+
+去[自己试试吧！](https://codesandbox.io/s/w2wxl3yo0l)
+
+如果你觉得这个行为不太合理，可以想象一个更实际的例子：一个聊天应用，state 中保存着当前收件人的 ID，还有一个发送按钮。[这篇文章](https://overreacted.io/how-are-function-components-different-from-classes/)深入探讨了其中的原因，但正确答案是 3。
+
+提示框会“捕获”我点击按钮那一刻的 state。
+
+_（也有办法实现另一种行为，但我现在先专注于默认情况。在建立心智模型时，区分“阻力最小的路径”和需要主动选用的逃生舱（escape hatch）是很重要的。）_
+
+* * *
+
+但它是怎么做到的呢？
+
+我们已经讨论过，对我们函数的每一次特定调用来说，`count` 值都是常量。这一点值得强调——**我们的函数会被调用很多次（每次渲染一次），但每一次调用中，它内部的 `count` 值都是常量，并被设为一个特定的值（那次渲染的 state）。**
+
+这并不是 React 特有的——普通函数也是以类似的方式工作的：
+
+```
+function sayHi(person) {
+  const name = person.name;
+  setTimeout(() => {
+    alert('Hello, ' + name);
+  }, 3000);
+}
+ 
+let someone = {name: 'Dan'};
+sayHi(someone);
+ 
+someone = {name: 'Yuzhi'};
+sayHi(someone);
+ 
+someone = {name: 'Dominic'};
+sayHi(someone);
+```
+
+在[这个例子](https://codesandbox.io/s/mm6ww11lk8)中，外部的 `someone` 变量被重新赋值了好几次。（就像在 React 中某处，_当前的_组件 state 可以改变一样。）**然而，在 `sayHi` 内部，有一个局部的 `name` 常量，它与某一次特定调用中的 `person` 相关联。**这个常量是局部的，所以在各次调用之间是隔离的！因此，当定时器触发时，每个提示框都“记得”它自己的 `name`。
+
+这就解释了我们的事件处理函数是如何捕获点击时的 `count` 的。如果我们应用同样的替换原则，每次渲染都“看到”它自己的 `count`：
+
+```
+// During first render
+function Counter() {
+  const count = 0; // Returned by useState()
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+  // ...
+}
+ 
+// After a click, our function is called again
+function Counter() {
+  const count = 1; // Returned by useState()
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+  // ...
+}
+ 
+// After another click, our function is called again
+function Counter() {
+  const count = 2; // Returned by useState()
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + count);
+    }, 3000);
+  }
+  // ...
+}
+```
+
+所以实际上，每次渲染都返回它自己“版本”的 `handleAlertClick`。每个版本都“记得”它自己的 `count`：
+
+```
+// During first render
+function Counter() {
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + 0);
+    }, 3000);
+  }
+  // ...
+  <button onClick={handleAlertClick} /> // The one with 0 inside
+  // ...
+}
+ 
+// After a click, our function is called again
+function Counter() {
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + 1);
+    }, 3000);
+  }
+  // ...
+  <button onClick={handleAlertClick} /> // The one with 1 inside
+  // ...
+}
+ 
+// After another click, our function is called again
+function Counter() {
+  // ...
+  function handleAlertClick() {
+    setTimeout(() => {
+      alert('You clicked on: ' + 2);
+    }, 3000);
+  }
+  // ...
+  <button onClick={handleAlertClick} /> // The one with 2 inside
+  // ...
+}
+```
+
+这就是为什么[在这个演示中](https://codesandbox.io/s/w2wxl3yo0l)，事件处理函数“属于”某一次特定的渲染，当你点击时，它会继续使用_来自_那次渲染的 `counter` state。
+
+**在任何一次特定的渲染中，props 和 state 永远保持不变。**而既然 props 和 state 在各次渲染之间是隔离的，那么任何使用它们的值（包括事件处理函数）也是隔离的。它们同样“属于”某一次特定的渲染。所以即使是事件处理函数内部的异步函数，“看到”的也是同一个 `count` 值。
+
+_旁注：上面我把具体的 `count` 值直接内联进了 `handleAlertClick` 函数。这种心理上的替换是安全的，因为 `count` 在一次特定的渲染中不可能改变。它被声明为 `const`，而且是一个数字。对于对象之类的其他值，同样这样思考也是安全的，但前提是我们约定避免修改（mutate）state。用一个新创建的对象调用 `setSomething(newObj)` 而不是修改原对象是没问题的，因为属于之前渲染的 state 保持完好。_
+
+## [每次渲染都有它自己的 Effect](https://overreacted.io/a-complete-guide-to-useeffect/#each-render-has-its-own-effects)
+
+这本应是一篇讲 effect 的文章，可我们到现在还没谈到 effect！现在就来弥补。事实证明，effect 并没有什么不同。
+
+我们回到[文档](https://reactjs.org/docs/hooks-effect.html)中的一个例子：
+
+```
+function Counter() {
+  const [count, setCount] = useState(0);
+ 
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+**问你一个问题：这个 effect 是如何读取到最新的 `count` state 的？**
+
+也许，有某种“数据绑定”或“监听”让 `count` 在 effect 函数内部实时更新？也许 `count` 是一个可变变量，React 在我们的组件内部设置它，让我们的 effect 总能看到最新值？
+
+都不是。
+
+我们已经知道，在一次特定的组件渲染中，`count` 是常量。事件处理函数“看到”的是它们所“属于”的那次渲染中的 `count` state，因为 `count` 是它们作用域中的一个变量。effect 也是如此！
+
+**并不是 `count` 变量在一个“不变的” effect 中以某种方式改变了，而是 _effect 函数本身_在每次渲染中都不一样。**
+
+每个版本都“看到”它所“属于”的那次渲染中的 `count` 值：
+
+```
+// During first render
+function Counter() {
+  // ...
+  useEffect(
+    // Effect function from first render
+    () => {
+      document.title = `You clicked ${0} times`;
+    }
+  );
+  // ...
+}
+ 
+// After a click, our function is called again
+function Counter() {
+  // ...
+  useEffect(
+    // Effect function from second render
+    () => {
+      document.title = `You clicked ${1} times`;
+    }
+  );
+  // ...
+}
+ 
+// After another click, our function is called again
+function Counter() {
+  // ...
+  useEffect(
+    // Effect function from third render
+    () => {
+      document.title = `You clicked ${2} times`;
+    }
+  );
+  // ..
+}
+```
+
+React 会记住你提供的 effect 函数，并在把变更刷新到 DOM、让浏览器绘制屏幕之后运行它。
+
+所以，即使我们在这里说的是一个概念上的 _effect_（更新文档标题），它在每次渲染中都由一个_不同的函数_来表示——而每个 effect 函数都“看到”它所“属于”的那次特定渲染中的 props 和 state。
+
+**从概念上讲，你可以把 effect 想象成_渲染结果的一部分_。**
+
+严格来说它们并不是（为了在没有笨拙语法或运行时开销的情况下[支持 Hook 的组合](https://overreacted.io/why-do-hooks-rely-on-call-order/)）。但在我们正在建立的心智模型中，effect 函数和事件处理函数一样，_属于_某一次特定的渲染。
+
+* * *
+
+为了确保我们理解扎实，回顾一下第一次渲染：
+
+*   **React：**给我 state 为 `0` 时的 UI。
+*   **你的组件：**
+    *   这是渲染结果：`<p>You clicked 0 times</p>`。
+    *   另外，完事后记得运行这个 effect：`() => { document.title = 'You clicked 0 times' }`。
+
+*   **React：**没问题。正在更新 UI。嘿，浏览器，我要往 DOM 里加点东西。
+*   **浏览器：**好的，我已经把它绘制到屏幕上了。
+*   **React：**好，现在我要运行你给我的 effect。
+    *   正在运行 `() => { document.title = 'You clicked 0 times' }`。
+
+* * *
+
+现在回顾一下点击之后发生了什么：
+
+*   **你的组件：**嘿，React，把我的 state 设为 `1`。
+*   **React：**给我 state 为 `1` 时的 UI。
+*   **你的组件：**
+    *   这是渲染结果：`<p>You clicked 1 times</p>`。
+    *   另外，完事后记得运行这个 effect：`() => { document.title = 'You clicked 1 times' }`。
+
+*   **React：**没问题。正在更新 UI。嘿，浏览器，我改了 DOM。
+*   **浏览器：**好的，我已经把你的改动绘制到屏幕上了。
+*   **React：**好，现在我要运行属于我刚才那次渲染的 effect。
+    *   正在运行 `() => { document.title = 'You clicked 1 times' }`。
+
+* * *
+
+## [每次渲染都有它自己的……一切](https://overreacted.io/a-complete-guide-to-useeffect/#each-render-has-its-own-everything)
+
+**我们现在知道：effect 在每次渲染后运行，在概念上是组件输出的一部分，并且“看到”那次特定渲染中的 props 和 state。**
+
+我们来做一个思想实验。考虑这段代码：
+
+```
+function Counter() {
+  const [count, setCount] = useState(0);
+ 
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(`You clicked ${count} times`);
+    }, 3000);
+  });
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+如果我间隔很短地点击好几次，日志会是什么样子？
+
+* * *
+
+_前方剧透_
+
+* * *
+
+你也许会认为这是个陷阱，最终结果会违反直觉。并不是！我们会看到一串日志——每条日志都属于某一次特定的渲染，因此各自带着自己的 `count` 值。你可以[自己试试](https://codesandbox.io/s/lyx20m1ol)：
+
+![图 3：按顺序打印出 1、2、3、4、5 的屏幕录像](https://overreacted.io/a-complete-guide-to-useeffect/timeout_counter.gif)
+
+你也许会想：“当然是这样的！不然还能怎样？”
+
+可是，class 里的 `this.state` 并不是这样工作的。人们很容易误以为这个 [class 实现](https://codesandbox.io/s/kkymzwjqz3)与之等价：
+
+```
+componentDidUpdate() {
+    setTimeout(() => {
+      console.log(`You clicked ${this.state.count} times`);
+    }, 3000);
+  }
+```
+
+然而，`this.state.count` 总是指向_最新的_ count，而不是属于某次特定渲染的那个。所以你每次看到的都是打印出 `5`：
+
+![图 4：按顺序打印出 5、5、5、5、5 的屏幕录像](https://overreacted.io/a-complete-guide-to-useeffect/timeout_counter_class.gif)
+
+我觉得这很讽刺：Hooks 如此依赖 JavaScript 闭包，然而反倒是 class 实现遭遇了那种常被归咎于闭包的[经典的“定时器里拿到错误的值”的困惑](https://wsvincent.com/javascript-closure-settimeout-for-loop/)。这是因为在这个例子里，困惑的真正根源是可变性（React 在 class 中修改 `this.state`，让它指向最新的 state），而不是闭包本身。
+
+**当你闭包捕获的值永远不会变时，闭包是很棒的。这让它们很容易理解，因为你本质上引用的是常量。**而正如我们讨论过的，props 和 state 在一次特定渲染中永远不会改变。顺便说一句，我们可以修好 class 版本……办法是[使用闭包](https://codesandbox.io/s/w7vjo07055)。
+
+## [逆流而上](https://overreacted.io/a-complete-guide-to-useeffect/#swimming-against-the-tide)
+
+此时，我们有必要明确指出：组件渲染中的**每一个**函数（包括事件处理函数、effect，以及它们内部的定时器或 API 调用）都会捕获定义它的那次渲染调用中的 props 和 state。
+
+所以下面这两个例子是等价的：
+
+```
+function Example(props) {
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(props.counter);
+    }, 1000);
+  });
+  // ...
+}
+```
+
+```
+function Example(props) {
+  const counter = props.counter;
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(counter);
+    }, 1000);
+  });
+  // ...
+}
+```
+
+**在组件内部“提前”读取 props 或 state 并没有什么区别。**它们不会变！在单次渲染的作用域内，props 和 state 保持不变。（解构 props 会让这一点更明显。）
+
+当然，有时候你_确实想_在 effect 中定义的某个回调里读取最新的值，而不是被捕获的值。最简单的方法是使用 ref，正如[这篇文章](https://overreacted.io/how-are-function-components-different-from-classes/)最后一节所描述的。
+
+要意识到，当你想在一个_过去的_渲染中的函数里读取_未来的_ props 或 state 时，你就是在逆流而上。这并没有_错_（在某些情况下甚至是必要的），但跳出这个范式看起来可能不那么“干净”。这是有意为之的结果，因为它有助于凸显哪些代码是脆弱的、依赖于时序的。在 class 中，这种情况发生时就没那么明显。
+
+下面是一个复刻 class 行为的[计数器例子版本](https://codesandbox.io/s/rm7z22qnlp)：
+
+```
+function Example() {
+  const [count, setCount] = useState(0);
+  const latestCount = useRef(count);
+ 
+  useEffect(() => {
+    // Set the mutable latest value
+    latestCount.current = count;
+    setTimeout(() => {
+      // Read the mutable latest value
+      console.log(`You clicked ${latestCount.current} times`);
+    }, 3000);
+  });
+  // ...
+```
+
+![图 5：按顺序打印出 5、5、5、5、5 的屏幕录像](https://overreacted.io/a-complete-guide-to-useeffect/timeout_counter_refs.gif)
+
+在 React 中修改某个东西看起来可能有点古怪。然而，React 本身在 class 中重新赋值 `this.state` 正是这样做的。与被捕获的 props 和 state 不同，你无法保证在任何特定的回调中读取 `latestCount.current` 会得到相同的值。按照定义，你可以随时修改它。这就是为什么它不是默认行为，你必须主动选用。
+
+## [那清理呢？](https://overreacted.io/a-complete-guide-to-useeffect/#so-what-about-cleanup)
+
+正如[文档所解释的](https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup)，有些 effect 可能有一个清理阶段。本质上，它的目的是在订阅之类的场景中“撤销”一个 effect。
+
+考虑这段代码：
+
+```
+useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.id, handleStatusChange);
+    };
+  });
+```
+
+假设第一次渲染时 `props` 是 `{id: 10}`，第二次渲染时是 `{id: 20}`。你_可能_认为会发生这样的事情：
+
+*   React 清理 `{id: 10}` 的 effect。
+*   React 渲染 `{id: 20}` 的 UI。
+*   React 运行 `{id: 20}` 的 effect。
+
+（实际情况并不完全是这样。）
+
+按照这种心智模型，你可能会认为清理函数“看到”的是旧的 props，因为它在我们重新渲染之前运行；而新的 effect “看到”新的 props，因为它在重新渲染之后运行。这是直接从 class 生命周期搬过来的心智模型，**在这里并不准确**。我们来看看为什么。
+
+React 只会在[让浏览器完成绘制](https://medium.com/@dan_abramov/this-benchmark-is-indeed-flawed-c3d6b5b6f97f)之后才运行 effect。这让你的应用更快，因为大多数 effect 不需要阻塞屏幕更新。effect 的清理也被推迟了。**上一个 effect 是在用新 props 重新渲染_之后_才被清理的：**
+
+*   **React 渲染 `{id: 20}` 的 UI。**
+*   浏览器绘制。我们在屏幕上看到 `{id: 20}` 的 UI。
+*   **React 清理 `{id: 10}` 的 effect。**
+*   React 运行 `{id: 20}` 的 effect。
+
+你可能会疑惑：如果上一个 effect 的清理是在 props 变为 `{id: 20}` _之后_才运行的，它怎么还能“看到”旧的 `{id: 10}` props 呢？
+
+我们之前见过这种情况……🤔
+
+![图 6：似曾相识（电影《黑客帝国》中的猫的场景）](https://overreacted.io/a-complete-guide-to-useeffect/deja_vu.gif)
+
+引用上一节的话：
+
+> 组件渲染中的每一个函数（包括事件处理函数、effect，以及它们内部的定时器或 API 调用）都会捕获定义它的那次渲染调用中的 props 和 state。
+
+现在答案就清楚了！effect 的清理函数并不会读取“最新的” props，无论那意味着什么。它读取的是属于定义它的那次渲染的 props：
+
+```
+// First render, props are {id: 10}
+function Example() {
+  // ...
+  useEffect(
+    // Effect from first render
+    () => {
+      ChatAPI.subscribeToFriendStatus(10, handleStatusChange);
+      // Cleanup for effect from first render
+      return () => {
+        ChatAPI.unsubscribeFromFriendStatus(10, handleStatusChange);
+      };
+    }
+  );
+  // ...
+}
+ 
+// Next render, props are {id: 20}
+function Example() {
+  // ...
+  useEffect(
+    // Effect from second render
+    () => {
+      ChatAPI.subscribeToFriendStatus(20, handleStatusChange);
+      // Cleanup for effect from second render
+      return () => {
+        ChatAPI.unsubscribeFromFriendStatus(20, handleStatusChange);
+      };
+    }
+  );
+  // ...
+}
+```
+
+王国会兴起又化为灰烬，太阳会褪去外层变成白矮星，最后的文明也将终结。但没有什么能让第一次渲染的 effect 清理函数所“看到”的 props 变成 `{id: 10}` 以外的任何东西。
+
+正是这一点让 React 能够在绘制之后立即处理 effect——并默认让你的应用更快。如果我们的代码需要旧的 props，它们依然在那里。
+
+## [是同步，而不是生命周期](https://overreacted.io/a-complete-guide-to-useeffect/#synchronization-not-lifecycle)
+
+我最喜欢 React 的一点，是它把描述初始渲染结果和描述更新统一了起来。这[降低了你程序的熵](https://overreacted.io/the-bug-o-notation/)。
+
+假设我的组件是这样的：
+
+```
+function Greeting({ name }) {
+  return (
+    <h1 className="Greeting">
+      Hello, {name}
+    </h1>
+  );
+}
+```
+
+无论我先渲染 `<Greeting name="Dan" />` 后来再渲染 `<Greeting name="Yuzhi" />`，还是直接渲染 `<Greeting name="Yuzhi" />`，都没有区别。最终，两种情况下我们都会看到“Hello, Yuzhi”。
+
+人们常说：“重要的是旅程，而不是目的地。”在 React 里恰恰相反。**重要的是目的地，而不是旅程。**这就是 jQuery 代码中调用 `$.addClass` 和 `$.removeClass`（我们的“旅程”）与在 React 代码中指定 CSS class _应该是什么_（我们的“目的地”）之间的区别。
+
+**React 根据我们当前的 props 和 state 来同步 DOM。**渲染时并没有“挂载”和“更新”之分。
+
+你应该用类似的方式来思考 effect。**`useEffect` 让你根据 props 和 state 来_同步_ React 树之外的东西。**
+
+```
+function Greeting({ name }) {
+  useEffect(() => {
+    document.title = 'Hello, ' + name;
+  });
+  return (
+    <h1 className="Greeting">
+      Hello, {name}
+    </h1>
+  );
+}
+```
+
+这与熟悉的_挂载/更新/卸载_心智模型有微妙的不同。真正内化这一点很重要。**如果你试图写一个根据组件是否首次渲染而表现不同的 effect，你就是在逆流而上！**如果我们的结果取决于“旅程”而不是“目的地”，我们就没能做好同步。
+
+无论我们是先后用 props A、B、C 渲染，还是直接用 C 渲染，都不应该有区别。虽然可能会有一些暂时的差异（比如在获取数据的过程中），但最终结果应该是一样的。
+
+当然，在_每次_渲染时都运行所有 effect 可能效率不高。（而且在某些情况下会导致无限循环。）
+
+那我们该怎么解决呢？
+
+## [教 React 对你的 Effect 做 Diff](https://overreacted.io/a-complete-guide-to-useeffect/#teaching-react-to-diff-your-effects)
+
+我们已经在 DOM 本身上学到过这一课了。React 并不会在每次重新渲染时都去动 DOM，而是只更新 DOM 中真正发生变化的部分。
+
+当你把
+
+```
+<h1 className="Greeting">
+  Hello, Dan
+</h1>
+```
+
+更新为
+
+```
+<h1 className="Greeting">
+  Hello, Yuzhi
+</h1>
+```
+
+React 看到的是两个对象：
+
+```
+const oldProps = {className: 'Greeting', children: 'Hello, Dan'};
+const newProps = {className: 'Greeting', children: 'Hello, Yuzhi'};
+```
+
+它会逐一检查它们的 props，确定 `children` 变了、需要更新 DOM，而 `className` 没变。所以它只需要做：
+
+```
+domNode.innerText = 'Hello, Yuzhi';
+// No need to touch domNode.className
+```
+
+**我们能不能对 effect 也做类似的事情？在没有必要应用 effect 时避免重新运行它们，那就好了。**
+
+例如，也许我们的组件因为某个 state 的变化而重新渲染：
+
+```
+function Greeting({ name }) {
+  const [counter, setCounter] = useState(0);
+ 
+  useEffect(() => {
+    document.title = 'Hello, ' + name;
+  });
+ 
+  return (
+    <h1 className="Greeting">
+      Hello, {name}
+      <button onClick={() => setCounter(count + 1)}>
+        Increment
+      </button>
+    </h1>
+  );
+}
+```
+
+但我们的 effect 并没有用到 `counter` state。**我们的 effect 是把 `document.title` 与 `name` prop 同步，而 `name` prop 没有变。**每次计数器变化时都重新给 `document.title` 赋值，似乎不太理想。
+
+好吧，那 React 能不能直接……对 effect 做 diff？
+
+```
+let oldEffect = () => { document.title = 'Hello, Dan'; };
+let newEffect = () => { document.title = 'Hello, Dan'; };
+// Can React see these functions do the same thing?
+```
+
+不太行。React 不调用函数就猜不出它做了什么。（源码里并没有包含具体的值，它只是闭包捕获了 `name` prop。）
+
+这就是为什么，如果你想避免不必要地重新运行 effect，可以给 `useEffect` 提供一个依赖数组（也称为“deps”）参数：
+
+```
+useEffect(() => {
+    document.title = 'Hello, ' + name;
+  }, [name]); // Our deps
+```
+
+**这就像我们告诉 React：“嘿，我知道你看不到这个函数的_内部_，但我保证它只用到了 `name`，没有用到渲染作用域中的其他任何东西。”**
+
+如果这些值中的每一个，在本次与上次运行这个 effect 时都相同，就没有什么需要同步的，React 就可以跳过这个 effect：
+
+```
+const oldEffect = () => { document.title = 'Hello, Dan'; };
+const oldDeps = ['Dan'];
+ 
+const newEffect = () => { document.title = 'Hello, Dan'; };
+const newDeps = ['Dan'];
+ 
+// React can't peek inside of functions, but it can compare deps.
+// Since all deps are the same, it doesn’t need to run the new effect.
+```
+
+只要依赖数组中有一个值在两次渲染之间不同，我们就知道不能跳过运行这个 effect。把所有东西都同步起来！
+
+## [不要对 React 谎报依赖](https://overreacted.io/a-complete-guide-to-useeffect/#dont-lie-to-react-about-dependencies)
+
+对 React 谎报依赖会带来糟糕的后果。直觉上这说得通，但我见过几乎每个带着 class 心智模型去尝试 `useEffect` 的人都试图钻规则的空子。（我一开始也这么干过！）
+
+```
+function SearchResults() {
+  async function fetchData() {
+    // ...
+  }
+ 
+  useEffect(() => {
+    fetchData();
+  }, []); // Is this okay? Not always -- and there's a better way to write it.
+ 
+  // ...
+}
+```
+
+_（[Hooks FAQ](https://reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies) 解释了应该怎么做。我们会在[下文](https://overreacted.io/a-complete-guide-to-useeffect/#moving-functions-inside-effects)回到这个例子。）_
+
+“可我只想在挂载时运行它！”你会说。现在先记住：如果你指定了 deps，**effect 用到的组件内部的_所有_值都_必须_出现在里面**。包括 props、state、函数——组件中的任何东西。
+
+有时候这样做会引发问题。例如，你可能会看到无限重复请求的循环，或者 socket 被过于频繁地重新创建。**解决这个问题的办法_不是_移除依赖。**我们很快就会看到解决方案。
+
+但在跳到解决方案之前，我们先更好地理解这个问题。
+
+## [依赖撒谎时会发生什么](https://overreacted.io/a-complete-guide-to-useeffect/#what-happens-when-dependencies-lie)
+
+如果 deps 包含了 effect 用到的每一个值，React 就知道何时重新运行它：
+
+```
+useEffect(() => {
+    document.title = 'Hello, ' + name;
+  }, [name]);
+```
+
+![图 7：effect 相互替换的示意图](https://overreacted.io/a-complete-guide-to-useeffect/deps-compare-correct.gif)
+
+_（依赖不同，所以我们重新运行 effect。）_
+
+但如果我们为这个 effect 指定了 `[]`，新的 effect 函数就不会运行：
+
+```
+useEffect(() => {
+    document.title = 'Hello, ' + name;
+  }, []); // Wrong: name is missing in deps
+```
+
+![图 8：effect 相互替换的示意图](https://overreacted.io/a-complete-guide-to-useeffect/deps-compare-wrong.gif)
+
+_（依赖相同，所以我们跳过 effect。）_
+
+在这个例子里，问题可能显而易见。但在其他情况下，当某个 class 解决方案从你的记忆中“跳出来”时，直觉可能会骗你。
+
+例如，假设我们在写一个每秒递增的计数器。用 class 的话，我们的直觉是：“设置一次定时器，销毁一次。”这里有一个[例子](https://codesandbox.io/s/n5mjzjy9kl)展示了怎么做。当我们在脑中把这段代码翻译成 `useEffect` 时，我们会本能地在 deps 里加上 `[]`。“我想让它只运行一次”，对吧？
+
+```
+function Counter() {
+  const [count, setCount] = useState(0);
+ 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(count + 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+ 
+  return <h1>{count}</h1>;
+}
+```
+
+然而，这个例子[只_递增_了一次](https://codesandbox.io/s/91n5z8jo7r)。_糟糕。_
+
+如果你的心智模型是“依赖让我指定何时重新触发 effect”，这个例子可能会让你陷入存在主义危机。你_就是想_只触发它一次，因为它是个定时器——那为什么会出问题呢？
+
+然而，如果你知道依赖是我们给 React 的提示，告诉它 effect 从渲染作用域中用到的_所有_东西，这就说得通了。它用到了 `count`，但我们用 `[]` 谎称它没用到。这迟早会反咬我们一口！
+
+在第一次渲染中，`count` 是 `0`。因此，第一次渲染的 effect 中的 `setCount(count + 1)` 意味着 `setCount(0 + 1)`。**由于 `[]` deps 导致我们永远不会重新运行 effect，它会每秒都调用 `setCount(0 + 1)`：**
+
+```
+// First render, state is 0
+function Counter() {
+  // ...
+  useEffect(
+    // Effect from first render
+    () => {
+      const id = setInterval(() => {
+        setCount(0 + 1); // Always setCount(1)
+      }, 1000);
+      return () => clearInterval(id);
+    },
+    [] // Never re-runs
+  );
+  // ...
+}
+ 
+// Every next render, state is 1
+function Counter() {
+  // ...
+  useEffect(
+    // This effect is always ignored because
+    // we lied to React about empty deps.
+    () => {
+      const id = setInterval(() => {
+        setCount(1 + 1);
+      }, 1000);
+      return () => clearInterval(id);
+    },
+    []
+  );
+  // ...
+}
+```
+
+我们对 React 撒了谎，说我们的 effect 不依赖组件内部的值，而实际上它依赖！
+
+我们的 effect 用到了 `count`——一个组件内部（但在 effect 外部）的值：
+
+```
+const count = // ...
+ 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(count + 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+```
+
+因此，把 `[]` 指定为依赖会产生 bug。React 会比较依赖，然后跳过更新这个 effect：
+
+![图 9：过时的定时器闭包示意图](https://overreacted.io/a-complete-guide-to-useeffect/interval-wrong.gif)
+
+_（依赖相同，所以我们跳过 effect。）_
+
+这类问题很难想清楚。因此，我建议你把“始终如实地声明 effect 的依赖，并把它们全部列出”当作一条硬性规则。（如果你想在团队中强制执行这一点，我们提供了一条 [lint 规则](https://github.com/facebook/react/issues/14920)。）
+
+## [如实声明依赖的两种方式](https://overreacted.io/a-complete-guide-to-useeffect/#two-ways-to-be-honest-about-dependencies)
+
+有两种如实声明依赖的策略。一般应该先用第一种，必要时再用第二种。
+
+**第一种策略是修正依赖数组，把 effect 内部用到的组件内的_所有_值都包含进去。**我们把 `count` 加为依赖：
+
+```
+useEffect(() => {
+  const id = setInterval(() => {
+    setCount(count + 1);
+  }, 1000);
+  return () => clearInterval(id);
+}, [count]);
+```
+
+这让依赖数组变得正确。它可能不是_最理想的_，但这是我们首先需要解决的问题。现在 `count` 的变化会重新运行 effect，每个新的定时器都会在 `setCount(count + 1)` 中引用它所在那次渲染的 `count`：
+
+```
+// First render, state is 0
+function Counter() {
+  // ...
+  useEffect(
+    // Effect from first render
+    () => {
+      const id = setInterval(() => {
+        setCount(0 + 1); // setCount(count + 1)
+      }, 1000);
+      return () => clearInterval(id);
+    },
+    [0] // [count]
+  );
+  // ...
+}
+ 
+// Second render, state is 1
+function Counter() {
+  // ...
+  useEffect(
+    // Effect from second render
+    () => {
+      const id = setInterval(() => {
+        setCount(1 + 1); // setCount(count + 1)
+      }, 1000);
+      return () => clearInterval(id);
+    },
+    [1] // [count]
+  );
+  // ...
+}
+```
+
+这样就能[解决问题](https://codesandbox.io/s/0x0mnlyq8l)，但每当 `count` 改变时，我们的定时器都会被清除再重新设置。这可能不是我们想要的：
+
+![图 10：重新订阅的定时器示意图](https://overreacted.io/a-complete-guide-to-useeffect/interval-rightish.gif)
+
+_（依赖不同，所以我们重新运行 effect。）_
+
+* * *
+
+**第二种策略是修改 effect 代码，让它不再_需要_一个变化得比我们期望更频繁的值。**我们不想对依赖撒谎——我们只是想修改 effect，让它的依赖_更少_。
+
+我们来看几种移除依赖的常用技巧。
+
+* * *
+
+## [让 Effect 自给自足](https://overreacted.io/a-complete-guide-to-useeffect/#making-effects-self-sufficient)
+
+我们想去掉 effect 中的 `count` 依赖。
+
+```
+useEffect(() => {
+    const id = setInterval(() => {
+      setCount(count + 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [count]);
+```
+
+为此，我们需要问自己：**我们用 `count` 来做什么？**看起来我们只在调用 `setCount` 时用到它。这种情况下，我们其实根本不需要在作用域中拿到 `count`。当我们想基于之前的 state 更新 state 时，可以使用 `setState` 的[函数式更新形式](https://reactjs.org/docs/hooks-reference.html#functional-updates)：
+
+```
+useEffect(() => {
+    const id = setInterval(() => {
+      setCount(c => c + 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+```
+
+我喜欢把这类情况看作“假依赖”。没错，`count` 曾经是一个必要的依赖，因为我们在 effect 里写了 `setCount(count + 1)`。然而，我们真正需要 `count` 只是为了把它变成 `count + 1` 再“送回”给 React。但 React _已经知道_当前的 `count`。**我们只需要告诉 React 把 state 加一——不管它现在是多少。**
+
+这正是 `setCount(c => c + 1)` 所做的。你可以把它看作给 React “发送一条指令”，告诉它 state 应该如何变化。这种“更新函数形式”在其他场景下也有帮助，比如当你[批量处理多个更新](https://overreacted.io/react-as-a-ui-runtime/#batching)时。
+
+**注意，我们是真的_下了功夫_去移除依赖。我们没有作弊。我们的 effect 不再从渲染作用域中读取 `counter` 值了：**
+
+![图 11：正常工作的定时器示意图](https://overreacted.io/a-complete-guide-to-useeffect/interval-right.gif)
+
+_（依赖相同，所以我们跳过 effect。）_
+
+你可以在[这里](https://codesandbox.io/s/q3181xz1pj)试试。
+
+即使这个 effect 只运行一次，属于第一次渲染的定时器回调也完全能够在每次定时器触发时发送 `c => c + 1` 这条更新指令。它不再需要知道当前的 `counter` state。React 已经知道了。
+
+## [函数式更新与 Google Docs](https://overreacted.io/a-complete-guide-to-useeffect/#functional-updates-and-google-docs)
+
+还记得我们说过同步是 effect 的心智模型吗？同步的一个有趣之处在于，你常常希望系统之间的“消息”与它们的状态解耦。例如，在 Google Docs 里编辑文档时，并不会真的把_整个_页面发送给服务器。那样效率会非常低。相反，它发送的是用户试图做的操作的一种表示。
+
+虽然我们的场景不同，但类似的理念也适用于 effect。**只从 effect 内部向组件发送最少的必要信息，是很有帮助的。**像 `setCount(c => c + 1)` 这样的更新函数形式传达的信息严格少于 `setCount(count + 1)`，因为它没有被当前的 count “污染”。它只表达了动作（“递增”）。React 式思维包括[找到最小的 state](https://reactjs.org/docs/thinking-in-react.html#step-3-identify-the-minimal-but-complete-representation-of-ui-state)。这是同样的原则，只不过是针对更新的。
+
+编码_意图_（而不是结果）类似于 Google Docs [解决](https://medium.com/@srijancse/how-real-time-collaborative-editing-work-operational-transformation-ac4902d75682)协同编辑的方式。虽然这个类比有些牵强，但函数式更新在 React 中扮演着类似的角色。它们确保来自多个来源的更新（事件处理函数、effect 订阅等）能以可预测的方式被正确地批量应用。
+
+**不过，即使是 `setCount(c => c + 1)` 也没那么好。**它看起来有点怪，能做的事情也非常有限。例如，如果我们有两个值相互依赖的 state 变量，或者需要基于某个 prop 来计算下一个 state，它就帮不上忙了。幸运的是，`setCount(c => c + 1)` 有一个更强大的姊妹模式。它的名字叫 `useReducer`。
+
+## [将更新与动作解耦](https://overreacted.io/a-complete-guide-to-useeffect/#decoupling-updates-from-actions)
+
+我们修改一下前面的例子，让它有两个 state 变量：`count` 和 `step`。我们的定时器会按 `step` 输入框的值来增加 count：
+
+```
+function Counter() {
+  const [count, setCount] = useState(0);
+  const [step, setStep] = useState(1);
+ 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(c => c + step);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [step]);
+ 
+  return (
+    <>
+      <h1>{count}</h1>
+      <input value={step} onChange={e => setStep(Number(e.target.value))} />
+    </>
+  );
+}
+```
+
+（这里有一个[演示](https://codesandbox.io/s/zxn70rnkx)。）
+
+注意，**我们没有作弊**。因为我开始在 effect 里使用 `step`，所以我把它加进了依赖。这就是代码能正确运行的原因。
+
+这个例子目前的行为是：改变 `step` 会重启定时器——因为它是依赖之一。在很多情况下，这正是你想要的！拆掉一个 effect 再重新建立它并没有什么错，除非有充分的理由，否则我们不应该回避这样做。
+
+然而，假设我们希望定时器在 `step` 变化时不要重置。我们该如何从 effect 中移除 `step` 依赖？
+
+**当设置一个 state 变量依赖于另一个 state 变量的当前值时，你可能需要尝试用 `useReducer` 替换它们两个。**
+
+当你发现自己在写 `setSomething(something => ...)` 时，就是考虑改用 reducer 的好时机。reducer 让你**把“表达组件中发生了哪些动作”与“state 如何响应这些动作而更新”解耦**。
+
+我们在 effect 中用 `dispatch` 依赖来替换 `step` 依赖：
+
+```
+const [state, dispatch] = useReducer(reducer, initialState);
+const { count, step } = state;
+ 
+useEffect(() => {
+  const id = setInterval(() => {
+    dispatch({ type: 'tick' }); // Instead of setCount(c => c + step);
+  }, 1000);
+  return () => clearInterval(id);
+}, [dispatch]);
+```
+
+（见[演示](https://codesandbox.io/s/xzr480k0np)。）
+
+你可能会问我：“这样有什么更好的？”答案是：**React 保证 `dispatch` 函数在组件的整个生命周期内保持不变。所以上面的例子永远不需要重新订阅定时器。**
+
+我们解决了问题！
+
+_（你可以在 deps 中省略 `dispatch`、`setState` 和 `useRef` 容器的值，因为 React 保证它们是静态的。但把它们列出来也没有坏处。）_
+
+它不在 effect _内部_读取 state，而是派发（dispatch）一个_动作_（action），其中编码了关于_发生了什么_的信息。这让我们的 effect 与 `step` state 保持解耦。我们的 effect 并不关心我们_如何_更新 state，它只是告诉我们_发生了什么_。而 reducer 则把更新逻辑集中在一起：
+
+```
+const initialState = {
+  count: 0,
+  step: 1,
+};
+ 
+function reducer(state, action) {
+  const { count, step } = state;
+  if (action.type === 'tick') {
+    return { count: count + step, step };
+  } else if (action.type === 'step') {
+    return { count, step: action.step };
+  } else {
+    throw new Error();
+  }
+}
+```
+
+（如果你之前错过了，这里有一个[演示](https://codesandbox.io/s/xzr480k0np)。）
+
+## [为什么 useReducer 是 Hooks 的作弊模式](https://overreacted.io/a-complete-guide-to-useeffect/#why-usereducer-is-the-cheat-mode-of-hooks)
+
+我们已经看到，当 effect 需要基于之前的 state 或另一个 state 变量来设置 state 时，如何移除依赖。**但如果我们需要用 _props_ 来计算下一个 state 呢？**例如，也许我们的 API 是 `<Counter step={1} />`。在这种情况下，我们肯定无法避免把 `props.step` 列为依赖了吧？
+
+事实上，可以！我们可以把_reducer 本身_放进组件内部，让它读取 props：
+
+```
+function Counter({ step }) {
+  const [count, dispatch] = useReducer(reducer, 0);
+ 
+  function reducer(state, action) {
+    if (action.type === 'tick') {
+      return state + step;
+    } else {
+      throw new Error();
+    }
+  }
+ 
+  useEffect(() => {
+    const id = setInterval(() => {
+      dispatch({ type: 'tick' });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [dispatch]);
+ 
+  return <h1>{count}</h1>;
+}
+```
+
+这种模式会禁用一些优化，所以尽量不要到处使用，但如果需要的话，你完全可以在 reducer 中访问 props。（这里有一个[演示](https://codesandbox.io/s/7ypm405o8q)。）
+
+**即使在这种情况下，`dispatch` 的标识在多次重新渲染之间仍然保证是稳定的。**所以如果你愿意，可以把它从 effect 的 deps 中省略。它不会导致 effect 重新运行。
+
+你可能会好奇：这怎么可能行得通？当 reducer 从属于另一次渲染的 effect 内部被调用时，它怎么能“知道” props？答案是，当你 `dispatch` 时，React 只是记住这个动作——但它会在下一次渲染期间_调用_你的 reducer。那时最新的 props 就在作用域中，而且你也不在 effect 内部。
+
+**这就是为什么我喜欢把 `useReducer` 看作 Hooks 的“作弊模式”。它让我把更新逻辑与描述发生了什么解耦。这反过来又帮助我从 effect 中移除不必要的依赖，避免比必要时更频繁地重新运行它们。**
+
+## [把函数移到 Effect 内部](https://overreacted.io/a-complete-guide-to-useeffect/#moving-functions-inside-effects)
+
+一个常见的错误是认为函数不应该作为依赖。例如，下面这段代码看起来似乎可行：
+
+```
+function SearchResults() {
+  const [data, setData] = useState({ hits: [] });
+ 
+  async function fetchData() {
+    const result = await axios(
+      'https://hn.algolia.com/api/v1/search?query=react',
+    );
+    setData(result.data);
+  }
+ 
+  useEffect(() => {
+    fetchData();
+  }, []); // Is this okay?
+ 
+  // ...
+```
+
+_（[这个例子](https://codesandbox.io/s/8j4ykjyv0)改编自 Robin Wieruch 的一篇好文章——[去看看吧](https://www.robinwieruch.de/react-hooks-fetch-data/)！）_
+
+需要说明的是，这段代码_确实_能工作。**但简单地省略局部函数的问题在于，随着组件变大，我们很难判断自己是否处理了所有情况！**
+
+想象一下，我们的代码被拆分成这样，而且每个函数都比现在大五倍：
+
+```
+function SearchResults() {
+  // Imagine this function is long
+  function getFetchUrl() {
+    return 'https://hn.algolia.com/api/v1/search?query=react';
+  }
+ 
+  // Imagine this function is also long
+  async function fetchData() {
+    const result = await axios(getFetchUrl());
+    setData(result.data);
+  }
+ 
+  useEffect(() => {
+    fetchData();
+  }, []);
+ 
+  // ...
+}
+```
+
+现在假设我们后来在其中某个函数里用到了某个 state 或 prop：
+
+```
+function SearchResults() {
+  const [query, setQuery] = useState('react');
+ 
+  // Imagine this function is also long
+  function getFetchUrl() {
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }
+ 
+  // Imagine this function is also long
+  async function fetchData() {
+    const result = await axios(getFetchUrl());
+    setData(result.data);
+  }
+ 
+  useEffect(() => {
+    fetchData();
+  }, []);
+ 
+  // ...
+}
+```
+
+如果我们忘了更新那些调用这些函数（可能是通过其他函数间接调用！）的 effect 的 deps，我们的 effect 就无法同步来自 props 和 state 的变化。这听起来可不太妙。
+
+幸运的是，这个问题有一个简单的解决办法。**如果某些函数你只在 effect _内部_使用，就把它们直接移_进_那个 effect：**
+
+```
+function SearchResults() {
+  // ...
+  useEffect(() => {
+    // We moved these functions inside!
+    function getFetchUrl() {
+      return 'https://hn.algolia.com/api/v1/search?query=react';
+    }
+ 
+    async function fetchData() {
+      const result = await axios(getFetchUrl());
+      setData(result.data);
+    }
+ 
+    fetchData();
+  }, []); // ✅ Deps are OK
+  // ...
+}
+```
+
+（[这里有一个演示](https://codesandbox.io/s/04kp3jwwql)。）
+
+那么好处是什么？我们不再需要考虑“传递性依赖”了。我们的依赖数组不再撒谎：**我们的 effect 确实_没有_用到组件外层作用域中的任何东西**。
+
+如果我们后来修改 `getFetchUrl` 让它使用 `query` state，我们更有可能注意到自己是在 effect _内部_修改它——因此需要把 `query` 加入 effect 的依赖：
+
+```
+function SearchResults() {
+  const [query, setQuery] = useState('react');
+ 
+  useEffect(() => {
+    function getFetchUrl() {
+      return 'https://hn.algolia.com/api/v1/search?query=' + query;
+    }
+ 
+    async function fetchData() {
+      const result = await axios(getFetchUrl());
+      setData(result.data);
+    }
+ 
+    fetchData();
+  }, [query]); // ✅ Deps are OK
+ 
+  // ...
+}
+```
+
+（这里有一个[演示](https://codesandbox.io/s/pwm32zx7z7)。）
+
+加上这个依赖，并不只是为了“安抚 React”。当 query 改变时重新获取数据是_合理的_。**`useEffect` 的设计迫使你注意到数据流中的变化，并选择 effect 应该如何同步它——而不是忽视它，直到产品用户撞上 bug。**
+
+借助 `eslint-plugin-react-hooks` 插件中的 `exhaustive-deps` lint 规则，你可以[在编辑器里一边输入一边分析 effect](https://github.com/facebook/react/issues/14920)，并获得关于缺少哪些依赖的建议。换句话说，机器可以告诉你组件没有正确处理哪些数据流变化。
+
+![图 12：lint 规则动图](https://overreacted.io/a-complete-guide-to-useeffect/exhaustive-deps.gif)
+
+相当不错。
+
+## [但我没法把这个函数放进 Effect 里](https://overreacted.io/a-complete-guide-to-useeffect/#but-i-cant-put-this-function-inside-an-effect)
+
+有时你可能不想把函数移到 effect _内部_。例如，同一个组件中的多个 effect 可能调用同一个函数，而你不想复制粘贴它的逻辑。又或者它是一个 prop。
+
+你应该在 effect 依赖中跳过这样的函数吗？我认为不应该。再说一遍，**effect 不应该对它的依赖撒谎。**通常有更好的解决办法。一个常见的误解是“函数永远不会变”。但正如我们在本文中一直看到的，事实恰恰相反。实际上，在组件内部定义的函数每次渲染都会变！
+
+**这本身就带来了一个问题。**假设有两个 effect 调用了 `getFetchUrl`：
+
+```
+function SearchResults() {
+  function getFetchUrl(query) {
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }
+ 
+  useEffect(() => {
+    const url = getFetchUrl('react');
+    // ... Fetch data and do something ...
+  }, []); // 🔴 Missing dep: getFetchUrl
+ 
+  useEffect(() => {
+    const url = getFetchUrl('redux');
+    // ... Fetch data and do something ...
+  }, []); // 🔴 Missing dep: getFetchUrl
+ 
+  // ...
+}
+```
+
+这种情况下，你可能不想把 `getFetchUrl` 移到任何一个 effect 内部，因为那样就无法共享逻辑了。
+
+另一方面，如果你对 effect 依赖“诚实”，就可能会遇到问题。由于我们的两个 effect 都依赖于 `getFetchUrl`**（它每次渲染都不同）**，我们的依赖数组就毫无用处了：
+
+```
+function SearchResults() {
+  // 🔴 Re-triggers all effects on every render
+  function getFetchUrl(query) {
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }
+ 
+  useEffect(() => {
+    const url = getFetchUrl('react');
+    // ... Fetch data and do something ...
+  }, [getFetchUrl]); // 🚧 Deps are correct but they change too often
+ 
+  useEffect(() => {
+    const url = getFetchUrl('redux');
+    // ... Fetch data and do something ...
+  }, [getFetchUrl]); // 🚧 Deps are correct but they change too often
+ 
+  // ...
+}
+```
+
+一个诱人的解决办法是干脆在 deps 列表中跳过 `getFetchUrl` 函数。然而，我认为这不是个好办法。这会让我们很难注意到自己_确实_在数据流中加入了一个_需要_由 effect 处理的变化。这会导致像我们之前看到的“永不更新的定时器”那样的 bug。
+
+其实还有另外两种更简单的解决办法。
+
+**首先，如果一个函数没有用到组件作用域中的任何东西，你可以把它提升到组件外部，然后在 effect 中随意使用它：**
+
+```
+// ✅ Not affected by the data flow
+function getFetchUrl(query) {
+  return 'https://hn.algolia.com/api/v1/search?query=' + query;
+}
+ 
+function SearchResults() {
+  useEffect(() => {
+    const url = getFetchUrl('react');
+    // ... Fetch data and do something ...
+  }, []); // ✅ Deps are OK
+ 
+  useEffect(() => {
+    const url = getFetchUrl('redux');
+    // ... Fetch data and do something ...
+  }, []); // ✅ Deps are OK
+ 
+  // ...
+}
+```
+
+不需要在 deps 中指定它，因为它不在渲染作用域中，不会受到数据流的影响。它不可能意外地依赖 props 或 state。
+
+或者，你可以把它包进 [`useCallback` Hook](https://reactjs.org/docs/hooks-reference.html#usecallback)：
+
+```
+function SearchResults() {
+  // ✅ Preserves identity when its own deps are the same
+  const getFetchUrl = useCallback((query) => {
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }, []);  // ✅ Callback deps are OK
+ 
+  useEffect(() => {
+    const url = getFetchUrl('react');
+    // ... Fetch data and do something ...
+  }, [getFetchUrl]); // ✅ Effect deps are OK
+ 
+  useEffect(() => {
+    const url = getFetchUrl('redux');
+    // ... Fetch data and do something ...
+  }, [getFetchUrl]); // ✅ Effect deps are OK
+ 
+  // ...
+}
+```
+
+`useCallback` 本质上就像是增加了一层依赖检查。它是从另一端解决问题——**我们不是避免函数依赖，而是让函数本身只在必要时才改变**。
+
+我们来看看为什么这种方法有用。之前，我们的例子展示了两个搜索结果（分别针对 `'react'` 和 `'redux'` 两个搜索词）。但假设我们想添加一个输入框，让你可以搜索任意的 `query`。于是 `getFetchUrl` 不再把 `query` 作为参数，而是从本地 state 中读取它。
+
+我们会立刻看到它缺少 `query` 依赖：
+
+```
+function SearchResults() {
+  const [query, setQuery] = useState('react');
+  const getFetchUrl = useCallback(() => { // No query argument
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }, []); // 🔴 Missing dep: query
+  // ...
+}
+```
+
+如果我修正 `useCallback` 的 deps，把 `query` 包含进去，那么任何在 deps 中包含 `getFetchUrl` 的 effect 都会在 `query` 改变时重新运行：
+
+```
+function SearchResults() {
+  const [query, setQuery] = useState('react');
+ 
+  // ✅ Preserves identity until query changes
+  const getFetchUrl = useCallback(() => {
+    return 'https://hn.algolia.com/api/v1/search?query=' + query;
+  }, [query]);  // ✅ Callback deps are OK
+ 
+  useEffect(() => {
+    const url = getFetchUrl();
+    // ... Fetch data and do something ...
+  }, [getFetchUrl]); // ✅ Effect deps are OK
+ 
+  // ...
+}
+```
+
+多亏了 `useCallback`，如果 `query` 不变，`getFetchUrl` 也保持不变，我们的 effect 就不会重新运行。但如果 `query` 改变了，`getFetchUrl` 也会改变，我们就会重新获取数据。这很像你在 Excel 电子表格中修改某个单元格时，其他用到它的单元格会自动重新计算。
+
+这只是拥抱数据流和同步思维方式的一个自然结果。**同样的解决办法也适用于从父组件传下来的函数 props：**
+
+```
+function Parent() {
+  const [query, setQuery] = useState('react');
+ 
+  // ✅ Preserves identity until query changes
+  const fetchData = useCallback(() => {
+    const url = 'https://hn.algolia.com/api/v1/search?query=' + query;
+    // ... Fetch data and return it ...
+  }, [query]);  // ✅ Callback deps are OK
+ 
+  return <Child fetchData={fetchData} />
+}
+ 
+function Child({ fetchData }) {
+  let [data, setData] = useState(null);
+ 
+  useEffect(() => {
+    fetchData().then(setData);
+  }, [fetchData]); // ✅ Effect deps are OK
+ 
+  // ...
+}
+```
+
+由于 `fetchData` 只有在 `Parent` 的 `query` state 改变时才会在 `Parent` 内部改变，我们的 `Child` 在应用真正需要之前不会重新获取数据。
+
+## [函数是数据流的一部分吗？](https://overreacted.io/a-complete-guide-to-useeffect/#are-functions-part-of-the-data-flow)
+
+有趣的是，这种模式在 class 中是行不通的，而这恰恰真正体现了 effect 范式与生命周期范式的区别。考虑下面这个翻译版本：
+
+```
+class Parent extends Component {
+  state = {
+    query: 'react'
+  };
+  fetchData = () => {
+    const url = 'https://hn.algolia.com/api/v1/search?query=' + this.state.query;
+    // ... Fetch data and do something ...
+  };
+  render() {
+    return <Child fetchData={this.fetchData} />;
+  }
+}
+ 
+class Child extends Component {
+  state = {
+    data: null
+  };
+  componentDidMount() {
+    this.props.fetchData();
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+你可能在想：“得了吧 Dan，我们都知道 `useEffect` 就像 `componentDidMount` 和 `componentDidUpdate` 的结合，你别老是重复这一套了！”**然而，即使用上 `componentDidUpdate`，这也行不通：**
+
+```
+class Child extends Component {
+  state = {
+    data: null
+  };
+  componentDidMount() {
+    this.props.fetchData();
+  }
+  componentDidUpdate(prevProps) {
+    // 🔴 This condition will never be true
+    if (this.props.fetchData !== prevProps.fetchData) {
+      this.props.fetchData();
+    }
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+当然，`fetchData` 是一个 class 方法！（或者说，是一个 class 属性——但这并没有什么区别。）它不会因为 state 改变而变得不同。所以 `this.props.fetchData` 会一直等于 `prevProps.fetchData`，我们永远不会重新获取数据。那干脆把这个条件去掉？
+
+```
+componentDidUpdate(prevProps) {
+    this.props.fetchData();
+  }
+```
+
+哦等等，这样_每次_重新渲染都会获取数据。（在组件树的上层加一个动画，是发现这一点的一个有趣方法。）也许把它绑定到某个特定的 query？
+
+```
+render() {
+    return <Child fetchData={this.fetchData.bind(this, this.state.query)} />;
+  }
+```
+
+但这样一来，即使 `query` 没变，`this.props.fetchData !== prevProps.fetchData` 也_总是_ `true`！所以我们会_总是_重新获取。
+
+在 class 中，解决这个难题唯一真正的办法是硬着头皮把 `query` 本身传进 `Child` 组件。`Child` 实际上最后并不会_使用_ `query`，但它可以在 `query` 改变时触发重新获取：
+
+```
+class Parent extends Component {
+  state = {
+    query: 'react'
+  };
+  fetchData = () => {
+    const url = 'https://hn.algolia.com/api/v1/search?query=' + this.state.query;
+    // ... Fetch data and do something ...
+  };
+  render() {
+    return <Child fetchData={this.fetchData} query={this.state.query} />;
+  }
+}
+ 
+class Child extends Component {
+  state = {
+    data: null
+  };
+  componentDidMount() {
+    this.props.fetchData();
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.query !== prevProps.query) {
+      this.props.fetchData();
+    }
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+这些年用 class 写 React，我已经太习惯于把不必要的 props 往下传、破坏父组件的封装，以至于直到一周前我才意识到我们为什么不得不这样做。
+
+**在 class 中，函数 props 本身并不真正是数据流的一部分。**方法闭包捕获的是可变的 `this` 变量，所以我们无法依赖它们的标识来表示任何意义。因此，即使我们只想要一个函数，也不得不把一堆其他数据传来传去，才能对它做“diff”。我们无法知道父组件传下来的 `this.props.fetchData` 是否依赖于某个 state，也无法知道那个 state 是否刚刚改变。
+
+**有了 `useCallback`，函数就可以完全参与数据流。**我们可以说：如果函数的输入变了，函数本身就变了；如果没变，它就保持不变。得益于 `useCallback` 提供的粒度，像 `props.fetchData` 这样的 props 的变化可以自动向下传播。
+
+类似地，[`useMemo`](https://reactjs.org/docs/hooks-reference.html#usememo) 让我们可以对复杂对象做同样的事情：
+
+```
+function ColorPicker() {
+  // Doesn't break Child's shallow equality prop check
+  // unless the color actually changes.
+  const [color, setColor] = useState('pink');
+  const style = useMemo(() => ({ color }), [color]);
+  return <Child style={style} />;
+}
+```
+
+**我想强调，到处都用 `useCallback` 是相当笨拙的。**它是一个不错的逃生舱，当一个函数既被向下传递、_又_在某些子组件的 effect 内部被调用时很有用。或者当你想避免破坏子组件的记忆化（memoization）时也很有用。但 Hooks 更适合于完全[避免向下传递回调](https://reactjs.org/docs/hooks-faq.html#how-to-avoid-passing-callbacks-down)。
+
+在上面的例子中，我更希望 `fetchData` 要么在我的 effect 内部（effect 本身可以被抽取成一个自定义 Hook），要么是一个顶层导入。我想让 effect 保持简单，而其中的回调对此并无帮助。（“如果在请求进行中某个 `props.onComplete` 回调变了怎么办？”）你可以[模拟 class 的行为](https://overreacted.io/a-complete-guide-to-useeffect/#swimming-against-the-tide)，但那并不能解决竞态条件。
+
+## [说到竞态条件](https://overreacted.io/a-complete-guide-to-useeffect/#speaking-of-race-conditions)
+
+一个经典的用 class 获取数据的例子可能是这样的：
+
+```
+class Article extends Component {
+  state = {
+    article: null
+  };
+  componentDidMount() {
+    this.fetchData(this.props.id);
+  }
+  async fetchData(id) {
+    const article = await API.fetchArticle(id);
+    this.setState({ article });
+  }
+  // ...
+}
+```
+
+你可能知道，这段代码有 bug。它没有处理更新。所以你在网上能找到的第二个经典例子大概是这样的：
+
+```
+class Article extends Component {
+  state = {
+    article: null
+  };
+  componentDidMount() {
+    this.fetchData(this.props.id);
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.id !== this.props.id) {
+      this.fetchData(this.props.id);
+    }
+  }
+  async fetchData(id) {
+    const article = await API.fetchArticle(id);
+    this.setState({ article });
+  }
+  // ...
+}
+```
+
+这肯定好多了！但它仍然有 bug。之所以有 bug，是因为请求返回的顺序可能会乱。所以如果我正在获取 `{id: 10}`，然后切换到 `{id: 20}`，但 `{id: 20}` 的请求先返回了，那么那个开始得早却结束得晚的请求就会错误地覆盖我的 state。
+
+这被称为竞态条件，它在混合了 `async` / `await`（假定有东西在等待结果）与自上而下的数据流（在我们执行异步函数的过程中，props 或 state 可能改变）的代码中很常见。
+
+Effect 并不能神奇地解决这个问题，不过如果你试图直接把一个 `async` 函数传给 effect，它会发出警告。（我们需要改进这条警告，更好地解释你可能遇到的问题。）
+
+如果你使用的异步方式支持取消，那就太好了！你可以直接在清理函数中取消异步请求。
+
+或者，最简单的权宜之计是用一个布尔值来追踪它：
+
+```
+function Article({ id }) {
+  const [article, setArticle] = useState(null);
+ 
+  useEffect(() => {
+    let didCancel = false;
+ 
+    async function fetchData() {
+      const article = await API.fetchArticle(id);
+      if (!didCancel) {
+        setArticle(article);
+      }
+    }
+ 
+    fetchData();
+ 
+    return () => {
+      didCancel = true;
+    };
+  }, [id]);
+ 
+  // ...
+}
+```
+
+[这篇文章](https://www.robinwieruch.de/react-hooks-fetch-data/)更详细地讲解了如何处理错误和加载状态，以及如何把这些逻辑抽取到自定义 Hook 中。如果你有兴趣深入了解用 Hooks 获取数据，推荐你去看看。
+
+## [提高标准](https://overreacted.io/a-complete-guide-to-useeffect/#raising-the-bar)
+
+在 class 生命周期的思维方式下，副作用的行为与渲染输出不同。渲染 UI 由 props 和 state 驱动，并保证与它们一致，但副作用不是。这是常见的 bug 来源。
+
+在 `useEffect` 的思维方式下，事情默认就是同步的。副作用成为 React 数据流的一部分。对于每一次 `useEffect` 调用，一旦你写对了，你的组件就能更好地处理边界情况。
+
+然而，写对它的前期成本更高。这可能令人烦恼。编写能妥善处理边界情况的同步代码，本质上就比触发与渲染不一致的一次性副作用更难。
+
+如果 `useEffect` 本应是你大部分时间都在用的_那个_工具，这可能会令人担忧。然而，它是一个底层的构建块。现在还是 Hooks 的早期，所以每个人都一直在用底层 Hook，尤其是在教程里。但在实践中，随着好的 API 逐渐流行，社区很可能会开始转向更高层的 Hook。
+
+我看到不同的应用在创建它们自己的 Hook，比如封装了应用部分鉴权逻辑的 `useFetch`，或者使用主题 context 的 `useTheme`。一旦你有了这样一个工具箱，就不会_那么_频繁地去用 `useEffect` 了。但它带来的健壮性会惠及每一个构建在它之上的 Hook。
+
+到目前为止，`useEffect` 最常用于获取数据。但获取数据并不完全是一个同步问题。这一点尤其明显，因为我们的 deps 常常是 `[]`。我们到底在同步什么呢？
+
+从长远来看，[用于数据获取的 Suspense](https://reactjs.org/blog/2018/11/27/react-16-roadmap.html#react-16x-mid-2019-the-one-with-suspense-for-data-fetching) 将让第三方库有一种一等公民的方式，告诉 React 暂停渲染，直到某个异步的东西（任何东西：代码、数据、图片）准备就绪。
+
+随着 Suspense 逐渐覆盖更多数据获取的用例，我预计 `useEffect` 会退居幕后，成为一个高级用户工具，用于你真正想把 props 和 state 同步到某个副作用的场景。与数据获取不同，它能自然地处理这种场景，因为它就是为此而设计的。但在那之前，像[这里展示的](https://www.robinwieruch.de/react-hooks-fetch-data/)自定义 Hook 是复用数据获取逻辑的好办法。
+
+## [结语](https://overreacted.io/a-complete-guide-to-useeffect/#in-closing)
+
+现在你差不多已经知道了我所知道的关于使用 effect 的一切，回头看看开头的 [TLDR](https://overreacted.io/a-complete-guide-to-useeffect/#tldr) 吧。它说得通吗？我漏掉了什么吗？（我的纸还没用完呢！）
+
+我很想在 Twitter 上听到你的反馈！感谢阅读。

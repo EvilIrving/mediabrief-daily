@@ -1,0 +1,21 @@
+https://overreacted.io/a-complete-guide-to-useeffect/
+
+Dan Abramov 这篇“小书”式长文要解决的是：用惯了 Hooks 的人，在 useEffect 上总觉得哪里拼不起来——怎么实现 componentDidMount、怎么正确取数据、[] 是什么、函数要不要列为依赖、为什么会无限重复请求、为什么 effect 里拿到旧值。他的核心主张是：不要透过 class 生命周期去理解 useEffect，大部分功夫在于“忘掉已学的”。文章开头先给出一份 TLDR，结尾再回到它。
+
+第一层基础是“每次渲染都有它自己的 props 和 state”。在 const [count, setCount] = useState(0) 里，count 只是一个普通数字，不是数据绑定或监听器；每次 setCount，React 重新调用组件，这一次的 count 是新的常量。事件处理函数也一样：点“Show alert”后把计数从 3 加到 5，三秒后弹出的仍是 3，因为那个处理函数属于点击时的那次渲染，闭包捕获了当时的 count——这和普通 JavaScript 函数调用各自持有局部常量是同一个道理。effect 同样如此：不是 count 在一个不变的 effect 里变了，而是每次渲染都有一个新的 effect 函数，各自看到自己那次渲染的值。概念上可以把 effect 看成渲染结果的一部分；React 在浏览器绘制之后才运行它。
+
+由此推出“每次渲染都有它自己的一切”：连点几次、每次延迟打印，函数组件会依次打印 1、2、3、4、5，而 class 版本因为 this.state 被 React 改写为最新值，会打印五个 5。作者指出讽刺之处：常被归咎于闭包的“定时器里拿到错值”问题，根源其实是可变性。想在旧渲染里读到未来的值是“逆流而上”，可以用 ref（latestCount.current）主动选用，但这让依赖时序的脆弱代码显形，所以不是默认行为。
+
+清理函数也不例外。props 从 {id: 10} 变为 {id: 20} 时，实际顺序是：先渲染 20 的 UI、浏览器绘制，然后才清理 10 的 effect、再运行 20 的 effect。清理之所以仍看到 {id: 10}，是因为它属于定义它的那次渲染。延后清理让应用默认更快。
+
+接着作者提出 effect 的正确心智模型是“同步，而不是生命周期”。React 只关心目的地而非旅程：先渲染 Dan 再渲染 Yuzhi，与直接渲染 Yuzhi 结果相同，渲染没有“挂载”和“更新”之分。useEffect 是根据 props 和 state 同步 React 树之外的东西；如果你想写一个首次渲染时行为不同的 effect，就是在逆流而上。为了避免每次都重跑，React 无法对函数本身做 diff，所以需要依赖数组：它是你对 React 的承诺——“这个函数只用到了这些值”。值都没变，就可以跳过。
+
+因此“不要对 React 谎报依赖”：只要指定 deps，effect 用到的组件内所有值（props、state、函数）都必须列出。经典反例是每秒递增的计数器写成 setInterval 里 setCount(count + 1) 加 []：由于 effect 永不重跑，它每秒都在执行 setCount(0 + 1)，计数停在 1。如实声明依赖有两种策略：一是把 count 加进依赖，正确但每次都会重建定时器；二是改写 effect 让它不再需要那个频繁变化的值。
+
+移除依赖的技巧依次是：用函数式更新 setCount(c => c + 1)，只告诉 React“加一”这个意图，不读当前值——作者类比 Google Docs 只发送操作而不发送整页。当 state 之间相互依赖（如 count 按 step 递增）时，改用 useReducer：effect 只 dispatch 一个描述“发生了什么”的 action，更新逻辑集中在 reducer 中，而 React 保证 dispatch 在组件生命周期内恒定（setState、ref 同样稳定，可省略）。即使下一状态要依赖 props，也可以把 reducer 定义在组件内部，因为 reducer 是在下一次渲染时才被调用的。作者因此称 useReducer 为 Hooks 的“作弊模式”。
+
+关于函数依赖：省略局部函数在组件变大后很难保证正确，函数里新用到某个 state 时很容易漏改依赖。如果函数只在一个 effect 里用，就挪进 effect 内部，再加 query 这类依赖就显得自然，exhaustive-deps lint 规则也能自动提示。若多个 effect 共用或函数来自 props，不用组件状态的就提升到组件外部；否则用 useCallback 包裹，让函数只在 query 等输入改变时才变化，像 Excel 单元格一样联动重算，传给子组件的 fetchData 也能正确驱动子组件重新取数。对照之下，class 中方法闭包的是可变的 this，函数 props 无法参与数据流，只能把子组件根本不用的 query 也传下去以便比较；useCallback 和 useMemo 则让函数和对象真正成为数据流的一部分。但他也提醒到处用 useCallback 很笨拙，更推荐把逻辑放进 effect（或抽成自定义 Hook）或顶层导入，尽量避免向下传回调。
+
+竞态条件方面：class 版取数据先是不处理更新，加了 componentDidUpdate 后仍可能因响应乱序而让旧请求覆盖新结果。effect 不会魔法般解决此问题，能取消请求就在清理函数里取消，否则最简单的办法是用一个 didCancel 布尔值，在清理时置为 true，忽略过期响应。
+
+最后作者承认，useEffect 默认同步、能更好处理边界情况，但写对它的前期成本更高。它是底层构件，社区会逐渐转向 useFetch、useTheme 之类的高层 Hook；而数据获取其实并不完全是同步问题（deps 常是 []），长远看会由 Suspense 接手，useEffect 将退居为真正需要把 props/state 同步到副作用时的高级工具。

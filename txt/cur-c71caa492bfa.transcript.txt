@@ -1,0 +1,1296 @@
+https://overreacted.io/react-for-two-computers/
+
+# 两台计算机的 React（React for Two Computers）
+
+作者：Dan Abramov（Overreacted），2025-04-09
+
+这篇文章我已经尝试写了至少十几次。我不是在打比方——有段时间，我的桌面上真的有一个文件夹，里面放着十几份被放弃的草稿。它们风格迥异——从严谨到混乱晦涩、再到令人难以忍受的自我指涉；它们总是开头突兀，自我反刍，最后不知所终。我把它们一份一份地扔掉了，因为它们都很烂。
+
+结果发现，我其实并不是在写一篇文章，而是在准备一场演讲。等我意识到这一点时，这篇文章已经写了很久。哎呀！好在 React Conf 的组织者允许我临时提交一场新的演讲，我在八个月前讲了它。你可以在下面观看《React for Two Computers》。
+
+[视频](https://www.youtube.com/watch?v=ozI4V_29fj4)
+它讲的是大家最喜欢的话题——React Server Components（React 服务器组件）。（也可能并不是大家最喜欢的。）
+
+我已经放弃了把这场演讲改写成文章形式的想法，我也不认为这可能做到。但我想记下一些对演讲有补充作用的笔记。我会假设你*已经*看过这场演讲。这里只是那些不够连贯、没能放进演讲的内容——那些我没能收拢的零散线头。
+
+* * *
+
+## 第一幕
+
+### 配方与蓝图
+
+标签和函数调用有什么区别？
+
+这是一个标签：
+
+`<p>Hello</p>`
+这是一个函数调用：
+
+`alert('Hello');`
+一个区别是，`<` 和 `>` 又硬又尖，而 `(` 和 `)` 又软又圆。但我说的不是这个。这些只是视觉上的区别。我想问的是：它们的工作方式、它们的含义、我们对它们的期待，有什么不同？
+
+当然，如果不说明用的是哪种语言，*标签*或*函数调用*本身并没有特定的含义。比如，JavaScript 的函数调用和 Haskell 的函数调用行为可能不同；HTML 标签和 ColdFusion 标签的行为也可能不同。尽管如此，正*因为*我们熟悉它们在流行语言中的工作方式，我们对标签或函数调用还是会有一些*预期*。尖尖的 `<` 和 `>` 携带着一组联想和直觉，柔软的 `(` 和 `)` 也是如此。我想深入挖掘这些直觉。
+
+我们先看看 `alert('Hello')` 和 `<p>Hello</p>` 有什么共同点：
+
+1.   **我们通过名字来引用一个函数或一个标签。** 按照惯例，函数调用通常以动词开头（`createElement`、`printMoney`、`querySelectorAll`），而标签通常用名词命名（比如 `p` 代表 *paragraph*，段落）。这不是硬性规定（`alert` 既是名词也是动词；`b` 代表 *bold*，粗体），但多数情况下确实如此。（为什么会这样？）
+2.   **我们可以向函数或标签传递信息。** 前面，我们向标签和函数传递了一段文本（`'Hello'`）。但我们并不局限于传递单个字符串。在 JavaScript 函数调用中，我们可以传递多个参数，包括字符串、数字、布尔值、对象等等。在 HTML 标签中，我们可以传递多个属性，但它们的值不能是对象或其他富数据结构——这相当受限。好在 JSX 中的标签（以及许多基于 HTML 的模板语言）允许我们传递对象和其他任何富值。
+3.   **函数调用和标签都可以深度嵌套。** 例如，我们可以写 `alert('Hello, ' + prompt('Who are you?'))` 来表达这两个不同函数调用之间的关系：内层 `prompt` 调用的结果与一个字符串拼接，然后传给外层的 `alert` 调用。（如果你不确定它做什么，可以在控制台里试一试。）虽然嵌套在函数调用中相当常见，但对标签来说，嵌套才*真正*是核心玩法。你几乎看不到一个标签完全孤零零地存在、不被其他标签包围。（为什么会这样？）
+
+显然，函数调用和标签非常相似。它们让我们向一个有名字的东西传递一些信息，并且在需要时，让我们通过进一步嵌套来细化（向某个有名字的东西传递更多信息（想嵌套多深就嵌套多深（耶！）））
+
+我们也开始隐约看到它们之间的根本区别。首先，函数调用倾向于是动词，而标签倾向于是名词。其次，你遇到深度嵌套标签的频率要高于深度嵌套的函数调用。
+
+这是怎么回事？
+
+先说后者。为什么标签总喜欢粘在一起？标签是不是天生就倾向于被其他标签吸引，直到它们——*咔哒！*——扣在一起？也许这些尖尖的家伙真的渴望连接？也许吧，但想想这一点：也许我们*喜欢*用标签来表达深度嵌套的结构，是因为我们能看到每个标签的 `</end>`，而不必去猜哪个 `)` 在闭合什么。
+
+不是标签导致了深度嵌套——而是我们*选择*用标签*来做*深度嵌套。（回想一下，尽管 JSX 在头一两年几乎遭到一致的批评，JavaScript 社区最终还是广泛采用了它。嵌套标签是很难放弃的！）
+
+好，假设我们*更喜欢*用标签来嵌套。但为什么标签倾向于是名词而不是动词？这是巧合，还是也有更深层的原因？
+
+这更像是一种猜想，但我认为这是因为名词比动词更容易分解。名词描述的是*事物*，而事物往往可以纯粹地被描述为其他事物的组合。例如，一栋楼由楼层组成，楼层由房间组成，房间由人组成，而人由水组成。注意，这种描述是*永恒的（timeless）*——不是说它是经典，而是说它描述的是时间中的一个快照，就像电影中的一帧，或者像一张蓝图。你可以把时间从等式中去掉，它仍然是一个相当有用的描述。
+
+而动词往往描述的是*随着*时间发生的*过程*——它们是*有时间性的*！想想一份烹饪配方：“把煎锅加热，放上黄油，等黄油融化，现在把鸡蛋倒进去。”虽然这里仍然有组合的机会（*怎么*打一个鸡蛋？），但顺序在这里至关重要！你需要时刻清楚哪一步先发生、哪一步接着发生，以及在步骤之间你要做出什么样的决定。与蓝图不同，配方有它的顺序，也有某种紧迫感。
+
+那么，这和标签与函数调用有什么关系呢？
+
+配方规定了一系列要按顺序执行的步骤。它由动词组成，但很少有大量嵌套。（事实上，嵌套可能只会让顺序变得模糊。）每一步都可能改变某些东西，或依赖于之前的步骤，因此必须严格按照写下的顺序、从上到下执行配方。这些配方，也就是所谓的*命令式*程序，是用函数调用来写的：
+
+```
+const eggs = crackEggs();
+heat(fryingPan);
+put(fryingPan, butter);
+await delay(30000);
+put(fryingPan, eggs);
+```
+
+而蓝图描述的是一个事物由哪些名词组成。它不规定特定的操作顺序——它只描述整体是如何拆分成部分的。这就是为什么这些蓝图，也就是所谓的*声明式*程序，自然会变得深度嵌套，因此用标签来写更方便：
+
+```
+<Building>
+  <Roof />
+  <Floor>
+    <Room />
+    <Room>
+      <Person name="Alice" />
+      <Person name="Bob" />
+    </Room>
+  </Floor>
+  <Basement />
+</Building>
+```
+
+许多现实中的程序结合了这两种技巧。例如，一个典型的 React 组件结合了一些命令式的配方（比如事件处理函数中的一系列函数调用）和一些声明式的蓝图（比如返回的 JSX 标签）。
+
+然而，归根结底，我们的程序必须*做*点什么。配方是可以直接执行的——它们对下一步该做什么毫无歧义。做这一步，再做这一步，再做这一步，然后完成。而蓝图就只是蓝图——一个建造某物的详细计划。在某个配方真正决定去建造蓝图所描述的东西之前，它不会变成现实。（例如，React 会构建你的 JSX 蓝图所描述的 DOM。）
+
+某种意义上，蓝图几乎就是一份配方，但它更被动、更惰性，对未来的解释保持开放。它是一份*把时间本身*从等式中剥离出去的配方。当你去掉时间，剩下的就只有结构——事物、名词、标签。
+
+蓝图是一份*潜在的*配方。它是一个计划——它可能发生，也可能不会发生，取决于最终是否有某个配方去执行这个计划。
+
+既然蓝图由标签组成，配方由函数调用组成，如果我们说蓝图是*潜在的*配方，那就可以推出……标签是*潜在的*函数调用。
+
+等等，什么？
+
+* * *
+
+### Await 与 RPC
+
+假设你想调用一个函数。这很简单：
+
+`alert('Hello');`
+你可以相当确定，一旦这个函数执行完毕，下一行就会立即运行。特别是，你可以拿到一个函数调用的*结果*，然后立即把它用于下一个函数调用，这一点非常棒：
+
+```
+const name = prompt('Who are you?');
+alert('Hello, ' + name);
+console.log('Done.');
+```
+
+然而，假设你想调用的函数在另一台计算机上。那就扫兴了，对吧？但这种事确实会发生。
+
+处理这种情况的标准方法是发起某种网络调用。在这方面我们已经有很多现成的思路，比如 HTTP，甚至更底层的东西。我们大多数人整个职业生涯都没学过字节是怎么在海底电缆中传输的。真是了不起。
+
+当然，问题在于，在网络调用结束之前，我们的程序无法继续。如果不和另一台计算机通信就无法知道这个人的 `name`，我们就需要在 `alert` 调用之前“暂停”代码的执行。
+
+假设你是第一个遇到这个问题的人。
+
+你可能会想到的一个办法是发明一个接收函数的 `callNetwork` API：
+
+```
+callNetwork('https://another-computer/?fn=prompt&args=Who+are+you?', (response) => {
+  const name = response;
+  alert('Hello, ' + name);
+  console.log('Done.');
+});
+```
+
+一旦响应到达，你的 `callNetwork` API 会用 `response` 调用传入的函数，此时剩下的代码会照常运行。
+
+作为第一个想法，这实在不算坏。但也算不上好：
+
+1.   **网络调用把我们的代码搅乱了。** 以前，代码按从上到下的顺序执行，但现在有了一个转折。从概念上讲，`alert('Hello' + name)` 是我们要表达的配方中“接下来发生的事”。然而，我们不得不把它放到 `callNetwork` 调用*里面*，这样计算机才知道要“等待”它。
+2.   **我们切断了两段代码之间的联系。** 通常，当你想调用一个函数时，你直接*调用*它就行。前提是它在同一个文件里。如果它在另一个文件里，你就在那边 `export` 它，然后在这边 `import` 它。但在这种情况下，我们面对的不再是函数调用——而是 HTTP 调用。在和 REST API 打了几十年交道之后，这可能很难看出来，但在这种转换中我们其实丢掉了某种本质的东西。首先，它不会被类型检查！那个端点可能根本不存在。你不能 Command+点击进入那个调用，看看函数在哪里定义、做了什么。原本在被调用的函数和调用它的地方之间存在一种直接而真切的联系，但现在没有了——不是因为你*想要*引入某种漂亮的概念分离，而是因为你没有任何其他*手段*来保持这种联系。
+
+如果我们设想 `alert` 函数*也*在另一台计算机上（也许是另一台不同的计算机），问题就更容易看清了。现在代码变成了：
+
+```
+callNetwork('https://another-computer/?fn=prompt&args=Who+are+you?', (response) => {
+  const name = response;
+  callNetwork('https://yet-another-computer/?fn=alert&args=Hello,+' + name, () => {
+    console.log('Done.');
+  });
+});
+```
+
+那么，你如何解决这两个问题呢？
+
+你想出了两个点子。
+
+为了解决第一个问题（代码的“纠缠”），你引入了一个叫 `async` 函数的新概念。`async` 函数不保证在一步之内执行完——相反，它被预期可能会“暂停”执行（比如由于网络调用）。既然它可能暂停，*调用方*代码就需要“`await`”这个 async 函数调用，以表明它不会对这种暂停感到意外。这意味着*调用方*在某个时刻也会暂停，因此它*也*需要把自己标记为 `async`。于是 `async` 和 `await` 会沿着调用链向上传播，这样就没有人会对自己的代码“暂停”感到意外。至少这是你的想法。
+
+这一点也不坏——事实上，它的某种变体几乎已经是新编程语言的标配。你不再需要[说服别人](https://tirania.org/blog/archive/2013/Aug-15.html)它是好东西了。
+
+代码就变成了：
+
+```
+const name = await callNetwork('https://another-computer/fn=prompt&args=Who+are+you?');
+await callNetwork('https://yet-another-computer/fn=alert&args=Hello,+' + name);
+console.log('Done.');
+```
+
+现在你把目光投向第二个问题。你想做的是在一台计算机上调用一个叫 `prompt` 的函数，在另一台计算机上调用一个叫 `alert` 的函数。假设这些函数确实定义在你的代码库里。
+
+如果你能真的从另一台计算机上 *import* 它们呢？
+
+```
+import { prompt } from 'another-computer';
+import { alert } from 'yet-another-computer';
+ 
+const name = await prompt('Who are you?');
+await alert('Hello, ' + name);
+console.log('Done.');
+```
+
+等等，但这并不能真正解决上面说的问题。比如，TypeScript 不会知道 `'another-computer'` 是什么。那么，假设你可以从这些函数在代码库中实际所在的位置导入它们：
+
+```
+import { prompt, alert } from './stuff';
+ 
+const name = await prompt('Who are you?');
+await alert('Hello, ' + name);
+console.log('Done.');
+```
+
+可是等等，这只是一个普通的导入。它会把它们带进*这台*计算机上的程序，而你想要的是把它们部署到*另一台*计算机上。你希望它们在幕后通过 HTTP 跨越网络边界被远程调用，这一事实需要在代码中的某个地方表达出来。
+
+我们来发明一种特殊语法来表达这一点。我们以后可能会修改这个语法，但现在先叫它 `import rpc`，因为我们这里描述的东西几十年来一直被称为 [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call)，即“远程过程调用”：
+
+```
+import rpc { prompt, alert } from './stuff';
+ 
+const name = await prompt('Who are you?');
+await alert('Hello, ' + name);
+console.log('Done.');
+```
+
+想象一下，TypeScript 现在不仅能让你点击进入这些函数，而且还*知道*它们位于一个远程边界之后，因此会强制要求它们被声明为 `async`，并确保它们输入和输出的类型保持可序列化（这样才能真正在网络上传输）。
+
+好了，`async` / `await` 加上 `import rpc`，一天的发明够多了。
+
+除非呢？……
+
+* * *
+
+### Call Me Maybe（也许会调用我）
+
+一位同事带着一个问题来找你。“那个 `async` / `await` 和 `import rpc` 很棒，真的很棒。但它只在另一台计算机真的*回应*时才有效。想象一台*不回应*的计算机。你要怎么调用那里的函数？”
+
+这个问题乍一听毫无意义，但你琢磨了一会儿。
+
+如果另一台计算机不回应……那么自然，你无法知道它*什么时候*完成，所以用 `await` 暂停执行是行不通的。所以你不能这样做：
+
+`await alert('Hello, ' + name);`
+更糟糕的是，如果函数所在的计算机不回应，你就拿不到任何函数调用的*结果*，所以这样也不可能：
+
+`const name = await prompt('Who are you?');`
+你很想宣布这种情况没救了，但你试着批判性地思考。没错，你无法把信息*传回来*……但你仍然可以把信息*往前传*。
+
+例如，这行代码只把信息往前传：
+
+`alert('Hello');`
+即使另一台计算机不回应，这里你也只是请求它用 `'Hello'` 字符串调用 `alert` 函数。你并没有要求任何返回。
+
+所以这个调用应该是可以发出的！只不过……它不会完全像普通的函数调用那样工作，因此使用和普通函数调用相同的语法似乎不太对。通常，人们会期望下面的代码在函数调用*完成*之后执行，但这里你无法保证这一点。事实上，你甚至无法确定这个调用一定会成功——如果它因为网络在中途失败，你将无从得知。和 RPC 不同，你不会收到网络错误的通知。
+
+这不是一个函数调用。它是一个……*潜在的*函数调用。它是一个将来可能发生、也可能不发生的调用。你可以说它是函数调用的蓝图。
+
+我们为这些“潜在调用”编一个语法：
+
+`alert⧼'Hello'⧽;`
+我们以后可能会改掉这个语法。但现在让我们来想清楚这个语法的*语义*，也就是我们真正希望它做什么。在设计过程中，明智的做法是从限制条件出发（“另一台计算机无法回应”），看看它们是否对这些“潜在调用”的语义施加了某些不可避免的约束。
+
+显然，这些“潜在调用”不会中断执行，也不会影响其余代码。它们不会“等待”任何东西，因为没有东西可等：
+
+```
+alert⧼'Hello'⧽;      // 无法知道它是否/何时成功或失败
+console.log('Done.') // 立即运行
+```
+
+这就引出了一个问题：这些“潜在调用”应该返回什么？
+
+```
+const name = prompt⧼'Who are you?'⧽;
+console.log(name); // ???
+```
+
+显然，`prompt⧼'Who are you?'⧽` 不可能返回 `prompt` 调用最终的实际返回值，因为另一台计算机无法回应。我们可以规定这个语法总是返回 `undefined`，但那感觉相当受限。我们将无法协调 `prompt` 这个“潜在调用”和 `alert` 这个“潜在调用”！
+
+我们想实现的是类似这样的东西：
+
+```
+const name = prompt⧼'Who are you?'⧽;
+alert⧼'Hello, ' + name⧽;
+```
+
+问题是，上面的代码说不通，因为我们无法从 `prompt` 这个“潜在调用”中拿到任何东西。所以我们既不能给 `name` 变量赋值，也不能在这台计算机上用 `+` 操作它的返回值。不过，这里有个点子。我们*可以*做的，是把上面两行*完全*用“潜在调用”来重写：
+
+```
+alert⧼
+  concat⧼
+    'Hello, ',
+    prompt⧼'Who are you?'⧽
+  ⧽
+⧽;
+```
+
+（这里以及后文，假设 `concat` 是一个全局函数，值为 `(a, b) => a + b`。）
+
+以这种方式重新组织代码有两个好处。首先，它避免了声明一个毫无意义的 `name` 变量的问题——这个变量不可能有任何有意义的值（因为我们还不在另一台计算机上）。其次，它让我们可以把这些嵌套的“潜在调用”看作一个单一的表达式，很容易编码成 JSON：
+
+```
+{
+  fn: 'alert',
+  args: [{
+    fn: 'concat',
+    args: ['Hello, ', {
+      fn: 'prompt',
+      args: ['Who are you?']
+    }]
+  }]
+}
+```
+
+然后我们可以把这个 JSON 发送到另一台计算机（它无法回应我们！），它会用类似这样的函数来解释我们的指令：
+
+```
+function interpret(json) {
+  if (json && json.fn) {
+    // 按名字查找全局函数
+    let fn = window[json.fn];
+    // 解释参数中嵌套的潜在调用
+    let args = json.args.map(arg => interpret(arg));
+    // 现在真正执行调用
+    let result = fn(...args);
+    // 如果它返回了更多潜在调用，接下来执行它们
+    return interpret(result);
+  } else {
+    return json;
+  }
+}
+```
+
+你可以在控制台中验证：把上面的 JSON 对象传给 `interpret()`，效果等同于原来的代码。（别忘了定义一个全局的 `concat`！）
+
+换句话说，这个方法行得通！
+
+我们再看一眼这个语法：
+
+```
+alert⧼
+  concat⧼
+    'Hello, ',
+    prompt⧼'Who are you?'⧽
+  ⧽
+⧽;
+```
+
+我们已经看到，“潜在调用”之间的任何依赖关系，比如 `prompt` 和 `alert` 之间的依赖，都应该通过把这些“潜在调用”相互嵌套来表达。我们无法真的在它们之间插入*代码*，除非那段代码*也*位于另一台计算机上。在*这台*计算机上，它们更像是……标记（markup）。
+
+既然我们没有其他组合调用的方式，可以预料嵌套层级会很深。所以让语法稍微更容易浏览一些也许是个好主意：
+
+```
+<alert>
+  <concat>
+    Hello,
+    <prompt>Who are you?</prompt>
+  </concat>
+</alert>
+```
+
+注意一个奇特之处。
+
+对于普通的函数调用，返回值由你调用的函数决定：
+
+```
+const result = prompt('Who are you?');
+console.log(result); // 'Dan'
+```
+
+但对于“潜在”函数调用，返回值是*以数据形式存在的调用本身*：
+
+```
+const inner = <prompt>Who are you?</prompt>;
+// { fn: 'prompt', args: ['Who are you?'] }
+ 
+const outer = <concat>Hello, {inner}</concat>;
+// {
+//   fn: 'concat',
+//   args: ['Hello', { fn: 'prompt', args: ['Who are you?'] }]
+// }
+ 
+const outest = <alert>{outer}</alert>;
+// {
+//   fn: 'alert',
+//   args: [{
+//     fn: 'concat',
+//     args: ['Hello', { fn: 'prompt', args: ['Who are you?'] }]
+//   }]
+// }
+```
+
+这些调用还没有被执行——我们只是在构建这些调用的*蓝图*：
+
+```
+<alert>
+  <concat>
+    Hello,
+    <prompt>Who are you?</prompt>
+  </concat>
+</alert>
+```
+
+这份“潜在调用”的蓝图看起来像代码，但行为却像数据。它在结构上与函数调用相似，但更被动、更惰性、对解释保持开放。我们还没有把这份蓝图*发送*给那台将真正解释它的计算机。
+
+总之，一遍又一遍地写“潜在函数调用”让我有点烦了。
+
+我们就叫它们标签吧。
+
+* * *
+
+### 拆分一个函数
+
+这是一个函数：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  alert('Hello, ' + name);
+}
+```
+
+如果你运行它，它会一次性执行完。函数通常都是这样。
+
+假设你想把它的执行拆成两部分。第一部分立即运行。第二部分在调用方决定时运行。
+
+这里有一个简单的做法：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return function resume() {
+    alert('Hello, ' + name);
+  };
+}
+```
+
+现在你可以分两部分运行这个函数：
+
+```
+const resume = greeting(); // 运行第一部分
+resume();                  // 运行第二部分
+```
+
+现在假设你想在*另一台计算机*上运行第二部分。你仍然把它看作一个单一的计算。只是它恰好在物理上是分布式的。
+
+“简单！”你说：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + name);
+  }`;
+}
+```
+
+等等，什么？
+
+好吧，这很聪明，你从函数中返回*剩下的代码*，这样它就可以被传送到另一台计算机上完成计算。但等等！这样行不通——从另一台计算机的角度看，`name` 没有定义：
+
+```
+function resume() {
+  alert('Hello, ' + name); // 🔴 ReferenceError: name is not defined
+}
+```
+
+“没问题，”你说：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+```
+
+啊，我明白你做了什么。你把在第一台计算机上得到的 `name` 值*直接嵌入*到发送给另一台计算机的代码中。从它的角度看，`name` 会显得是*预先计算好的*，就好像它一直都在那里：
+
+```
+function resume() {
+  alert('Hello, ' + "Dan");
+}
+```
+
+事实上，那个函数完全不知道自己是一个更大图景的一部分。从它的角度看，世界是从第二台计算机*开始*的。随着这个函数变得越来越复杂，它可能会开始以为自己就是全部。这也没关系。
+
+但你*看到了*全貌：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+```
+
+这是一种有趣的形态——一个程序以一种可以通过网络传输的形式返回它自身剩余的部分，以便在另一台机器上继续执行。你可以称之为*跨网络的闭包*。注意它工作方式的几个特点：
+
+*   **数据严格地单向流动——从第一台计算机流向第二台。** 第二部分可以看到第一部分的值（只要它们能转成文本）。但第一部分对第二部分一无所知。第一部分在写剧本；第二部分将在舞台上表演。
+*   **第一部分和第二部分是完全隔离的。** 虽然它们是同一个概念上的*程序*的一部分，但它们是独立的*运行时环境*。它们无法在运行时彼此协调，因为它们被时间和空间隔开了。它们的模块系统彼此完全隔离，各自有自己的全局变量，甚至可能运行在不同的 JavaScript 引擎上。
+*   **两部分之间的边界既坚固又流动。** 说它坚固，是因为这两个环境*确实*是分开的——除了被闭包捕获的东西之外，它们之间不共享任何东西。但说它流动，是因为*你*可以在两个世界之间移动东西。你可以选择哪些行在哪一边运行，什么时候宁愿在第二台计算机上运行更多代码，什么时候宁愿把已经预先计算好的数据传给它。
+
+最后一点值得展开讲讲。假设你在写一个 [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz)，想对从 `1` 到 `n` 的数字弹出提示：如果数字能被 3 整除就提示 `'Fizz'`，能被 5 整除就提示 `'Buzz'`，能同时被两者整除就提示 `'FizzBuzz'`：
+
+```
+function fizzBuzz() {
+  const n = Number(prompt('How many?'));
+  for (let i = 1; i <= n; i++) {
+    if (i % 3 === 0 && i % 5 === 0) {
+      alert('FizzBuzz');
+    } else if (i % 3 === 0) {
+      alert('Fizz');
+    } else if (i % 5 === 0) {
+      alert('Buzz');
+    } else {
+      alert(i);
+    }
+  }
+}
+```
+
+现在想象这是一个给*两台*计算机的程序。你可以用不同的方式拆分它。例如，你可以选择把所有工作都放在第二台计算机上做：
+
+```
+function fizzBuzz() {
+  return `function resume() {
+    const n = Number(prompt('How many?'));
+    for (let i = 1; i <= n; i++) {
+      if (i % 3 === 0 && i % 5 === 0) {
+        alert('FizzBuzz');
+      } else if (i % 3 === 0) {
+        alert('Fizz');
+      } else if (i % 5 === 0) {
+        alert('Buzz');
+      } else {
+        alert(i);
+      }
+    }
+  }`;
+}
+```
+
+但也许你想在第一台计算机上运行 `prompt`。你可以把 `prompt` 调用移到前一部分，然后把 `n` 作为*数据*传给第二部分：
+
+```
+function fizzBuzz() {
+  const n = Number(prompt('How many?'));
+  return `function resume() {
+    const n = ${JSON.stringify(n)};
+    for (let i = 1; i <= n; i++) {
+      if (i % 3 === 0 && i % 5 === 0) {
+        alert('FizzBuzz');
+      } else if (i % 3 === 0) {
+        alert('Fizz');
+      } else if (i % 5 === 0) {
+        alert('Buzz');
+      } else {
+        alert(i);
+      }
+    }
+  }`;
+}
+```
+
+从第二台计算机的角度看，`n` 会显得是硬编码的。
+
+事实上，你可以在第一台计算机上预先计算出每一条消息：
+
+```
+function fizzBuzz() {
+  const n = Number(prompt('How many?'));
+  const messages = [];
+  for (let i = 1; i <= n; i++) {
+    if (i % 3 === 0 && i % 5 === 0) {
+      messages.push('FizzBuzz');
+    } else if (i % 3 === 0) {
+      messages.push('Fizz');
+    } else if (i % 5 === 0) {
+      messages.push('Buzz');
+    } else {
+      messages.push(i);
+    }
+  }
+  return `function resume() {
+    const messages = ${JSON.stringify(messages)};
+    messages.forEach(alert);
+  }`;
+}
+```
+
+这样，从第二台计算机的角度看，除了遍历这些消息之外就没有剩下任何计算了。例如，如果我选 `16` 作为 `n`，从第二台计算机的角度看，整个程序是这样的：
+
+```
+function resume() {
+  const messages = [1,2,"Fizz",4,"Buzz","Fizz",7,8,"Fizz","Buzz",11,"Fizz",13,14,"FizzBuzz",16];
+  messages.forEach(alert);
+}
+```
+
+预先计算 `messages` 的缺点是，要发送的数据量会随着 `n` 增长而增长。由于 FizzBuzz 算法很简单，更明智的做法是传送 `n` 本身，让第二台计算机自己去运行 FizzBuzz。重要的是，你可以在传递数据和运行代码之间*选择*取舍。
+
+现在回到最初的例子。
+
+我们已经阐明了一个概念：把程序拆分到两台计算机上，我们就获得了移动计算的灵活性。然而在实践中，你大概不想把一半代码写在字符串里：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+```
+
+相反，如果能把 `resume` 写在另一个文件里，然后直接 *import* 它，那就好了：
+
+```
+import { resume } from './stuff';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return resume(name);
+}
+```
+
+只不过等等，`resume` 不能是普通的导入——*你希望把这个函数的代码发送到另一台计算机上！* 所以你其实并不想现在在这台计算机上*导入*函数本身或运行它的任何代码；相反，你想*引用*那个函数。这可能会让你想起 RPC，你曾为它发明了 `import rpc`。我们再发明一个类似的注解，用来标记一个要被发送到另一台计算机的函数：
+
+```
+import tag { resume } from './stuff';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return resume(name);
+}
+```
+
+为什么是 `import tag`？这个函数位于一台“不回应”的计算机上，所以你无法调用它。你最多只能做一次“潜在调用”——换句话说，一个标签！
+
+```
+import tag { resume } from './stuff';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return <resume name={name} />;
+}
+```
+
+（我们稍后会重新审视 `import rpc` 和 `import tag` 语法并加以修改。）
+
+以这种方式拆分的程序通常被称为客户端-服务器应用。
+
+```
+import tag { Client } from './stuff';
+ 
+function Server() {
+  const data = precomputeData();
+  return <Client data={data} />;
+}
+```
+
+人们很容易把客户端和服务器看成两个相互通信的独立程序。但现在你知道了，它其实是一个单一的函数，通过把它自身剩余的部分在时间和空间上向前发送，形成了一个跨网络的闭包。
+
+祝你从此*无法*忘掉这个视角。
+
+* * *
+
+### 两边的标签
+
+几节之前，你发明了标签：
+
+```
+function greeting() {
+  return (
+    <alert>
+      <concat>
+        Hello,
+        <prompt>Who are you?</prompt>
+      </concat>
+    </alert>
+  );
+}
+```
+
+提醒一下，标签和函数调用非常相似，但它们并不真正*调用*任何东西——它们只是反映了一次调用的结构。正因如此，它们是表示一种你*希望*发生的计算的完美方式——但也许不是现在，甚至不是在这里。标签代表一个计划，一份计算的*蓝图*：
+
+```
+function greeting() {
+  return {
+    fn: 'alert',
+    args: [{
+      fn: 'concat',
+      args: ['Hello, ', {
+        fn: 'prompt',
+        args: ['Who are you?']
+      }]
+    }]
+  };
+}
+```
+
+标签本身什么也不做。需要有代码去真正*解释*它们在说什么。下面是我们见过的一种对上面例子有效的方法：
+
+```
+function interpret(json) {
+  if (json && json.fn) {
+    let fn = window[json.fn];
+    let args = json.args.map(arg => interpret(arg));
+    let result = fn(...args);
+    return interpret(result);
+  } else {
+    return json;
+  }
+}
+```
+
+[运行代码](https://codesandbox.io/p/devbox/r2c-part1-forked-h73wkn?file=%2Fsrc%2Findex.mjs)，可以看到 `interpret(greeting())` 产生了预期的结果。
+
+然而，解释这件事的特点在于它是主观的。对某样东西的解释不止一种。说实话，这就是解释的全部意义所在。它们允许这种灵活性。
+
+在前面的例子中，`interpret` 函数直接在全局 `window` 作用域中寻找*实现*每个标签的函数。所以它能在那里找到 `window.alert`、`window.prompt` 等等。现在我们要做一个稍有不同的 `interpret` 版本。这个版本会接收一个显式的 `knownTags` 字典，里面包含这些函数。未知的标签将被跳过。
+
+请看：
+
+```
+function interpret(json, knownTags) {
+  if (json && json.fn) {
+    if (knownTags[json.fn]) {
+      let fn = knownTags[json.fn];
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      let result = fn(...args);
+      return interpret(result, knownTags);
+    } else {
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      return { fn: json.fn, args };
+    }
+  } else {
+    return json;
+  }
+}
+```
+
+现在，如果你给 `interpret` 传入空的 `knownTags`，你会得到原始的调用树：
+
+```
+interpret(greeting(), {});
+ 
+// {
+//   fn: 'alert',
+//   args: [{
+//     fn: 'concat',
+//     args: ['Hello, ', {
+//       fn: 'prompt',
+//       args: ['Who are you?']
+//     }]
+//   }]
+// };
+```
+
+*然而*，[注意看](https://codesandbox.io/p/devbox/r2c-part1-forked-2cx44l?file=%2Fsrc%2Findex.mjs)如果你传入 `{ prompt: window.prompt }` 会发生什么：
+
+```
+interpret(greeting(), {
+  prompt: window.prompt
+});
+```
+
+现在它会先询问你的名字（`prompt` *确实*运行了），然后产生这棵树：
+
+```
+// {
+//   fn: 'alert',
+//   args: [{
+//     fn: 'concat',
+//     args: ['Hello, ', 'Dan' /* （或者你输入的任何内容） */]
+//   }]
+// };
+```
+
+你仍然得到一棵调用树，但这一次 `prompt` 已经从中“溶解”掉了！
+
+做个实验，我们把 `prompt` *和* `concat` 都“溶解”掉（但不包括 `alert`）：
+
+```
+interpret(greeting(), {
+  prompt: window.prompt,
+  concat: (a, b) => a + b,
+});
+```
+
+这一次，`prompt` 会像之前一样运行，但为 `alert` 调用准备的消息已经拼接好了——看不到 `concat` 了：
+
+```
+// {
+//   fn: 'alert',
+//   args: ['Hello, Dan']
+// };
+```
+
+换句话说，除了 `alert` 调用本身，我们已经*预先计算*好了一切。
+
+我们也试试像之前那样，把 `alert`、`prompt` 和 `concat` 一起“溶解”掉：
+
+```
+interpret(greeting(), {
+  alert: window.alert,
+  prompt: window.prompt,
+  concat: (a, b) => a + b,
+});
+ 
+// undefined
+```
+
+这一次，所有步骤都会运行，所以不会剩下任何事情可做。
+
+由于标签的蓝图是*永恒的*——它不规定操作的特定顺序，只规定它们的结构——我们获得了操纵这种顺序的自由。例如，我们现在可以把一个单一的计算*拆分*成几步：
+
+```
+const step1 = greeting();
+// {
+//   fn: 'alert',
+//   args: [{
+//     fn: 'concat',
+//     args: ['Hello, ', {
+//       fn: 'prompt',
+//       args: ['Who are you?']
+//     }]
+//   }]
+// };
+ 
+const step2 = interpret(step1, {
+  prompt: window.prompt,
+  concat: (a, b) => a + b,
+});
+// {
+//   fn: 'alert',
+//   args: ['Hello, Dan']
+// };
+ 
+interpret(step2, {
+  alert: window.alert,
+});
+// undefined
+```
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-part1-forked-wfvxhp?file=%2Fsrc%2Findex.mjs)
+
+这可能会给你一个启发。
+
+如果你在不同的计算机上运行 `step1` 和 `step2` 呢？换句话说，如果你先在第一台计算机上解释，或者说“溶解”掉*一部分*标签，然后把剩下的发送出去，稍后在第二台计算机上解释，或者说“溶解”掉呢？如果某些标签*天生更适合*在两边中的某一边被解释——例如，如果这两台机器能力不同——这可能会很有用。
+
+想想水的状态转变：首先，冰在山顶融化成水。然后河水向下流淌。最后，水蒸发掉。标签也可以如此。一些标签可以在第一台计算机上早早融化。剩下的标签可以通过网络流向另一台计算机——并在那里迎接它们的命运。
+
+* * *
+
+### 两台计算机
+
+你的理论难以捉摸，有时你觉得它是胡说八道，但它的大致轮廓正在浮现。如果要你总结一下目前为止的内容，你会这样说：
+
+有些程序是跨多台机器的分布式计算。特别是，有些程序可以表示为跨越*两台*机器的函数（尽管原则上可以有更多台）。其中一些函数会有一种特定的形态——第一台机器完成一部分计算，然后通过把剩余的代码发送给第二台机器，把剩下的计算“移交”给它。这些就是你的理论所关注的函数。
+
+我们给这两台机器的环境起个名字。你的程序始于 *Early（早期）*世界——第一台机器。一部分工作会在那里发生。然后剩下的工作被移交给 *Late（晚期）*世界——第二台机器。
+
+Early 世界和 Late 世界是两个被时间和空间隔开的完全隔离的运行时环境，因此它们不共享任何状态或全局变量。Early 世界可以*给 Late 世界留下一些残余信息*——具体来说，就是剩下要运行的代码以及运行它所需的数据——但仅此而已。
+
+Early 世界和 Late 世界不会直接 `import` 对方的代码，因为那只会把那段代码带*进*导入它的世界。然而，它们*会*做的，是*引用*对方的代码。`import tag` 和 `import rpc` 都是*引用*另一台计算机上的代码（而且是类型安全的！）并用它做些有用的事、却不把它真正加载进导入方世界的例子。
+
+由于它们之间界限分明，Early 世界中的函数无法*调用* Late 世界中的函数。毕竟，函数调用的意义在于把信息*传回*给调用方，但如果调用方早已撒手人寰，这就不可能了。
+
+然而，把信息从 Early 世界*向前*传给 Late 世界仍然是有意义的。为了支持这一点，你发明了一个比函数调用更弱的概念——*标签*。标签就像函数调用，但它被动、惰性、对解释保持开放。它是一个等待被实现的*潜在*函数调用。标签是*作为*数据的函数调用，可以现在执行，*也*可以在更合适的时间点执行，或者根本不执行。标签是一种原型调用（proto-call）。
+
+你得意地站着，第一次看到你理论中那些零散的线索开始汇聚到一起。突然，Boss 战的音乐响起。
+
+*有人提到时间了吗？*
+
+* * *
+
+### 时间反击战
+
+你的第一个 Boss 就是时间本身。要打败时间，你必须证明你所谓的*永恒*蓝图确实是永恒的——改变它们的计算顺序不会意外地毁掉你的程序。你最好是对的！
+
+这是你之前的 `greeting` 函数：
+
+```
+function greeting() {
+  return (
+    <alert>
+      <concat>
+        Hello,
+        <prompt>Who are you?</prompt>
+      </concat>
+    </alert>
+  );
+}
+```
+
+我会把它稍微加强一点，让这场 Boss 战更有趣（也更可怕）。
+
+我猜你会非常频繁地把 `alert` 和 `concat` 组合在一起，所以我把它们提取成一个单独的函数。我把它叫做 `p`，代表“paragraph（段落）”。
+
+```
+function p(...children) {
+  return (
+    <alert>
+      <concat>
+        {children}
+      </concat>
+    </alert>
+  );
+}
+```
+
+现在 `greeting` 函数可以直接返回 `p` 标签：
+
+```
+function greeting() {
+  return (
+    <p>
+      Hello,
+      <prompt>Who are you?</prompt>
+    </p>
+  );
+}
+```
+
+我还会添加一个新的 `clock` 函数，它返回自己运行时的时间：
+
+```
+function clock() {
+  return new Date().toString();
+}
+```
+
+最后，我会添加一个 `app` 函数，在 `p` 中把 `greeting` 和 `clock` 组合起来：
+
+```
+function app() {
+  return [
+    <greeting />,
+    <p>The time is: <clock /></p>
+  ];
+}
+```
+
+现在正是在 `interpret` 中支持数组的好时机——幸运的是，这很简单：
+
+```
+function interpret(json, knownTags) {
+  if (json && json.fn) {
+    if (knownTags[json.fn]) {
+      let fn = knownTags[json.fn];
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      let result = fn(...args);
+      return interpret(result, knownTags);
+    } else {
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      return { fn: json.fn, args };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(item => interpret(item, knownTags));
+  } else {
+    return json;
+  }
+}
+```
+
+好了，我们来看看 `interpret` 能否胜任。
+
+首先，我们试着一起解释所有标签：
+
+```
+interpret(app(), {
+  alert: window.alert,
+  prompt: window.prompt,
+  concat: (a, b) => a + b,
+  p: p,
+  greeting: greeting,
+  clock: clock,
+});
+// [undefined, undefined]
+```
+
+[运行这段代码](https://codesandbox.io/p/devbox/r2c-part1-forked-slfzsc?file=%2Fsrc%2Findex.mjs)得到了预期的结果：
+
+1.   有一个 `prompt` 询问我的名字
+2.   有一个提示框显示 `Hello, Dan`
+3.   还有一个提示框显示 `The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)`
+
+到目前为止一切顺利！
+
+现在，你要捍卫的主张是：因为这些只是蓝图——还没有变成调用的标签——你可以按任意顺序溶解这些标签。
+
+我们来检验一下。
+
+首先，我们只溶解*一半*标签（`p`、`greeting` 和 `clock`）：
+
+```
+const step2 = interpret(app(), {
+  // alert: window.alert,
+  // concat: (a, b) => a + b,
+  // prompt: window.prompt,
+  p: p,
+  greeting: greeting,
+  clock: clock,
+});
+ 
+// [
+//   { fn: 'alert', args: [{ fn: 'concat', args: ['Hello', { fn: 'prompt', args: ['Who are you?'] }] }] },
+//   { fn: 'alert', args: [{ fn: 'concat', args: ['The time is ', 'Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)'] }] }
+// ]
+```
+
+*啪。*
+
+正如预期，这一步悄无声息——还没有任何 prompt 或提示框……现在你可以拿这个中间结果去溶解剩下的标签（`alert`、`concat`、`prompt`）：
+
+```
+interpret(step2, {
+  alert: window.alert,
+  concat: (a, b) => a + b,
+  prompt: window.prompt,
+  // p: p,
+  // greeting: greeting,
+  // clock: clock,
+});
+// [undefined, undefined]
+```
+
+[这也](https://codesandbox.io/p/devbox/r2c-part1-forked-vvhg65?file=%2Fsrc%2Findex.mjs)按预期工作：
+
+1.   有一个 `prompt` 询问我的名字
+2.   有一个提示框显示 `Hello, Dan`
+3.   还有一个提示框显示 `The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)`
+
+恭喜！
+
+你已经证明了，由标签（而非函数调用）构成的计算可以拆分成多个步骤，并按任意顺序计算——从而打败了时间本身。
+
+除非呢？……
+
+你为什么不试试把*除了* `concat` 以外的所有标签一起溶解：
+
+```
+interpret(app(), {
+  alert: window.alert,
+  prompt: window.prompt,
+  // concat: (a, b) => a + b,
+  p: p,
+  greeting: greeting,
+  clock: clock,
+});
+```
+
+在一份*永恒的蓝图*中，晚一点再运行 `concat` 肯定不会造成任何伤害吧？
+
+你[运行了代码](https://codesandbox.io/p/devbox/r2c-part1-forked-zyxyyz?file=%2Fsrc%2Findex.mjs)：
+
+1.   有一个 `prompt` 询问我的名字
+2.   有一个提示框显示 `[object Object]`
+3.   还有一个提示框显示 `[object Object]`
+
+*你死了。*
+
+* * *
+
+### 致命缺陷
+
+刚才发生了什么？
+
+原来你的理论有一个缺陷。即使你用标签而不是函数调用来描述程序，时间其实也很重要！至少对某些函数来说是这样。
+
+看这个例子：
+
+```
+<concat>
+  Hello,
+  <prompt>Who are you?</prompt>
+</concat>
+```
+
+当两个标签嵌套时，应该按什么顺序解释它们？应该先解释 `<prompt>`，再把它的结果传给 `concat` 函数吗？还是应该让 `concat` 函数接收*作为标签本身*的 `<prompt>`？
+
+我们可以先考虑普通函数调用的行为：
+
+```
+concat(
+  'Hello, ',
+  prompt('Who are you?') // 这会先运行
+)
+```
+
+如果你不确定的话：在 JavaScript 中调用函数时，它的参数会*先*被计算——在这些值确定之后，函数才会被调用：
+
+```
+function concat(a, b) {
+  // a 是 'Hello, '
+  // b 是 'Dan'
+  return a + b;
+}
+```
+
+我们处理标签的 `interpret` 函数也按同样的顺序应用它们。当它遇到像 `<concat>` 这样的标签时，它会*先*对其参数运行 `interpret`，以防里面有像 `<prompt>` 这样的嵌套调用。只有*之后*它才会调用 `concat()`：
+
+```
+function interpret(json, knownTags) {
+  if (json && json.fn) {
+    if (knownTags[json.fn]) {
+      let fn = knownTags[json.fn];
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      let result = fn(...args);
+      return interpret(result, knownTags);
+    } else {
+      // ...
+    }
+  } else {
+    // ...
+  }
+}
+```
+
+因此，这段代码：
+
+```
+<concat>
+  Hello,
+  <prompt>Who are you?</prompt>
+</concat>
+```
+
+目前等价于这段：
+
+```
+concat(
+  'Hello, ',
+  prompt('Who are you?') // 这会先运行
+)
+```
+
+然而，这里有些不对劲。
+
+我们的标签不是应该是*永恒的蓝图*，摆脱 JavaScript 那种“参数必须先求值”的烦人求值顺序约束吗？如果这些“标签”最终的行为和函数调用一模一样，那它们还有什么用？
+
+好吧，但这*还能*怎么运作呢？
+
+那么，如果这段：
+
+```
+<concat>
+  Hello,
+  <prompt>Who are you?</prompt>
+</concat>
+```
+
+改为等价于这段呢：
+
+```
+concat( // 这会先运行
+  'Hello, ',
+  <prompt>Who are you?</prompt>
+)
+```
+
+想象一下，标签是*由外向内*而不是*由内向外*求值的。那么，当你有一个里面包含 `<prompt />` 的 `<concat>` 时，你不会先看到 `prompt` 调用。相反，你会在 `<prompt />` 仍然是*一个标签*的情况下进入 `concat`：
+
+```
+function concat(a, b) {
+  // a 是 'Hello, '
+  // b 是 { fn: 'prompt', args: ['Who are you?'] }
+  return a + b;
+}
+```
+
+当然，那会彻底搞坏 `concat`，因为它只能拼接*字符串*，而不能拼接像 `<prompt />` 这样尚未运行的任意计算。
+
+这个问题并非 `concat` 独有。例如，`alert` 函数也期望接收一个*字符串*。它不知道如何处理一个表示标签的对象：
+
+`alert({ fn: 'concat', args: [/* ... */] });`
+或者更确切地说，它会*处理*它——把它强制转换成像 `"[object Object]"` 这样的字符串。
+
+这就解释了 Boss 战中发生的事！
+
+虽然我们的 `interpret` 函数通常会先处理参数，但我们特意*推迟*了对 `<concat>` 标签的解释，以证明顺序无关紧要。然而，顺序*确实*重要——`concat` 和 `alert` 函数都*需要*它们的参数是普通字符串而不是标签。
+
+看来你的永恒蓝图终究没那么永恒。函数*需要*先计算出它们的参数。时间就藏在那里。
+
+你的理论有一个致命缺陷。
+
+* * *
+
+### 新希望
+
+你的理论有一个致命缺陷。对此你可以做三件事。
+
+你可以假装它不存在。但那修不好你的理论。
+
+你可以放弃你的理论。但你确实*发现了*一些东西，不是吗？
+
+最后，你可以让这个缺陷*指引*你。就像一次精心挑选的失败实验，它告诉你一些非常重要的东西。你犯了一个错误，但*究竟*错在哪里？
+
+有一个好办法可以找出来。
+
+目前，我们总是在调用父标签的函数之前急切地解释嵌套的标签，以确保标签函数按*由内向外*的顺序被调用：
+
+```
+function interpret(json, knownTags) {
+  if (json && json.fn) {
+    if (knownTags[json.fn]) {
+      let fn = knownTags[json.fn];
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      let result = fn(...args);
+      return interpret(result, knownTags);
+    } else {
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      return { fn: json.fn, args };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(item => interpret(item, knownTags));
+  } else {
+    return json;
+  }
+}
+```
+
+如果我们改为直接传递原始参数（即使其中包含标签）呢？
+
+```
+function interpret(json, knownTags) {
+  if (json && json.fn) {
+    if (knownTags[json.fn]) {
+      let fn = knownTags[json.fn];
+      let args = json.args;
+      let result = fn(...args);
+      return interpret(result, knownTags);
+    } else {
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      return { fn: json.fn, args };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(item => interpret(item, knownTags));
+  } else {
+    return json;
+  }
+}
+```
+
+当然，这会彻底破坏我们之前的每一个例子。记住，`alert()` 无法处理像 `<concat>` 这样的对象参数——而 `concat()` 本身也[无法处理](https://codesandbox.io/p/devbox/r2c-part1-forked-rnvdg2?file=%2Fsrc%2Findex.mjs)像 `<prompt>` 这样的对象参数。它想要两个字符串，而不是标签：
+
+```
+const tags = (
+  <concat>
+    Hello, <prompt>Who are you?</prompt>
+  </concat>
+);
+ 
+interpret(tags, {
+  concat: (a, b) => a + b,
+  prompt: window.prompt,
+});
+ 
+// 'Hello, [object Object]'
+```
+
+但完全拥抱这个“缺陷”，也许也能照亮什么是*真正*可行的。
+
+例如，把 `<concat>` 换成 `<p>` [就不再导致](https://codesandbox.io/p/devbox/r2c-part1-forked-kw9cxj?file=%2Fsrc%2Findex.mjs)输出出错：
+
+```
+function p(...children) {
+  return (
+    <alert>
+      <concat>
+        {children}
+      </concat>
+    </alert>
+  );
+}
+ 
+// ...
+ 
+const tags = (
+  <p>
+    Hello, <prompt>Who are you?</prompt>
+  </p>
+);
+ 
+interpret(tags, {
+  p: p,
+  prompt: window.prompt,
+});
+ 
+// { fn: 'alert', args: [{ fn: 'concat', args: ['Hello, ', 'Dan'] }] }
+```
+
+这看起来可能无足轻重（我们以后仍然需要运行 `concat`）。但实际上这非常重要！`concat` 和 `p` 这两个函数之间有某种根本性的不同。*由外向内*的调用顺序会搞坏 `concat`，但不会搞坏 `p`。
+
+这*究竟*是为什么？
+
+* * *
+
+### 嵌入与内省
+
+看这两个函数：
+
+```
+function concat(a, b) {
+  return a + b;
+}
+ 
+function pair(a, b) {
+  return [a, b];
+}
+```
+
+它们有什么不同？
+
+显然，它们的用途不同。一个拼接字符串。另一个用提供的两个元素创建一个数组。但在它们如何对待自己的参数这一点上，还有一个更微妙的区别。
+
+为了解释它，我会用一个类比。
+
+假设你的工作是把绳子的各段系在一起。这并不太难。你拿起两段绳子，把它们系在一起，工作完成。现在假设有一天，有人递给你一段绳子和……一个南瓜。突然之间，你没法工作了。你需要抓住两段绳子的末端，但南瓜没有末端。
+
+现在，你可能会由此得出结论：随意把东西换成南瓜会导致灾难，有时确实如此。但并非总是这样。
+
+假设你有了一份新工作，在玩具店包装礼物。你整天包装各种礼物，不管是玩偶、小汽车，还是一整栋玩具房子。然后有一天，有人递给你一个南瓜。虽然你可能出于原则拒绝这个请求，但*从技术上讲*，你完全可以把南瓜包好。当你包装东西时，你并不依赖它们的属性（比如绳子之所以为绳子的特性）。你只是把它们放进盒子里。你是在*嵌入*，而不是在*内省*。

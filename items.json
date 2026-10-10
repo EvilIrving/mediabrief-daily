@@ -1082,6 +1082,27 @@
   "title_zh": "锚点定位入门"
  },
  {
+  "id": "cur-2bc4a920b1b3",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Harness Engineering for Self-Improvement",
+  "link": "https://lilianweng.github.io/posts/2026-07-04-harness/",
+  "date": "2026-07-04",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-2bc4a920b1b3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-2bc4a920b1b3.transcript.txt"
+   }
+  ],
+  "title_zh": "自我提升的线束工程"
+ },
+ {
   "id": "cur-2462892d260e",
   "kind": "curated",
   "type": "article",
@@ -1266,6 +1287,27 @@
    }
   ],
   "title_zh": "线束工程：在代理优先的世界中充分利用Codex"
+ },
+ {
+  "id": "cur-b1581a551bbc",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "The State Of LLMs 2025: Progress, Problems, and Predictions",
+  "link": "https://magazine.sebastianraschka.com/p/state-of-llms-2025",
+  "date": "2025-12-30",
+  "audio_url": "https://substack-post-media.s3.amazonaws.com/public/images/dfad3fc4-b195-4e7e-a6a7-7701b59ed57b_1394x918.png",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b1581a551bbc.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b1581a551bbc.transcript.txt"
+   }
+  ],
+  "title_zh": "法学硕士2025年现状：进展、问题和预测"
  },
  {
   "id": "cur-a5f012fc82c1",
@@ -1567,6 +1609,10 @@
    {
     "label": "总结",
     "url": "txt/cur-f860d82c521a.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f860d82c521a.transcript.txt"
    }
   ],
   "title_zh": "921 ：新手（和怀疑论者）的人工智能编码路线图",
@@ -1788,6 +1834,10 @@
    {
     "label": "总结",
     "url": "txt/cur-c71caa492bfa.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c71caa492bfa.transcript.txt"
    }
   ]
  },
@@ -1934,6 +1984,27 @@
   ],
   "title_zh": "创建经过测试、可靠的人工智能应用程序",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5eb8ac407733.m4a"
+ },
+ {
+  "id": "cur-1a22e095a98b",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "Understanding Multimodal LLMs",
+  "link": "https://magazine.sebastianraschka.com/p/understanding-multimodal-llms",
+  "date": "2024-11-03",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1a22e095a98b.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1a22e095a98b.transcript.txt"
+   }
+  ],
+  "title_zh": "了解多式联运LLM"
  },
  {
   "id": "cur-fb8757e9a46d",
@@ -2798,6 +2869,28 @@
   "title_zh": "Ditherpunk —我希望我有的关于单色图像抖动的文章"
  },
  {
+  "id": "cur-7ad776f566aa",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Changelog",
+  "title": "Estimating systems with napkin math (Interview)",
+  "link": "https://changelog.com/podcast/412",
+  "date": "2020-09-11",
+  "audio_url": "https://op3.dev/e/https://pscrb.fm/rss/p/https://cdn.changelog.com/uploads/podcast/412/the-changelog-412.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-7ad776f566aa.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-7ad776f566aa.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7ad776f566aa.m4a",
+  "title_zh": "使用餐巾数学估算系统（面试）"
+ },
+ {
   "id": "cur-2ba17fee23cc",
   "kind": "curated",
   "type": "article",
@@ -3130,6 +3223,27 @@
    }
   ],
   "title_zh": "编写弹性组件"
+ },
+ {
+  "id": "cur-aefa0204ff8a",
+  "kind": "curated",
+  "type": "article",
+  "source": "Overreacted, Dan Abramov",
+  "title": "A Complete Guide to useEffect",
+  "link": "https://overreacted.io/a-complete-guide-to-useeffect/",
+  "date": "2019-03-09",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-aefa0204ff8a.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-aefa0204ff8a.transcript.txt"
+   }
+  ],
+  "title_zh": "UseEffect完整指南"
  },
  {
   "id": "cur-e458fea3d0db",
