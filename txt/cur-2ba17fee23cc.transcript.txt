@@ -1,0 +1,303 @@
+https://kentcdodds.com/blog/application-state-management-with-react
+
+用 React 做应用状态管理
+Kent C. Dodds ｜ 2020-07-21
+
+管理状态可以说是任何应用中最难的部分。正因如此，才有这么多状态管理库，而且每天还在冒出新的（甚至有些是建立在别的库之上的……npm 上有数百个“更简单的 Redux”封装）。尽管状态管理确实是个难题，但我认为让它如此困难的原因之一，是我们常常对这个问题过度设计。
+
+有一种状态管理方案，从我开始用 React 起就一直在尝试实践；随着 React hooks 的发布（以及 React context 的大幅改进），这种方法已经被大大简化了。
+
+我们常说 React 组件是搭建应用的乐高积木，但我觉得人们听到这句话时，不知怎么就把状态排除在外了。我个人解决状态管理问题的“秘诀”，就是思考应用的状态如何映射到应用的树形结构上。
+
+Redux 如此成功的原因之一，是 react-redux 解决了属性逐层传递（prop drilling）的问题。只要把组件传进某个神奇的 `connect` 函数，就能在组件树的不同部分之间共享数据，这太棒了。它对 reducer、action creator 等的运用也很好，但我坚信 Redux 之所以无处不在，是因为它为开发者解决了 prop drilling 这个痛点。
+
+这也是我只在一个项目里用过 Redux 的原因：我总是看到开发者把*所有*状态都放进 Redux。不只是全局应用状态，连局部状态也放进去。这会带来很多问题，其中最突出的是：维护任何状态交互时，都要和 reducer、action creator/type 以及 dispatch 调用打交道，最终不得不打开许多文件，在脑子里追踪代码，才能弄清发生了什么、对代码库其余部分有什么影响。
+
+说清楚一点：对于真正全局的状态，这没问题；但对于简单状态（比如弹窗是否打开、表单输入值），这就是个大问题。更糟的是，它的扩展性不好。应用越大，这个问题越难。当然，你可以挂接不同的 reducer 来管理应用的不同部分，但通过这些 action creator 和 reducer 绕来绕去的间接性并不理想。
+
+即使不用 Redux，把所有应用状态放在单个对象里也会导致其他问题。当一个 React `<Context.Provider>` 得到新值时，所有消费该值的组件都会更新并重新渲染，即使它是只关心部分数据的函数组件。这可能导致潜在的性能问题。（React-Redux v6 也曾尝试采用这种方式，直到他们意识到它与 hooks 无法正常配合，迫使他们在 v7 中采用不同的方法来解决这些问题。）但我的观点是：如果你的状态在逻辑上分得更开，并且在 React 树中放得离真正需要它的地方更近，就不会有这个问题。
+
+真正的关键在于：如果你在用 React 构建应用，你的应用里已经装好了一个状态管理库。你甚至不需要 `npm install`（或 `yarn add`）它。它不会给用户增加任何额外字节，能与 npm 上所有 React 包集成，而且 React 团队已经为它写好了完善的文档。它就是 React 本身。
+
+React 就是一个状态管理库
+
+构建 React 应用时，你是在组装一堆组件，形成一棵从 `<App />` 开始、到 `<input />`、`<div />` 和 `<button />` 结束的组件树。你不会在一个中心位置管理应用渲染的所有底层复合组件，而是让每个组件各自管理，结果这成了构建 UI 的一种非常有效的方式。你对状态也可以这样做，而且很可能你今天就在这么做：
+
+```
+function Counter() {
+	const [count, setCount] = React.useState(0)
+	const increment = () => setCount((c) => c + 1)
+	return <button onClick={increment}>{count}</button>
+}
+function App() {
+	return <Counter />
+}
+```
+注意，我这里讲的一切同样适用于类组件。Hooks 只是让事情更容易一些（尤其是 context，我们马上会讲到）。
+
+```
+class Counter extends React.Component {
+	state = { count: 0 }
+	increment = () => this.setState(({ count }) => ({ count: count + 1 }))
+	render() {
+		return <button onClick={this.increment}>{this.state.count}</button>
+	}
+}
+```
+“好吧，Kent，在单个组件里管理单个状态当然简单，但我需要在组件之间共享状态时怎么办？比如我想这样做：”
+
+```
+function CountDisplay() {
+	// `count` 从哪里来？
+	return <div>The current counter count is {count}</div>
+}
+function App() {
+	return (
+		<div>
+			<CountDisplay />
+			<Counter />
+		</div>
+	)
+}
+```
+“`count` 是在 `<Counter />` 内部管理的，现在我需要一个状态管理库，才能在 `<CountDisplay />` 中读取 `count` 的值、并在 `<Counter />` 中更新它！”
+
+这个问题的答案和 React 本身一样古老（甚至更古老？），而且在我记忆中它一直写在文档里：状态提升（Lifting State Up）。
+
+“状态提升”确实是 React 中状态管理问题的答案，而且是非常可靠的答案。下面是在这个场景中的用法：
+
+```
+function Counter({ count, onIncrementClick }) {
+	return <button onClick={onIncrementClick}>{count}</button>
+}
+function CountDisplay({ count }) {
+	return <div>The current counter count is {count}</div>
+}
+function App() {
+	const [count, setCount] = React.useState(0)
+	const increment = () => setCount((c) => c + 1)
+	return (
+		<div>
+			<CountDisplay count={count} />
+			<Counter count={count} onIncrementClick={increment} />
+		</div>
+	)
+}
+```
+我们只是改变了谁负责这个状态，非常直接。我们还可以把状态一路提升到应用的顶层。
+
+“好吧 Kent，那 prop drilling 问题怎么办？”
+
+好问题。第一道防线是改变组件的组织方式，利用组件组合。也许不要这样写：
+
+```
+function App() {
+	const [someState, setSomeState] = React.useState('some state')
+	return (
+		<>
+			<Header someState={someState} onStateChange={setSomeState} />
+			<LeftNav someState={someState} onStateChange={setSomeState} />
+			<MainContent someState={someState} onStateChange={setSomeState} />
+		</>
+	)
+}
+```
+而是可以这样写：
+
+```
+function App() {
+	const [someState, setSomeState] = React.useState('some state')
+	return (
+		<>
+			<Header
+				logo={<Logo someState={someState} />}
+				settings={<Settings onStateChange={setSomeState} />}
+			/>
+			<LeftNav>
+				<SomeLink someState={someState} />
+				<SomeOtherLink someState={someState} />
+				<Etc someState={someState} />
+			</LeftNav>
+			<MainContent>
+				<SomeSensibleComponent someState={someState} />
+				<AndSoOn someState={someState} />
+			</MainContent>
+		</>
+	)
+}
+```
+如果这还不够清楚（因为例子太刻意了），Michael Jackson 有个很棒的视频，可以帮你理解我的意思。
+
+不过最终，连组合也解决不了问题，这时下一步就是使用 React 的 Context API。这其实很久以来就是一个“解决方案”，但长期以来它是“非官方”的。正如我所说，很多人选择 `react-redux`，是因为它用我说的这个机制解决了问题，又不用担心 React 文档里的那条警告。但既然 `context` 现在已是 React API 的正式组成部分，我们就可以直接使用它，毫无问题：
+
+```
+import * as React from 'react'
+const CountContext = React.createContext()
+function useCount() {
+	const context = React.useContext(CountContext)
+	if (!context) {
+		throw new Error(`useCount must be used within a CountProvider`)
+	}
+	return context
+}
+function CountProvider(props) {
+	const [count, setCount] = React.useState(0)
+	const value = React.useMemo(() => [count, setCount], [count])
+	return <CountContext.Provider value={value} {...props} />
+}
+export { CountProvider, useCount }
+```
+```
+import * as React from 'react'
+import { CountProvider, useCount } from './count-context'
+function Counter() {
+	const [count, setCount] = useCount()
+	const increment = () => setCount((c) => c + 1)
+	return <button onClick={increment}>{count}</button>
+}
+function CountDisplay() {
+	const [count] = useCount()
+	return <div>The current counter count is {count}</div>
+}
+function CountPage() {
+	return (
+		<div>
+			<CountProvider>
+				<CountDisplay />
+				<Counter />
+			</CountProvider>
+		</div>
+	)
+}
+```
+注意：这个代码示例非常刻意，我并*不*建议用 context 来解决这个具体场景。请阅读《Prop Drilling》一文，更好地理解为什么 prop drilling 不一定是问题，而且往往是可取的。不要过早地使用 context！
+
+这种方法的妙处在于，我们可以把更新状态的常用逻辑都放进 `useCount` hook：
+
+```
+function useCount() {
+	const context = React.useContext(CountContext)
+	if (!context) {
+		throw new Error(`useCount must be used within a CountProvider`)
+	}
+	const [count, setCount] = context
+	const increment = () => setCount((c) => c + 1)
+	return {
+		count,
+		setCount,
+		increment,
+	}
+}
+```
+你也可以很容易地把 `useState` 换成 `useReducer`：
+
+```
+function countReducer(state, action) {
+	switch (action.type) {
+		case 'INCREMENT': {
+			return { count: state.count + 1 }
+		}
+		default: {
+			throw new Error(`Unsupported action type: ${action.type}`)
+		}
+	}
+}
+function CountProvider(props) {
+	const [state, dispatch] = React.useReducer(countReducer, { count: 0 })
+	const value = React.useMemo(() => [state, dispatch], [state])
+	return <CountContext.Provider value={value} {...props} />
+}
+function useCount() {
+	const context = React.useContext(CountContext)
+	if (!context) {
+		throw new Error(`useCount must be used within a CountProvider`)
+	}
+	const [state, dispatch] = context
+	const increment = () => dispatch({ type: 'INCREMENT' })
+	return {
+		state,
+		dispatch,
+		increment,
+	}
+}
+```
+这给了你极大的灵活性，并把复杂度降低了几个数量级。这样做时有几点重要事项要记住：
+
+1. 应用里的东西不必都放在单个状态对象中。保持逻辑上的分离（用户设置不一定要和通知放在同一个 context 里）。用这种方法，你会有多个 Provider。
+2. 并非所有 context 都需要全局可访问！**让状态尽可能靠近需要它的地方。**
+
+关于第二点再多说几句。你的应用树可能是这样的：
+
+```
+function App() {
+	return (
+		<ThemeProvider>
+			<AuthenticationProvider>
+				<Router>
+					<Home path="/" />
+					<About path="/about" />
+					<UserPage path="/:userId" />
+					<UserSettings path="/settings" />
+					<Notifications path="/notifications" />
+				</Router>
+			</AuthenticationProvider>
+		</ThemeProvider>
+	)
+}
+function Notifications() {
+	return (
+		<NotificationsProvider>
+			<NotificationsTab />
+			<NotificationsTypeList />
+			<NotificationsList />
+		</NotificationsProvider>
+	)
+}
+function UserPage({ username }) {
+	return (
+		<UserProvider username={username}>
+			<UserInfo />
+			<UserNav />
+			<UserActivity />
+		</UserProvider>
+	)
+}
+function UserSettings() {
+	// 这里是 AuthenticationProvider 对应的 hook
+	const { user } = useAuthenticatedUser()
+}
+```
+注意，每个页面都可以有自己的 Provider，承载其下组件所需的数据。代码分割在这种方式下也能“直接生效”。数据如何*进入*每个 Provider，取决于这些 Provider 使用的 hook 以及你的应用如何获取数据，但你很清楚该从哪里开始查找它的工作方式（就在 Provider 里）。
+
+**想进一步了解这种就近放置（colocation）为什么有益，请看我的《状态就近放置会让你的 React 应用更快》和《Colocation》两篇博文。想了解更多关于 context 的内容，请阅读《如何有效使用 React Context》。**
+
+## 服务器缓存与 UI 状态
+
+最后我还想补充一点。状态有很多类别，但每种状态都可以归入以下两类之一：
+
+1. 服务器缓存——实际存储在服务器上、我们为了快速访问而存放在客户端的状态（比如用户数据）。
+2. UI 状态——只在 UI 中有用、用于控制应用交互部分的状态（比如弹窗的 `isOpen` 状态）。
+
+把两者混在一起是个错误。服务器缓存与 UI 状态面临的问题本质上不同，因此需要用不同的方式管理。如果你接受这样一个事实：你手里的其实根本不是状态，而是状态的缓存，那么你就能开始正确地思考它，进而正确地管理它。
+
+你当然可以自己用 `useState` 或 `useReducer`，再在适当的地方配上 `useContext` 来管理它。但请允许我直说：缓存是个非常难的问题（有人说它是计算机科学中最难的问题之一），在这件事上站在巨人的肩膀上是明智的。
+
+这就是我使用并推荐 react-query 管理这类状态的原因。我知道，我知道，我刚说过你不需要状态管理库，但我并不认为 react-query 是状态管理库。我认为它是一个缓存，而且是个非常好的缓存。去看看吧！Tanner Linsley 真是个聪明人。
+
+## 那性能呢？
+
+遵循上述建议，性能很少会成为问题，特别是当你遵循就近放置的建议时。不过确实存在性能可能成问题的场景。当遇到与状态相关的性能问题时，首先要检查一次状态变化导致多少组件重新渲染，并判断这些组件是否真的需要因此重新渲染。如果需要，那么性能问题不在于你的状态管理机制，而在于渲染速度，这时你需要加快渲染。
+
+但是，如果你发现很多组件在没有 DOM 更新或必要副作用的情况下也在渲染，那么这些组件就是在做不必要的渲染。这在 React 中经常发生，通常本身并不是问题（你应该首先让即使是不必要的重渲染也足够快），但如果它确实成了瓶颈，下面是解决 React context 状态性能问题的几种方法：
+
+1. 把状态拆分成不同的逻辑部分，而不是放在一个大 store 里，这样对状态任一部分的一次更新不会触发应用中每个组件的更新。
+2. 优化你的 context provider。
+3. 引入 jotai。
+
+又来了，又是推荐一个库。确实，有*一些*场景不太适合用 React 内置的状态管理抽象。在所有可用的抽象中，jotai 对这些场景最有前途。如果你好奇是哪些场景，jotai 擅长解决的问题类型，在 Dave McCabe（@mcc_abe）于 ReactEurope 2020 的演讲《Recoil：面向当今 React 的状态管理》中有很好的描述。Recoil 和 jotai 非常相似（解决同类问题），但根据我（有限的）使用经验，我更喜欢 jotai。
+
+无论如何，*大多数*应用都不需要 Recoil 或 jotai 这样的原子化状态管理工具。
+
+## 结论
+
+再说一遍，这些用类组件也能做到（不必非用 hooks）。Hooks 让这件事容易得多，但用 React 15 实现这套理念也完全没问题。让状态尽可能局部化，只有在 prop drilling 真正成为问题时才使用 context。这样做会让你更容易维护状态交互。

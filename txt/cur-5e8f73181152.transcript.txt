@@ -1,0 +1,57 @@
+https://kentcdodds.com/blog/dont-sync-state-derive-it
+
+别同步状态，推导它
+
+在我的 Learn React Hooks 工作坊材料里，有一道练习是用 React 的 useState 钩子做井字棋（基于官方 React 教程）。完成后的 GitHub 文件见原文链接。
+
+我们有几个状态变量。squares 通过 React.useState 管理。nextValue、winner 和 status 则分别由 calculateNextValue、calculateWinner、calculateStatus 算出来。squares 是常规的组件状态，而 nextValue、winner、status 则是所谓的"派生状态"（derived state）：它们的值可以根据其他值推导（或计算）出来，而不必单独管理。
+
+我这样写是有充分理由的。我们用更天真的做法重写一遍，看看派生状态相对"状态同步"有什么好处。事实上这四个变量从技术上说都是状态，所以你可能会下意识地觉得都该用 useState 或 useReducer。
+
+先从 useState 开始：（原文给出四个 useState，并在 selectSquare 里依次 setSquares、setNextValue、setWinner、setStatus。）
+
+这还不算太糟。真正成问题的是：如果我们给井字棋加一个一次选两格的功能，要改什么？（原文给出 selectTwoSquares，里面又是一整套相同的计算和四个 set。）
+
+最大的问题是：其中一些状态可能和真正的组件状态（squares）脱节。比如在一连串复杂交互里忘了更新。做 React 应用久了的人都知道我说的是什么——不同步一点都不好玩。
+
+有一件事能帮忙：减少重复，让所有相关的状态更新都发生在一个地方。（原文给出 setNewState，把派生计算和四次 set 收进去，selectSquare / selectTwoSquares 只改 squares 再调用它。）
+
+这确实改善了代码重复，说实话改动也不大。但这是个相当简单的例子。有时派生状态依赖多个、在不同情况下更新的状态变量，我们就必须确保源状态一变，所有状态都更新到位。
+
+解决方案
+
+如果我告诉你有更好的办法呢？如果你已经看过上面的 codesandbox 实现，你就知道答案是什么，不过我们现在就写在这里：
+
+只保留 squares 的 useState；nextValue、winner、status 在每次渲染时直接计算。selectSquare 只更新 squares。再加一次选两格的功能时，同样只 setSquares——完全不必操心更新派生值，它们每轮渲染都会算出来。之前每次改 squares 都要确保其他状态跟上；现在完全不用担心，也用不着花哨的统一更新函数。
+
+那 useReducer 呢？
+
+useReducer 受这些问题的困扰没那么严重。一种写法是：用 calculateDerivedState(squares) 算出 winner、nextValue、status；reducer 里若格子合法就复制 squares、填子，再返回展开后的派生结果。派生仍在发生，但所有更新都集中在唯一能改状态的地方，脱节更不容易。
+
+不过我觉得这比前一种方案更复杂一点（尤其还要加"一次选两格"时）。若是生产应用，我会选 codesandbox 里那种渲染时计算的写法。
+
+经由 props 的派生状态
+
+状态不必在内部管理也会有同步问题。若 squares 来自父组件，怎么同步？（原文展示用 useEffect、useLayoutEffect，或在渲染里直接 setState 的各种坑。）
+
+更好的做法是当场计算：const nextValue = calculateNextValue(squares) 等等。简单得多，也很好用。
+
+附：还记得 getDerivedStateFromProps 吗？你多半不需要它；若确需并想用 hooks 做，在渲染期间调用状态更新函数才是正确做法。详见 React Hooks FAQ。
+
+性能呢？
+
+我知道你一直等我谈这个……事实是：JavaScript 非常快。我对 calculateWinner 做基准测试，结果是大约每秒 1500 万次。除非井字棋玩家点得极快，否则这不可能成为性能问题（就算他们能那么快，我保证你会有更低垂的性能果实要摘）。
+
+好吧，我在手机上试了只到每秒 430 万次；笔记本上开 6 倍 CPU 降速只到 200 万……我觉得我们仍然没问题。
+
+话说回来，若你确实有计算很贵的函数，那正是 useMemo 的用武之地。（原文给出对三个派生值使用 useMemo 的示例。）注意：它不会魔法般让函数跑得更快，只是确保不必要的时候不调用。若整个应用只有 squares 变化才会重渲染，那些函数反正都要跑，这点"优化"其实没做成什么——所以我说："先测量！"
+
+另外想提一句：派生状态有时甚至比状态同步更快，因为它会减少不必要的重渲染，而这有时会是个问题。
+
+那 MobX / Reselect 呢？
+
+Reselect（若你在用 Redux，绝对应该用它）内建了记忆化，很酷。MobX 也有，而且还更进一步提供"计算值"（computed values）：基本上是一套给你记忆化、优化过的派生状态的 API。比我们已有的更好的一点是：只有在被访问时才会计算。
+
+（原文用 FavoriteNumber 举例：总是调用 getNumberWarning，但只有数字过高或过低才用到结果；可用计算值，或自己先判断再调用。）
+
+结论：别同步状态。推导它。能从已有状态或 props 算出来的，就在渲染时算；真贵再 useMemo；复杂全局状态再考虑 Reselect / MobX 的 computed。

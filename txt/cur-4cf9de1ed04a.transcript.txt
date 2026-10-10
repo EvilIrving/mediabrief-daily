@@ -1,0 +1,67 @@
+https://jakearchibald.com/2026/css-custom-property-compute-time/
+
+控制 CSS 自定义属性值的计算时机
+
+CSS 自定义属性的值在什么时候、以什么方式计算，可能和你预想的不一样，而这会对你的样式产生很大影响。
+
+默认情况
+
+看这段 HTML：
+
+<div></div><div class="second-item">    <p>…</p></div>
+
+以及这段 CSS：
+
+.second-item {    --index: sibling-index();    & > :first-child {        scale: var(--index);    }}
+
+如果你还不熟悉 sibling-index()，可以看我最近发的一段简短介绍视频。
+
+问题是：这个段落会被缩放多少？
+
+sibling-index() 从 1 开始计数。但它取到的是第二个 div 的序号（自定义属性定义的地方），还是它第一个子元素的序号（自定义属性被使用的地方）？答案是：看情况。
+
+如果只看这段代码本身，自定义属性的值会被存成一个记号流（token stream），计算过程大致如下：
+
+.second-item {    --index: sibling-index();    /* …计算结果为： */    --index: sibling-index();    /* （也就是没有变化） */    & > :first-child {        scale: var(--index);        /* …被替换为： */        scale: sibling-index();        /* …计算结果为： */        scale: 1;    }}
+
+也就是说，var() 被替换成了 sibling-index()，然后在使用它的上下文里求值。由于段落是其父元素的第一个子元素，它会被缩放 1 倍。
+
+这一点在 getComputedStyle() 中也能看出来：
+
+const div = document.querySelector('.second-item');console.log(getComputedStyle(div).getPropertyValue('--index'));// 输出："sibling-index()"
+
+但这只是默认情况……
+
+改变默认行为
+
+我们来注册这个自定义属性：
+
+@property --index {    syntax: '<number>';    inherits: true;    initial-value: 0;}
+
+没有注册过的自定义属性，表现得就像 syntax: '*'，意思是"任何东西"，它会像前面那样计算为记号流。但这里我们用的是 '<number>'，意思是把值计算成一个数字：
+
+.second-item {    --index: sibling-index();    /* …计算结果为： */    --index: 2;    & > :first-child {        scale: var(--index);        /* …被替换为： */        scale: 2;        /* …计算结果为： */        scale: 2;    }}
+
+注册自定义属性并给它一个语法，意味着完整的值会被更早地、在另一个上下文里计算出来，所以结果就不一样了。
+
+同样，getComputedStyle() 也反映了这一点：
+
+const div = document.querySelector('.second-item');console.log(getComputedStyle(div).getPropertyValue('--index'));// 输出："2"
+
+受影响的不只是 sibling-index()。相对字体单位（em、ex、ch、cap、lh 等）、容器查询单位（cqw、cqi、cqb 等）等等也是如此。在所有这些情况下，@property 决定了这些值以哪个元素为基准来计算。
+
+另一样会受影响的东西是 URL，只是方式略有不同。在 CSS 中，URL 通常在计算值阶段相对样式表的基础 URL 来解析。所以，如果一个记号流形式的自定义属性在一张样式表里定义、在另一张样式表里被 var() 引用，URL 会相对"使用它的那张样式表"来解析。而用 syntax: '<url>' 注册这个自定义属性，就会把它固定在声明它的那张样式表上。
+
+那 var() 呢？
+
+下面是一个更棘手的例子：
+
+.second-item {    --multiplier: 1;    --index: calc(sibling-index() * var(--multiplier));    & > :first-child {        --multiplier: 3;        scale: var(--index);    }}
+
+这里会发生什么？嗯，var() 的行为和 sibling-index() 不同。var() 是一种"任意替换函数"，同类的还有 if()、attr()、ident() 等一批函数。不管自定义属性的语法是什么，它们都会被替换。所以：
+
+.second-item {    --multiplier: 1;    --index: calc(sibling-index() * var(--multiplier));    /* …被替换为： */    --index: calc(sibling-index() * 1);}
+
+接下来会怎样，取决于 --index 定义的语法。它要么保持为上面那个记号流，要么按前面同样的规则计算为 2。无论哪种情况，子元素上的 --multiplier: 3 都会被忽略。
+
+这是一个我之前算是"半知半解"的 CSS 细节：我知道 @property 会以某种方式改变计算时机，但直到今天查了资料，才完全弄明白是在什么时候、怎么改变的。希望你现在也明白了！

@@ -1,0 +1,179 @@
+https://overreacted.io/goodbye-clean-code/
+
+再见，整洁代码
+
+那是一个深夜。
+
+我的同事刚刚提交了他们写了一整周的代码。我们当时在做一个图形编辑器的画布，他们实现了一个功能：拖动形状边缘的小手柄，就能调整矩形、椭圆等形状的大小。
+
+代码能用。
+
+但它很重复。每种形状（比如矩形或椭圆）都有一套不同的手柄，朝不同方向拖动每个手柄，对形状位置和大小的影响也各不相同。如果用户按住 Shift，还得在调整大小时保持比例。里面有一大堆数学计算。
+
+代码大概长这样：
+
+```
+let Rectangle = {
+  resizeTopLeft(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeTopRight(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeBottomLeft(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeBottomRight(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+};
+
+let Oval = {
+  resizeLeft(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeRight(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeTop(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeBottom(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+};
+
+let Header = {
+  resizeLeft(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeRight(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+}
+
+let TextBlock = {
+  resizeTopLeft(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeTopRight(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeBottomLeft(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+  resizeBottomRight(position, size, preserveAspect, dx, dy) {
+    // 10 行重复的数学计算
+  },
+};
+```
+
+这些重复的数学计算让我非常难受。
+
+它不够"整洁"。
+
+大部分重复出现在相似的方向之间。比如 Oval.resizeLeft() 和 Header.resizeLeft() 很像，因为它们处理的都是拖动左侧的手柄。
+
+另一种相似出现在同一形状的各个方法之间。比如 Oval.resizeLeft() 和 Oval 的其他方法很像，因为它们处理的都是椭圆。Rectangle、Header 和 TextBlock 之间也有一些重复，因为文本块本身就是矩形。
+
+我有了一个主意。
+
+我们可以把代码改成这样分组，从而消除所有重复：
+
+```
+let Directions = {
+  top(...) {
+    // 5 行独有的数学计算
+  },
+  left(...) {
+    // 5 行独有的数学计算
+  },
+  bottom(...) {
+    // 5 行独有的数学计算
+  },
+  right(...) {
+    // 5 行独有的数学计算
+  },
+};
+
+let Shapes = {
+  Oval(...) {
+    // 5 行独有的数学计算
+  },
+  Rectangle(...) {
+    // 5 行独有的数学计算
+  },
+}
+```
+
+然后把它们的行为组合起来：
+
+```
+let {top, bottom, left, right} = Directions;
+
+function createHandle(directions) {
+  // 20 行代码
+}
+
+let fourCorners = [
+  createHandle([top, left]),
+  createHandle([top, right]),
+  createHandle([bottom, left]),
+  createHandle([bottom, right]),
+];
+let fourSides = [
+  createHandle([top]),
+  createHandle([left]),
+  createHandle([right]),
+  createHandle([bottom]),
+];
+let twoSides = [
+  createHandle([left]),
+  createHandle([right]),
+];
+
+function createBox(shape, handles) {
+  // 20 行代码
+}
+
+let Rectangle = createBox(Shapes.Rectangle, fourCorners);
+let Oval = createBox(Shapes.Oval, fourSides);
+let Header = createBox(Shapes.Rectangle, twoSides);
+let TextBox = createBox(Shapes.Rectangle, fourCorners);
+```
+
+代码总量减少了一半，重复完全消失了！多么"整洁"。如果想改变某个方向或某种形状的行为，只需在一个地方修改，而不用到处更新方法。
+
+那时已经是深夜了（我有点上头）。我把重构提交到了 master，然后去睡觉，为自己理清了同事那团乱麻般的代码而得意。
+
+第二天早上
+
+……事情没有按预期发展。
+
+我的上司约我进行了一次一对一谈话，礼貌地请我撤回改动。我惊呆了。旧代码一团糟，而我的代码是"整洁"的！
+
+我不情不愿地照做了，但我花了好几年才明白他们是对的。
+
+这是一个阶段
+
+执着于"整洁代码"、消除重复，是我们很多人都会经历的一个阶段。当我们对自己的代码没有信心时，很容易把自我价值感和职业自豪感寄托在某种可以衡量的东西上：一套严格的 lint 规则、一种命名规范、一种文件结构、没有重复。
+
+消除重复无法自动化，但熟能生巧。每次修改后，你通常都能看出重复是变多了还是变少了。于是，消除重复让人感觉像是在改善代码的某项客观指标。更糟的是，它会影响人的身份认同："我是那种写整洁代码的人。"这和任何形式的自我欺骗一样强大。
+
+一旦学会了创建抽象，我们就很容易沉迷于这种能力，一看到重复的代码就凭空抽出抽象来。写了几年代码之后，我们会觉得重复无处不在，而抽象就是我们新的超能力。如果有人告诉我们抽象是一种美德，我们会照单全收，并开始评判那些不崇拜"整洁"的人。
+
+现在我明白了，我的"重构"在两个方面都是一场灾难：
+
+首先，我没有和写代码的人沟通。我在没有征求对方意见的情况下重写了代码并提交。即使那确实是一种改进（我现在已经不这么认为了），这种做法也很糟糕。一个健康的工程团队是在不断建立信任的。不经讨论就重写队友的代码，会严重打击大家在同一个代码库上高效协作的能力。
+
+其次，没有什么是免费的。我的代码用应对需求变化的能力换来了更少的重复，这不是一笔好交易。比如，后来我们需要为不同形状上的不同手柄加入许多特殊情况和行为。我的抽象要变得复杂好几倍才能容纳这些，而在原来那个"凌乱"的版本里，这样的修改依然轻而易举。
+
+我是在说你应该写"脏"代码吗？不是。我建议你深入思考一下，当你说"整洁"或"肮脏"时，你到底指的是什么。你感受到的是反感？正义感？美感？优雅？你有多大把握能说出这些品质对应的具体工程结果？它们究竟如何影响代码的编写和修改方式？
+
+我当时显然没有深入思考过这些问题。我想了很多代码看起来怎么样，却没想过它在一群血肉之躯组成的团队中会如何演变。
+
+编程是一段旅程。想想从你写下第一行代码到现在，你走了多远。我想，第一次看到提取一个函数或重构一个类能让复杂的代码变得简单时，那一定是一种喜悦。如果你为自己的手艺感到自豪，就很容易去追求代码的整洁。那就先这样做一段时间吧。
+
+但不要止步于此。不要做整洁代码的狂热信徒。整洁代码不是目标。它是一种尝试，试图理解我们所面对的系统那巨大的复杂性。当你还不确定一个改动会如何影响代码库、却需要在一片未知中找到方向时，它是一种防御机制。
+
+让整洁代码指引你。然后放下它。

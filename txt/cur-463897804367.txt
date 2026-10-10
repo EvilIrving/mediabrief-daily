@@ -1,0 +1,13 @@
+https://surma.dev/things/rust-to-webassembly/
+
+用笨办法把 Rust 编译成 WebAssembly（Rust to WebAssembly the hard way） ｜ Surma ｜ 文章 ｜ https://surma.dev/things/rust-to-webassembly/
+
+Google 前开发者关系工程师 Surma 2023 年的一篇长文，自称是"我所知道的 Rust 编译到 WebAssembly 的一切"。他故意不用 wasm-bindgen，从最原始的工具链一步步做，弄懂背后发生了什么，最后再回头介绍那些方便的工具。
+
+起点很简单：建一个库项目，把 crate-type 设成 cdylib，用 cargo build --target=wasm32-unknown-unknown 编译。但光写 pub 不够，函数会被整个删掉，要加 #[no_mangle]（或 #[export_name]）才能导出；再用 extern "C" 固定成稳定的 C ABI，否则 Rust 自己的 ABI 随版本可能变化。导入同理：用 #[link(wasm_import_module = "Math")] 的 extern 块声明宿主提供的函数，比如直接借 JavaScript 的 Math.random，而不是把 rand 库打包进去；外部函数天然是 unsafe 的，他建议包一层安全的封装。跨边界最好只传能直接对应 wasm 类型的数值，结构体会变成指针，str、切片这类不定长类型会拆成"指针加长度"，返回较大的数组或元组会变成额外的输出参数，这些细节他建议交给现成工具。
+
+文章的重头戏是体积。一个只做加法的 release 构建居然有 1.7MB，用 Twiggy 一看，几乎全是调试信息的自定义段，原因是预编译的标准库带着调试符号；在 Cargo.toml 里设 strip 后只剩 116 字节。另一个隐形膨胀来源是 panic：一个按下标查质数表的函数就有 18KB，因为越界检查失败要生成格式化的错误信息。办法有自己做边界检查、用 get().unwrap_or()、或用 unsafe 的 get_unchecked；更普适的是打开 LTO（链接时优化），降到 2.3KB，再过一遍 binaryen 的 wasm-opt 到 2.0KB。
+
+继续往下挖就是 #![no_std]：浏览器里的 wasm 沙箱没有操作系统，标准库很多功能其实只是"注定失败"的空壳，作者借用嵌入式 Rust 的经验，只链接 core，自己写 panic handler（他用 unreachable 指令而不是死循环），体积降到 168 字节。想要 Vec 这类堆上的数据结构，就引入 alloc 并提供全局分配器，他演示了一个只分配、从不释放的极简 bump 分配器。他提醒常被推荐的 wee_alloc 似乎已无人维护、还有内存损坏的 issue，在稍复杂的模块里，Rust 默认分配器那 10KB 不算什么，还是用它更稳妥。
+
+最后他介绍 wasm-bindgen：它的宏除了加上前面那些导出标注，还会生成描述函数签名的数据，命令行工具据此生成量身定做的 JS 绑定，能直接传字符串、ArrayBuffer 甚至闭包；wasm-pack 则把编译、生成绑定、wasm-opt 这一整套流程打包好。他的结论是 Rust 非常适合编译到 WebAssembly，开了 LTO 能得到极小的模块，工具链也很成熟；日常开发推荐用 wasm-bindgen，而走一遍笨办法的价值在于理解并欣赏这些工具替你做了什么。

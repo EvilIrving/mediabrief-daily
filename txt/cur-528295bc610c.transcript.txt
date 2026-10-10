@@ -1,0 +1,390 @@
+https://www.joshwcomeau.com/javascript/promises/
+
+从零理解 Promise
+
+在通往 JavaScript 熟练之路上，有许多减速带和坑洼。其中最大、最令人生畏的之一就是 Promise。
+
+要理解 Promise，我们需要对 JavaScript 的运作方式及其局限有出人意料的深入理解。没有这些背景，Promise 就不太说得通。
+
+这可能会让人沮丧，因为如今 Promise API 实在太重要了。它已经成为处理异步代码事实上的标准方式，现代 Web API 都建立在 Promise 之上。这是绕不开的：如果我们想高效地使用 JavaScript，理解 Promise 会很有帮助。
+
+所以在这篇教程里，我们来学习 Promise，不过要从头讲起。我会分享所有那些我花了好几年才弄明白的关键背景。到最后，希望你能对 Promise 是什么、如何有效地使用它有更深的理解。✨
+
+他们为什么要这样设计？？
+
+假设我们想做一个"新年快乐！"倒计时，就像这样（原文此处为演示动画）。
+
+如果 JavaScript 和大多数其他编程语言一样，我们可以这样解决问题：
+
+function newYearsCountdown() {
+  print("3");
+  sleep(1000);
+  print("2");
+  sleep(1000);
+  print("1");
+  sleep(1000);
+  print("Happy New Year! 🎉");
+}
+
+在这段假想的代码中，程序遇到 sleep() 调用时会暂停，等到指定的时间过去后再继续执行。
+
+不幸的是，JavaScript 里没有 sleep 函数，因为它是一门单线程语言。（严格来说，现代 JavaScript 可以通过 Web Worker 使用多个线程，但这些额外的线程无法访问 DOM，所以在大多数情况下派不上用场。）"线程"是一个长时间运行、负责执行代码的进程。JavaScript 只有一个线程，所以一次只能做一件事，没法多任务处理。这就成了问题：如果我们唯一的 JavaScript 线程正忙着管理这个倒计时器，它就做不了任何别的事。
+
+我刚开始学这些东西的时候，并没有立刻明白这为什么是个问题。如果倒计时是此刻唯一发生的事，那 JS 线程在这段时间里被完全占用，不也没关系吗？？
+
+嗯，虽然 JavaScript 没有 sleep 函数，但它确实有一些会长时间占用主线程的其他函数。我们可以借助这些方法，一窥如果 JavaScript 有 sleep 函数会是什么样子。
+
+比如 window.prompt()。这个函数用来向用户收集信息，它会像我们假想的 sleep() 一样暂停代码的执行。
+
+点击这个练习区里的按钮，然后在提示框打开时试着和页面交互（原文此处为可交互的代码练习区）。
+
+注意到了吗？提示框打开时，页面完全没有响应！你不能滚动，不能点击任何链接，也不能选中任何文字！JavaScript 线程正忙着等我们提供一个值，好把那段代码跑完。在等待期间，它做不了任何别的事，于是浏览器把界面锁住了。
+
+其他语言有多个线程，所以其中一个被占用一阵子也没什么大不了。但在 JavaScript 里，我们只有这一个线程，它被用来做所有事：处理事件、管理网络请求、更新界面，等等。
+
+如果想做一个倒计时，我们就得找到一种不阻塞线程的办法。
+
+回调
+
+解决这类问题，我们工具箱里的主要工具是 setTimeout。setTimeout 是一个接受两个参数的函数：
+
+1. 一段要在未来某个时刻执行的工作。
+2. 要等待的时长。
+
+下面是一个例子：
+
+console.log('Start');
+setTimeout(
+  () => {
+    console.log('After one second');
+  },
+  1000
+);
+
+这段工作是通过一个函数传进去的。这种模式叫作"回调"（callback）。
+
+前面那个假想的 sleep() 函数，就像打电话给一家公司，在线等待下一位有空的客服。setTimeout() 则像按 1，让客服有空时给你回电。你可以挂掉电话，继续过你的日子。
+
+setTimeout() 被称为异步函数，意思是它不会阻塞线程。相比之下，window.prompt() 是同步的，因为在它等待期间，JavaScript 线程做不了任何别的事。
+
+异步代码的一大缺点是，我们的代码不总是按线性顺序运行。看下面这段：
+
+console.log('1. Before setTimeout');
+setTimeout(() => {
+  console.log('2. Inside setTimeout');
+}, 500);
+console.log('3. After setTimeout');
+
+你可能以为这些日志会从上到下依次打印：1 > 2 > 3。但请记住，回调的整个思路就是我们在安排一次"回电"。JavaScript 线程不会坐在那儿干等，它会继续往下跑。
+
+想象一下，我们给 JavaScript 线程一本日志，让它记下运行这段代码时做的每件事。运行之后，日志大概是这样的：
+
+- 00:000：打印 "1. Before setTimeout"。
+- 00:001：注册一个定时器。
+- 00:002：打印 "3. After setTimeout"。
+- 00:501：打印 "2. Inside setTimeout"。
+
+setTimeout() 注册回调，就像在日历上安排一场会议。注册回调只需要极短的一瞬间，完成之后它就继续往下，执行程序的其余部分。
+
+回调在 JavaScript 中随处可见，不只用于定时器。比如，下面是我们监听指针事件的方式（"指针"是一个统称，涵盖所有"指向某物"的界面输入方式，包括鼠标、在触摸屏上用手指点按、手写笔等）：
+
+window.addEventListener('pointermove', (event) => {
+  const container = document.querySelector('#data');
+  container.innerText = `${event.clientX} • ${event.clientY}`;
+});
+
+window.addEventListener() 注册一个回调，每当检测到某个事件时就会调用它。在这个例子中，我们监听的是指针移动。每当用户移动鼠标或在触摸屏上拖动手指，我们就运行一段代码作为响应。
+
+和 setTimeout 一样，JavaScript 线程不会专门盯着、等着鼠标事件。它会告诉浏览器："嘿，用户移动鼠标时告诉我一声。"事件触发时，JS 线程会绕回来运行我们的回调。
+
+不过好吧，我们已经离最初的问题相当远了。如果想做一个 3 秒倒计时，该怎么做？
+
+在过去，最常见的解决办法是设置嵌套的回调，像这样：
+
+console.log("3…");
+setTimeout(() => {
+  console.log("2…");
+  setTimeout(() => {
+    console.log("1…");
+    setTimeout(() => {
+      console.log("Happy New Year!!");
+    }, 1000);
+  }, 1000);
+}, 1000);
+
+这太疯狂了，对吧？我们的 setTimeout 回调又创建了它们自己的 setTimeout 回调！
+
+我在 2000 年代初开始折腾 JavaScript 时，这种模式相当常见，尽管大家都多少意识到它有多不理想。我们把这种模式称为"回调地狱"（Callback Hell）。
+
+Promise 正是为了解决回调地狱的一些问题而开发出来的。
+
+Promise 登场
+
+如前所述，我们不能简单地让 JavaScript 停下来、等一会儿再执行下一行代码，因为那会阻塞线程。我们需要某种办法，把工作拆成一个个异步的块。
+
+不过，如果不用嵌套，而是把它们串成一条链呢？告诉 JavaScript：先做这个，然后做这个，再做这个？
+
+纯粹为了好玩，我们假装有一根魔杖，可以把 setTimeout 函数改成我们想要的任何样子。如果我们这样做呢：
+
+console.log('3');
+setTimeout(1000)
+  .then(() => {
+    console.log('2');
+    return setTimeout(1000);
+  })
+  .then(() => {
+    console.log('1');
+    return setTimeout(1000);
+  })
+  .then(() => {
+    console.log('Happy New Year!!');
+  });
+
+与其把回调直接传给 setTimeout（这会导致嵌套和回调地狱），不如用一个特殊的 .then() 方法把它们串起来？
+
+这就是 Promise 背后的核心思想。Promise 是一种特殊的结构，在 2015 年作为一次大规模语言更新的一部分加入了 JavaScript。
+
+遗憾的是，setTimeout 仍然使用较老的回调风格，因为 setTimeout 远在 Promise 出现之前就实现了；改变它的工作方式会让老网站崩掉。向后兼容是件好事，但这意味着有些东西会有点乱。
+
+不过，现代 Web API 都建立在 Promise 之上。我们来看一个例子。
+
+使用 Promise
+
+fetch() 函数让我们能发起网络请求，通常是为了从服务器获取数据。
+
+看这段代码：
+
+const fetchValue = fetch('/api/get-data');
+console.log(fetchValue);
+// -> Promise {<pending>}
+
+调用 fetch() 时，它会发起网络请求。这是一个异步操作，所以 JavaScript 线程不会停下来等待，代码会继续运行。
+
+那么，fetch() 函数实际上产出的是什么？不可能是服务器返回的真实数据，因为我们才刚发起请求，要过一会儿才会有结果。实际上，它有点像一张欠条（IOU，承认一笔债务的字据，读音同 "I Owe You"，"我欠你的"），一张来自浏览器的字条，上面写着："嘿，我还没拿到你的数据，但我保证很快就会有！"
+
+更具体地说，Promise 是 JavaScript 对象。在内部，Promise 总是处于三种状态之一：
+
+1. pending（进行中）：工作正在进行，尚未完成。
+2. fulfilled（已兑现）：工作已成功完成。
+3. rejected（已拒绝）：出了问题，Promise 无法兑现。
+
+Promise 处于 pending 状态时，被称为"未决议"（unresolved）。当它完成工作后，就变成"已决议"（resolved）。无论 Promise 是兑现还是被拒绝，都是如此。
+
+通常，我们想注册一些在 Promise 兑现后执行的工作。可以用 .then() 方法来做：
+
+fetch('/api/get-data')
+  .then((response) => {
+    console.log(response);
+    // Response { type: 'basic', status: 200, ...}
+  });
+
+fetch() 产出一个 Promise，我们调用 .then() 来附加一个回调。浏览器收到响应时，这个回调就会被调用，响应对象会被传进来。
+
+创建我们自己的 Promise
+
+使用 Fetch API 时，Promise 是由 fetch() 函数在幕后创建的。但如果我们想用的 API 不支持 Promise 呢？
+
+比如，setTimeout 是在 Promise 出现之前创建的。如果想在使用定时器时避免回调地狱，我们就得创建自己的 Promise。
+
+语法是这样的：
+
+const demoPromise = new Promise((resolve) => {
+  // Do some sort of asynchronous work, and then
+  // call `resolve()` to fulfill the Promise.
+});
+demoPromise.then(() => {
+  // This callback will be called when
+  // the Promise is fulfilled!
+})
+
+Promise 是通用的，它们自身并不"做"任何事。当我们用 new Promise() 创建一个新的 Promise 实例时，还要提供一个函数，里面是我们想做的具体异步工作。它可以是任何东西：发起网络请求、设置定时器，随便什么。
+
+当这项工作完成时，我们调用 resolve()，它向 Promise 发出一切顺利的信号，并让 Promise 决议。
+
+我们回到最初的挑战：做一个倒计时器。在这个例子里，异步工作就是等待一个 setTimeout 到期。
+
+我们可以创建一个基于 Promise 的小工具函数，把 setTimeout 包起来，像这样：
+
+function wait(duration) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
+}
+const timeoutPromise = wait(1000);
+timeoutPromise.then(() => {
+  console.log('1 second later!')
+});
+
+这段代码看起来超级吓人。我们来试着拆解一下：
+
+- 我们有一个新的工具函数 wait。这个函数接受一个参数 duration。我们的目标是把这个函数当作一种 sleep 函数来用，但它是完全异步工作的。
+- 在 wait 内部，我们创建并返回一个新的 Promise。Promise 自身什么也不做；我们需要在异步工作完成时调用 resolve 函数。
+- 在 Promise 内部，我们用 setTimeout 启动一个新的定时器，把从 Promise 那里拿到的 resolve 函数，以及用户提供的 duration 传给它。
+- 定时器到点时，会调用传入的回调。这就引发了一种连锁反应：setTimeout 调用 resolve，resolve 发出 Promise 已兑现的信号，进而让 .then() 的回调也被触发。
+
+如果这段代码仍然让你脑袋疼，没关系 😅。我们在这里组合了许多难懂的概念！希望总体思路是清楚的，即使各个部分还有点模糊。
+
+有一点也许能帮你理清：在上面的代码里，我们把 resolve 函数直接传给了 setTimeout。另一种写法是，像前面那样创建一个内联函数，由它来调用 resolve 函数：
+
+function wait(duration) {
+  return new Promise((resolve) => {
+    setTimeout(
+      () => resolve(),
+      duration
+    );
+  });
+}
+
+JavaScript 有"一等函数"，意思是函数可以像其他任何数据类型（字符串、数字等）一样被传来传去。这是个很棒的特性，但可能要过一段时间才会觉得它直观。这种替代写法稍微绕一点，但工作方式完全一样，所以如果你觉得这样更清楚，完全可以这样写！
+
+链式调用 Promise
+
+关于 Promise，有一点很重要：它们只能决议一次。一旦 Promise 兑现或被拒绝，就会永远保持那个状态。
+
+这意味着 Promise 并不真正适合某些事情。比如事件监听器：
+
+window.addEventListener('mousemove', (event) => {
+  console.log(event.clientX);
+})
+
+每当用户移动鼠标，这个回调就会被触发，可能是几百甚至几千次。Promise 不适合这种事。
+
+那我们的"倒计时"场景呢？虽然不能重复触发同一个 wait Promise，但我们可以把多个 Promise 串起来：
+
+wait(1000)
+  .then(() => {
+    console.log('2');
+    return wait(1000);
+  })
+  .then(() => {
+    console.log('1');
+    return wait(1000);
+  })
+  .then(() => {
+    console.log('Happy New Year!!');
+  });
+
+当最初的 Promise 兑现时，.then() 回调被调用。它创建并返回一个新的 Promise，然后这个过程重复下去。
+
+传递数据
+
+到目前为止，我们调用 resolve 函数时都没有传参数，只是用它来表示异步工作已经完成。但在某些情况下，我们会有一些数据想要传下去！
+
+下面是一个例子，用的是一个假想的、使用回调的数据库库：
+
+function getUser(userId) {
+  return new Promise((resolve) => {
+    // The asynchronous work, in this case, is
+    // looking up a user from their ID
+    db.get({ id: userId }, (user) => {
+      // Now that we have the full user object,
+      // we can pass it in here...
+      resolve(user);
+    });
+  });
+}
+getUser('abc123').then((user) => {
+  // ...and pluck it out here!
+  console.log(user);
+  // { name: 'Josh', ... }
+})
+
+被拒绝的 Promise
+
+不幸的是，在 JavaScript 里，承诺并不总是被兑现。有时，它们会被打破。
+
+比如，使用 Fetch API 时，并不能保证网络请求一定成功！也许网络连接不稳定，也许服务器宕机了。在这些情况下，Promise 会被拒绝（rejected），而不是兑现（fulfilled）。
+
+我们可以用 .catch() 方法来处理：
+
+fetch('/api/get-data')
+  .then((response) => {
+    // ...
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
+Promise 兑现时，调用的是 .then() 方法；被拒绝时，调用的则是 .catch()。可以把它想象成两条独立的路径，根据 Promise 的状态来选择。
+
+对于手工打造的 Promise，我们可以用第二个回调参数 reject 来拒绝它们：
+
+new Promise((resolve, reject) => {
+  someAsynchronousWork((result, error) => {
+    if (error) {
+      reject(error);
+      return;
+    }
+    resolve(result);
+  });
+});
+
+如果在 Promise 内部遇到问题，我们可以调用 reject() 函数，把这个 Promise 标记为已拒绝。我们传入的参数（通常是一个错误）会被传给 .catch() 的回调。
+
+Async / Await
+
+现代 JavaScript 真正出色的部分之一，是 async / await 语法。使用这种语法，我们可以非常接近理想中的倒计时结构：
+
+async function countdown() {
+  console.log("5…");
+  await wait(1000);
+  console.log("4…");
+  await wait(1000);
+  console.log("3…");
+  await wait(1000);
+  console.log("2…");
+  await wait(1000);
+  console.log("1…");
+  await wait(1000);
+  console.log("Happy New Year!");
+}
+
+等等，我还以为这是不可能的！我们不能让一个 JavaScript 函数在执行到一半时暂停，因为那会阻塞线程，让它做不了任何别的事！
+
+这种新语法暗地里是由 Promise 驱动的。如果戴上侦探帽，我们就能看出它是怎么运作的：
+
+async function addNums(a, b) {
+  return a + b;
+}
+const result = addNums(1, 1);
+console.log(result);
+// -> Promise {<fulfilled>: 2}
+
+我们本以为返回值会是数字 2，但它实际上是一个决议为数字 2 的 Promise。一旦给函数加上 async 关键字，我们就保证了它会返回一个 Promise，即使这个函数并不做任何异步工作。
+
+上面的代码本质上是下面这段的语法糖：
+
+function addNums(a, b) {
+  return new Promise((resolve) => {
+    resolve(a + b);
+  });
+}
+
+同样，await 关键字是 .then() 回调的语法糖：
+
+// This code...
+async function pingEndpoint(endpoint) {
+  const response = await fetch(endpoint);
+  return response.status;
+}
+// ...is equivalent to this:
+function pingEndpoint(endpoint) {
+  return fetch(endpoint)
+    .then((response) => {
+      return response.status;
+    });
+}
+
+Promise 为 JavaScript 提供了所需的底层基础设施，让它能提供看起来、用起来都像是同步的语法，而底下实际上是异步的。
+
+这真是太棒了。
+
+未完待续！
+
+过去几年，我的全职工作就是制作和分享像这篇博文这样的教育资源。我还有一门 CSS 课程和一门 React 课程。
+
+学生们呼声最高的请求之一，是让我做一门讲原生 JavaScript 的课程，这件事我一直在认真考虑。接下来几个月，我很可能会再发几篇关于原生 JavaScript 的文章。
+
+如果你想在我发布新内容时收到通知，最好的方式是订阅我的通讯。每当我发布新博文，我都会给你发一封邮件，也会让你及时了解我的课程动态。❤️
+
+最后更新于 2025 年 3 月 18 日

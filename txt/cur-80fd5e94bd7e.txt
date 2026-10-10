@@ -1,0 +1,9 @@
+https://openai.com/index/techniques-for-training-large-neural-networks
+
+训练大型神经网络的技术（Techniques for training large neural networks） ｜ Lilian Weng、Greg Brockman（OpenAI） ｜ 文章 ｜ https://openai.com/index/techniques-for-training-large-neural-networks
+
+OpenAI 的 Lilian Weng 与 Greg Brockman 写的科普长文，用很少的假设把大模型训练中的并行技术讲清楚：到最后你不过是在像交换机搬数据包一样，把不透明的比特从 A 运到 B。
+
+训练迭代包含前向算输出、反向算梯度，再把平均梯度、参数与优化器状态交给 Adam 等算法更新参数。并行从不同维度切开这一过程：数据并行——同一份参数复制到多块 GPU，各处理不同样本子集，模型仍须装进单卡，但可用多卡算力，代价是参数多份拷贝，并需同步梯度（通常仍用同步平均，异步虽减通信却伤学习效率）；流水线并行——按连续层块切到不同 GPU，降低单卡显存，但层间有顺序依赖，朴素实现会出现大量空闲"气泡"，解决办法是把 batch 拆成多个 microbatch 重叠计算，GPipe 同步聚合、PipeDream 交替前后向（部分用陈旧参数换效率）；张量并行——把单次运算（如矩阵乘）的数学切开跨卡；混合专家（MoE）——每个样本只激活层中一部分"专家"权重，可用门控在推理时选择专家，专家可分驻不同 GPU，以相近算力换更多参数。
+
+其他省显存设计包括：激活检查点/重算、选择性重算；混合精度（如 FP16）；把暂时不用的数据卸载到 CPU 再预取回来（如 ZeRO 切分参数、梯度与优化器状态）；省内存优化器如 Adafactor；以及对激活或梯度做压缩（Gist、DALL·E 同步前压梯度等）。致谢 Nikolas Tezak、Sam Altman、Daniel Gackle、Ilya Sutskever、Steven Adler 等。

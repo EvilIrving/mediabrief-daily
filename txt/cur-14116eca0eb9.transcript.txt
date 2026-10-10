@@ -1,0 +1,479 @@
+https://overreacted.io/what-does-use-client-do/
+
+"use client" 是做什么的？
+2025 年 4 月 25 日
+
+React 服务端组件（或许？）以几乎没有 API 表面而著称。它是一整套编程范式，很大程度上源自两条指令：
+
+'use client'
+
+'use server'
+
+我想做一个大胆的论断：它们的发明，和结构化编程（if / while）、一等函数以及 async/await 属于同一类。换句话说，我预计它们会比 React 活得更久，并成为常识。
+
+服务器需要把代码发送给客户端（通过发送一个 <script>）。客户端需要回头和服务器通信（通过发起一次 fetch）。'use client' 和 'use server' 这两条指令正是对这两件事的抽象，它们提供了一种一等的、有类型的、可静态分析的方式，把控制权交给位于另一台计算机上的那部分代码：
+
+'use client' 是一个有类型的 <script>。
+
+'use server' 是一个有类型的 fetch()。
+
+这两条指令结合起来，让你可以在模块系统内表达客户端/服务器的边界。它们让你可以把一个客户端/服务器应用建模为横跨两台机器的单一程序，同时又不忽视网络和序列化鸿沟的现实。这反过来又使跨网络的无缝组合成为可能。
+
+即使你从没打算使用 React 服务端组件，我认为你也应该了解这两条指令以及它们是如何工作的。它们甚至跟 React 无关。
+
+它们关乎的是模块系统。
+
+'use server'
+
+首先，我们来看 'use server'。
+
+假设你在写一个后端服务器，它有一些 API 路由：
+
+async function likePost(postId) {
+  const userId = getCurrentUser();
+  await db.likes.create({ postId, userId });
+  const count = await db.likes.count({ where: { postId } });
+  return { likes: count };
+}
+ 
+async function unlikePost(postId) {
+  const userId = getCurrentUser();
+  await db.likes.destroy({ where: { postId, userId } });
+  const count = await db.likes.count({ where: { postId } });
+  return { likes: count };
+}
+ 
+app.post('/api/like', async (req, res) => {
+  const { postId } = req.body;
+  const json = await likePost(postId);
+  res.json(json);
+});
+ 
+app.post('/api/unlike', async (req, res) => {
+  const { postId } = req.body;
+  const json = await unlikePost(postId);
+  res.json(json);
+});
+
+然后你有一些前端代码来调用这些 API 路由：
+
+document.getElementById('likeButton').onclick = async function() {
+  const postId = this.dataset.postId;
+  if (this.classList.contains('liked')) {
+    const response = await fetch('/api/unlike', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postId })
+    });
+    const { likes } = await response.json();
+    this.classList.remove('liked');
+    this.textContent = likes + ' Likes';
+  } else {
+    const response = await fetch('/api/like', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postId, userId })
+    });
+    const { likes } = await response.json();
+    this.classList.add('liked');
+    this.textContent = likes + ' Likes';
+  }
+});
+
+（为简单起见，这个例子没有尝试处理竞态条件和错误。）
+
+这段代码挺好，没什么毛病，但它是"字符串类型"的。我们想做的是调用另一台计算机上的一个函数。然而，由于后端和前端是两个独立的程序，除了 fetch，我们没有别的办法来表达这一点。
+
+现在想象一下，我们把前端和后端看作一个拆分在两台机器上的单一程序。我们该如何表达"一段代码想要调用另一段代码"这件事？最直接的表达方式是什么？
+
+如果暂时把我们对后端和前端"应该"如何构建的先入之见放在一边，我们就会想起，我们真正想说的只是：我们想在前端代码里调用 likePost 和 unlikePost：
+
+import { likePost, unlikePost } from './backend'; // 这行不通 :(
+ 
+document.getElementById('likeButton').onclick = async function() {
+  const postId = this.dataset.postId;
+  if (this.classList.contains('liked')) {
+    const { likes } = await unlikePost(postId);
+    this.classList.remove('liked');
+    this.textContent = likes + ' Likes';
+  } else {
+    const { likes } = await likePost(postId);
+    this.classList.add('liked');
+    this.textContent = likes + ' Likes';
+  }
+};
+
+当然，问题在于 likePost 和 unlikePost 实际上不能在前端执行。我们不能真的把它们的实现导入前端。从前端直接导入后端，按定义来说就是没有意义的。
+
+不过，假设有一种方法，可以在模块层面把 likePost 和 unlikePost 函数标注为从服务器导出的：
+
+'use server'; // 把所有导出标记为可从前端"调用"
+ 
+export async function likePost(postId) {
+  const userId = getCurrentUser();
+  await db.likes.create({ postId, userId });
+  const count = await db.likes.count({ where: { postId } });
+  return { likes: count };
+}
+ 
+export async function unlikePost(postId) {
+  const userId = getCurrentUser();
+  await db.likes.destroy({ where: { postId, userId } });
+  const count = await db.likes.count({ where: { postId } });
+  return { likes: count };
+}
+
+这样我们就可以在幕后自动设置好 HTTP 端点。既然我们有了一种可选择开启的、用于通过网络导出函数的语法，我们就可以为"从前端代码导入它们"赋予意义——导入它们可以直接得到一些会执行这些 HTTP 调用的异步函数：
+
+import { likePost, unlikePost } from './backend';
+ 
+document.getElementById('likeButton').onclick = async function() {
+  const postId = this.dataset.postId;
+  if (this.classList.contains('liked')) {
+    const { likes } = await unlikePost(postId); // HTTP 调用
+    this.classList.remove('liked');
+    this.textContent = likes + ' Likes';
+  } else {
+    const { likes } = await likePost(postId); // HTTP 调用
+    this.classList.add('liked');
+    this.textContent = likes + ' Likes';
+  }
+};
+
+这正是 'use server' 指令。
+
+这不是一个新想法——RPC 已经存在几十年了。这只是 RPC 针对客户端-服务器应用的一种特定形式：服务器代码可以把某些函数指定为"服务器导出"（'use server'）。从服务器代码中导入 likePost，和普通的导入一样；但从客户端代码中导入 likePost，得到的是一个执行 HTTP 调用的异步函数。
+
+再看一眼这一对文件：
+
+'use server'; // 把所有导出标记为可从前端"调用"
+ 
+export async function likePost(postId) {
+  const userId = getCurrentUser();
+  await db.likes.create({ postId, userId });
+  const count = await db.likes.count({ where: { postId } });
+  return { likes: count };
+}
+ 
+export async function unlikePost(postId) {
+  const userId = getCurrentUser();
+  await db.likes.destroy({ where: { postId, userId } });
+  const count = await db.likes.count({ where: { postId } });
+  return { likes: count };
+}
+
+import { likePost, unlikePost } from './backend';
+ 
+document.getElementById('likeButton').onclick = async function() {
+  const postId = this.dataset.postId;
+  if (this.classList.contains('liked')) {
+    const { likes } = await unlikePost(postId); // HTTP 调用
+    this.classList.remove('liked');
+    this.textContent = likes + ' Likes';
+  } else {
+    const { likes } = await likePost(postId); // HTTP 调用
+    this.classList.add('liked');
+    this.textContent = likes + ' Likes';
+  }
+};
+
+你可能会有异议——是的，它不支持 API 有多个使用方（除非它们在同一个代码库里）；是的，它需要对版本管理和部署做一些考虑；是的，它比写一个 fetch 更隐式。
+
+但如果你接受"后端和前端是拆分在两台计算机上的单一程序"这一观点，你就再也无法"视而不见"了。现在这两个模块之间有了一种直接而切身的联系。你可以加上类型来收紧它们之间的契约（并强制要求这些类型是可序列化的）。你可以用"查找所有引用"来查看服务器上的哪些函数被客户端使用了。未被使用的端点可以通过死代码分析被自动标记和/或清除。
+
+最重要的是，你现在可以创建自包含的抽象，完整地封装两端——一个"前端"连同它对应的那块"后端"。你不必担心 API 路由数量爆炸——服务器/客户端的拆分可以像你的抽象一样模块化。不存在全局的命名方案；你用 export 和 import 来组织代码，在哪里需要就在哪里用。
+
+'use server' 指令让服务器和客户端之间的联系变成了语法层面的东西。它不再是一种约定——它就在你的模块系统里。
+
+它打开了一扇通往服务器的门。
+
+'use client'
+
+现在假设你想把一些信息从后端传给前端代码。例如，你可能会渲染一些带有 <script> 的 HTML：
+
+app.get('/posts/:postId', async (req, res) => {
+  const { postId } = req.params;
+  const userId = getCurrentUser();
+  const likeCount = await db.likes.count({ where: { postId } });
+  const isLiked = await db.likes.count({ where: { postId, userId } }) > 0;
+  const html = `<html>
+    <body>
+      <button
+        id="likeButton"
+        className="${isLiked ? 'liked' : ''}"
+        data-postid="${Number(postId)}">
+        ${likeCount} Likes
+      </button>
+      <script src="./frontend.js></script>
+    </body>
+  </html>`;
+  res.text(html);
+});
+
+浏览器会加载那个 <script>，它会挂上交互逻辑：
+
+document.getElementById('likeButton').onclick = async function() {
+  const postId = this.dataset.postId;
+  if (this.classList.contains('liked')) {
+    // ...
+  } else {
+    // ...
+  }
+};
+
+这能用，但还有一些不尽如人意的地方。
+
+首先，你大概不希望前端逻辑是"全局"的——理想情况下，应该能够渲染多个点赞按钮，每个按钮接收自己的数据、维护自己的本地状态。如果能把 HTML 模板中的显示逻辑和交互式 JavaScript 事件处理程序中的显示逻辑统一起来，也会很好。
+
+我们知道怎么解决这些问题。这正是组件库的用途！我们把前端逻辑重新实现为一个声明式的 LikeButton 组件：
+
+function LikeButton({ postId, likeCount, isLiked }) {
+  function handleClick() {
+    // ...
+  }
+ 
+  return (
+    <button className={isLiked ? 'liked' : ''}>
+      {likeCount} Likes
+    </button>
+  );
+}
+
+为简单起见，我们暂时退回到纯客户端渲染。在纯客户端渲染下，服务器代码的工作只是传递初始 props：
+
+app.get('/posts/:postId', async (req, res) => {
+  const { postId } = req.params;
+  const userId = getCurrentUser();
+  const likeCount = await db.likes.count({ where: { postId } });
+  const isLiked = await db.likes.count({ where: { postId, userId } }) > 0;
+  const html = `<html>
+    <body>
+      <script src="./frontend.js></script>
+      <script>
+        const output = LikeButton(${JSON.stringify({
+          postId,
+          likeCount,
+          isLiked
+        })});
+        render(document.body, output);
+      </script>
+    </body>
+  </html>`;
+  res.text(html);
+});
+
+然后 LikeButton 就可以带着这些 props 出现在页面上：
+
+function LikeButton({ postId, likeCount, isLiked }) {
+  function handleClick() {
+    // ...
+  }
+ 
+  return (
+    <button className={isLiked ? 'liked' : ''}>
+      {likeCount} Likes
+    </button>
+  );
+}
+
+这很合理，事实上，在客户端路由出现之前，React 正是这样集成到服务端渲染的应用中的。你需要往页面里写一个 <script> 来放客户端代码，再写另一个 <script> 来放这段代码所需的内联数据（即初始 props）。
+
+我们再多琢磨一会儿这段代码的形态。这里发生了一件很奇怪的事：后端代码显然想把信息传给前端代码。然而，传递信息的行为又一次是字符串类型的！
+
+这里到底发生了什么？
+
+app.get('/posts/:postId', async (req, res) => {
+  // ...
+  const html = `<html>
+    <body>
+      <script src="./frontend.js></script>
+      <script>
+        const output = LikeButton(${JSON.stringify({
+          postId,
+          likeCount,
+          isLiked
+        })});
+        render(document.body, output);
+      </script>
+    </body>
+  </html>`;
+  res.text(html);
+});
+
+我们似乎是在说：让浏览器加载 frontend.js，然后在那个文件里找到 LikeButton 函数，再把这段 JSON 传给这个函数。
+
+那如果我们能直接这么说呢？
+
+import { LikeButton } from './frontend';
+ 
+app.get('/posts/:postId', async (req, res) => {
+  // ...
+  const jsx = (
+    <html>
+      <body>
+        <LikeButton
+          postId={postId}
+          likeCount={likeCount}
+          isLiked={isLiked}
+        />
+      </body>
+    </html>
+  );
+  // ...
+});
+
+'use client'; // 把所有导出标记为可从后端"渲染"
+ 
+export function LikeButton({ postId, likeCount, isLiked }) {
+  function handleClick() {
+    // ...
+  }
+ 
+  return (
+    <button className={isLiked ? 'liked' : ''}>
+      {likeCount} Likes
+    </button>
+  );
+}
+
+我们在这里做了一次概念上的跳跃，但请跟着我。我们要说的是，这仍然是两个独立的运行时环境——后端和前端——但我们把它们看作一个单一程序，而不是两个独立的程序。
+
+这就是为什么我们要在传递信息的地方（后端）和需要接收信息的函数（前端）之间建立一种语法上的联系。而表达这种联系最自然的方式，同样是一个普通的 import。
+
+请注意，在这里，从后端导入一个带有 'use client' 标注的文件，同样不会给我们 LikeButton 函数本身。相反，它给我们的是一个客户端引用——一种我们稍后可以在幕后把它变成 <script> 标签的东西。
+
+我们来看看它是怎么运作的。
+
+这段 JSX：
+
+import { LikeButton } from './frontend'; // "/src/frontend.js#LikeButton"
+ 
+// ...
+<html>
+  <body>
+    <LikeButton
+      postId={42}
+      likeCount={8}
+      isLiked={true}
+    />
+  </body>
+</html>
+
+会生成这段 JSON：
+
+{
+  type: "html",
+  props: {
+    children: {
+      type: "body",
+      props: {
+        children: {
+          type: "/src/frontend.js#LikeButton", // 一个客户端引用！
+          props: {
+            postId: 42
+            likeCount: 8
+            isLiked: true
+          }
+        }
+      }
+    }
+  }
+}
+
+而这条信息——这个客户端引用——让我们可以在幕后生成 <script> 标签，从正确的文件加载代码并调用正确的函数：
+
+<script src="./frontend.js"></script>
+<script>
+  const output = LikeButton({
+    postId: 42,
+    likeCount: 8,
+    isLiked: true
+  });
+  // ...
+</script>
+
+事实上，我们还掌握了足够的信息，可以在服务器上运行同一个函数来预先生成初始 HTML，这是我们在使用客户端渲染时失去的：
+
+<!-- 可选：初始 HTML -->
+<button class="liked">
+  8 Likes
+</button>
+ 
+<!-- Interactivity -->
+<script src="./frontend.js"></script>
+<script>
+  const output = LikeButton({
+    postId: 42,
+    likeCount: 8,
+    isLiked: true
+  });
+  // ...
+</script>
+
+预渲染初始 HTML 是可选的，但它使用的是同样的基本原语。
+
+既然你已经知道它是怎么运作的，再把这段代码看一遍：
+
+import { LikeButton } from './frontend'; // "/src/frontend.js#LikeButton"
+ 
+app.get('/posts/:postId', async (req, res) => {
+  // ...
+  const jsx = (
+    <html>
+      <body>
+        <LikeButton
+          postId={postId}
+          likeCount={likeCount}
+          isLiked={isLiked}
+        />
+      </body>
+    </html>
+  );
+  // ...
+});
+
+'use client'; // 把所有导出标记为可从后端"渲染"
+ 
+export function LikeButton({ postId, likeCount, isLiked }) {
+  function handleClick() {
+    // ...
+  }
+ 
+  return (
+    <button className={isLiked ? 'liked' : ''}>
+      {likeCount} Likes
+    </button>
+  );
+}
+
+如果你把关于后端和前端代码应如何交互的既有观念放在一边，就会发现这里发生了一件特别的事情。
+
+后端代码通过一个带有 'use client' 的 import 来引用前端代码。换句话说，它在模块系统内，表达了发送 <script> 的那部分程序与生活在那个 <script> 里的那部分程序之间的直接联系。既然存在直接联系，它就可以被类型检查，你可以使用"查找所有引用"，所有工具也都能感知到它。
+
+和前面的 'use server' 一样，'use client' 让服务器和客户端之间的联系变成了语法层面的东西。'use server' 打开了一扇从客户端通往服务器的门，而 'use client' 打开了一扇从服务器通往客户端的门。
+
+就像两个世界之间有两扇门。
+
+两个世界，两扇门
+
+这就是为什么 'use client' 和 'use server' 不应该被看作把代码"标记"为"在客户端上"或"在服务器上"的方式。它们做的并不是这件事。
+
+相反，它们让你可以打开从一个环境通往另一个环境的门：
+
+'use client' 把客户端函数导出给服务器。在幕后，后端代码把它们看作像 '/src/frontend.js#LikeButton' 这样的引用。它们可以作为 JSX 标签被渲染，最终会变成 <script> 标签。（你可以选择在服务器上预先运行这些脚本，以获得它们的初始 HTML。）
+
+'use server' 把服务器函数导出给客户端。在幕后，前端把它们看作通过 HTTP 调用后端的异步函数。
+
+这两条指令在你的模块系统中表达了网络鸿沟。它们让你可以把一个客户端/服务器应用描述为横跨两个环境的单一程序。
+
+它们承认并完全接受这样一个事实：这两个环境不共享任何执行上下文——这就是为什么两种 import 都不会执行任何代码。它们只是让一端可以引用另一端的代码，并把信息传给它。
+
+两者结合起来，你就可以通过创建和组合包含两端逻辑的可复用抽象，把程序的两端"编织"在一起。但我认为这种模式的意义超出了 React，甚至超出了 JavaScript。说到底，这就是模块系统层面的 RPC，外加一个用于向客户端发送更多代码的镜像孪生。
+
+服务器和客户端是同一个程序的两端。它们被时间和空间隔开，所以无法共享执行上下文，也无法直接互相导入。这两条指令跨越时间和空间"打开了门"：服务器可以把客户端渲染为一个 <script>；客户端可以通过 fetch() 回头和服务器通信。而 import 是表达这一点最直接的方式，所以这两条指令让你可以使用它。
+
+说得通，对吧？
+
+附言
+
+这里有一张小小的架构示意图，可以用在你的幻灯片里。

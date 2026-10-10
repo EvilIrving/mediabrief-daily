@@ -1,0 +1,61 @@
+https://www.joshwcomeau.com/css/custom-css-reset/
+
+一套现代 CSS Reset
+
+每当我开始新项目，第一件事就是打磨 CSS 语言的一些毛边。我用一套实用的自定义基线样式来做这件事。
+
+很长一段时间我用的是 Eric Meyer 著名的 CSS Reset。那是扎实的一块 CSS，但如今有点老了：十多年没更新，而这期间发生了太多变化！
+
+最近我改用自己的自定义 CSS reset。它收录了我发现的、能同时改善用户体验与 CSS 编写体验的那些小技巧。和其他 CSS reset 一样，它在设计/外观上不带意见。无论你追求何种美学，都可以用在任何项目上。
+
+本教程带你逛一遍我的自定义 CSS reset。我们会深入每条规则，弄清它做什么、以及你为何可能想用它。
+
+CSS Reset
+
+如下所示：（原文给出完整十条规则的样式表。）
+
+它相对短，但这小段样式表里塞了很多东西。我们逐条看。
+
+1. 盒模型
+
+小测验：在没有其他 CSS 时，按可见粉红边框量，.box 有多宽？元素 width:100%，父级 200px，那 100% 解析为 200px。但默认它把这 200px 用在内容盒上。内容盒是盒模型里真正装内容的矩形，在边框与内边距之内。于是 padding 再加 40px、border 再加 4px，可见粉红矩形变成 244px，塞进 200px 宽的父级就会溢出。
+
+幸运的是可以改：*, *::before, *::after { box-sizing: border-box; }。应用后百分比按边框盒解析，粉红盒会是 200px，内部内容盒缩到 156px。我喜欢把它应用到所有元素与伪元素，成为默认行为。与流行看法相反，这对性能并不坏（见 Paul Irish）。在我看来这是必備规则，它让 CSS 好用得多。
+
+2. 去掉默认 margin
+
+*:not(dialog) { margin: 0; }。若干 HTML 标签自带 margin，好让未样式化的文档可读（比如段落之间有空隙）。自己做项目时，我希望自己控制间距；我认为 margin 是设计关切，不该默认施加。所以几乎从所有元素去掉 margin，期望你在应用样式里按需加回。例外是 <dialog>：它默认 margin:auto，把对话框在视口内居中，我认为这合理，故排除。感谢 Oriol 的提醒！
+
+3. 启用关键字动画
+
+在 prefers-reduced-motion: no-preference 媒体查询里给 html 设置 interpolate-size: allow-keywords。新属性让我们可以在绝对值（如 0px）与派生值（如 auto、fit-content）之间过渡。撰写本文时（2025 年 3 月）主要在 Chrome/Edge 支持；上面演示用了 Radix Accordion 在 JS 里解决同一问题。放进减少动态偏好查询，有助于避免给运动敏感用户添麻烦。
+
+4. 增大行高
+
+body { line-height: 1.5; }。默认因浏览器而异，多在 1.2 左右。无单位数字是相对字号的比率。行距太近更难读，尤其对阅读障碍者；共识是正文约 1.5 更友好。标题我往往会选更小的 line-height，但具体值取决于应用设计，故不放进 reset。
+
+5. 改善文本渲染
+
+-webkit-font-smoothing: antialiased。过去有人认为这能提高对比度；也有文章反对"修复"字体平滑。令人困惑的是，Chrome 与 Safari 等 macOS 浏览器仍默认用次像素抗锯齿，需要显式设为 antialiased 才能关掉。
+
+6. 改善媒体默认
+
+img, picture, video, canvas, svg { display: block; max-width: 100%; }。行内替换元素底部常留空隙；块级可去掉。max-width:100% 防止大图撑破容器。
+
+7. 表单控件继承字体
+
+input, button, textarea, select { font: inherit; }。默认按钮和输入框不继承父级排版，而有一套怪异自有样式。继承字体让表单看起来像页面的一部分。
+
+8. 避免文本溢出
+
+p 与 h1–h6 { overflow-wrap: break-word; }，长 URL 或不间断字符串时可在任意点断行，减少横向溢出。
+
+9. 改善换行
+
+p { text-wrap: pretty; }；标题 { text-wrap: balance; }。pretty 减少段落末行难看短行；balance 让多行标题更匀称。
+
+10. 创建根层叠上下文
+
+#root, #__next { isolation: isolate; }。给常见 React / Next.js 根节点独立层叠上下文，减少第三方组件疯狂 z-index 时的意外重叠。
+
+（以上即整套 reset 的意图与取舍；完整代码见原文篇首样式表。）

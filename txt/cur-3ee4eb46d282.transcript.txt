@@ -1,0 +1,296 @@
+https://www.matuzo.at/blog/building-the-most-inaccessible-site-possible-with-a-perfect-lighthouse-score
+
+用满分 Lighthouse 打造尽可能不无障碍的网站
+作者：Manuel Matuzović
+
+免责声明：这篇文章并不是针对 Lighthouse，其他测试工具的表现也差不多。它讲的是我们开发者，以及我们不应不假思索地依赖自动化测试的责任。
+
+看到有人在社交媒体上发自己的 Lighthouse 分数，展示他们把自己或客户的网站优化得有多好，总是一件让人高兴的事。这说明他们在乎自己做出来的东西的质量。
+
+如果我们做得非常出色，Lighthouse 会奖励我们一个绿色圆圈里的数字 100。这是你可以骄傲地分享给客户或发到推特上的东西。
+
+衡量代码的质量很重要，但更重要的是正确解读自动化测试工具给出的分数。如果 Lighthouse 告诉我们网站是 100% 无障碍的，并不意味着它真的如此。这只意味着我们为人工测试打好了基础。Lighthouse 的测试使用 axe-core 无障碍测试库，配合一套自定义规则。它能识别出一些不良做法，但不是全部。还有一些做法本身并不坏，但如果被误用，就可能造成伤害。
+
+仅靠自动化测试，你无法确保良好的质量。为了证明这一点，我做了一个尽可能不无障碍、却拿到 Lighthouse 满分的网站。
+
+背景
+
+Zach Leatherman 最近在推特上发了这样一条：
+
+免费送一个博文点子：
+如何做出一个 Lighthouse 满分的最慢网站
+
+下面是 Vadim Makeev 对这条推文的回复，正是它启发我写了这篇文章：
+
+那一定很好看！无障碍审计也来一个：
+<img src=picture.png alt=picture.png>
+
+我觉得，不仅要尽可能多地折腾人，还要在此基础上拿到 Lighthouse 满分作为奖励，这会是个绝妙的主意。
+
+让我们排斥尽可能多的人
+
+我们以这个简单、无障碍的页面为基础。
+
+CodePen："100%" 无障碍 - 第 0 步
+
+2026 年 2 月 13 日更新：不知道从什么时候开始，如果没有满足最佳实践规则，Lighthouse 会降低分数。具体来说，它会抱怨缺少 main 地标。所以我把它加到了页面上。谢谢 Ria 的提示。
+
+🖕 仅限 CSS 🖕
+
+我们先从简单的开始。我想确保 CSS 是我这个完美网站的依赖。为此，我给 body 元素加上 hidden 属性。hidden 在 HTML 中相当于 CSS 里的 display: none;。（如果你想进一步了解无障碍的隐藏方式，可以看看 Scott O'Hara 的《Inclusively Hidden》。）
+
+HTML
+
+<body hidden>
+  ...
+</body>
+
+hidden 会在视觉上隐藏内容，并把它从无障碍树中移除。光这一点就足以排斥所有人并通过 Lighthouse 测试，但我不想让自己太轻松。我想做一个完美地不无障碍、但技术上仍然显示内容的网站。
+
+所以我们加一些 CSS，把内容找回来。
+
+HTML
+
+<head>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="loaded" hidden>
+  ...
+</body>
+
+CSS
+
+.loaded {
+  display: block;
+}
+
+我们回到了原来的样子，但现在用户想访问我们网站上的内容，就必须加载 CSS。
+
+CodePen："100%" 无障碍 - 第 1 步
+
+🖕 仅限 JS 🖕
+
+我们再加一个依赖。我不再在 HTML 里应用那个显示内容的类，而是通过 JS 添加它。
+
+HTML
+
+<head>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+<body hidden>
+  ...
+</body>
+
+JS
+
+document.querySelector('body').classList.add('loaded');
+
+很好！网站看起来还是一样，但要让它显示任何东西，CSS 和 JS 文件都必须加载并正常工作。
+
+CodePen："100%" 无障碍 - 第 2 步
+
+我想是时候做第一次 Lighthouse 测试了。祈祷吧！🤞🏼
+
+一个仅限 CSS 和 JS 的网站拿到了满分。很棒，但我们还能做得更好。
+
+🖕 屏幕阅读器用户 🖕
+
+排斥屏幕阅读器用户的方法有很多。最简单、最有效的是使用 aria-hidden="true" 这个属性和值。这个属性很强大，我们必须谨慎使用，因为它会把元素从无障碍树中移除。通常，我们只能用它来移除冗余或无关的内容，从而改善辅助技术用户的体验。
+
+在我们的网站里，我们把它加在 body 元素上。
+
+HTML
+
+<body hidden aria-hidden="true">
+  ...
+</body>
+
+屏幕阅读器用户现在将经历那种"罕见"的时刻：不得不面对一个不无障碍的网站。*
+
+2021 年 10 月 6 日更新：最初，Lighthouse 并没有把这一点标记为问题，但他们似乎已经修复了。这很好！遗憾的是（对这篇文章来说是幸运的是），我们可以通过把所有可聚焦元素的 tabindex 设为 -1 来绕过它。
+
+<a href="https://www.matuzo.at/blog/building-the-most-inaccessible-site-possible-with-a-perfect-lighthouse-score/" rel="noopener" tabindex="-1">
+  阅读文章
+</a>
+<form action="#form">
+  <p>
+    <label for="text">示例表单</label><br>
+    <input type="text" id="text" tabindex="-1">
+  </p>
+  <button tabindex="-1">发送</button>
+</form>
+
+CodePen："100%" 无障碍 - 第 3 步
+
+🖕 键盘用户 🖕
+
+键盘用户可以通过按 Tab 键在页面上从一个交互元素跳到另一个。元素获得焦点时，浏览器会在它周围显示一个轮廓。
+
+我们把它去掉。
+
+CSS
+
+*:focus {
+  outline: none !important;
+}
+
+只需要 3 行 CSS，就能把一整群人挡在网站之外。不过，从技术上讲，他们仍然可以和网站交互。他们再也看不到焦点指示器了，但交互元素仍然可以用 Tab 键切换到。既然这个实验的主题就是排斥，那我们就确保键盘完全无法使用。
+
+JS
+
+document.addEventListener('keydown', function (e) {
+  e.preventDefault();
+});
+
+我们这个"排斥优先"的应用现在去掉了所有按键的默认功能。
+
+CodePen："100%" 无障碍 - 第 4 步
+
+再测一次。
+
+依然完美。
+
+好了，现在该动真格的了。
+
+🖕 高对比度模式 🖕
+
+低视力人群可以通过在 Windows 上启用所谓的高对比度模式来提高对比度。
+
+整个操作系统会对所有应用（包括浏览器和网站）使用高对比度的颜色。
+
+我们可以用一个专门的媒体特性，专门针对高对比度模式的用户。
+
+CSS
+
+@media screen and (-ms-high-contrast: active) {
+  /* 高对比度样式规则 */
+  * {
+    color: #000000;
+  }
+}
+
+这个媒体查询里的规则只在启用高对比度时生效。遗憾的是，我们不知道主题使用的是哪些颜色，也不知道它是浅色主题还是深色主题。把所有元素的颜色设为 #000000 可能管用，也可能不管用，这取决于用户的偏好。
+
+这种五五开的概率对我来说还不够排斥，但我们很幸运：Windows 高对比度颜色被映射到了 CSS 的系统颜色关键字上。我们可以利用这些系统颜色关键字，确保文字颜色始终与高对比度模式的背景色一致，无论背景色被设成什么。背景色被映射为 window。所以，我们把背景色的值用作所有元素的文字颜色。
+
+CSS
+
+@media screen and (-ms-high-contrast: active) {
+  * {
+    color: window !important;
+  }
+}
+
+天哪，这太邪恶了。我的 LinkedIn 收件箱会被 Facebook 和 Uber 这样的公司发来的工作邀请塞满。
+
+CodePen："100%" 无障碍 - 第 5 步
+
+🖕 鼠标用户 🖕
+
+排斥鼠标用户很简单，我们只要把光标去掉。
+
+CSS
+
+*,
+*:hover {
+  cursor: none;
+}
+
+cursor: none; 之于鼠标用户，就像 outline: none; 之于键盘用户。一开始很难找到方向，但交互元素仍然可以点击。我们再降低一次用户体验，来提升我们应用的"质量"。
+
+CSS
+
+body {
+  pointer-events: none;
+}
+
+pointer-events: none; 让我们的用户从"能点击网站上任何东西"的能力中解脱出来。这个属性的支持度很好，但如果我们想确保这个功能在尽可能多的浏览器上生效，可以应用一种叫作"渐进式降级™"的原则。
+
+JS
+
+function removeA11y() {
+  if ('pointerEvents' in document.body.style) {
+    console.log('pointer-events supported');
+    return;
+  }
+  document.addEventListener('click', function (e) {
+    e.preventDefault();
+  });
+}
+removeA11y();
+
+如果浏览器不支持 pointer-events 属性，这个 JavaScript 兜底方案就会启动，移除所有元素上的点击事件。
+
+CodePen："100%" 无障碍 - 第 6 步
+
+太好了！依然完美无障碍！
+
+🖕 可读性 🖕
+
+我们已经不能用鼠标或键盘了，但仍然可以阅读首屏的内容。我们来处理一下这个问题。
+
+CSS
+
+body {
+  opacity: 0.03;
+}
+
+我们的页面内容仍然存在，但几乎不可见。太棒了！
+
+2021 年 10 月 6 日更新：最初，Lighthouse 并没有把这一点标记为问题，但他们似乎已经修复了。这很好！遗憾的是（对这篇文章来说是幸运的是），我们可以改用 filter 属性来绕过它。
+
+body {
+  filter: opacity(0.03);
+}
+
+CodePen："100%" 无障碍 - 第 7 步
+
+🖕 阅读模式 🖕
+
+在不同浏览器中测试这个网站时，我注意到在 Safari 的阅读模式下它仍然是可访问的。
+
+事实证明，在 body 中设置一个很小的字号就可以禁用阅读模式。
+
+CSS
+
+body {
+  opacity: 0.03;
+  font-size: 1px;
+}
+
+CodePen："100%" 无障碍 - 第 8 步
+
+🖕 查看网页源代码 🖕
+
+这个网站对视力差和视力好的人、鼠标、键盘以及屏幕阅读器用户都是不可访问的。
+
+如果浏览器高手遇到这样一个网站，可能会唤醒他们内心的 Zero Cool（电影《黑客》里的黑客），试图去黑掉这个网站。我说的"黑"，是指"查看网页源代码"。
+
+为了给我这个"排斥优先"的网站锦上添花，我把文字转换成了 HTML 实体。实体通常用来显示保留字符、不可见字符以及用标准键盘难以输入的字符。我用它们来混淆我们网站上的文字。
+
+CodePen："100%" 无障碍 - 第 9 步
+
+最后，来一次最终测试。
+
+结论
+
+我写这篇文章的本意并不是贬低 Lighthouse 或其背后的引擎 axe-core。这两个工具我都经常用，我很庆幸有它们。
+
+这篇文章讲的是你和我。分数能反映我们的应用和网站的质量，但我们绝不能不假思索地信任这些数字。我们必须明白，自动化测试只是第一步。
+
+下次你看到一个很高的 Lighthouse 分数、想就此收工时，读一读分数旁边的那段文字：
+
+这些检查突出了改进你的 Web 应用无障碍性的机会。只有一部分无障碍问题能被自动检测出来，因此也鼓励进行人工测试。
+
+在这段话下面，你会看到一份需要人工测试的附加项目清单，以及一个解释如何进行无障碍审查的页面链接。
+
+我们测试和优化网站，不是为了高分带给我们的好感觉。我们这样做，是因为我们想要、也必须确保我们构建的东西能被尽可能多的人访问。
+
+我们在设计和开发时不会完全依赖自动化，在测试时也不应该。
+
+感谢 Eric 的校对和反馈。
+
+* （讽刺）
+
+6 月 12 日更新：增加了一段关于 Lighthouse 所提供的人工测试建议的内容。

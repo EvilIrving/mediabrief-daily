@@ -1,0 +1,97 @@
+https://jakearchibald.com/2025/importing-vs-fetching-json/
+
+导入 JSON 与用 fetch 获取 JSON
+
+今年，JSON 模块导入达到了 Baseline 的"新近可用"状态，也就是说它已经在所有浏览器引擎中实现。
+
+import data from './data.json' with { type: 'json' };
+// 以及……
+const { default: data } = await import('./data.json', {
+  with: { type: 'json' },
+});
+
+我很高兴 JavaScript 有了这个特性，但除了小演示之外，我想不出自己会在浏览器环境里使用它。我也许仍会在前端源码中使用它，但一般只用在它到达浏览器之前就会被打包工具处理掉的场景。
+
+原因在于它和下面这种写法之间的行为差异：
+
+const response = await fetch('./data.json');
+const data = await response.json();
+
+原因如下……
+
+错误处理
+
+使用静态导入时：
+
+import data from './data.json' with { type: 'json' };
+
+如果上面的导入失败，它会把整个模块图一起拖垮。正因如此，我绝不会对第三方 JSON 使用这种写法，因为我希望在第三方服务出问题时能提供兜底方案。
+
+而 import() 恰好允许这样做：
+
+try {
+  const { default: data } = await import(url, {
+    with: { type: 'json' },
+  });
+} catch (error) {
+  // 兜底逻辑
+}
+
+这已经相当不错了。不过 fetch() 的写法：
+
+try {
+  const response = await fetch('./data.json');
+  const data = await response.json();
+} catch (error) {
+  // 兜底逻辑
+}
+
+……在失败时能提供多得多的排查信息。你可以看 response.status，也可以用 response.text()，这样即使 JSON 解析失败，你仍然拿得到原始内容。也许这并非在所有情况下都重要。
+
+我认为更大的问题是……
+
+缓存与垃圾回收
+
+当你导入一个模块（无论是 JS、WASM、CSS 还是 JSON）时，它会在整个环境（例如一个页面或 worker）的生命周期内被缓存，即使结果是网络失败或解析失败也一样。对于给定的模块标识符和类型，所有导入都返回同一个模块。
+
+这通常是件好事，因为这意味着你的 JS 模块每次都返回相同的对象，状态可以在所有导入者之间共享。但如果你在做类似这样的事：
+
+const { default: results } = await import('/api/search?q=whatever', {
+  with: { type: 'json' },
+});
+
+……那你就有了内存泄漏，因为每一组搜索结果都会在页面的整个生命周期内留在模块图中。fetch() 则不会这样，返回的对象一旦不再被引用就可以被垃圾回收。
+
+同样的情况也适用于：
+
+let { default: largeData } = await import('/large-data.json', {
+  with: { type: 'json' },
+});
+const someSmallPart = largeData.slice(0, 10);
+largeData = null;
+
+如果上面用的是 fetch()，那么除 someSmallPart 之外的数据都可以被垃圾回收。但用 import() 的话，整个 largeData 对象会在页面的整个生命周期内留在内存中。
+
+什么时候应该使用 JSON 模块？
+
+对于本地的静态 JSON 资源，并且你需要其中全部或大部分数据时，使用 JSON 模块导入是合理的。尤其是因为打包工具能理解 JSON 导入，并把这个对象和其他模块打包在一起。用 fetch() 就做不到这一点，除非你用一些相当取巧的插件。
+
+在服务端代码中，我可能会导入 package.json 来获取版本号。但我不会在前端代码里这样做，因为为了一个值而打包整个 package.json 是一种浪费——打包工具不会对对象的单个键做 tree-shaking。
+
+更新：Jed 和 leah 指出，很多打包工具（至少包括 esbuild、Vite 和 Rollup）在你使用它们非标准的 JSON 导入语法时，会把顶层键作为单独的导出暴露出来。
+
+// 没有 tree-shaking
+import data from './package.json' assert { type: 'json' };
+console.log(data.version);
+
+// 没有 tree-shaking
+import data from './package.json';
+console.log(data.version);
+
+// tree-shaking 生效！
+import { version } from './package.json';
+console.log(version);
+
+这只能对顶层键做 tree-shaking，所以如果你的数据嵌套很深，打包进去的东西仍会比你需要的多。一般来说，我会尽量把"获取并处理"的逻辑写成 Vite/Rollup 插件，这样它就在构建时而不是运行时完成。
+
+我很高兴原生 JSON 导入这个特性存在，但应该谨慎使用，而不是一刀切地取代用 fetch() 获取 JSON。

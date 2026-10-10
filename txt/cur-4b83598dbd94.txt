@@ -1,0 +1,13 @@
+https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/
+
+多发一点 CSS 来提升网站性能（Improving site performance by shipping more CSS） ｜ GitHub Blog ｜ 文章 ｜ https://github.blog/engineering/architecture-optimization/improving-site-performance-by-shipping-more-css/
+
+GitHub 工程师 Josh Black 在 GitHub 博客上复盘了 github.com 怎样彻底告别 CSS-in-JS，全部改用 CSS Modules。标题里的"多发 CSS"，指的就是把样式从运行时 JavaScript 搬回普通样式表。
+
+起因是 2023 年起页面上的组件数量暴涨，基于 styled-components 的 Primer 设计系统开始拖后腿：样式要在客户端初始化，首屏变慢；服务端渲染时还要收集样式，SSR 性能下降；组件越多，样式更新越失控。团队选了 CSS Modules：样式写在组件旁边的 CSS 文件里，类名默认局部，既保留了就近放置和封装，又完全没有客户端和服务端的运行时开销。
+
+难点是迁移不能弄坏 GitHub。他们一个组件一个组件来：新增 CSS Modules 版本，用功能开关在新旧样式间切换，用现有的视觉回归测试确认截图完全一致，再从团队、员工到全体用户逐步放量。到 2024 年 12 月 Primer 全部迁完，页面 SSR 时间减少 55%，组件初始化时间减少 25%。
+
+更大的麻烦是 sx 属性：多年来全站都用它传内联样式对象，类型提示好、写起来方便，但运行时成本高、组件一多就扛不住。为此他们做了一个过渡包 @primer/styled-react，让还在用 sx 的地方继续用包装组件，其余地方直接享受新版本的性能。2025 年 4 月开工时有约 7760 个 sx 待迁，内部同事写了 VS Code 插件和 codemod，大部分自动化，8 名工程师轮班 6 个月迁了 6419 个，部分页面 SSR 提速 1% 到 22%。期间 styled-components 宣布进入维护模式，印证了方向。到 2026 年 4 月再捡起来时，Copilot 编程 agent 已经很强，两名工程师加一大批 agent 三周就把剩下的 895 个清零。
+
+最后一关是主题：GitHub 有七套主题、每套都有高对比度版本，JS 层面的主题工具也依赖 styled-components。他们照老办法迁移、开关、慢放，连删除依赖这一步都加了开关，两个月后完成。2026 年 6 月起 GitHub 已 100% 运行在 CSS Modules 上。作者的结论是：这看似一次 CSS 迁移，实际上是对 GitHub 如何写样式、做主题和交付界面的一次渐进式重建，而功能开关和回归测试这些安全措施让他们在没弄坏网站的前提下完成了它。

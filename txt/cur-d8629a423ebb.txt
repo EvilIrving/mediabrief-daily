@@ -1,0 +1,13 @@
+https://changelog.com/jsparty/320
+
+Signals 入门：从 Solid 说起（A Solid primer on Signals） ｜ JS Party ｜ 播客 ｜ https://changelog.com/jsparty/320
+
+《JS Party》2024 年的一期，主持人 Amal Hussein 和 Nick Nisi，嘉宾是 SolidJS 作者 Ryan Carniato，他常被称为"Signals 的 CEO"。整期围绕响应式和 Signals 展开，从 Solid 的原理讲到 TC39 的 Signals 提案。
+
+Ryan 先批评前端曾经流行的性能观：大家比谁能每秒把整个数据库渲染上百万次，其实没人需要，真正该做的是少传数据、少做更新。他说 React 很擅长把非常低效的东西变得稍微高效一点，相当于给性能兜底，但要真正快是另一回事。Solid 是一次实验：如果响应式本身就是整个框架会怎样？不要单独的渲染和 diff，只用 Signals。他从原生 JS 的思路出发，像 jQuery 那样"这个值变了，就更新 DOM 的这个位置"，再借鉴 Knockout 和 MobX 的经验，把它扩展到能支撑现代应用。Solid 之所以写起来像 React，是因为编译器做了两件事：凡是调用了 Signal 的表达式都包进函数里，以便追踪；像 Lit 那样把 JSX 当模板，提取 HTML 字符串直接克隆节点，再把更新函数挂到具体的元素上。Solid 也提供不需要编译器的标签模板字面量版本，但那样就得自己把每个表达式包成函数，他认为很繁琐。
+
+谈到 React 即将推出的编译器，Ryan 说它主要是让你不用手写 memo 和 useCallback，减少重渲染，但 React 仍是 React，坚持"重渲染"的愿景，只是做得更干净；他的一句话是：加一层抽象总能让事情变得更容易，但让事情变得更简单很难。他对 Signals 的定义是：不是事件发射器，而是一张有向的数据依赖图，多个 Signal 相互监听、驱动副作用，类似 React hooks 的依赖数组，但靠自动追踪而不必手写。
+
+关于 TC39 的 Signals 提案，他说目前还在第一阶段，各家框架作者都预期会在其上再包一层，标准化一个预制的响应式内核存在张力，很多假设难以为未来做出。主持人把它类比为当年 Promise 从各家实现到进入 ES6、进而催生 async/await；Ryan 最期待的是浏览器原生的调试支持，就像现在能在调试器里一路跟踪 await 那样，追踪 Signals 的依赖会是颠覆性的，各个库能否互通反倒是次要的。他还指出前端框架正在趋同：Vue Vapor、Svelte 5 的 runes 和 Solid 在底层几乎是同一种东西，半年后差别可能只剩语法偏好，用美元符号、.value 还是函数调用；但他从 Rich Harris 那里学到，审美和偏好永远会让人们做出不同选择。
+
+最后 Ryan 介绍了 SolidStart：一个基于原语、不预设路由的元框架，同一套 API 能从纯客户端单页应用一路做到服务端渲染和静态生成，支持单次往返的数据变更和实验性的 islands。临别时他给所有 JS 开发者的话是：工具本身没那么重要，重要的是把项目成功做出来。

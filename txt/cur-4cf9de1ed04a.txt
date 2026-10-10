@@ -1,0 +1,11 @@
+https://jakearchibald.com/2026/css-custom-property-compute-time/
+
+控制 CSS 自定义属性值的计算时机（Controlling when CSS custom property values are computed） ｜ Jake Archibald ｜ 文章 ｜ https://jakearchibald.com/2026/css-custom-property-compute-time/
+
+Jake Archibald 的一篇短文，讲一个他自己也只是"半知半解"的 CSS 细节：自定义属性的值到底在哪个元素上、什么时候算出来，以及 @property 怎样改变这一点。
+
+他用 sibling-index() 举例。在第二个 div 上写 --index: sibling-index()，再在它的第一个子元素上用 scale: var(--index)。没注册过的自定义属性相当于 syntax: '*'，值只是存成一串记号，原样代入到使用的地方再计算，于是 sibling-index() 是在子元素上求值的，结果是 1，getComputedStyle 读出来也只是字符串 "sibling-index()"。一旦用 @property 把 --index 注册成 <number>，值就会在声明它的那个元素上提前算成数字 2，子元素拿到的就是 2。
+
+同样的规律适用于 em、ex、ch、lh 等相对字体单位和 cqw、cqi 这类容器查询单位：@property 决定它们相对哪个元素计算。URL 略有不同：记号流形式的属性会按"使用它的那张样式表"解析相对路径，注册成 <url> 则固定在声明它的样式表上。
+
+最后是更绕的 var()。var() 和 if()、attr()、ident() 同属"任意替换函数"，不管属性注册成什么语法，都会在声明处立刻被替换。所以 --index: calc(sibling-index() * var(--multiplier)) 里的 --multiplier 当场就取了父元素上的 1，子元素再把 --multiplier 改成 3 也不起作用；剩下的 sibling-index() 部分是留成记号还是算成 2，仍由 --index 是否注册决定。

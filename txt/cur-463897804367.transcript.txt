@@ -1,0 +1,390 @@
+https://surma.dev/things/rust-to-webassembly/
+
+用笨办法把 Rust 编译成 WebAssembly
+
+下面是我所知道的关于把 Rust 编译成 WebAssembly 的一切，一次性倒出来。请享用。
+不久前，我写过一篇博文，讲怎样不用 Emscripten（也就是让这件事变简单的默认工具）把 C 编译成 WebAssembly。在 Rust 里，让 WebAssembly 变简单的工具叫 wasm-bindgen，而我们要把它扔掉！与此同时，Rust 有点不一样：WebAssembly 很早就是它的一等编译目标，标准库的结构也开箱即支持它。
+Rust 编译 WebAssembly 入门
+我们来看看，怎样在尽量不偏离标准 Rust 工作流的前提下让 Rust 输出 WebAssembly。在网上随便找找，很多文章和指南都会让你用 cargo init --lib 创建一个 Rust 库项目，然后在 Cargo.toml 里加上这一行：
+[package]
+name = "my_project"
+version = "0.1.0"
+edition = "2021"
+[lib]
+crate-type = ["cdylib"]
+   
+[dependencies]
+如果不把 crate 类型设为 cdylib，Rust 编译器会输出一个 .rlib 文件，也就是 Rust 自己的库格式。cdylib 这个名字暗示的是一个与 C 兼容的动态库，但我怀疑它其实只是表示"使用可互操作的格式"之类的意思。
+目前，我们先用 Cargo 新建库时生成的默认示例函数：
+pub fn add(left: usize, right: usize) -> usize {
+    left + right
+}
+一切就绪后，就可以把这个库编译成 WebAssembly 了：
+$ cargo build --target=wasm32-unknown-unknown --release
+你会在 target/wasm32-unknown-unknown/release/my_project.wasm 找到新生成的 WebAssembly 模块。本文我会一直使用 --release 构建，因为反汇编时它生成的 WebAssembly 模块要易读得多。
+可执行文件还是库
+你不一定要创建库，也可以创建一个 Rust 可执行文件（通过 cargo init --bin）。不过要注意，你要么得有一个签名符合惯例的 main() 函数，要么得用 #![no_main] 让编译器闭嘴，告诉它没有 main() 是有意为之。
+这样更好吗？在我看来这是口味问题，两种方式在功能上似乎等价，生成的 WebAssembly 代码也一样。大多数时候，WebAssembly 模块扮演的更像是库而不是可执行文件（WASI 的场景除外，后面会讲），所以从语义上说我更倾向于库的方式。除非另有说明，本文其余部分都使用库的配置。
+导出
+沿用库式的配置，我们来看看编译器生成的 WebAssembly 代码。为此，我推荐 WebAssembly 二进制工具包（简称 wabt），它提供了 wasm2wat 等实用工具。顺便也装上 binaryen，本文后面要用到它的 wasm-opt。binaryen 还提供 wasm-dis，作用和 wasm2wat 类似，但输出的不是 WebAssembly 文本格式（WAT），而是标准化程度较低的 WebAssembly S 表达式文本格式（WAST）。最后，还有字节码联盟（Bytecode Alliance）的 wasm-tools，提供 wasm-tools print。
+$ wasm2wat ./target/wasm32-unknown-unknown/release/my_project.wasm
+这个命令会把 WebAssembly 二进制文件转换成 WAT：
+(module
+  (table (;0;) 1 1 funcref)
+  (memory (;0;) 16)
+  (global $__stack_pointer (mut i32) (i32.const 1048576))
+  (global (;1;) i32 (i32.const 1048576))
+  (global (;2;) i32 (i32.const 1048576))
+  (export "memory" (memory 0))
+  (export "__data_end" (global 1))
+  (export "__heap_base" (global 2)))
+我们愤怒地发现，add 函数被从二进制文件里彻底删掉了。剩下的只有一个栈指针，以及两个分别标明数据段结束位置和堆起始位置的全局变量。原来把函数声明为 pub 并不足以让它出现在最终的 WebAssembly 模块里。我有点希望这就够了，但我猜 pub 只管 Rust 模块层面的可见性，不管链接器层面的符号可见性。
+确保编译器不删掉我们关心的函数，最快的办法是加上 #[no_mangle] 属性，虽然我不太喜欢这个名字。
+#[no_mangle]
+pub fn add(left: usize, right: usize) -> usize {
+    left + right
+}
+很少需要这样做，但你可以用 #[export_name = "..."]，以不同于 Rust 内部名称的名字导出函数。
+把 add 函数标记为导出后，我们重新编译项目，检查生成的 WebAssembly 文件：
+(module
+  (type (;0;) (func (param i32 i32) (result i32)))
+  (func $add (type 0) (param i32 i32) (result i32)
+    local.get 1
+    local.get 0
+    i32.add)
+  (table (;0;) 1 1 funcref)
+  (memory (;0;) 16)
+  (global $__stack_pointer (mut i32) (i32.const 1048576))
+  (global (;1;) i32 (i32.const 1048576))
+  (global (;2;) i32 (i32.const 1048576))
+  (export "memory" (memory 0))
+  (export "add" (func $add))
+  (export "__data_end" (global 1))
+  (export "__heap_base" (global 2)))
+这个模块可以用原生的 WebAssembly API 实例化：
+const importObj = {};
+// Node
+const data = require("fs").readFileSync("./my_project.wasm");
+const {instance} = await WebAssembly.instantiate(data, importObj);
+// Deno
+const data = await Deno.readFile("./my_project.wasm");
+const {instance} = await WebAssembly.instantiate(data, importObj);
+// For Web, it’s advisable to use `instantiateStreaming` whenever possible:
+const response = await fetch("./my_project.wasm");
+const {instance} = 
+  await WebAssembly.instantiateStreaming(response, importObj);
+instance.exports.add(40, 2) // returns 42
+突然之间，Rust 几乎全部的能力都唾手可得，可以拿来写 WebAssembly 了。
+对于模块边界上的函数（也就是你从 JavaScript 调用的那些），需要格外小心。至少目前，最好只用能干净地映射到 WebAssembly 类型的类型（比如 i32 或 f64）。如果你用数组、切片这类高级类型，甚至 String 这种拥有所有权的类型，函数最终的参数可能比在 Rust 里多，而且通常需要对内存布局之类的原理有更深的理解。
+ABI
+说到这里：没错，我们已经成功把 Rust 编译成了 WebAssembly。但换一个版本的 Rust，可能会生成函数签名完全不同的 WebAssembly 模块。函数参数从调用方传给被调用方的方式（比如作为指向内存的指针，还是作为立即数），是应用二进制接口（Application Binary Interface，简称 ABI）定义的一部分。rustc 默认使用 Rust 的 ABI，它并不稳定，基本被视为 Rust 内部的东西。
+为了让情况稳定下来，我们可以明确指定 rustc 对某个函数使用哪种 ABI，方法是用 extern 关键字。长期以来，跨语言函数调用的一个常见选择是 C ABI，这里我们就用它。C ABI 不会变，所以可以确定我们的 WebAssembly 模块接口也不会变。（下面代码中，第二行 pub fn 是改动前，第三行是改动后。）
+#[no_mangle]
+pub fn add(left: usize, right: usize) -> usize {
+pub extern "C" fn add(left: usize, right: usize) -> usize {
+    left + right
+}
+我们甚至可以省略 "C"，只写 extern，因为 C ABI 是默认的替代 ABI。
+导入
+WebAssembly 的一个重要部分是它的沙箱。沙箱确保在 WebAssembly 虚拟机中运行的代码无法访问宿主环境里的任何东西，除了通过导入对象显式传入沙箱的那些函数。
+假设我们想在 Rust 代码里生成随机数。我们可以引入 Rust 的 rand crate，但既然宿主环境里已经有现成的东西，何必再打包一份代码呢？第一步，我们需要声明 WebAssembly 模块期望一个导入：
+#[link(wasm_import_module = "Math")]
+extern "C" {
+    fn random() -> f64;
+}
+#[export_name = "add"]
+pub fn add(left: f64, right: f64) -> f64 {
+    left + right  
+    left + right + unsafe { random() }
+}
+extern "C" 块不要和前面的 extern "C" 函数混淆，它声明的是编译器期望在链接时由"别人"提供的函数。这通常是 Rust 链接 C 库的方式，但这套机制同样适用于 WebAssembly。不过外部函数总是隐式 unsafe 的，因为编译器无法对非 Rust 函数做任何安全保证，所以我们必须把调用包在 unsafe { ... } 块里才能调用它们。
+上面的代码能编译，但跑不起来。JavaScript 代码会抛出错误，需要更新以满足我们声明的导入。imports 对象是一个由导入模块组成的字典，每个导入模块又是一个由导入项组成的字典。在 Rust 代码中，我们声明了一个名为 "Math" 的导入模块，并期望其中有一个名为 "random" 的函数。这些名字当然是精心挑选的，好让我们能直接传入整个 Math 对象。
+  const importObj = {
+    Math: {
+      random: () => Math.random(),
+    }
+  };
+  // or
+  
+  const importObj = { Math };
+为了避免到处写 unsafe { ... }，通常最好编写包装函数，恢复 Rust 的安全不变式。这正是 Rust 内联模块的一个好用途：
+mod math {
+    mod math_js {
+        #[link(wasm_import_module = "Math")]
+        extern "C" {
+            pub fn random() -> f64;
+        }
+    }
+    pub fn random() -> f64 {
+        unsafe { math_js::random() }
+    }
+}
+#[export_name = "add"]
+pub extern "C" fn add(left: f64, right: f64) -> f64 {
+    left + right + math::random()
+}
+顺便说一句，如果我们没有指定 #[link(wasm_import_module = ...)] 属性，这些函数会被期望出现在默认的 env 模块里。另外，就像可以用 #[export_name = "..."] 改变函数导出时的名字一样，也可以用 #[link_name = "..."] 改变函数导入时的名字。
+高级类型
+我前面说过，对于模块边界上的函数，最好只用能干净映射到 WebAssembly 所支持数据类型的值类型。当然，编译器确实允许你把高级类型用作函数参数和返回值。这种情况下编译器输出什么，由 C ABI 定义（除了一个 bug：rustc 目前并没有完全遵守 C ABI）。
+不深入太多细节地说：有确定大小的类型（如结构体、枚举等）会被转换成一个简单的指针。数组和元组同样是有确定大小的类型，但会被特殊对待：如果它们小于 32 位，会被转换为立即数。看函数返回值的话，事情就更复杂了：如果返回一个大于 32 位的数组类型，函数将没有返回值，而是多出一个 i32 类型的参数，函数把它当作指针，指向存放结果的位置。如果函数返回元组，无论元组大小如何，它总会变成一个函数参数。
+不定大小类型（?Sized）的函数参数，如 str、[u8] 或 dyn MyTrait，会被拆成两个参数：一个是指向数据的指针，另一个是指向一小段元数据的指针。对于 str 或切片，元数据是数据的长度；对于 trait 对象，元数据是虚函数表（vtable），也就是指向各个 trait 函数实现的函数指针列表。如果你想进一步了解 Rust 中的 vtable 长什么样，我推荐 Thomas Bächler 的这篇文章。
+这里我略过了大量细节，因为除非你想写下一个 wasm-bindgen，否则我建议依赖现有工具，而不是重新发明这个轮子。
+模块体积
+在 Web 上部署 WebAssembly 时，二进制文件的体积很重要。每个字节都要经过网络、经过浏览器的 WebAssembly 编译器，所以二进制越小，用户等待 WebAssembly 开始工作的时间就越短。如果把上面的默认项目做 release 构建，我们会得到足足 1.7MB 的 WebAssembly。对于两个数相加来说，这似乎不太对劲。
+数据段：WebAssembly 模块中相当大的一部分往往是数据段，也就是会在某个时刻被复制到线性内存中的静态数据。这些段的成本相当低，因为编译器会直接跳过它们，分析和优化模块启动时间时要记住这一点。
+检查 WebAssembly 模块内部构成的一个快速方法是 llvm-objdump，你的系统上应该已经有了。也可以用 wabt 中的 wasm-objdump，它提供的接口大体相同。
+$ llvm-objdump -h target/wasm32-unknown-unknown/release/my_project.wasm
+target/wasm32-unknown-unknown/release/my_project.wasm: file format wasm
+Sections:
+Idx Name            Size     VMA      Type
+  0 TYPE            00000007 00000000
+  1 FUNCTION        00000002 00000000
+  2 TABLE           00000005 00000000
+  3 MEMORY          00000003 00000000
+  4 GLOBAL          00000019 00000000
+  5 EXPORT          0000002b 00000000
+  6 CODE            00000009 00000000 TEXT
+  7 .debug_info     00062c72 00000000
+  8 .debug_pubtypes 00000144 00000000
+  9 .debug_ranges   0002af80 00000000
+ 10 .debug_abbrev   00001055 00000000
+ 11 .debug_line     00045d24 00000000
+ 12 .debug_str      0009f40c 00000000
+ 13 .debug_pubnames 0003e3f2 00000000
+ 14 name            0000001c 00000000
+ 15 producers       00000043 00000000
+llvm-objdump 功能相当丰富，为有其他指令集汇编开发经验的人提供了熟悉的命令行界面。但专门用来调试二进制体积时，它缺少一些简单的辅助功能，比如按大小给段排序，或者把 CODE 段按函数拆开。幸运的是，还有另一个专为 WebAssembly 打造的工具 Twiggy，非常擅长这件事：
+$ twiggy top target/wasm32-unknown-unknown/release/my_project.wasm
+ Shallow Bytes │ Shallow % │ Item
+───────────────┼───────────┼─────────────────────────────────────────
+        652300 ┊    36.67% ┊ custom section '.debug_str'
+        404594 ┊    22.75% ┊ custom section '.debug_info'
+        285988 ┊    16.08% ┊ custom section '.debug_line'
+        254962 ┊    14.33% ┊ custom section '.debug_pubnames'
+        176000 ┊     9.89% ┊ custom section '.debug_ranges'
+          4181 ┊     0.24% ┊ custom section '.debug_abbrev'
+           324 ┊     0.02% ┊ custom section '.debug_pubtypes'
+            67 ┊     0.00% ┊ custom section 'producers'
+            25 ┊     0.00% ┊ custom section 'name' headers
+            20 ┊     0.00% ┊ custom section '.debug_pubnames' headers
+            19 ┊     0.00% ┊ custom section '.debug_pubtypes' headers
+            18 ┊     0.00% ┊ custom section '.debug_ranges' headers
+            17 ┊     0.00% ┊ custom section '.debug_abbrev' headers
+            16 ┊     0.00% ┊ custom section '.debug_info' headers
+            16 ┊     0.00% ┊ custom section '.debug_line' headers
+            15 ┊     0.00% ┊ custom section '.debug_str' headers
+            14 ┊     0.00% ┊ export "__heap_base"
+            13 ┊     0.00% ┊ export "__data_end"
+            12 ┊     0.00% ┊ custom section 'producers' headers
+             9 ┊     0.00% ┊ export "memory"
+             9 ┊     0.00% ┊ add
+...
+现在可以清楚地看到，模块体积的主要贡献者全都是自定义段，而按定义，它们与模块的执行无关。从名字看，它们包含的是调试用的信息，所以 --release 构建也输出这些段，有点出人意料。这似乎和一个由来已久的 bug 有关：我们的代码编译时不带调试符号，但我们机器上预编译的标准库仍然带着调试符号。
+为了解决这个问题，我们在 Cargo.toml 中再加一行：
+[profile.release]
+strip = true
+这会让 rustc 去掉所有自定义段，包括提供函数名的那个段。有时这并不理想，因为这样 twiggy 的输出里函数只会显示为 code[0] 之类的名字。如果你想保留函数名，可以使用特定的 strip 模式：
+[profile.release]
+strip = true
+strip = "debuginfo"
+如果你需要极其精细的控制，可以回过头完全关闭 rustc 中的剥离，改为手动使用 llvm-strip（或 wabt 中的 wasm-strip）。这样你就能控制保留哪些自定义段。
+$ llvm-strip --keep-section=name target/wasm32-unknown-unknown/release/my_project.wasm
+剥离之后，我们只剩下一个 116 字节的模块。反汇编显示，模块里唯一的函数叫 add，执行的是 (f64.add (local.get 0) (local.get 1))，这说明 Rust 编译器生成了最优的代码。当然，随着代码库增长，控制二进制体积会变得更复杂。
+自定义段
+趣闻：我们可以用 Rust 往 WebAssembly 模块里添加自己的自定义段。如果声明一个字节数组（注意不是切片！），就可以加上 #[link_section = ...] 属性，把这些字节打包进单独的段。
+const _: () = {
+    #[link_section = "surmsection"]
+    static SECTION_CONTENT: [u8; 11] = *b"hello world";
+};
+我们可以用 WebAssembly.Module.customSection() API 或 llvm-objdump 提取这些数据：
+$ llvm-objdump -s -j surmsection target/wasm32-unknown-unknown/release/my_project.wasm
+target/wasm32-unknown-unknown/release/my_project.wasm: file format wasm
+Contents of section surmsection:
+ 0000 68656c6c 6f20776f 726c64             hello world
+隐蔽的膨胀
+我在网上看到过几次抱怨，说 Rust 生成的 WebAssembly 模块做的事看似很小，体积却很大。根据我的经验，Rust 生成的 WebAssembly 二进制体积大有三个原因：
+- 调试构建（即忘了给 Cargo 传 --release）
+- 调试符号（即忘了运行 llvm-strip）
+- 无意中引入的字符串格式化和 panic
+前两个我们已经看过了，下面仔细看看最后一个。这个看似无害的程序会编译出 18KB 的 WebAssembly：
+static PRIMES: &[i32] = &[2, 3, 5, 7, 11, 13, 17, 19, 23];
+#[no_mangle]
+extern "C" fn nth_prime(n: usize) -> i32 {
+    PRIMES[n]
+}
+好吧，也许并没有那么无害。你可能已经猜到我要说什么了。
+Panic
+用 twiggy 快速看一下就会发现，Wasm 模块体积的主要贡献者是与字符串格式化、panic 和内存分配相关的函数。这也说得通！参数 n 未经检查就被用来索引数组，Rust 别无选择，只能注入边界检查。如果边界检查失败，Rust 就会 panic，而这需要生成一条格式良好的错误信息和栈跟踪。
+一种处理办法是自己做边界检查。Rust 编译器非常擅长只在必要时才注入检查。（下面几段代码中，PRIMES[n] 一行为改动前的写法。）
+fn nth_prime(n: usize) -> i32 {
+    if n < 0 || n >= PRIMES.len() { return -1; }
+    PRIMES[n]
+}
+更符合惯用法的做法，可能是借助 Option<T> 的 API 来控制如何处理出错的情况：
+fn nth_prime(n: usize) -> i32 {
+    PRIMES[n]
+    PRIMES.get(n).copied().unwrap_or(-1)
+}
+第三种办法是使用 Rust 明确提供的一些不做检查的方法。这些方法打开了未定义行为的大门，因此是 unsafe 的；但如果你愿意承担确保安全的责任，性能（或文件体积）上的收益可能相当可观！
+fn nth_prime(n: usize) -> i32 {
+    PRIMES[n]
+    unsafe { *PRIMES.get_unchecked(n) }
+}
+我们可以努力留意可能发生 panic 的地方，并尝试手动处理这些路径。但一旦开始依赖第三方 crate，这就越来越难成功，因为我们没法轻易改变库内部的错误处理方式。
+LTO
+我们大概得接受这样一个事实：代码库里迟早会有无法避免的 panic 代码路径。虽然我们可以尝试减轻 panic 的影响（后面我们也会这么做），但有一个相当强大的优化，往往能带来显著的代码缩减。这个优化由 LLVM 提供，叫 LTO（链接时优化）。rustc 会先分别编译和优化每个 crate，然后才把所有东西链接成最终的二进制文件。然而，有些优化只有在链接之后才会显现。例如，许多函数会根据输入走不同的分支。在编译时，你只能看到同一个 crate 内部对函数的调用；到了链接时，你就知道了任何一个函数所有可能的调用，这样或许就能消除其中一些代码分支。
+LTO 默认是关闭的，因为它是一项相当昂贵的优化，会显著拖慢编译时间，尤其是在较大的 crate 中。可以通过 rustc 众多代码生成选项中的一个来开启它，你可以在 Cargo.toml 的 profile 部分控制这些选项。具体来说，我们需要在 Cargo.toml 中加这一行，为 release 构建开启 LTO：
+[package]
+name = "my_project"
+version = "0.1.0"
+edition = "2021"
+[lib]
+crate-type = ["cdylib"]
+[profile.release]
+lto = true
+开启 LTO 后，剥离后的二进制缩小到 2.3K，相当惊人。LTO 唯一的代价是更长的链接时间，但如果在意二进制体积，LTO 应该是你最先动用的手段之一，因为它"只"花费构建时间，不需要改代码。
+wasm-opt
+另一个几乎总应该出现在构建流程里的工具，是 binaryen 的 wasm-opt。它是另一组优化遍，纯粹作用于 WebAssembly 虚拟机指令，与生成它们的源语言无关。Rust 这样的高级语言掌握更多信息，可以做更复杂的优化，所以 wasm-opt 并不能替代你所用语言编译器的优化。不过，它往往还能从模块体积里再削掉一些字节。
+$ wasm-opt -O3 -o output.wasm target/wasm32-unknown-unknown/my_project.wasm
+在我们的例子里，wasm-opt 把 Rust 生成的 2.3K WebAssembly 二进制进一步缩小到 2.0K。相当不错！不过请放心，我不会就此止步。对于在数组里查个值来说，这还是太大了。
+不用标准库（No Standard）
+Rust 有一个标准库，包含做系统编程时日常需要的大量抽象和工具：访问文件、获取当前时间、打开网络套接字。这一切都现成可用，不用去 crates.io 之类的地方找。然而，其中许多数据结构和函数都对使用环境有所假设：它们假设硬件细节已被抽象成统一的 API，并假设自己能以某种方式分配（和释放）任意大小的内存块。通常这两项工作都由操作系统完成，而我们大多数人每天都在操作系统之上工作。
+然而，当你通过原始 API 实例化一个 WebAssembly 模块时，情况就不同了：沙箱（WebAssembly 标志性的安全特性之一）把 WebAssembly 代码与宿主隔离开来，进而也与操作系统隔离开来。你的代码能访问的只有一块线性内存，甚至没有任何东西去管理哪些部分已被使用、哪些部分可以拿来用。
+WASI：这不在本文范围内，但正如 WebAssembly 是对代码所运行处理器的抽象，WASI（WebAssembly 系统接口）旨在成为对代码所运行操作系统的抽象，无论在什么环境下都给你一套统一的 API。Rust 支持 WASI，不过 WASI 本身仍在开发中。
+这意味着 Rust 给了我们一种虚假的安全感！它提供了一整套标准库，背后却没有操作系统支撑。事实上，标准库的许多模块只是被别名成了必然失败的实现。也就是说，所有返回 Result<T> 的函数总是返回 Err，其他函数则会 panic。
+向没有操作系统的设备学习
+只有一块线性内存。没有中心化的实体管理内存或外设。只有算术运算。如果你做过嵌入式系统，这听起来可能很熟悉。虽然现代嵌入式系统如今多数运行 Linux，但更小的微处理器没有足够的资源这样做。Rust 也面向这些资源极度受限的环境，《Embedded Rust Book》和《Embedonomicon》讲解了如何在这类环境中正确地编写 Rust。
+要进入裸机的世界 🤘，我们只需在代码里加一行：#![no_std]。这个 crate 宏告诉 Rust 不要链接标准库，而只链接 core。《Embedonomicon》对这意味着什么解释得相当简洁：
+core crate 是 std crate 的一个子集，它对程序将运行在什么系统上不做任何假设。因此，它为浮点数、字符串和切片等语言原语提供 API，也提供暴露处理器特性（如原子操作和 SIMD 指令）的 API。但它缺少任何涉及堆内存分配和 I/O 的 API。
+对于应用程序来说，std 的作用不只是提供访问操作系统抽象的途径。除此之外，std 还负责在程序的 main 函数被调用之前设置栈溢出保护、处理命令行参数以及创建主线程。一个 #![no_std] 应用缺少所有这些标准运行时，所以如果需要运行时，就必须自己初始化。
+这听起来可能有点吓人，但我们一步一步来。首先，把上面那个会 panic 的质数程序声明为 no_std：
+#![no_std]
+static PRIMES: &[i32] = &[2, 3, 5, 7, 11, 13, 17, 19, 23];
+#[no_mangle]
+extern "C" fn nth_prime(n: usize) -> i32 {
+    PRIMES[n]
+}
+遗憾的是（《Embedonomicon》那段话已经预示了这一点），我们还没有提供 core 所依赖的一些基础设施。排在首位的是，我们需要定义在这个环境中发生 panic 时该做什么。这由名副其实的 panic handler 完成，《Embedonomicon》给出的示例是：
+#[panic_handler]
+fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
+    loop {}
+}
+这是嵌入式系统中相当典型的做法，实际上是在 panic 发生后阻止处理器继续执行。但这在 Web 上并不是好的行为，所以对于 WebAssembly，我通常选择手动发出一条 unreachable 指令，让任何 Wasm 虚拟机当场停下：（下面代码中 loop {} 一行为改动前。）
+#[panic_handler]
+fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
+    loop {}
+    core::arch::wasm32::unreachable()
+}
+有了这个，程序又能编译了。经过剥离和 wasm-opt 后，二进制只有 168 字节。极简主义再次获胜！
+内存管理
+当然，不用标准库让我们放弃了很多东西。没有堆分配，就没有 Box、没有 Vec、没有 String，还有许多其他好用的东西。幸运的是，我们不必提供一整个操作系统就能把它们找回来。
+std 提供的很多东西，其实只是对 core 和另一个 Rust 内部 crate alloc 的重新导出。alloc 包含与内存分配相关的一切，以及依赖内存分配的数据结构。导入它，就能重新用上我们信赖的 Vec。
+#![no_std]
+// One of the few occastions where we have to use `extern crate`
+// even in Rust Edition 2021.
+extern crate alloc;
+use alloc::vec::Vec;
+#[no_mangle]
+extern "C" fn nth_prime(n: usize) -> usize {
+    // Please enjoy this horrible implementation of
+    // The Sieve of Eratosthenes.
+    let mut primes: Vec<usize> = Vec::new();
+    let mut current = 2;
+    while primes.len() < n {
+        if !primes.iter().any(|prime| current % prime == 0) {
+            primes.push(current);
+        }
+        current += 1;
+    }
+    primes.into_iter().last().unwrap_or(0)
+}
+#[panic_handler]
+fn panic(_panic: &core::panic::PanicInfo<'_>) -> ! {
+    core::arch::wasm32::unreachable()
+}
+当然，尝试编译这段代码会失败：我们还没有告诉 Rust 我们的内存管理是什么样的，而 Vec 需要知道这一点才能工作。
+$ cargo build --target=wasm32-unknown-unknown --release
+error: no global memory allocator found but one is required; 
+  link to std or add `#[global_allocator]` to a static item that implements 
+  the GlobalAlloc trait
+error: `#[alloc_error_handler]` function required, but not found
+note: use `#![feature(default_alloc_error_handler)]` for a default error handler
+在撰写本文时（Rust 1.67），你需要提供一个在分配失败时被调用的错误处理函数。在下一个版本 Rust 1.68 中，default_alloc_error_handler 已经稳定，这意味着每个不用标准库的 Rust 程序都会自带这个错误处理函数的默认实现。如果你还是想提供自己的错误处理函数，可以这样写：
+#[alloc_error_handler]
+fn alloc_error(_: core::alloc::Layout) -> ! {
+    core::arch::wasm32::unreachable()
+}
+有了这个精巧的错误处理函数，我们终于该提供一种真正分配内存的方式了。和我那篇 C 编译 WebAssembly 的文章一样，我的自定义分配器是一个极简的 bump 分配器（指针碰撞分配器），这类分配器往往又快又小，但没法释放内存。我们静态分配一块区域作为堆，并记录"空闲区域"从哪里开始。由于我们没有使用 Wasm 线程，我也会忽略线程安全。
+use core::cell::UnsafeCell;
+const ARENA_SIZE: usize = 128 * 1024;
+#[repr(C, align(32))]
+struct SimpleAllocator {
+    arena: UnsafeCell<[u8; ARENA_SIZE]>,
+    head: UnsafeCell<usize>,
+}
+impl SimpleAllocator {
+    const fn new() -> Self {
+        SimpleAllocator {
+            arena: UnsafeCell::new([0; ARENA_SIZE]),
+            head: UnsafeCell::new(0),
+        }
+    }
+}
+unsafe impl Sync for SimpleAllocator {}
+#[global_allocator]
+static ALLOCATOR: SimpleAllocator = SimpleAllocator::new();
+#[global_allocator] 把一个全局变量标记为管理堆的实体。这个变量的类型必须实现 GlobalAlloc trait。GlobalAlloc trait 的方法都使用 &self，所以如果想修改数据类型内部的值，就必须使用内部可变性，这里我选择了 UnsafeCell。使用 UnsafeCell 会让我们的结构体隐式地成为 !Sync，而 Rust 不允许全局静态变量是这样的。所以我们还得手动实现 Sync trait，告诉 Rust 我们知道自己有责任让这个数据类型线程安全（而我们完全忽略了这一点）。
+给结构体标上 #[repr(C)]，唯一的原因是这样我们就能手动指定对齐值。这样可以确保区域中的第一个字节（进而我们返回的第一个指针）也有 32 的对齐，这应该能满足大多数数据结构。
+下面是 GlobalAlloc trait 的具体实现：
+unsafe impl GlobalAlloc for SimpleAllocator {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        let size = layout.size();
+        let align = layout.align();
+        // Find the next address that has the right alignment.
+        let idx = (*self.head.get()).next_multiple_of(align);
+        // Bump the head to the next free byte
+        *self.head.get() = idx + size;
+        let arena: &mut [u8; ARENA_SIZE] = &mut (*self.arena.get());
+        // If we ran out of arena space, we return a null pointer, which
+        // signals a failed allocation.
+        match arena.get_mut(idx) {
+            Some(item) => item as *mut u8,
+            _ => core::ptr::null_mut(),
+        }
+    }
+    unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
+        /* lol */
+    }
+}
+#[global_allocator] 并不局限于 #[no_std]！你也可以用它覆盖 Rust 的默认分配器，换成你自己的，因为 Rust 的默认分配器大约占 10K 的 Wasm 体积。
+wee_alloc
+当然，你不必自己实现分配器。事实上，依赖一个经过充分测试的实现可能更明智。处理分配器的 bug 和隐蔽的内存损坏可一点也不好玩。
+许多指南推荐 wee_alloc，这是 Rust WebAssembly 团队写的一个非常小（不到 1KB）、也能释放内存的分配器。遗憾的是，它似乎已无人维护，而且有一个关于内存损坏和内存泄漏的未解决 issue。
+在任何稍有复杂度的 WebAssembly 模块中，Rust 默认分配器占用的那 10KB 只占整体模块体积的一小部分，所以我建议继续用它，并且知道这个分配器经过了充分测试、性能良好。
+wasm-bindgen
+既然我们几乎把所有事都用笨办法做了一遍，现在我们有资格看看为 WebAssembly 写 Rust 的便捷方式了，那就是使用 wasm-bindgen。
+wasm-bindgen 的关键特性是 #[wasm_bindgen] 宏，可以把它加在每个想导出的函数上。这个宏会添加我们在本文前面手动添加的那些编译器指令，但除此之外它还做了一件有用得多的事：
+例如，如果我们把这个宏加到上面的 add 函数上，它会生成另一个名为 __wbindgen_describe_add 的函数，以数字格式返回对 add 函数的描述。具体来说，我们的 add 函数的描述符长这样：
+Function(
+    Function {
+        arguments: [
+            U32,
+            U32,
+        ],
+        shim_idx: 0,
+        ret: U32,
+        inner_ret: Some(
+            U32,
+        ),
+    },
+)
+这是一个相当简单的函数，但 wasm-bindgen 的描述符能够表示相当复杂的函数签名。
+展开：如果你想看看 #[wasm_bindgen] 宏生成了什么代码，可以使用 rust-analyzer 的"递归展开宏"功能。在 VS Code 里可以通过命令面板运行它。
+这些描述符有什么用？wasm-bindgen 不只提供一个宏，还附带一个命令行工具，可以用来对 Wasm 二进制做后处理。这个命令行工具会提取这些描述符，并用其中的信息生成量身定做的 JavaScript 绑定（然后删掉所有这些描述符函数，因为它们已经不需要了）。生成的 JavaScript 包含处理高级类型所需的所有例程，让你能无缝地传递字符串、ArrayBuffer 甚至闭包这样的类型。
+如果你要为 WebAssembly 写 Rust，我推荐使用 wasm-bindgen。wasm-bindgen 不支持 #![no_std]，但实际上这很少成为问题。
+wasm-pack
+我还想简单提一下 wasm-pack，这是另一个面向 WebAssembly 的 Rust 工具。我们用了一整套工具来编译和处理 WebAssembly，以优化最终结果。wasm-pack 把这些流程中的大部分固化了下来。它可以初始化一个所有设置都为 WebAssembly 优化好的新 Rust 项目；可以构建项目，用所有正确的参数调用 cargo，然后调用 wasm-bindgen 命令行工具生成绑定，最后运行 wasm-opt，确保没有遗漏任何性能。wasm-pack 还能准备好你的 WebAssembly 模块以发布到 npm，不过我个人从没用过这个功能。
+结论
+Rust 是编译到 WebAssembly 的绝佳语言。开启 LTO 后，你能得到极小的模块。Rust 的 WebAssembly 工具链非常出色，自从我第一次在 Squoosh 中使用它以来已经进步了很多。wasm-bindgen 生成的胶水代码既现代，又经过了 tree-shaking。
+我非常享受学习这一切在底层如何运作的过程，它帮助我理解并欣赏了这些工具为我做的一切。希望你也有同感。
+非常感谢 Ingrid、Ingvar 和 Saul 审阅本文。

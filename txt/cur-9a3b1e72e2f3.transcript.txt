@@ -1,0 +1,519 @@
+https://www.matuzo.at/blog/2023/pros-and-cons-of-shadow-dom
+
+使用 Shadow DOM 与样式封装的利弊
+
+当我开始使用 Web Components 时，我比较了不同的方案，最后决定用 Lit。我知道额外的性能开销很快就能回本，而且它在我的性能预算之内。我至今仍对这个决定感到满意。
+
+我当时对 Web Components 和 Lit 都很陌生，所以不得不经常查阅文档。在关于 Shadow DOM 的页面上，它写道：
+
+“通常不建议渲染到子元素而不是 shadow DOM。你的元素将无法使用 DOM 或样式作用域，也无法把元素组合进它的内部 DOM。”
+
+MDN 上的“使用 shadow DOM”页面也印证了这一点：
+
+“Web Components 的一个重要方面是封装：能够把标记结构、样式和行为隐藏起来，与页面上的其他代码分开，使不同部分不会相互冲突，代码也能保持整洁。”
+
+这证实了我对 Web Components 工作方式的认识：它们与 Shadow DOM 密不可分。我以为那就是它的独特卖点（USP），所以我几乎在构建的每个组件中都用了它。
+
+将近一年后，在与许多问题和烦恼搏斗之后，我开始怀疑 Shadow DOM 是否真的那么有用。于是我在 Mastodon 上发了这样一条：
+
+“用了将近一年的 Web Components，我开始怀疑样式封装和 shadow DOM 总体上到底有多大用处。
+
+不用它们的话，样式和一些无障碍方面的事情要容易得多……”
+
+令我惊讶的是，很多人回复说他们表示赞同，默认使用 light DOM，只在合理的时候才选择启用。我很高兴，因为这证实了我的感觉，也鼓励我重新思考并重构我构建的一些组件。Shadow DOM 有它存在的理由，但并不总是必须作为首选。
+
+为了帮助你做出类似的决定，我总结了我所认为的 Shadow DOM 和样式封装的利与弊。请注意，我是从这样一个人的角度来写的：首先也是最重要的，我关心无障碍和结构良好的语义化 HTML。对我来说，JavaScript 是一个可选的附加层，而不是我代码的基础。这意味着我可能不必解决那些主要开发重度依赖 JS 网站的人所面对的同样问题。这也许也解释了为什么我的弊端清单比好处清单要长。
+
+这里有一个 CodePen 合集，包含本文中所有的演示。
+
+概览
+
+1. 好处：样式封装
+2. 好处：DOM 封装
+3. 好处：插槽
+4. 弊端：样式“封装”
+5. 弊端：给插槽内容写样式
+6. 弊端：给嵌套的插槽内容写样式
+7. 弊端：选择插槽内容
+8. 弊端：失效的引用
+9. 弊端：依赖 JavaScript
+10. 弊端：FOUCE（未加样式的自定义元素闪烁）
+11. 弊端：表单的行为不同
+12. 弊端：缺失全局样式
+13. 弊端：用无障碍检测工具调试
+14. 弊端：用开发者工具调试
+
+好处：样式封装
+
+当你构建的组件会被别人用在你无法访问、也无法控制 light DOM 样式的环境中时，样式封装可能会非常有帮助。你给使用你组件的开发者提供一个或多个 JS 文件，其中包含让你的自定义元素按你预期的方式显示和工作所需的全部结构和样式。如果组件有了新版本，他们不必太担心其中用到的结构和类名，因为一切都整整齐齐地藏在它自己的 DOM 里。他们只需替换 JavaScript 文件。
+
+例如，Egor 在 Mastodon 上回复我的帖子说：
+
+“在创建组件库、又无法访问文档（light DOM）样式的时候，没有它们我几乎没法工作。我正在做一个项目，需要组件同时用于 React、Angular 和 Blazor。Web Components 让这成为可能。”
+
+在这类情况下，当你在做一个设计系统，不知道谁会在什么环境中、搭配哪些外部样式表使用你的组件时，样式封装就非常合理。
+
+举个例子：一个段落在 light DOM 中，另一个在某个 Web Component 的 shadow DOM 中。
+
+<p>
+  Hello World!
+</p>
+<cus-tom>
+  Hello encapsulated World!
+</cus-tom>
+
+p {
+  border: 4px dotted aqua;
+}
+
+组件内的段落不受全局样式影响，并且带有自己的样式，而这些样式不会影响外部。
+
+（演示：Hello World!）
+
+你只需把文字传给 Web Component，它就会返回一个带样式的段落。
+
+class Custom1 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    let style = document.createElement('style');
+    style.textContent= `
+      p {
+        font-family: Comic Sans MS;
+      }
+    `
+    let content = document.createElement('p');
+    content.innerHTML = `<slot></slot>`
+    this.shadowRoot.append(style)
+    this.shadowRoot.append(content)
+  }
+}
+customElements.define('cus-tom', Custom1);
+
+好处：DOM 封装
+
+与样式封装类似，使用 Shadow DOM 你还能获得 DOM 封装，这可能会很有帮助。
+
+在下面的演示中，你可以看到页面上显示只有三个按钮，但实际上有四个。只是其中一个位于自定义组件的 shadow DOM 中。绑定在 document 上的点击事件处理函数也只影响 light DOM 中的按钮。
+
+（演示：There are 0 buttons!）
+
+<p>There are <span>0</span> buttons!</p>
+<button>Click me</button>
+<button>Click me</button>
+<cus-tom2></cus-tom2>
+<button>Click me</button>
+
+// simple web component with a button attached to the shadow DOM
+class Custom2 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+     const button = document.createElement('button')
+     button.textContent = 'Click me'
+     button.addEventListener('click', e => {
+       alert('in the shadow ohoh')
+     })
+    this.shadowRoot.append(button)
+  }
+}
+customElements.define('cus-tom2', Custom2);
+// Get all buttons on the page 
+const buttons = document.querySelectorAll('button')
+// Update the amount of buttons
+document.querySelector('span').textContent = buttons.length
+// Attach a click event to all buttons
+document.addEventListener('click', e => {
+  if (e.target.closest('button')) {
+    alert('light')
+  }
+})
+
+值得注意的是，即使不使用 Shadow DOM，节点的查询范围也可以限定在你的组件之内。例如，this.querySelectorAll('button') 只会返回你组件内部的所有按钮。
+
+好处：插槽
+
+你可以定义一个不带 shadow DOM 的 Web Component，并从 light DOM 传入内容。
+
+class Custom3 extends HTMLElement {
+  constructor() {
+    super();
+  }
+}
+customElements.define('cus-tom3', Custom3);
+
+<cus-tom3>
+  <h3>That's my heading</h3>
+  <p>That's my content!</p>
+</cus-tom3>
+
+（演示：That's my heading / That's my content!）
+
+这没问题，但有了 shadow DOM，你可以更好地控制插槽内容在 DOM 中的位置。能够创建具名插槽，是我最喜欢的特性之一。
+
+<cus-tom4>
+  <p slot="content">That's my content!</p>
+  <h3 slot="heading">That's my heading</h3>
+  <p slot="content">That's even more content!</p>
+</cus-tom4>
+
+class Custom4 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.innerHTML = `
+      <slot name="heading"></slot>
+      <p>Other content</p>
+      <slot name="content"></slot>
+    `
+  }
+}
+customElements.define('cus-tom4', Custom4);
+
+看看我是怎么把 light DOM 中内容的顺序弄乱的。只要 JavaScript 正常工作，这就无关紧要，因为你可以定义插槽的渲染顺序。你还可以在中间添加其他元素，或者把多段内容传进同一个插槽。
+
+（演示：That's my content! / That's my heading / That's even more content!）
+
+弊端：样式“封装”
+
+Web Component 内部的样式是被包含住的；它们无法影响外部的元素。外部的样式也不会影响 Shadow DOM 内部的元素，但有两个例外：可继承的属性和自定义属性。
+
+<div>
+  <cus-tom5>
+    Hello World!
+  </cus-tom5>
+</div>
+
+/* Styles don't apply */
+p {
+  border: 10px solid aqua;
+}
+/* Styles apply */
+div {
+  --background: black;
+  color: red;
+}
+
+选中并给页面上所有段落加样式，不会影响被封装的段落。但它仍然从 light DOM 中的父元素 div 继承了 color 属性的值，也会读取它的自定义属性。
+
+class Custom5 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    let style = document.createElement('style');
+    style.textContent= `
+      p {
+        background: var(--background, transparent);
+      }
+    `
+    let content = document.createElement('p');
+    content.innerHTML = `<slot></slot>`
+    this.shadowRoot.append(style)
+    this.shadowRoot.append(content)
+  }
+}
+customElements.define('cus-tom5', Custom5);
+
+别误会我的意思。继承是好事。如果 Web Components 无法使用来自外部的自定义属性，我几个月前就把它们扔出窗外了。只是 Web Components 中的样式封装并不是百分之百的封装。为了防止可继承属性渗进来，你必须未雨绸缪地重置它们。此外，最好给你的自定义属性加上前缀，以免与页面上的其他属性冲突。
+
+弊端：给插槽内容写样式
+
+在下面这个组件里，我通过插槽传入了一个段落。light DOM 中的所有段落都应用了全局样式。在我的组件里，我试图覆盖其中一些样式，但我的规则没有生效。
+
+<cus-tom6>
+  <p>Hello World!</p>
+</cus-tom6>
+
+p {
+  color: red;
+  border: 10px solid red;
+}
+
+class Custom6 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    let style = document.createElement('style');
+    style.textContent= `
+      ::slotted(p) {
+        color: blue;
+        border-color: blue;
+      }
+    `
+    let content = document.createElement('div');
+    content.innerHTML = `<slot></slot>`
+    this.shadowRoot.append(style)
+    this.shadowRoot.append(content)
+  }
+}
+customElements.define('cus-tom6', Custom6);
+
+（演示：Hello World!）
+
+原因在于，我们面对的是两个不同的上下文：文档和组件。对于普通规则，外部上下文的声明优先于内部上下文的规则。对于 important 规则，则正好相反。这意味着要覆盖来自外部上下文的样式，你必须使用 !important，这很烦人。
+
+style.textContent= `
+  ::slotted(p) {
+    color: blue !important;
+    border-color: blue  !important;
+  }
+`
+
+（演示：Hello World!）
+
+弊端：给嵌套的插槽内容写样式
+
+你无法给嵌套的插槽内容写样式。使用 ::slotted()，你只能选中第一层的元素。在下面的例子里，我们只能给 <ul> 加样式，而不能给 <li> 加样式。
+
+<cus-tom8>
+  <ul>
+    <li>
+      Hello World
+    </li>
+  </ul>
+</cus-tom8>
+
+class Custom8 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    let style = document.createElement('style');
+    style.textContent= `
+      ::slotted(ul) {
+        border: 10px solid red;
+      }
+      ::slotted(li) {
+        border: 10px solid blue;
+      }
+      ::slotted(ul li) {
+        border: 10px solid blue;
+      }
+      ::slotted(ul) li {
+        border: 10px solid blue;
+      }
+      ::slotted(ul) ::slotted(li) {
+        border: 10px solid blue;
+      }
+    `
+    let content = document.createElement('div');
+    content.innerHTML = `<slot></slot>`
+    this.shadowRoot.append(style)
+    this.shadowRoot.append(content)
+  }
+}
+customElements.define('cus-tom8', Custom8);
+
+（演示：- Hello World）
+
+弊端：选择插槽内容
+
+用 ::slotted() 伪元素能做的事情很有限。例如，组合选择器不起作用。
+
+class Custom9 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    let style = document.createElement('style');
+    style.textContent= `
+      ::slotted(p + p) {
+        border: 10px solid red;
+      }
+      ::slotted(p) + ::slotted(p) {
+        border: 10px solid red;
+      }
+     `
+    let content = document.createElement('div');
+    content.innerHTML = `<slot></slot>`
+    this.shadowRoot.append(style)
+    this.shadowRoot.append(content)
+  }
+}
+customElements.define('cus-tom9', Custom9)
+
+<cus-tom9>
+  <p>Hello World</p>
+  <p>Hello World</p>
+</cus-tom9>
+
+（演示：Hello World / Hello World）
+
+弊端：失效的引用
+
+你无法从 shadow DOM 引用 light DOM 中的元素，反之亦然。这意味着锚点链接或 aria 引用之类的东西都不起作用。
+
+在下面的例子中，for-id 关联、aria-labelledby 引用和锚点链接都不起作用。
+
+<p>
+  <a href="#name" id="skip">Jump to name</a>
+</p>
+<label for="name">Name:</label>
+<cus-tom10></cus-tom10>
+
+class Custom10 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.innerHTML = `
+      <input type="text" id="name">
+      <h2 aria-labelledby="skip">Test</h2>
+    `
+  }
+}
+customElements.define('cus-tom10', Custom10);
+
+跨根 ARIA（Cross-root ARIA）未来也许能解决其中一些问题。
+
+弊端：依赖 JavaScript
+
+Firefox（目前还）不支持声明式 Shadow DOM，如果你不使用它，也不使用 light DOM，就意味着要在屏幕上渲染任何东西都得依赖 JavaScript。这也许不是每个人都在意的问题，但对我来说是不可接受的。
+
+弊端：FOUCE（未加样式的自定义元素闪烁）
+
+依赖 JavaScript 意味着你的组件必须等 JavaScript 加载完成后才能渲染。这可能（不，是必然）会导致未加样式内容的闪烁（FOUC）和/或布局偏移。
+
+很多人建议用这样一个可怕的 hack：在元素被定义之前把它隐藏起来。
+
+:not(:defined) {
+  visibility: hidden;
+}
+
+这不是解决方案，而是权宜之计。
+
+弊端：表单的行为不同
+
+直到读了 Simon MacDonald 的文章《Shadow DOM：不该默认使用》（Shadow DOM: Not by Default），我才知道表单中位于 shadow DOM 里的元素会引发问题。
+
+例如，在下面这个表单里，只有 light DOM 中的输入框与表单关联。
+
+<form>
+  <p>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" value="johanna">
+  </p>
+  <cus-tom11></cus-tom11>
+  <button>Send</button>
+</form>
+
+class Custom11 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.innerHTML = `
+     <p>
+      <label for="email">E-Mail</label>
+      <input type="text" name="email" id="email" value="johanna@matuzo.at">
+     </p>`
+  }
+}
+customElements.define('cus-tom11', Custom11);
+const form = document.querySelector('form')
+form.addEventListener('submit', e => {
+  e.preventDefault()
+  const data = new FormData(form);
+  for (let nv of data.entries()) {
+    alert(`  ${ nv[0] }: ${ nv[1] }`);
+  }
+})
+
+你可以按照 Craig Buckler 的博文《2023 年 Web Components 完全入门》（A Complete Introduction to Web Components in 2023）中描述的方法，使用 ElementInternals API 来绕过这个问题。不过我不确定这样做是否值得。让我引用 Simon MacDonald 的话：
+
+“有一个叫作表单关联自定义元素（Form Associated Custom Elements，FACE）的规范，它提供了构建能参与表单的 Web Components 所需的 API。然而，依我拙见，通过编写更多 JavaScript 来修复由 JavaScript 造成的问题，就像递给一个溺水的人一杯水。”
+
+弊端：缺失全局样式
+
+样式封装听起来很棒，直到你想让某些样式在所有地方都生效。例如，我总是全局定义焦点样式，它们通常对每个元素都一样。
+
+在下面的例子中，按钮 2 和按钮 3 是默认样式，而按钮 1 和按钮 4 使用了自定义样式。
+
+<button class="button1">Button 1</button>
+<cus-tom12></cus-tom12>
+<button class="button4">Button 4</button>
+
+class Custom12 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.innerHTML = `
+      <button class="button2">Button 2</button>
+      <button class="button3">Button 3</button>
+    `
+  }
+}
+customElements.define('cus-tom12', Custom12);
+
+:focus-visible {
+  outline: 2px solid; 
+  outline-offset: 2px;
+}
+
+为了在 shadow DOM 中得到和 light DOM 中一样的焦点样式，我必须在每个带有交互元素的组件里重复这些全局声明。
+
+:root {
+  --site-focus-outline: 2px solid;
+  --site-focus-offset: 2px;
+}
+:focus-visible {
+  outline: var(--site-focus-outline);
+  outline-offset: var(--site-focus-offset);
+}
+
+class Custom12 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.innerHTML = `   
+    <style>
+      :focus-visible {
+        outline: var(--site-focus-outline);
+        outline-offset: var(--site-focus-offset);
+      }
+    </style>
+    <button class="button2">Button 2</button>
+    <button class="button3">Button 3</button>
+      `
+  }
+}
+customElements.define('cus-tom12', Custom12);
+
+弊端：用无障碍检测工具调试
+
+并不是所有的无障碍检测工具都支持 shadow DOM。例如，WAVE 标记出零个错误，但实际上至少有三个。
+
+class Custom13 extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({mode: 'open'});
+    this.shadowRoot.innerHTML = `   
+    <img src="#test">
+    <button></button>
+    <button aria-hidden="true">Click</button>
+      `
+  }
+}
+customElements.define('cus-tom13', Custom13);
+
+弊端：用开发者工具调试
+
+我喜欢用 Chrome 开发者工具中的实时表达式功能，通过记录 document.activeElement 来调试键盘无障碍问题。
+
+当我聚焦 light DOM 中的一个按钮时，它返回被聚焦的那个按钮。
+
+当我聚焦 shadow DOM 中的一个按钮时，它返回的是父组件。
+
+为了绕过这个问题，我得创建第二个实时表达式，记录 document.activeElement.shadowRoot.activeElement。
+
+这还行，但当你聚焦一个没有 shadow root 的元素时，会得到一个烦人的报错。
+
+我明白，本文描述的大多数弊端都不是致命的问题，而且都有办法绕过。问题在于，我们需要考虑的东西实在太多了，而只要不使用 Shadow DOM，我们就能避开这些。说起来容易做起来难。我也不知道；时间会证明一切。我会持续向你们汇报的！:)
+
+非常感谢 Egor、Dave 和 Simon 的反馈！
+
+延伸阅读
+
+- Heydon Pickering：《避开 Shadow DOM》（Eschewing Shadow DOM）
+- Simon MacDonald：《Shadow DOM：不该默认使用》（Shadow DOM: Not by Default）
+- Bramus Van Damme：《深入 CSS 层叠》（The CSS Cascade, a deep dive）
+- Alice Boxhall：《Shadow DOM 与无障碍如何相互冲突》（How Shadow DOM and accessibility are in conflict）
+- Egor Kloos：《Shadow 主题》（Shadow Themes）
+- Craig Buckler：《2023 年 Web Components 完全入门》（A Complete Introduction to Web Components in 2023）
+- Nolan Lawson：《Shadow DOM 与无障碍：ARIA 的麻烦》（Shadow DOM and accessibility: the trouble with ARIA）

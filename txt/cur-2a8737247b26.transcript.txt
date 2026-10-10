@@ -1,0 +1,564 @@
+https://www.joshwcomeau.com/animation/scroll-driven-animations/
+
+滚动驱动动画
+Josh W. Comeau ｜ 2026-04-28（最后更新于 2026 年 6 月 19 日）
+
+给网站增添一点个性的最佳方式之一，就是让元素随滚动而动。例如，我最近在 [Whimsical Animations](https://whimsy.joshwcomeau.com/) 的主页上做了下面这个滚动驱动动画：
+
+过去，这类效果我们只能用 JavaScript 实现，但一个令人兴奋的新 API——*Animation Timeline*（动画时间线）——让我们可以用原生 CSS 做到这一切！✨
+
+我已经试用这个新 API 好几个月了，说实话，它*太好用了*。它以一种非常优雅、自然的方式建立在现有的 CSS 原语之上。事实上，如果你熟悉 CSS 关键帧动画，那么你已经掌握了需要知道的大部分内容！
+
+在这篇博文中，我会准确地展示这个新 API 如何工作，并探索一些可以用它实现的更高级的效果。我还会分享一些需要注意的坑。
+
+## 核心概念
+
+在 CSS 中，我们可以用关键帧动画在两段 CSS 之间平滑地插值。
+
+例如，假设我们有如下关键帧动画：
+
+```
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+```
+
+我们可以用这个关键帧动画让元素在一定*时长*内淡入：
+
+```
+.elem {
+  animation: fadeIn 1000ms;
+}
+```
+
+Animation Timeline API 的核心概念是：**如果我们把关键帧映射到一段*滚动距离*上，而不是一段*时长*上，会怎样？**
+
+看看这个：
+
+（代码演示）
+
+```
+<style>
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .elem {
+    background: goldenrod;
+    width: 100px;
+    height: 100px;
+    animation: fadeIn;
+    animation-timeline: view();
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<div class="elem"></div>
+```
+
+我们不再是在固定时间内从 0%（`opacity: 0;`）过渡到 100%（`opacity: 1;`），而是用*元素在视口中的位置*作为输入。向下滚动，就是在拖动这段关键帧动画的播放进度。
+
+我们来可视化一下。可以把元素穿过视口的进度用百分比来衡量。**试着滚动这个框，看看这个数值：**
+
+我们把这个滚动进度百分比应用到了关键帧动画上！🤯
+
+我花了一会儿才想通这个概念，因为十多年来我一直把 CSS 关键帧看作基于时长的东西。但其实，当我们用 `@keyframes` 定义新的关键帧动画时，并没有指定这些百分比指的是*什么*。理论上，我们可以用*任何*从 0% 到 100% 的输入值！
+
+所以，当我们设置 `animation-timeline: view()` 时，就改变了 `animation` 属性的行为，让它基于元素穿过视口的进度，而不是时间。
+
+这是使用这个新 Animation Timeline API 最基本的方式，但正如本文接下来会看到的，我们可以用多种方式自定义它的行为！
+
+### 缓动函数
+
+和其他关键帧动画一样，我们可以用 `animation` 简写属性给滚动驱动动画应用自定义缓动曲线！
+
+例如，如果想让滚动驱动动画呈现“ease-out”风格的曲线，就像给其他关键帧动画加缓动一样直接加上去即可：
+
+（代码演示）
+
+```
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .box {
+    --super-ease-out:
+      cubic-bezier(0.15, 0.75, 0.35, 1);
+    animation: spin var(--super-ease-out);
+    animation-timeline: view();
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<div class="wrapper">
+  <div class="box"></div>
+</div>
+```
+
+我用 `cubic-bezier` 夸大了默认的 `ease-out` 缓动函数。可以看到，方块刚进入视口时转得很快，接近顶部时逐渐变慢。
+
+借助 [linear() 缓动函数](https://www.joshwcomeau.com/animation/linear-timing-function/)，我们甚至可以使用弹簧式缓动：
+
+（代码演示）
+
+```
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  
+  .box {
+    --spring: linear(0, 0.01, 0.04 1.8%, 0.161 3.7%, 0.81 10.6%, 1.038, 1.181 16.4%, 1.223, 1.247 19.3%, 1.253 20.2% 21.1%, 1.232, 1.19 25.4%, 1.058 30.8%, 1.001 33.5%, 0.958 36.5%, 0.945, 0.938 39.6%, 0.936 41.6%, 0.941 43.8%, 0.999 53.9%, 1.01 56.7%, 1.015 59.7% 64.3%, 1.001 74.2%, 0.996 79.6%, 1.001);
+    animation: spin var(--spring);
+    animation-timeline: view();
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<div class="wrapper">
+  <div class="box"></div>
+</div>
+```
+
+这么做有点“邪门”😂。我分享它只是为了展示这个新 API 有多强大，而不是因为我觉得这是个好主意！
+
+在我看来，负责管理 CSS 语言的 CSS 工作组（CSSWG）非常值得称赞，因为他们把 CSS 关键帧动画重新利用、扩展到了滚动驱动动画上。他们没有从零发明一个全新的东西，而是建立在现有结构之上，这意味着我们已有的许多技能和知识可以立刻派上用场！
+
+## 动画区间
+
+到目前为止的例子中，我们测量的是元素穿过视口*整个*旅程的滚动进度。它从元素最顶端刚进入视口的那一刻开始，到最后一个像素滚出视野时结束。
+
+**这是可以自定义的！** `animation-range` 属性让我们定义区间何时开始、何时结束：
+
+```
+.elem {
+  animation: fadeIn;
+  animation-timeline: scroll();
+  animation-range: cover; /* 👈 默认值 */
+}
+```
+
+如果把默认值改为 `contain`，就只会在元素*完全处于视口内*之后才开始计量：
+
+当我们想看到*完整*动画时，这会很有用。用 `cover` 时，动画开始和结束时元素大部分都在视野之外。
+
+下面是一个元素从屏幕外滑入的例子：
+
+（代码演示）
+
+```
+<style>
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  .shape {
+    animation: slideIn backwards;
+    animation-timeline: view();
+    animation-range: contain;
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<div class="wrapper">
+  <div class="shape">
+    <img alt="" src="/img/shape-circle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-square.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-triangle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-star.svg" />
+  </div>
+</div>
+```
+
+### 进入与离开
+
+除了 `cover` 和 `contain`，还有 `entry` 和 `exit`。
+
+例如：
+
+（代码演示）
+
+```
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .box {
+    animation: spin linear;
+    animation-timeline: view();
+    animation-range: entry;
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<div class="wrapper">
+  <div class="box"></div>
+</div>
+```
+
+`entry` 区间从元素刚探头进入视口的那一刻开始，到元素最底部的像素进入视口时结束。可以这样可视化它：
+
+一种常见的设计模式是让元素在进入时淡入。`entry` 动画区间非常适合做这个！
+
+（代码演示）
+
+```
+<style>
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  img {
+    animation: fadeIn linear;
+    animation-timeline: view();
+    animation-range: entry;
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<img
+  alt="一只水豚安详地睡在草地上"
+  src="/img/capybara/a.jpg"
+/>
+<img
+  alt="一只水豚在啃植物，背景里有几只白鸟"
+  src="/img/capybara/b.jpg"
+/>
+<img
+  alt="一只小水豚走在一只成年水豚背上"
+  src="/img/capybara/c.jpg"
+/>
+<img
+  alt="一只水豚的特写，旁边有一个人"
+  src="/img/capybara/d.jpg"
+/>
+```
+
+同样，`exit` 会在元素越过视口*顶部*、离开视野时生效：
+
+通过指定*多个*关键帧动画，我们可以在同一个元素上同时使用 `entry` 和 `exit`。做法是给每个动画属性传入逗号分隔的值：
+
+（代码演示）
+
+```
+<style>
+  img {
+    animation:
+      fadeIn linear,
+      fadeOut linear;
+    animation-timeline: view(), view();
+    animation-range: entry, exit;
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<img
+  alt="一只水豚安详地睡在草地上"
+  src="/img/capybara/a.jpg"
+/>
+<img
+  alt="一只水豚在啃植物，背景里有几只白鸟"
+  src="/img/capybara/b.jpg"
+/>
+<img
+  alt="一只小水豚走在一只成年水豚背上"
+  src="/img/capybara/c.jpg"
+/>
+<img
+  alt="一只水豚的特写，旁边有一个人"
+  src="/img/capybara/d.jpg"
+/>
+```
+
+### 区间百分比
+
+有一种完整写法，可以精确控制动画区间在哪里开始和结束。看这个：
+
+（代码演示）
+
+```
+<style>
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  .shape {
+    animation: slideIn backwards;
+    animation-timeline: view();
+    animation-range-start: cover 0%;
+    animation-range-end: cover 50%;
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<div class="wrapper">
+  <div class="shape">
+    <img alt="" src="/img/shape-circle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-square.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-triangle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-star.svg" />
+  </div>
+</div>
+```
+
+在这个演示中，我指定 `animation-range` 应该从“cover”区间的最开头开始（第一个像素进入视口时），并在元素走完“cover”区间的 50% 时结束（元素正好位于视口正中时）：
+
+这非常有用，因为这意味着我们可以*精确*决定滚动动画何时开始、何时结束。✨
+
+还有一种更紧凑的写法。我们可以把四个值全部传给 `animation-range` 属性：
+
+```
+.shape {
+  animation: slideIn backwards;
+  animation-timeline: view();
+  /* 把开始/结束合并到一个属性里： */
+  animation-range: cover 0% cover 50%;
+}
+```
+
+我个人觉得这种简写语法挺让人困惑的，更喜欢用 `animation-range-start` 和 `animation-range-end`。不过你喜欢哪种就用哪种！
+
+最后，如果需要*更多*控制，我们还可以混合搭配不同的动画区间：
+
+```
+.shape {
+  animation: slideIn backwards;
+  animation-timeline: view();
+  animation-range-start: contain 0%;
+  animation-range-end: exit 50%;
+}
+```
+
+## 滚动进度时间线
+
+到目前为止，我们看的都是*视图*进度时间线，它追踪元素在视口中移动的过程。Animation Timeline API 还给了我们另一个原语：*滚动*进度时间线。
+
+*滚动*进度时间线不关注单个元素，而是关注整体的滚动进度。本质上，它映射的是用户在全部可滚动区域中已经滚动了多远。
+
+说实话，我想不出*很多*用途。我首先想到的主要是博客或新闻网站上有时能看到的阅读进度指示条：
+
+（代码演示）
+
+```
+<style>
+  @keyframes expand {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  
+  .readingIndicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: red;
+    transform-origin: left center;
+    animation: expand linear;
+    animation-timeline: scroll();
+  }
+</style>
+
+<div class="readingIndicator"></div>
+
+<article>
+  <h2>What is Lorem Ipsum?</h2>
+  <p>……（演示用的 Lorem Ipsum 占位文字，略）……</p>
+  <h2>Why do we use it?</h2>
+  <p>……</p>
+  <h2>Where does it come from?</h2>
+  <p>……</p>
+  <p>Read more on <a href="https://www.lipsum.com/">Lipsum.com</a></p>
+</article>
+```
+
+（演示中的占位文字讲的是 Lorem Ipsum 的来历：它并非随机文字，源自西塞罗公元前 45 年所著《论至善与至恶》第 1.10.32 和 1.10.33 节，由弗吉尼亚州汉普登-悉尼学院的拉丁语教授 Richard McClintock 考证出处。）
+
+当你在这个网页中滚动时，顶部会有一条红色进度条逐渐变长，显示你读到了文章的哪里。
+
+我觉得这*有一点点*多余，毕竟我们本来就有滚动条干这件事 😅。但我确实想不出还有什么别的理由需要测量*整体*滚动进度。
+
+## 关联时间线
+
+到目前为止，所有例子都是把元素的滚动进度测量成百分比，再应用到*同一个元素*的关键帧动画上。
+
+这通常正是我们想要的，但在某些情况下，我们希望把被*测量*的元素和被*动画化*的元素分开：用一个元素的滚动位置，去拖动另一个元素的关键帧动画。
+
+效果如下：
+
+（代码演示）
+
+```
+<style>
+  main {
+    timeline-scope: --tracked-elem;
+  }
+
+  .content {
+    view-timeline: --tracked-elem;
+  }
+  .square {
+    animation: fadeIn backwards, fadeOut forwards;
+    animation-timeline: --tracked-elem, --tracked-elem;
+    animation-range: entry, exit;
+  }
+</style>
+
+<p>
+  👇 往下滚动 👇
+</p>
+<main>
+  <div class="left col">
+    <div class="square"></div>
+  </div>
+  <div class="right col">
+    <p class="content">← 出现了一个方块！</p>
+  </div>
+</main>
+```
+
+在这个例子中，`.square` 使用粘性定位，所以它根本不会在视口中移动。我们追踪的是 `.content` 元素（右边的段落），用它的进度来让 `.square` 淡入淡出。
+
+**原理如下：**在想要追踪的元素（`.content`）上，我们设置 `view-timeline: --tracked-elem`。“--tracked-elem”是一个变量，名字可以随便取。这会创建一条新的“视图进度时间线”。其他任何元素都可以订阅这个元素穿过视口的进度。
+
+在想要做动画的元素（`.square`）上，我们把 `animation-timeline` 设为 `--tracked-elem`，而不是 `view()`。这样，它使用的是一条已有的*具名*视图进度时间线，而不是初始化自己的视图进度时间线。
+
+**这里有个大坑：**我们创建的变量名（比如 `--tracked-elem`）不是全局的。只有创建它的元素（这里是 `.content`）及其后代才能引用它。
+
+这对我们来说是个问题。我们想做动画的元素并不是我们想追踪的元素的后代：
+
+```
+<main>
+  <div class="left col">
+    <!-- 我们想在这里访问 --tracked-elem 变量： -->
+    <div class="square"></div>
+  </div>
+  <div class="right col">
+    <!-- 我们在这里创建 --tracked-elem 变量： -->
+    <p class="content">← 出现了一个方块！</p>
+  </div>
+</main>
+```
+
+幸运的是，CSSWG 的好心人预见到了这个问题，给了我们一个逃生舱：`timeline-scope` 属性。
+
+这个属性本质上允许我们在更高的层级*声明*一个变量，然后在树的下层某处给它重新赋值。下面是完整代码，加了注释说明发生了什么：
+
+```
+<style>
+  main {
+    /* 在这里实例化一个新变量： */
+    timeline-scope: --tracked-elem;
+  }
+
+  .content {
+    /*
+      创建一条新的视图进度时间线，
+      并把它赋给这个变量：
+    */
+    view-timeline: --tracked-elem;
+  }
+  .square {
+    animation: fadeIn backwards, fadeOut forwards;
+    /* 引用这条具名视图进度时间线： */
+    animation-timeline: --tracked-elem, --tracked-elem;
+    animation-range: entry, exit;
+  }
+</style>
+
+<main>
+  <div class="left col">
+    <div class="square"></div>
+  </div>
+  <div class="right col">
+    <p class="content">← 出现了一个方块！</p>
+  </div>
+</main>
+```
+
+我把 `timeline-scope` 声明加在 `<main>` 上，因为它是两者最近的共同祖先。这确保了 `--tracked-elem` 对我们想追踪的元素和想做动画的元素都可用。
+
+## 浅尝辄止
+
+我们看了几个用新的 `animation-timeline` API 能做到的例子，但一篇博文能讲的内容有限。😅
+
+过去一年半，我一直专注于打造终极动画学习资源。它全面汇集了用 HTML/CSS、JavaScript、SVG 和 Canvas 创造各种奇趣效果所需的技能。
+
+它叫 *Whimsical Animations*。
+
+这门课分为 4 个主要部分。第 3 部分专讲高级用户交互，我们会*更加深入*地探讨滚动驱动动画。它还涵盖了许多其他很酷的内容，比如 View Transitions（视图过渡）和光标追踪效果，就像这个小家伙：
+
+能分享我所有的动画秘诀，我太兴奋了 😄。你可以在这里了解更多：
+
+* [Whimsical Animations](https://whimsy.joshwcomeau.com/)

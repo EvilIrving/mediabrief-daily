@@ -1,0 +1,11 @@
+https://jakearchibald.com/2025/importing-vs-fetching-json/
+
+导入 JSON 与 fetch JSON 的区别 ｜ Jake Archibald ｜ 文章 ｜ https://jakearchibald.com/2025/importing-vs-fetching-json/
+
+Jake Archibald 的一篇短文。今年 JSON 模块导入（import ... with { type: 'json' }）在所有浏览器引擎都实现了。他很高兴有这个功能，但除了小演示，自己不太会在浏览器里直接用它，前端源码里用也多是在打包时就被处理掉的场景。原因在于它和 fetch() 的行为差异。
+
+一是错误处理。静态导入一旦失败，会拖垮整个模块图，所以第三方 JSON 绝不该这么导，因为你想在对方服务挂掉时有兜底；动态 import() 可以用 try/catch 兜底，但 fetch() 能提供更多信息，比如 response.status，或者用 response.text() 在 JSON 解析失败时仍拿到原文。
+
+二是更大的问题：缓存和垃圾回收。导入的模块（JS、WASM、CSS 或 JSON）会在整个环境（页面或 worker）的生命周期里被缓存，哪怕结果是网络或解析失败；同一个地址和类型永远返回同一个模块。这对 JS 模块是好事，状态能在所有导入者之间共享；但如果用 import() 去拿搜索接口的结果，每次结果都会永远留在模块图里，等于内存泄漏。同样，导入一个大 JSON 只取其中一小部分，再把变量设成 null，整个对象仍留在内存里；用 fetch() 的话，不再引用的数据就能被回收。
+
+他的建议是：JSON 导入适合本地、静态、且需要其中大部分数据的资源，尤其因为打包工具能理解它、把它和其他模块打包在一起，这是 fetch() 做不到的。服务器代码里导入 package.json 拿版本号没问题，前端则不该为一个值打包整个文件，因为打包工具不会按对象的键做 tree-shaking。文后补充：读者指出 esbuild、Vite、Rollup 用它们非标准的写法（import { version } from './package.json'）可以对顶层键做 tree-shaking，但嵌套数据仍会多打包。他自己更倾向把"拉取并处理"的逻辑写成 Vite/Rollup 插件，放到构建阶段完成。总之原生 JSON 导入要谨慎使用，不能一刀切地取代 fetch()。

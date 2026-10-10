@@ -1,0 +1,420 @@
+https://overreacted.io/algebraic-effects-for-the-rest-of-us/
+
+写给普通人的代数效应
+
+你听说过代数效应吗？
+
+我最初几次试图弄明白它是什么、为什么值得关注，都失败了。我找到了几篇 PDF，但它们只让我更糊涂。（学术 PDF 总有种让我犯困的魔力。）
+
+但我的同事 Sebastian 一直把它当作理解我们在 React 内部所做的一些事情的心智模型。（Sebastian 在 React 团队工作，提出过不少想法，包括 Hooks 和 Suspense。）后来这在 React 团队里成了一个梗，我们很多对话最后都以这张图收尾：
+
+（配图：《远古外星人》节目那位主持人的表情包，配文"代数效应"。）
+
+结果发现，代数效应是个很酷的概念，并没有那些 PDF 让我以为的那么可怕。如果你只是在用 React，你完全不需要了解它；但如果你和我一样好奇，那就接着往下读吧。
+
+（免责声明：我不是编程语言研究者，解释中可能有错误。我不是这个话题的权威，如有问题请告诉我！）
+
+还不能用于生产
+
+代数效应是一种处于研究阶段的编程语言特性。这意味着，与 if、函数甚至 async/await 不同，你很可能还无法真正在生产中使用它。只有少数专门为探索这一想法而创造的语言支持它。OCaml 中有将其投入生产使用的进展，但仍在进行中。换句话说，碰不得（Can't Touch This）。
+
+编辑：有几个人提到 LISP 系语言提供了类似的东西，所以如果你写 LISP，是可以在生产中使用的。
+
+那我为什么要关心？
+
+想象一下，你正在用 goto 写代码，有人给你展示了 if 和 for 语句。或者你深陷回调地狱，有人给你展示了 async/await。很酷，对吧？
+
+如果你是那种喜欢在编程思想成为主流之前好几年就去了解它们的人，现在也许是对代数效应产生好奇的好时机。不过你也不必觉得非学不可。这有点像在 1999 年思考 async/await。
+
+好吧，代数效应到底是什么？
+
+这个名字可能有点吓人，但思想很简单。如果你熟悉 try/catch 代码块，你很快就能理解代数效应。
+
+我们先回顾一下 try/catch。假设你有一个会抛出异常的函数，它和 catch 块之间可能隔着一堆函数：
+
+```
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	throw new Error('A girl has no name');
+  }
+  return name;
+}
+ 
+function makeFriends(user1, user2) {
+  user1.friendNames.push(getName(user2));
+  user2.friendNames.push(getName(user1));
+}
+ 
+const arya = { name: null, friendNames: [] };
+const gendry = { name: 'Gendry', friendNames: [] };
+try {
+  makeFriends(arya, gendry);
+} catch (err) {
+  console.log("Oops, that didn't work out: ", err);
+}
+```
+
+我们在 getName 里 throw，但异常会一路"冒泡"穿过 makeFriends，到达最近的 catch 块。这是 try/catch 的一个重要特性：中间的代码无需操心错误处理。
+
+和 C 这类语言中的错误码不同，有了 try/catch，你不必因为担心丢失错误而手动把它们逐层传递下去。它们会自动传播。
+
+这和代数效应有什么关系？
+
+在上面的例子中，一旦遇到错误，我们就无法继续了。进入 catch 块之后，就没有办法再继续执行原来的代码。
+
+我们完了。太迟了。我们最多只能从失败中恢复，或许以某种方式重试刚才在做的事，但无法神奇地"回到"原来的位置做点不一样的事。但有了代数效应，我们就可以。
+
+下面这个例子用一种假想的 JavaScript 方言写成（为了好玩，就叫它 ES2025 吧），它让我们能够从缺失 user.name 的情况中恢复过来：
+
+```
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	name = perform 'ask_name';
+  }
+  return name;
+}
+ 
+function makeFriends(user1, user2) {
+  user1.friendNames.push(getName(user2));
+  user2.friendNames.push(getName(user1));
+}
+ 
+const arya = { name: null, friendNames: [] };
+const gendry = { name: 'Gendry', friendNames: [] };
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  if (effect === 'ask_name') {
+  	resume with 'Arya Stark';
+  }
+}
+```
+
+（向所有在网上搜索"ES2025"而找到这篇文章的 2025 年读者致歉。如果到那时代数效应已经成为 JavaScript 的一部分，我很乐意更新这篇文章！）
+
+我们用一个假想的 perform 关键字代替 throw。同样地，用假想的 try/handle 代替 try/catch。具体语法在这里并不重要，我只是随便编了一种来说明这个思想。
+
+那么发生了什么？我们来仔细看看。
+
+我们不是抛出错误，而是执行（perform）一个效应。就像我们可以 throw 任何值一样，我们也可以把任何值传给 perform。在这个例子里我传的是一个字符串，但也可以是对象或任何其他数据类型：
+
+```
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	name = perform 'ask_name';
+  }
+  return name;
+}
+```
+
+当我们 throw 一个错误时，引擎会沿着调用栈向上寻找最近的 try/catch 错误处理器。同样地，当我们 perform 一个效应时，引擎会沿着调用栈向上寻找最近的 try/handle 效应处理器：
+
+```
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  if (effect === 'ask_name') {
+  	resume with 'Arya Stark';
+  }
+}
+```
+
+这个效应让我们可以决定如何处理名字缺失的情况。这里（与异常相比）新颖的部分是假想的 resume with：
+
+```
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  if (effect === 'ask_name') {
+  	resume with 'Arya Stark';
+  }
+}
+```
+
+这是 try/catch 做不到的部分。它让我们可以跳回到执行效应的地方，并从处理器向那里传回一些东西。🤯
+
+```
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	// 1. We perform an effect here
+  	name = perform 'ask_name';
+  	// 4. ...and end up back here (name is now 'Arya Stark')
+  }
+  return name;
+}
+ 
+// ...
+ 
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  // 2. We jump to the handler (like try/catch)
+  if (effect === 'ask_name') {
+  	// 3. However, we can resume with a value (unlike try/catch!)
+  	resume with 'Arya Stark';
+  }
+}
+```
+
+这需要一点时间来适应，但在概念上，它和"可恢复的 try/catch"并没有太大区别。
+
+不过请注意，代数效应比 try/catch 灵活得多，可恢复的错误只是众多可能用例中的一个。我之所以从它讲起，只是因为我觉得它最容易理解。
+
+函数没有颜色
+
+代数效应对异步代码有一些有趣的影响。
+
+在有 async/await 的语言中，函数通常带有一种"颜色"。比如在 JavaScript 中，我们没法只把 getName 变成异步的，而不把 makeFriends 及其调用者也"传染"成 async。如果一段代码有时需要同步、有时需要异步，这会非常痛苦。
+
+```
+// If we want to make this async...
+async getName(user) {
+  // ...
+}
+ 
+// Then this has to be async too...
+async function makeFriends(user1, user2) {
+  user1.friendNames.push(await getName(user2));
+  user2.friendNames.push(await getName(user1));
+}
+ 
+// And so on...
+```
+
+JavaScript 生成器也类似：如果你在使用生成器，中间的代码也必须知道生成器的存在。
+
+那这和我们的话题有什么关系？
+
+我们暂时忘掉 async/await，回到我们的例子：
+
+```
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	name = perform 'ask_name';
+  }
+  return name;
+}
+ 
+function makeFriends(user1, user2) {
+  user1.friendNames.push(getName(user2));
+  user2.friendNames.push(getName(user1));
+}
+ 
+const arya = { name: null, friendNames: [] };
+const gendry = { name: 'Gendry', friendNames: [] };
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  if (effect === 'ask_name') {
+  	resume with 'Arya Stark';
+  }
+}
+```
+
+如果我们的效应处理器无法同步地知道这个"备用名字"呢？如果我们想从数据库里获取它呢？
+
+事实证明，我们可以在效应处理器中异步地调用 resume with，而无需对 getName 或 makeFriends 做任何修改：
+
+```
+function getName(user) {
+  let name = user.name;
+  if (name === null) {
+  	name = perform 'ask_name';
+  }
+  return name;
+}
+ 
+function makeFriends(user1, user2) {
+  user1.friendNames.push(getName(user2));
+  user2.friendNames.push(getName(user1));
+}
+ 
+const arya = { name: null, friendNames: [] };
+const gendry = { name: 'Gendry', friendNames: [] };
+try {
+  makeFriends(arya, gendry);
+} handle (effect) {
+  if (effect === 'ask_name') {
+  	setTimeout(() => {
+      resume with 'Arya Stark';
+  	}, 1000);
+  }
+}
+```
+
+在这个例子中，我们直到一秒后才调用 resume with。你可以把 resume with 看作一个只能调用一次的回调。（你还可以把它叫作"一次性定界续延"（one-shot delimited continuation），在朋友面前显摆一下。）
+
+现在代数效应的机制应该更清楚一些了。当我们 throw 一个错误时，JavaScript 引擎会"展开调用栈"，在此过程中销毁局部变量。然而，当我们 perform 一个效应时，我们假想的引擎会用函数的剩余部分创建一个回调，而 resume with 会调用它。
+
+再次提醒：具体的语法和关键字是为本文编造的。它们不是重点，重点在于机制。
+
+关于纯粹性
+
+值得注意的是，代数效应源自函数式编程研究。它解决的一些问题是纯函数式编程所特有的。比如，在不允许任意副作用的语言（如 Haskell）中，你必须用 Monad 这样的概念在程序中传递效应。如果你读过 Monad 教程，就知道它们有点难以理解。代数效应能以更少的繁文缛节做到类似的事情。
+
+这就是为什么关于代数效应的很多讨论我都看不懂。（我不懂 Haskell 及其同类语言。）不过我确实认为，即使在 JavaScript 这样的非纯语言中，代数效应也可以成为一种非常强大的工具，把代码中的"做什么"和"怎么做"分开。
+
+它让你可以编写专注于"做什么"的代码：
+
+```
+function enumerateFiles(dir) {
+  const contents = perform OpenDirectory(dir);
+  perform Log('Enumerating files in ', dir);
+  for (let file of contents.files) {
+  	perform HandleFile(file);
+  }
+  perform Log('Enumerating subdirectories in ', dir);
+  for (let directory of contents.dir) {
+  	// We can use recursion or call other functions with effects
+  	enumerateFiles(directory);
+  }
+  perform Log('Done');
+}
+```
+
+然后再用某种指定"怎么做"的东西把它包起来：
+
+```
+let files = [];
+try {
+  enumerateFiles('C:\\');
+} handle (effect) {
+  if (effect instanceof Log) {
+  	myLoggingLibrary.log(effect.message);
+  	resume;
+  } else if (effect instanceof OpenDirectory) {
+  	myFileSystemImpl.openDir(effect.dirName, (contents) => {
+      resume with contents;
+  	});
+  } else if (effect instanceof HandleFile) {
+    files.push(effect.fileName);
+    resume;
+  }
+}
+// The `files` array now has all the files
+```
+
+这意味着这些部分甚至可以做成库：
+
+```
+import { withMyLoggingLibrary } from 'my-log';
+import { withMyFileSystem } from 'my-fs';
+ 
+function ourProgram() {
+  enumerateFiles('C:\\');
+}
+ 
+withMyLoggingLibrary(() => {
+  withMyFileSystem(() => {
+    ourProgram();
+  });
+});
+```
+
+与 async/await 或生成器不同，代数效应不需要把"中间"的函数复杂化。我们的 enumerateFiles 调用可能深藏在 ourProgram 内部，但只要它可能执行的每种效应在上方某处都有对应的效应处理器，代码就仍然能正常工作。
+
+效应处理器让我们能够将程序逻辑与具体的效应实现解耦，而无需太多繁文缛节或样板代码。比如，我们可以在测试中完全覆盖其行为，使用一个假的文件系统，并对日志做快照而不是输出到控制台：
+
+```
+import { withFakeFileSystem } from 'fake-fs';
+ 
+function withLogSnapshot(fn) {
+  let logs = [];
+  try {
+  	fn();
+  } handle (effect) {
+  	if (effect instanceof Log) {
+  	  logs.push(effect.message);
+  	  resume;
+  	}
+  }
+  // Snapshot emitted logs.
+  expect(logs).toMatchSnapshot();
+}
+ 
+test('my program', () => {
+  const fakeFiles = [/* ... */];
+  withFakeFileSystem(fakeFiles, () => {
+  	withLogSnapshot(() => {
+	  ourProgram();
+  	});
+  });
+});
+```
+
+因为没有"函数颜色"（中间的代码不需要知道效应的存在），并且效应处理器是可组合的（你可以嵌套它们），你可以用它们创建出非常有表现力的抽象。
+
+关于类型
+
+由于代数效应来自静态类型语言，关于它的很多争论都集中在如何用类型来表达它。这无疑很重要，但也会让人更难掌握这个概念。这就是本文完全不谈类型的原因。不过我应该指出，通常一个函数可以执行某种效应这一事实会被编码到它的类型签名中。所以你不会陷入随机效应到处发生、却无法追踪其来源的境地。
+
+你可能会说，在静态类型语言中，代数效应在技术上确实给函数"上了色"，因为效应是类型签名的一部分。没错。然而，修改中间函数的类型注解以包含一个新效应，本身并不是语义上的改变，这和添加 async 或把函数变成生成器不同。类型推断也有助于避免连锁修改。一个重要的区别是，你可以通过提供一个空操作或模拟实现（比如为异步效应提供同步调用）来把效应"封存"起来，从而在必要时阻止它到达外层代码，或者把它转换成另一种效应。
+
+我们应该把代数效应加进 JavaScript 吗？
+
+老实说，我不知道。它们非常强大，你可以认为对于 JavaScript 这样的语言来说，它们可能过于强大了。
+
+我认为，它们可能非常适合一种很少使用可变状态、标准库完全拥抱效应的语言。如果你主要做的是 perform Timeout(1000)、perform Fetch('http://google.com') 和 perform ReadFile('file.txt')，而你的语言又有模式匹配和针对效应的静态类型，那可能会是一个非常好的编程环境。
+
+也许那种语言甚至可以编译成 JavaScript！
+
+这一切和 React 有什么关系？
+
+关系不大。你甚至可以说有点牵强。
+
+如果你看过我关于时间切片（Time Slicing）和 Suspense 的演讲，第二部分讲的是组件从缓存中读取数据：
+
+```
+function MovieDetails({ id }) {
+  // What if it's still being fetched?
+  const movie = movieCache.read(id);
+}
+```
+
+（演讲中用的 API 略有不同，但这不是重点。）
+
+这基于 React 的一个叫"Suspense"的特性，目前正在针对数据获取的用例积极开发中。有趣的地方当然在于，数据可能还不在 movieCache 中，这种情况下我们需要做点什么，因为无法继续往下执行。从技术上讲，这时 read() 调用会抛出一个 Promise（是的，抛出一个 Promise，好好体会一下）。这会"挂起"执行。React 捕获这个 Promise，并记住在抛出的 Promise 解决后重新尝试渲染组件树。
+
+这本身并不是代数效应，尽管这个技巧受到了它的启发。但它实现了同样的目标：调用栈下方的某段代码把控制权让给调用栈上方的某个东西（这里是 React），而中间的所有函数不必知道这件事，也不会被 async 或生成器"污染"。当然，在 JavaScript 中我们无法真正在之后恢复执行，但从 React 的角度看，在 Promise 解决时重新渲染组件树几乎是一回事。当你的编程模型假定幂等性时，你就可以作弊！
+
+Hooks 是另一个可能让你联想到代数效应的例子。人们最先问的问题之一是：一个 useState 调用怎么可能知道它指的是哪个组件？
+
+```
+function LikeButton() {
+  // How does useState know which component it's in?
+  const [isLiked, setIsLiked] = useState(false);
+}
+```
+
+我在这篇文章的末尾已经解释过答案：React 对象上有一个"当前调度器"（current dispatcher）的可变状态，它指向你当前正在使用的实现（比如 react-dom 中的实现）。类似地，还有一个"当前组件"属性，指向我们 LikeButton 的内部数据结构。useState 就是这样知道该做什么的。
+
+在习惯之前，人们常常觉得这有点"脏"，原因很明显：依赖共享的可变状态"感觉不对"。（题外话：你觉得 JavaScript 引擎里的 try/catch 是怎么实现的？）
+
+不过从概念上讲，你可以把 useState() 看作一个 perform State() 效应，它在 React 执行你的组件时由 React 来处理。这就"解释"了为什么 React（调用你组件的那个东西）能为组件提供状态：它位于调用栈上方，所以可以提供效应处理器。事实上，实现状态是我见过的代数效应教程中最常见的例子之一。
+
+当然，再说一遍，React 实际上并不是这样工作的，因为 JavaScript 里没有代数效应。实际上，有一个隐藏字段保存当前组件，还有一个字段指向带有 useState 实现的当前"调度器"。作为性能优化，挂载和更新甚至有各自独立的 useState 实现。但如果你使劲眯眼看这段代码，可能会发现它们本质上就是效应处理器。
+
+总结一下，在 JavaScript 中，抛出异常可以作为 IO 效应的粗略近似（前提是之后重新执行代码是安全的，并且不是 CPU 密集型的）；而用一个在 try/finally 中恢复的可变"调度器"字段，可以作为同步效应处理器的粗略近似。
+
+你也可以用生成器获得保真度高得多的效应实现，但这意味着你必须放弃 JavaScript 函数"透明"的特性，把一切都变成生成器。这就……嗯。
+
+了解更多
+
+就我个人而言，我惊讶于代数效应对我来说竟如此好懂。我一直很难理解 Monad 这类抽象概念，但代数效应一下子就"通"了。希望这篇文章也能让你豁然开朗。
+
+我不知道它们是否会被主流采用。如果到 2025 年还没有任何主流语言采用它们，我想我会失望的。记得提醒我五年后回来看看！
+
+我相信用它们还能做更多的事情，但如果不真正用这种方式写代码，就很难体会到它们的威力。如果这篇文章激起了你的好奇心，这里有一些你可能想看看的资源：
+
+- https://github.com/ocamllabs/ocaml-effects-tutorial
+- https://www.janestreet.com/tech-talks/effective-programming/
+- https://www.youtube.com/watch?v=hrBq8R_kxI0
+
+也有很多人指出，如果省略类型方面的内容（就像本文这样），可以在 Common Lisp 的条件系统中找到更早的先例。你可能还会喜欢 James Long 关于续延（continuation）的文章，它解释了 call/cc 原语同样可以作为在用户代码中构建可恢复异常的基础。
+
+如果你发现了其他适合 JavaScript 背景读者的代数效应学习资源，请在 Twitter 上告诉我！

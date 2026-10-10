@@ -1,0 +1,223 @@
+https://www.joshwcomeau.com/css/anchor-positioning/
+
+锚点定位入门
+
+网页上一种常见的 UI 模式，是让一个元素粘附在另一个元素上。工具提示需要浮在目标上方，下拉菜单需要从触发它的按钮往下展开。
+
+这看起来相当直接，但魔鬼藏在细节里。我们可能希望工具提示浮在目标上方，但如果那个目标恰好就在视口的最顶部，它就会溢出：
+
+（演示：工具提示放得下，显示正常；目标靠近视口顶部时，工具提示被裁掉了！）
+
+过去，我们用 JavaScript 来解决这类问题，而管理这些东西的代码可能会变得相当棘手。幸运的是，一个崭新的浏览器 API 替我们处理了所有困难的部分：锚点定位 API（Anchor Positioning API）。
+
+我自己也还在学习这个新 API，说实话，一开始我被它的众多选项弄得有点不知所措。底层的问题空间很复杂，而锚点定位 API 被设计用来解决范围很广的一系列问题。我认为二八法则（80% 的产出来自 20% 的投入；在这里，我认为锚点定位 API 中大约 20% 的部分可以解决大约 80% 的实际用例）在这里适用，所以在这篇文章中，我们将介绍这个 API 最关键的部分，让你今天就能开始尝试它！
+
+锚点与目标
+
+我们从一个基础的“Hello world”示例开始：
+
+（代码演练场，代码见文末附录。）
+
+使用锚点定位时，我们通常关心两个元素：
+
+1. 锚点元素。这是我们想把某个东西粘附上去的基准元素。
+
+2. 目标元素。这是应该以某种方式附着到锚点元素上的浮动元素。
+
+锚点定位 API 是“定位”布局模式的扩展；要使用它，目标元素必须设置 position: absolute 或 position: fixed。
+
+这一点真的帮我理解了这里发生的事情。通常在使用绝对/固定定位时，我们把元素锚定在其包含块的边缘。例如，通过设置 top: 0; left: 0;，我们可以把一个绝对定位的元素粘在左上角。锚点定位 API 给了我们一项新的超能力：我们可以用另一个元素作为锚点！
+
+要让它生效，我们需要指定用哪个元素作为锚点元素。这分两步：
+
+1. 用 anchor-name 属性给锚点起一个唯一的名字。
+
+2. 目标元素用 position-anchor 属性指定那个锚点元素。
+
+锚点名称使用“dashed-ident”类型。这意味着它们是由开发者定义、以两个短横线开头的名字。这让它们看起来像 CSS 自定义属性，但它们其实不是一回事（例如，并没有一个底层的值可以用 var() 关键字来取用）。这在现代 CSS 中正变成一种相当常见的模式；我们在我最近那篇关于滚动驱动动画的文章里也见过同样的东西！
+
+最后，我们需要定义目标元素相对于它的锚点应该处在哪里。我们可以用 position-area 属性来做到。在前面的“Hello world”示例中，我想让工具提示位于按钮上方，所以我设置了 position-area: top。
+
+要理解 position-area，我们可以想象在目标的包含块里切出一个 3×3 的网格，锚点元素位于正中间的格子里。我们可以通过指定一个或两个值来控制它的确切位置：
+
+（交互演示：垂直方向、水平方向；锚点；目标。）
+
+.target {
+  position: absolute;
+  position-anchor: --some-anchor;
+  position-area: top center;
+}
+
+通过同时指定水平和垂直方向的值（例如 position-area: top left），我们可以选择 9 个格子中的任意一个。如果只传入一个值，目标会在垂直于该方向的方向上铺满整个网格；例如，如果我们设置 position-area: top，目标会横跨全部三列。我们也可以通过设置 position-area: top span-all 来显式地指定这一点。
+
+要让锚点定位 API 生效，我们需要提供一些约束。如果我们没有指定至少一个 position-area 值，目标元素就不会被锚定到锚点元素上，而是浮在它的默认位置。
+
+默认情况下，目标元素会紧贴着它的锚点。遗憾的是，没有类似 gap 的属性，但我们可以用 margin 添加一些间距：
+
+（代码演练场，代码见文末附录。）
+
+处理溢出
+
+在我看来，锚点定位 API 最有用的部分在于它是动态的。
+
+例如，看看当我们缩小视口时，“Hello World”示例会发生什么：
+
+很酷，对吧？目标元素会随着它的容器自动缩小，以避免溢出。只要目标元素的尺寸是弹性的，这就有效；在上面的例子中，我用的是 max-width 而不是 width 来设置默认尺寸。
+
+这看起来可能没什么大不了，因为 CSS 中的大多数东西都是这样工作的，但如果你曾经尝试用 JavaScript 编写自己的工具提示逻辑，你就知道这些东西有多让人头疼。😅
+
+但真正的挑战在于检测空间根本不够的情况。当锚点元素靠近视口顶部时，我们大概希望工具提示翻转到下方。
+
+幸运的是，锚点定位 API 对此也有解决方案。看看这个：
+
+（代码演练场，代码见文末附录。）
+
+不过，它还不完美。目标已经翻到了锚点的下方，但工具提示的小三角仍然朝下！我们稍后会处理这个问题，但首先，我们来弄明白这里发生了什么。
+
+当我们滚动页面时，浏览器会持续监测，看目标是否仍然整齐地被它的容器包含着，还是已经溢出了。当检测到溢出时，浏览器会检查我们是否通过 position-try-fallbacks 属性提供了任何后备位置。在这个例子里，我们指定了后备位置 bottom，于是浏览器会测试目标元素能否放进那个位置。如果可以，元素就会移动到那个区域，并一直留在那里，直到检测到下一次溢出。
+
+这个属性是复数形式（fallbacks 而不是 fallback），因为它接受一个以逗号分隔的 position-area 值列表。这意味着我们可以提供多个后备区域，在检测到溢出时依次测试，不过在实践中，我还没遇到过需要多个后备位置的情况。
+
+用锚定容器查询翻转小三角
+
+好了，那么我们该如何修复工具提示，让小三角始终指向锚点呢？
+
+事实证明，这是最初版本的锚点定位 API 中一个相当大的缺口。没有任何办法得知目标元素用的是它首选的 position-area，还是已经切换到了某个后备位置。我们得用 JavaScript 来测试目标是在锚点的上方还是下方，这感觉像是前进两步、又后退一步。
+
+CSS 工作组（CSSWG）在锚点定位 API 的第二版中为这个问题提出了解决方案。遗憾的是，截至 2026 年 7 月，这个 API 的第二级（level 2）目前只在 Chromium 浏览器中可用，但锚点定位 API 已被纳入 Interop 2026，这是所有主要浏览器厂商之间的一项协议，旨在把开发精力集中在关键目标上，所以我预计它会在年底前登陆其他浏览器。
+
+解决方案是一种新的容器查询。我们可以把锚定的元素变成一个“锚定”（anchored）容器，然后用 @container 查询根据后备值应用自定义的 CSS。
+
+我花了一会儿才想明白，下面是我想出来的方案：
+
+（代码演练场，代码见文末附录。）
+
+为了让它生效，我需要稍微调整一下 DOM 结构：现在我有一个父元素 .target，它成为我们的锚定容器，还有一个子元素 .tooltip，承载所有的外观样式。这是因为容器无法对自身做出反应，我在博文《容器查询友好入门》中讨论过这一点。
+
+所以，我们的 .target 元素处理所有锚点定位相关的事情，包括设置锚定容器。如果这个元素离开视口，它会从 top 位置区域移到 bottom 位置区域。子元素 .tooltip 处理所有外观，包括绘制小三角的 border-shape，而我们用一个容器查询在使用后备位置时改变边框形状。
+
+使用 flip-block 关键字
+
+我们可以不显式地把 bottom 指定为后备位置区域，而是使用特殊的 flip-block 关键字：
+
+.target {
+  position: fixed;
+  position-anchor: --example-anchor;
+  position-area: top;
+  position-try-fallbacks: flip-block;
+}
+
+flip-block 的作用正如其名：它在“块”方向上翻转到对侧，块方向通常是垂直方向。（如果网站使用垂直书写模式，它也可能是水平方向，但据我所知，网页上的竖排文字非常少见，即使对于传统上竖排书写的语言也是如此。）
+
+有意思的是，flip-block 关键字还会翻转其他方向性的属性。例如，如果我们的 .target 元素有 margin-bottom，当使用后备位置时，这个外边距会翻转到目标的顶部。
+
+所以，我们不必在锚定容器查询里添加 margin-top，而是可以把它移到父元素 .target 上：
+
+.target {
+  position: fixed;
+  position-anchor: --example-anchor;
+  position-area: top;
+  position-try-fallbacks: flip-block;
+  /*
+    Will automatically switch to top margin when the
+    target is under the anchor:
+  */
+  margin-bottom: 8px;
+}
+
+在这个特定的例子里，我们仍然需要锚定容器查询来覆盖 border-shape，但在许多其他情况下，这可能已经提供了足够多的控制。而且与目前只在 Chromium 浏览器中可用的锚定容器查询不同，flip-block 已在所有主流浏览器中实现！
+
+感谢 Jake Archibald 告诉我这一点。你可以在他精彩的博文《恰到好处的可定制 select 高度》（The Goldilocks customizable select height）中了解更多。
+
+支持旧浏览器
+
+那么，我们如何负责任地使用这个新特性，避免破坏使用旧浏览器的用户的体验呢？
+
+一个选择是考虑使用 polyfill！OddBird 的优秀团队做了一个锚点定位 polyfill，不过它不支持“第二级”的容器查询功能，还有另外几个需要注意的限制。
+
+如果 polyfill 不适合你，我们总可以用特性查询来提供后备体验。下面是一个简单的草图：
+
+.anchor {
+  anchor-name: --example-anchor;
+}
+
+.target {
+  position: fixed;
+  /* Fallback experience: Stick to the top of the viewport */
+  top: 0;
+
+  /*
+    Improved experience, using anchor positioning, but without
+    a visual caret:
+  */
+  @supports (position-area: top) {
+    top: revert;
+    position-anchor: --example-anchor;
+    position-area: top;
+    position-try-fallbacks: flip-block;
+    margin-bottom: 8px;
+  }
+}
+
+/*
+  The ideal experience, using Anchor Positioning level 2.
+  Adds the top/bottom caret, flipped using container queries.
+*/
+@supports (container-type: anchored) {
+  .target {
+    container-type: anchored;
+  }
+
+  .tooltip {
+    padding: 16px 16px 24px 16px;
+    border-shape: var(--downwards-caret);
+
+    @container anchored(fallback: bottom) {
+      padding: 24px 16px 16px 16px;
+      border-shape: var(--upwards-caret);
+    }
+  }
+}
+
+取决于你要构建的东西，这些选项可能适用，也可能不适用。说实话，我认为至少在目前，仍有很多情况下依赖 JavaScript 库更好。正如 Jake Archibald 所说，有一些现存的 bug 导致这个 API 的某些部分无法在所有浏览器中可靠地工作。所以，如果你在使用中遇到任何问题，请不要责怪自己！
+
+幸运的是，浏览器厂商正在积极解决这些问题，我相信在一两年之内，这将成为在网页上创建锚定式 UI 的最佳方式。😄
+
+总结
+
+这就是锚点定位 API 的快速入门。很酷，对吧？
+
+正如我前面提到的，锚点定位 API 还有许多其他花样。如果你想深入了解，这里有一些资源：
+
+如果你觉得这篇博文有用，想继续跟我学习，我有几门自定进度的课程，会更深入地探讨 CSS 和 Web：
+
+- CSS for JavaScript Developers（面向 JavaScript 开发者的 CSS）
+- Whimsical Animations（奇趣动画）
+
+最后更新于 2026 年 7 月 7 日
+
+附录：页面中未在上文内联呈现的代码块（依次为文中各代码演练场的代码）
+
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    position: absolute;    position-anchor: --example-anchor;    position-area: top;  }</style>
+<button class="anchor">  Example button</button><div class="target">  This tooltip’s layout is calculated  with the Anchor Positioning API!</div>
+```
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    position: absolute;    position-anchor: --example-anchor;    position-area: top;    /* 👇 Add 8px gap using margin: */    margin-bottom: 8px;  }</style>
+<button class="anchor">  Example button</button><div class="target">  This tooltip has been shifted up slightly using margin!</div>
+```
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    /* Switch from “absolute” to “fixed”: */    position: fixed;    position-anchor: --example-anchor;    position-area: top;    /* Specify a fallback area: */    position-try-fallbacks: bottom;  }</style>
+<button class="anchor">  Example button</button><div class="target">  This tooltip’s layout is calculated  with the Anchor Positioning API!</div><p>  👇 Scroll down 👇</p>
+```
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    container-type: anchored;    position: fixed;    position-anchor: --example-anchor;    position-area: top;    position-try-fallbacks: bottom;  }  .tooltip {    /*      Default styles, for when the target is      above the anchor:    */    padding: 16px 16px 24px 16px;    margin-bottom: 8px;    border-shape: var(--downwards-caret);
+    /*      Alternative styles for when the target      is below the anchor:    */    @container anchored(fallback: bottom) {      padding: 24px 16px 16px 16px;      margin-top: 8px;      border-shape: var(--upwards-caret);    }
+    /*      Fallback styles for browsers that don’t      support “border-shape”:    */    @supports not (      border-shape: shape(from 0 0, hline to 100%)    ) {      clip-path: var(--downwards-caret);      @container anchored(fallback: bottom) {        clip-path: var(--upwards-caret);      }    }  }</style>
+<button class="anchor">  Example button</button><div class="target">  <div class="tooltip">    This tooltip’s layout is calculated    with the Anchor Positioning API!  </div></div>
+<p>  👇 Scroll down 👇</p>
+```

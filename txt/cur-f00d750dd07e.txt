@@ -1,0 +1,13 @@
+https://shoptalkshow.com/712/
+
+第 712 期：和 Scott Jehl 聊给 Web 做懒加载（712: Lazy Loading the Web with Scott Jehl） ｜ ShopTalk Show ｜ 播客 ｜ https://shoptalkshow.com/712/
+
+《ShopTalk Show》2026 年 4 月的一期，主持人 Chris Coyier 和 Dave Rupert 请来了响应式设计和 Web 性能领域的老将 Scott Jehl，他当时在 Squarespace 工作，最近亲自推动了几项 HTML 标准的落地。整期从具体的媒体特性聊到普通开发者怎样参与 Web 标准。
+
+第一个话题是给 video 和 audio 元素加上 loading="lazy"。图片和 iframe 早就支持原生懒加载，而视频一直只能靠客户端脚本在元素滚入视口时再写入 video 或 src，这种做法还会破坏 RSS 等场景。有了原生支持，静态 HTML 里放上千个视频也只会在可见时才去获取，大幅节省带宽，三人笑称"简直是环保战士"。Scott 提到不同浏览器对"提前多远开始加载"的判断不同，有的偏向省带宽，有的偏向保证滚到时已经显示；Chris 则从 CodePen 大量嵌入 iframe 的角度，谈到懒加载会让脚本想通信的 iframe 暂时不存在，需要留意。他们也谈到流媒体视频：video 指向一份描述分片的清单，浏览器根据视口和网速选择，懒加载对它同样有效。
+
+第二个话题是视频 source 元素上的 media 属性。当年响应式图片的经验是：picture 配合 media 是开发者给出的严格规则，srcset 配合 sizes 则把选择权交给浏览器。video 的 source 曾经支持 media，后来被从规范中移除，理由大概是流媒体被视为更好的替代方案，许多开发者在 issue 里留言希望恢复。最终 Mozilla 的 Simon Pieters 和苹果方面都表示支持，于是它又回来了。Scott 在 Firefox 的实现上很幸运：git 历史里还保留着当初能用的代码，他基本是把它找回来再修整，"像衔尾蛇一样绕了一圈"。
+
+接着他详细讲了推进一个标准要走的流程：至少要有两家浏览器厂商表示积极态度，WebKit 和 Firefox 都有专门的 GitHub 仓库可以提交"请表明立场"的请求；向 HTML 标准提交 PR 时会自动附上一份清单，其中一项是 Web 平台测试，这是每家浏览器构建时都会跑的共享测试套件。他推荐想参与标准工作的开发者从写这些测试入手，写测试本身就能让你熟悉特性的行为，而且要用事件而不是定时器来避免不稳定，比如先放一个 display:none 且懒加载的视频，验证它没有发起请求，再让它显示出来检查是否开始加载；尚未成为标准的特性可以先以"暂定"状态合入测试。他特别感谢 Mozilla 的 Keith Cirkel 一路帮忙。Chris 感叹这听起来很合理，实际上是一项需要多人参与的艰巨技术工作；他们还调侃 HTML 规范本身是用一种非标准的 HTML 源文件写的，生成后约 8MB。
+
+最后 Scott 介绍了他提交的另一个提案：video 的 poster 属性已经显得过时，不能做响应式，也没有像 alt 那样的无障碍描述，而图片这些年却多了 crossorigin、decoding、fetchpriority 等控制。他提议允许在 video 里放一个子 img 元素（可以有 srcset、sizes，也可以包在 picture 里）充当海报，这样就能为横屏、竖屏视频配对应的海报，并提供替代文本。

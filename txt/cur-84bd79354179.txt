@@ -1,0 +1,9 @@
+https://www.matuzo.at/blog/2023/single-page-applications-criticism
+
+为什么我不太喜欢单页应用（Why I'm not the biggest fan of Single Page Applications） ｜ Manuel Matuzović ｜ 文章 ｜ https://www.matuzo.at/blog/2023/single-page-applications-criticism
+
+无障碍专家、做了二十多年网站的 Manuel Matuzović 解释自己为何对 SPA 持保留态度。他声明：不是反 JavaScript——JS 常比纯 HTML/CSS 更能改善体验和无障碍；也知道可以做出无障碍的 SPA，且有人认真优化。他讨厌的是把不愿做 SPA 的人斥为"守旧派"，以及 React 被过度售卖和随之而来的氛围；专业上，他只是总结为什么一些开发者（包括他）对 SPA 保持警惕。
+
+路由是核心例子。多页应用点链接时，浏览器导航、标题变、焦点回到文档开头、读屏软件自动读标题——无论鼠标、读屏还是开关设备，你都知道发生了什么、身在何处。SPA 通常只换主内容：焦点还停在链接上，标签标题不变，读屏往往毫无反馈。Reach Router 曾尽力做焦点管理，与 React Router 合并后又默认不做"不够好的"焦点管理，路由无障碍再次倒退。文档标题本是书签标签、搜索结果、链接预览的关键，也是读屏用户确认换页的捷径（NVDA/JAWS 的 Ins+T 等）；SPA 里标题管理常要手写（他提到 Hidde de Vries 的文章、React Helmet、vue-meta 等）。DOM 变更是 SPA 的核心，每次重要变化都要用 live region、ARIA 或焦点从语义上通报——官方 React/Vue/Angular 无障碍文档对此几乎不谈。JSX 长得像 HTML 却不是，新人若只学抽象不学标准 HTML 会更糟。页面语境上，许多 SPA 的最终文档像组件堆填，标题大纲、地标、DOM 顺序被挤出焦点；他主张可学 Lit、Astro、Svelte、WebC 等少往客户端塞 JS 的路线。性能上，贵重设备上的流畅不等于大众设备；复杂度则让人觉得生态更迷信 DX，"更好的 DX 带来更好的 UX"在他多年经验里很少站住，可扩展、好招人等说辞也常落空。
+
+结论：不是骂街。他做复杂应用时也用过 JS 框架糊口，但自己的项目和给客户的建议几乎从不走 SPA——多数时候他做的是网站而不是复杂应用；客户端渲染有其时地，对典型网站通常不是正确选择。

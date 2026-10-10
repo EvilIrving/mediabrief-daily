@@ -1,0 +1,80 @@
+https://www.openwall.com/lists/oss-security/2024/03/29/4
+
+上游 xz/liblzma 后门可导致 SSH 服务器被攻陷
+
+Message-ID: <20240329155126.kjjfduxw2yrlxgzm@awork3.anarazel.de>
+日期：2024 年 3 月 29 日 08:51:26 -0700
+发件人：Andres Freund <andres@anarazel.de>
+收件人：oss-security@lists.openwall.com
+主题：上游 xz/liblzma 中的后门可导致 ssh 服务器被攻陷
+
+大家好，
+
+过去几周我在 Debian sid 安装上观察到 liblzma（xz 软件包的一部分）周围一些奇怪症状（用 ssh 登录非常吃 CPU、valgrind 报错）之后，弄清了答案：
+
+上游 xz 仓库以及 xz 的 tarball 已被植入后门。
+
+起初我以为是 Debian 软件包被攻陷，结果发现是上游。
+
+== 被攻陷的发行 tarball ==
+
+后门的一部分*仅仅存在于分发的 tarball 中*。为便于对照，这里有一个指向 Debian 导入该 tarball 的链接，但它也存在于上游 5.6.0 和 5.6.1 的 tarball 里。那一行既不在 build-to-host 的上游源码中，git 里的 xz 也并不使用 build-to-host。然而它出现在上游发布的 tarball 中——除了那些我认为由 GitHub 直接从仓库内容生成的"源代码"链接。
+
+这会注入一段在 configure 结束时执行的混淆脚本。脚本相当混淆，并使用仓库中"测试"用 .xz 文件里的数据。脚本执行后，若某些前置条件匹配，会修改 $builddir/src/liblzma/Makefile，最终变成对测试文件做变换再解压并由 /bin/bash 执行的命令。去掉 "| bash" 后可以看到 ####Hello#### … ####World#### 之类标记；去混淆后得到附件 injected.txt。
+
+== 被攻陷的仓库 ==
+
+包含利用主体的文件以混淆形式位于 tests/files/bad-3-corrupt_lzma2.xz 与 tests/files/good-large_compressed.lzma，已提交到上游。它们最初在 5.6.0 中甚至没有被用于任何"测试"。随后注入代码（详见下文）在某些配置下导致 valgrind 错误和崩溃，因为栈布局与后门预期不符。这些问题在 5.6.1 中试图被绕过，利用代码也随之调整。鉴于持续数周的活动，提交者要么直接参与，要么其系统遭到相当严重的入侵。不幸的是，后者看起来更不可能，因为他们还在各种列表上就上述"修复"进行沟通。
+
+Florian Weimer 率先单独提取了注入代码（附件 liblzma_la-crc64-fast.o）；我原先只看了整个二进制。谢谢！
+
+== 受影响的系统 ==
+
+去混淆后的脚本在 configure 之后首先被调用，由它决定是否修改构建过程以注入代码。条件包括：只针对 x86-64 linux；使用 gcc 与 gnu 链接器；作为 debian 或 RPM 软件包构建的一部分运行。尤其是后者，很可能旨在让随手分析更难复现该问题。由于注入代码的工作方式（见下），后门很可能只能在基于 glibc 的系统上工作。
+
+幸运的是，xz 5.6.0 和 5.6.1 尚未被 Linux 发行版广泛集成；已集成的地方大多是预发布版本。
+
+== 观察对 openssh 服务器的影响 ==
+
+安装带后门的 liblzma 后，经 ssh 登录会慢很多（原文给出 time ssh 对比：约 0.3s 变为约 0.8s）。openssh 并不直接使用 liblzma。然而 Debian 和若干其他发行版为支持 systemd 通知而给 openssh 打了补丁，而 libsystemd 依赖 lzma。
+
+最初在 systemd 外启动 sshd 并未表现出变慢，尽管后门会被短暂调用——这似乎是让分析更难的反制措施的一部分。
+
+观察到的利用条件包括：未设置 TERM；argv[0] 需为 /usr/sbin/sshd；未设置 LD_DEBUG、LD_PROFILE；需要设置 LANG；某些调试环境（如 rr）似乎会被检测，纯 gdb 在某些情况下也会。要在 systemd 外复现，可用清空的环境只设所需变量启动服务器。事实上甚至不必把 openssh 当成服务器启动也能观察到变慢（sshd -h 在有无 TERM/LD_DEBUG 时耗时差异巨大）。argv[0] 为其他值或许也有效——显然有很多服务器链接到 libsystemd。
+
+== 分析注入代码 ==
+
+我*不是*安全研究员，也不是逆向工程师。有很多东西我没有分析，我所观察到的大多纯粹来自观察，而非穷尽分析后门代码。
+
+分析时我主要用 "perf record -e intel_pt//ub" 观察后门激活与否时执行分叉何处，再用 gdb 在分叉前设断点。
+
+后门最初通过把 ifunc 解析器 crc32_resolve()、crc64_resolve() 替换为不同代码来拦截执行，这些代码调用注入的 _get_cpuid()（原先只是静态内联函数）。在 xz 5.6.1 中后门被进一步混淆，去掉了符号名。
+
+这些函数在启动时就会被解析，因为 sshd 以 -Wl,-z,now 构建，导致所有符号很早解析。若以 LD_BIND_NOT=1 启动，后门似乎不工作。
+
+在 crc32_resolve() 下方，_get_cpuid() 做的不多：看到 completed 变量为 0 就递增并返回正常 cpuid 结果。第二次调用 crc64_resolve() 时更有意思：似乎会找到动态链接器数据、程序参数与环境等信息，再做包括上述在内的各种环境检查。
+
+若决定继续，代码似乎在解析内存中的符号表。这正是相当慢、让我开始调查的那一步。值得注意的是，liblzma 的符号会在许多其他库（包括主 sshd 二进制中的符号）之前解析。这很重要，因为符号解析后 GOT 会因 -Wl,-z,relro 被重新映射为只读。
+
+为了能解析尚未加载的库中的符号，后门向动态链接器安装 audit hook（可用 gdb watch _rtld_global_ro._dl_naudit 观察）。该 hook 似乎只为主二进制安装。它从 _dl_audit_symbind 被调用，针对主二进制中的大量符号，似乎在等待 "RSA_public_decrypt@….plt" 被解析。轮到该符号时，后门把 RSA_public_decrypt@….plt 的值改成指向自己的代码——不是通过 audit hook 机制本身，而是在其外完成。出于我尚未理解的原因，它同时改了 sym.st_value 和 audit hook 的返回值，导致 _dl_audit_symbind() 什么也不做。之后 audit hook 被再次卸载。
+
+此阶段可以改 got.plt 内容，因为它尚未（也还不能）被重新映射为只读。我怀疑此阶段可能还有进一步修改。
+
+== 对 sshd 的影响 ==
+
+上一节说明 RSA_public_decrypt@….plt 被重定向到后门代码。我所分析的追踪确实显示，在公钥登录期间利用代码被调用；后门随后回调 libcrypto，大概是为了执行正常认证。我尚未精确分析注入代码里检查什么以允许未授权访问。由于这运行在预认证上下文中，似乎很可能允许某种形式的访问或其他形式的远程代码执行。
+
+凡可能受影响的系统，建议尽快升级。
+
+== 缺陷报告 ==
+
+鉴于明显的上游牵涉，我没有向上游报告缺陷。由于起初以为是 Debian 特有问题，我向 security@debian.org 发了更初步的报告。随后向 distros@ 报告。CISA 由某个发行版通知。
+
+Red Hat 为此问题分配了 CVE-2024-3094。
+
+== 检测安装是否易受攻击 ==
+
+Vegard Nossum 写了一个脚本，用于检测系统上的 ssh 二进制是否很可能易受攻击，附于本信。谢谢！
+
+致意，
+Andres Freund

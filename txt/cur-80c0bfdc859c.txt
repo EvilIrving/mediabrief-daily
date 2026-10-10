@@ -1,0 +1,13 @@
+https://www.latent.space/p/attention-interface
+
+Agent Harness 的演进（The Evolution of the Agent Harness） ｜ Latent Space ｜ 文章 ｜ https://www.latent.space/p/attention-interface
+
+Latent Space 上一篇把 2025 圣诞前后 agent"突然好用了"归因于模型与 harness 两条曲线同时上扬并在正确时刻交叉。作者引用 Transformer 发明者之一 Lukasz Kaiser：那次跃迁很难钉死是预训练、后训练还是 harness。结论是：答案不全在权重里，而在权重周围长出来的系统——agent harness。
+
+定义：harness 是权重之外让 agent 能干活的一切——环境、工具、上下文、护栏。没有它，模型是缸中之脑；有了它，模型才有身体：感知（上下文）、行动（工具）、持久化（记忆与压缩）、边界（权限与护栏）。
+
+Harness 1.0「外挂时代」：用「harness 向模型要求什么」与「模型实际能交付什么」两条曲线的落差衡量效能。阶段包括：2022 年 10 月 ReAct 把推理-行动-观察循环写在提示纸上；2023 春 AutoGPT/BabyAGI 把 harness 曲线甩在模型前面，自主放大错误（逐步 95% 可靠、20 步任务成功率约 36%）；2023–2024 Cursor/Copilot 把循环交回人手、模型加速人，Devin 等过早交还自主仍约 15% 成功；2024 末 o1 等推理模型让能力曲线首次反超；2025 年 2 月 Claude Code 抓住交叉点——终端、bash、文件读写、权限规则代替逐步审批，Boris Cherny 团队按下一档模型能力来设计，半年 ARR 约 10 亿美元。
+
+Harness 2.0「共训时代」：Harness-Bench 同一模型换 harness，106 题得分 52.4 到 76.2，差 23.8 分——一半是 harness。OpenAI 在 ARC-AGI-3 上仅靠保留推理与压缩就把 GPT-5.6 Sol 从 13.3% 提到 38.3%。RL 在 harness 环境里训练（如 codex-1），工具调用从外提示变成环境内习得；模型开始把压缩等能力吸进权重（GPT-5.1-Codex-Max），harness 随之删脚手架——Anthropic 的 Thariq Shihipar 称 Claude Code 系统提示删了约 80%。循环是：训练 → 吸收 → 剥离 → 再训练。
+
+Harness 3.0「注意力时代」：能被吸收的继续删，剩下的是权限、身份、信任、可辨识性等人侧能力——harness 从人连模型的界面，翻转为模型连人注意力的界面（attention-interface）。Ryan Lopopolo 说团队里真正稀缺的是同步的人类注意力。作者预测一年内每家做 agentic AI 的公司都会像普及 AGENTS.md 一样推出「人类注意力策略面」：何时可打断、何时继续干、哪些决定可独断、哪些要审批，且会随纠正数据学习。缸中之脑得到身体，身体又溶回脑；留给我们建的，是未来模型永远吸不走的那一层：连向人类注意力的接口。

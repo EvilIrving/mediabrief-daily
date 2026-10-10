@@ -1,0 +1,9 @@
+https://martinfowler.com/articles/exploring-gen-ai/refactoring-economic-benefit.html
+
+重构的经济收益（The Economic Benefit of Refactoring） ｜ Martin Fowler ｜ 文章 ｜ https://martinfowler.com/articles/exploring-gen-ai/refactoring-economic-benefit.html
+
+Thoughtworks 的一篇实验报告，属于 Martin Fowler 网站的"探索生成式 AI"系列。作者完全靠 Claude Code 和 Cursor 写了一个约 15 万行的应用，主要是 Rust，自己几乎没读过代码。某天看到 agent 在编辑一个文件的第 4000 行，他才发现数据访问层已经膨胀成一个 17155 行的单一 Rust 文件：每个查询都重复同样的 HTTP 请求设置和 JSON 编解码，没有任何去重和抽象。
+
+他借此设计了一个实验，检验"现在花 token 重构，能否让以后每次改动更省 token"。因为 agent 不会从上一步学到东西，可以每重构一步，就让一个全新的子 agent 执行完全相同的功能改动（给存储层加一个"关注条目"的接口），记录消耗的 token 和时间，然后丢弃改动。结果很清楚：前面十几步输入 token 基本持平，直到最大文件开始缩小才明显下降，最后一步拆分后"断崖式"下跌，同一任务的输入 token 从约 16 万降到约 2.7 万，省了 83%，而且以后每次碰这一层都能省。省下来不是因为代码变少，数据层总行数几乎没变，而是 agent 能准确找到最少需要读的那几个文件；随便把文件切碎未必有用，前面的去重步骤是在为最后的拆分铺路。输出 token 基本不变，作者认为需要更复杂的样例才能看出重构对写代码量的影响。
+
+他对 Claude 的重构能力评价不高：它看不出该用哪些重构手法，需要人明确引导，开发流程里专门的重构步骤也没让它主动改善这个文件；执行时它用 grep 和 sed 写 Python 脚本来改代码，经常被缩进搞乱，还漏掉了最有价值的一步。整个实验大约八小时，基本无人值守。重构本身花了多少 token 他没精确统计，上限约 500 万。他承认这只是一个人维护的新项目上的单次实验，但认为这是量化重构价值的第一步。

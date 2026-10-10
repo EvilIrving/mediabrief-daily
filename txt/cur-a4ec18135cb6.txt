@@ -1,0 +1,19 @@
+https://github.blog/ai-and-ml/generative-ai/under-the-hood-security-architecture-of-github-agentic-workflows/
+
+揭秘 GitHub Agentic Workflows 的安全架构（Under the hood: Security architecture of GitHub Agentic Workflows） ｜ GitHub Blog ｜ 文章 ｜ https://github.blog/ai-and-ml/generative-ai/under-the-hood-security-architecture-of-github-agentic-workflows/
+
+GitHub 官方博客的一篇技术文章，讲 GitHub Agentic Workflows（跑在 GitHub Actions 上的 AI agent 自动化）是怎样从第一天起就按安全优先来设计的。
+
+开篇的场景是：早上醒来看到 agent 已经修好文档、补了单元测试、提了重构建议，确实让人惊喜；但一个能访问仓库和互联网的 agent，会不会参考了可疑网站的文档、推送了带 API 令牌的提交，或者哪天给每个未关闭的 issue 都刷一条噪音评论？自动化必须可预测才有长期价值。agent 本身是非确定性的，要读不可信的输入、在运行时做决定；而 GitHub Actions 默认所有东西都在同一个信任域里，一个有 bug 或被提示注入的 agent 可以干扰 MCP 服务器、拿到密钥、访问任意主机。所以他们把 agent 执行视为 CI/CD 模型的延伸，而不是另起一套运行时：把开放式的编写和受管控的执行分开，再把工作流编译成带有明确权限、输出、可审计性和网络访问约束的 GitHub Action。
+
+威胁模型有两点：agent 能自主推理、行动，因此默认不可信，尤其面对不可信输入时；Actions 的共享信任域对确定性自动化是优点，配上不可信的 agent 则会让出事时的爆炸半径很大。他们假定 agent 会试图读写不该碰的状态、通过非预期的渠道通信、滥用合法渠道做坏事。由此定下四条原则。
+
+一是纵深防御，分三层。底座层是 Actions 运行器虚拟机和几个可信容器，提供组件隔离、特权操作和系统调用的中介、由内核强制的通信边界，即使某个不可信组件在容器里执行任意代码也成立。配置层是声明式的配置及解释它们的工具链，决定加载哪些组件、怎么连接、允许哪些通信渠道、赋予什么权限，以及哪些令牌放进哪个容器。规划层负责把工作流拆成分阶段、阶段之间有明确数据交换的结构，"安全输出"（safe outputs）子系统是它的主要实例。
+
+二是不把密钥交给 agent。在 Actions 里，agent 的认证令牌、MCP 服务器的 API key 都放在环境变量和配置文件中，虚拟机里所有进程可见；而被提示注入的 agent 能读配置文件、SSH 密钥、/proc 和日志，再把密钥传到网上或编码进公开的 issue、PR、评论里。他们的做法是把 agent 关进专用容器并严控出口：上网要过防火墙（agent 与防火墙之间建私有网络），MCP 访问经由可信的 MCP 网关（独立容器，独占 MCP 认证材料），调用大模型的流量经由一个 API 代理，Claude、Codex、Copilot 这些 agent 的令牌放在代理里，不暴露给 agent 容器。零密钥要在安全和实用之间取舍：编码任务需要编译器、解释器、脚本和仓库状态，可在容器里重新装一遍会重复现有的配置逻辑、还要放行更多网络目标。于是他们把整个宿主文件系统只读挂载到 /host，用空的 tmpfs 覆盖选定路径，再让 agent 在以 /host 为根的 chroot 监牢里运行，既保留宿主端配置，又把 agent 可写、可发现的范围限制在完成任务所需之内。
+
+三是所有写操作先暂存、再审查。没有密钥的 agent 仍能作恶，比如用无意义的 issue 和 PR 淹没维护者，或在仓库对象里塞入不良链接。编译器把工作流拆成明确阶段，为每个阶段定义活动组件和读写权限、产出的数据、以及谁可以消费这些数据。agent 运行时只能通过 GitHub MCP 服务器读状态，只能通过 safe outputs MCP 服务器暂存更新；agent 退出后，这些缓冲的写操作要过一系列检查：作者可以限定允许哪些写操作（如建 issue、评论、PR），限制数量（如每次最多三个 PR），并分析内容、去除不想要的模式（如清除 URL）。只有通过整条流水线的产物才会生效。
+
+四是记录一切。即便零密钥、写操作经过审查，agent 仍可能以意想不到的方式处理数据、调用工具，甚至试图突破约束，文章说 agent 为完成任务会不择手段，花招多得出人意料。所以他们在每个信任边界都大量记录：防火墙记录网络和目标层面的活动，API 代理记录模型请求与响应的元数据，MCP 网关和服务器记录工具调用，agent 容器内部还有埋点审计读取环境变量之类的敏感动作，合起来可以做端到端的取证重建、策略验证和异常检测。凡是能观察通信的地方，也就能中介通信，这为将来的信息流控制打下基础：他们已经支持 GitHub MCP 服务器的锁定模式，接下来几个月会推出按可见性（公开或私有）和仓库对象作者角色在各 MCP 服务器上执行策略的安全控制。
+
+文末邀请读者到社区讨论区或 GitHub Next Discord 的 #agentic-workflows 频道参与。

@@ -1,0 +1,11 @@
+https://www.joshwcomeau.com/css/interactive-guide-to-grid/
+
+CSS Grid 交互式指南（An Interactive Guide to CSS Grid） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/interactive-guide-to-grid/
+
+Josh W. Comeau 的一篇交互式教程，配有大量可拖动、可编辑的演示，目标是让读者真正建立对 CSS Grid 的心智模型，而不只是背属性。
+
+他先说明 Grid 的独特之处：它是一种二维布局方式，以前只能靠表格或绝对定位才能做到的布局，现在用几行 CSS 就能实现。核心概念是：父元素设为 display: grid 后，子元素就成为网格项；用 grid-template-columns 和 grid-template-rows 定义轨道，fr 单位按比例分配剩余空间，和百分比不同的是它会在尊重内容最小尺寸的前提下分配。他解释了"隐式网格"：不声明行时，网格会按需自动生成行。repeat() 用于快速声明多个相同轨道，minmax() 设定轨道的最小和最大尺寸。
+
+接着他讲把元素放进网格：用 grid-column、grid-row 指定起止线，可以让元素跨越多行多列；用 grid-template-areas 给区域命名，再把元素分配到命名区域，像画一张 ASCII 示意图那样排出整个页面布局，他用经典的"页头、侧栏、主体、页脚"布局演示，并展示如何配合媒体查询在小屏上重排。对齐部分，他区分了 justify-content、align-content（移动整个网格的轨道）与 justify-items、align-items（在单元格内移动每个子元素），以及 justify-self、align-self 针对单个元素。他还展示了几个实用技巧，比如用 repeat(auto-fill, minmax(...)) 做不需要媒体查询的自适应卡片网格，用 Grid 在一个格子里叠放元素而不必绝对定位。
+
+最后他提到 Grid 和 Flexbox 并不对立，Flexbox 适合一维、按内容流动的布局，Grid 适合预先规划的二维结构，并推荐了他的 CSS 课程。

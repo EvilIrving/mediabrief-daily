@@ -1,0 +1,9 @@
+https://overreacted.io/before-you-memo/
+
+在你用 memo() 之前 Before You memo() ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/before-you-memo/
+
+Dan Abramov 的一篇 React 性能短文。通常的建议是：先确认用的是生产构建，确认状态没放得比需要的更高，再用 Profiler 找出最耗时的子树、包上 memo() 和 useMemo()。最后一步很烦，理想情况下应该由编译器代劳。他想介绍两个常被忽视的基础技巧，它们不取代 memo，但往往值得先试。
+
+示例是一个 App：里面有一个颜色输入框，还有一个被人为拖慢的 ExpensiveTree。每次颜色变化，整个 App 重新渲染，慢组件也跟着重渲染。第一个办法是"把状态往下移"：真正关心颜色的只是输入框那一小块，把它抽成一个 Form 组件，状态放进去，颜色变化时就只有 Form 重渲染。第二个办法是"把内容往上提"，用于状态必须放在慢组件上方的情况，比如颜色要设在外层 div 上：把用到颜色的外壳抽成 ColorPicker，ExpensiveTree 作为 children 从 App 传进去。颜色变化时 ColorPicker 重渲染，但它收到的 children 还是上次那个元素，React 不会再去渲染这棵子树。
+
+他指出，按"会变的部分"和"不会变的部分"拆分组件，还能为未来铺路：等服务端组件稳定后，ExpensiveTree 可以直接在服务器上运行，客户端的状态更新会"跳过"它，这是 memo 做不到的。结论是：别忽视下移状态和上提内容，不够时再用 Profiler、撒上 memo。这不是新点子，而是 React 组合模型的自然结果，只是太简单而被低估了。

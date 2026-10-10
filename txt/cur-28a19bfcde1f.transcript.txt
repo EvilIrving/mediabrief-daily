@@ -1,0 +1,163 @@
+https://jakearchibald.com/2025/fetch-streams-not-for-progress/
+
+fetch 流很好，但不适合用来测量上传/下载进度
+
+我在 Mozilla 的部分职责是确保我们把精力放在正确的特性上，最近我们聊到了 fetch 上传流这个话题。Chrome 已经支持它一段时间了，但 Firefox 和 Safari 都还不支持。
+
+我在各个社交平台上问大家对这个特性怎么看、会用它来做什么。到目前为止最常见的回答是"用来测量上传进度"，但是……用它来做这件事会得到不准确的结果，甚至可能导致浏览器做出糟糕的实现。
+
+我们来深入看看……
+
+响应流
+
+流式响应在所有浏览器中都已经可用好几年了：
+
+const response = await fetch(url);
+const reader = response.body.getReader();
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  console.log(value);
+}
+console.log('Done!');
+
+这让你可以一块一块地获取响应，从而在接收的同时就开始处理。
+
+用异步迭代器会更简单：
+
+const response = await fetch(url);
+for await (const chunk of response.body) {
+  console.log(chunk);
+}
+console.log('Done!');
+
+……但 Safari 不支持这种写法。我已经提议把它纳入 Interop 2026。
+
+这些块是 Uint8Array，不过你可以用 TextDecoderStream 把它们转成文本：
+
+const response = await fetch(url);
+const textStream = response.body.pipeThrough(new TextDecoderStream());
+
+但它们并不适合用来测量下载进度
+
+你可能会尝试这样测量下载进度：
+
+// 这并不总是有效！
+const response = await fetch(url);
+const contentLength = Number(response.headers.get('Content-Length')) || 0;
+let downloaded = 0;
+for await (const chunk of response.body) {
+  downloaded += chunk.length;
+  if (contentLength) {
+    console.log(
+      `Downloaded ${((downloaded / contentLength) * 100).toFixed(2)}%`,
+    );
+  }
+}
+
+好的一面是，你测量的是数据到手的时刻，而对下载来说这正是关键。假设你在收三个邮寄的包裹——你测量的是每个包裹到达你手中的时刻，这没问题。
+
+然而，如果响应带有 Content-Encoding（比如 brotli 或 gzip），这一切就都不成立了，因为在这种情况下，Content-Length 表示的是编码后的大小，而读到的块却是解码后的块。这意味着你的 downloaded 值很可能会超过 contentLength 的值。
+
+不过，如果你犯了这个错误，你并不孤单。几年前我调查过各浏览器如何处理压缩资源的下载进度，结果……一团糟。
+
+目前有一个特性请求，希望提供一种不经解压就获取原始响应体的方式。
+
+请求流
+
+请求流基本上和响应流一样，只不过是用于上传而不是下载。想象一个视频上传应用，它在上传之前要对视频做一些转码或处理：
+
+// 从磁盘或摄像头获取视频
+const videoStream = getVideoStreamSomehow();
+// 以某种方式处理它，例如剪辑或转码
+const processedVideo = videoStream.pipeThrough(new SomeVideoProcessor());
+// 上传这个流
+await fetch(url, {
+  method: 'POST',
+  body: processedVideo,
+  duplex: 'half',
+  headers: {
+    'Content-Type': 'video/mp4',
+  },
+});
+
+在这种模式下，视频处理可以和上传并行进行。更传统的方法需要先处理完整个视频才能开始上传，可能会慢得多。
+
+限制
+
+duplex: 'half' 意味着请求必须完成之后响应才可用。这是在为将来的一个特性"预留位置"，届时浏览器可以支持并行处理请求和响应。
+
+如果你想让请求和响应并行，可以发起两次 fetch——一次流式发送请求数据，另一次流式接收响应数据。
+
+此外，由于请求的 Content-Length 未知，这个特性被限制在那些本来就习惯按块处理请求数据的传输协议上，也就是 HTTP/2 及以后的版本。
+
+但它们很不适合用来测量上传进度
+
+我甚至不打算展示这部分的代码，因为它太不可靠了。
+
+使用请求流时，你最终测量的是数据从你的流中被取走的时刻。用邮寄来比喻，你测量的是每个包裹被快递员揽收的时刻，这并不代表这些包裹已经送达。
+
+fetch 就是那个快递员。它会从你手里拿走一些数据块，开始处理网络方面的事务。这些块的成功发送会在之后才发生，也可能会失败。
+
+这是流的正常行为，在管道某些部分比其他部分流得更快的情况下，它有助于让一切尽可能顺畅地运行。每个流都有一个"高水位线"，本质上就是一个理想的缓冲量。
+
+用流来测量上传进度可能在将来引发问题
+
+如果你试图用流来测量上传进度，结果会不准确，而且还可能限制这个特性将来的质量。
+
+假设浏览器上线了这个特性，并且只做相当少量的缓冲。如果大家用它来测量上传进度，结果不会正确，但可能也差不了太多。
+
+接着假设某个浏览器发现，在 fetch 内部做更多缓冲可以获得更好的性能。如果网络上大量网站都在用这个特性测量上传进度，那这个浏览器就面临两个选择：上线这个改动，这意味着这些网站的上传进度测量会变得更不准确；或者放弃上线这项普遍性的改进。我不希望浏览器最终不得不在这里做出妥协。
+
+如何测量上传进度
+
+遗憾的是，上传和下载进度是 fetch 中缺失的功能。如果你今天就想要进度事件，最好的方法是使用 XHR：
+
+const xhr = new XMLHttpRequest();
+// 上传进度
+xhr.upload.onprogress = (event) => {
+  if (event.lengthComputable) {
+    console.log(
+      `Uploaded ${((event.loaded / event.total) * 100).toFixed(2)}%`,
+    );
+  }
+};
+// 下载进度
+xhr.onprogress = (event) => {
+  if (event.lengthComputable) {
+    console.log(
+      `Downloaded ${((event.loaded / event.total) * 100).toFixed(2)}%`,
+    );
+  }
+};
+xhr.open('POST', url);
+xhr.send(blobOrWhatever);
+
+但在将来……
+
+来自 Igalia 的 Luke Warlow 目前正在为 fetch 开发一个 API，为上传和下载都加上进度事件。
+
+这个 API 在正式落地前可能还会变化，但目前它看起来是这样的：
+
+const response = await fetch(url, {
+  observer(requestObserver, responseObserver) {
+    requestObserver.onprogress = (event) => {
+      if (event.lengthComputable) {
+        console.log(
+          `Uploaded ${((event.loaded / event.total) * 100).toFixed(2)}%`,
+        );
+      }
+    };
+    responseObserver.onprogress = (event) => {
+      if (event.lengthComputable) {
+        console.log(
+          `Downloaded ${((event.loaded / event.total) * 100).toFixed(2)}%`,
+        );
+      }
+    };
+  },
+});
+
+这应该能让我们享有 fetch 的所有现代优点，同时补上进度功能的空缺！
+
+如果你有兴趣把请求流用于进度事件之外的用途，Interop 2026 中有一个关于它们的提案。我们也希望通过这份问卷或 interop 的 GitHub 讨论串来了解开发者的兴趣。

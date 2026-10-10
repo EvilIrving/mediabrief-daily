@@ -1,0 +1,9 @@
+https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms
+
+从零理解并实现大模型中的 KV 缓存（Understanding and Coding the KV Cache in LLMs from Scratch） ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms
+
+机器学习作者 Sebastian Raschka 的一篇教程，配合他的书《从零构建大语言模型》，讲清楚推理时最重要的优化之一 KV 缓存是什么、为什么有效，并给出完整实现。
+
+他先用直观的例子解释：大模型逐个生成 token，每生成一个新词，朴素做法会把整段文本重新送进模型，为之前所有词重复计算注意力里的键（K）和值（V）。比如生成"Time flies fast"时，"Time"的键值被算了三次，"flies"算了两次。KV 缓存就是把这些中间结果存下来复用，每步只为新 token 计算，文本越长，省下的计算越多，生成速度也提升越明显。代价是代码更复杂、内存占用增加（这也是他当初没写进书里的主要原因），而且只能用于推理、不能用于训练；但在生产环境中，速度收益通常值得。
+
+实现部分分四步：在多头注意力模块里注册 cache_k 和 cache_v 两个缓冲区；前向传播时加一个 use_cache 开关，首次直接存下新的键值，之后把新键值拼接到缓存后面再参与计算；提供一个 reset_cache 方法在两次生成之间清空缓存；在整个模型里把开关传递到每个 Transformer 块，并维护一个当前位置计数器，保证位置编码正确，生成函数也相应改为首次喂入整段提示、之后每步只喂新生成的那一个 token。他在小模型上对比，开启缓存后生成速度提升数倍。最后他讨论了进一步的优化：朴素的拼接会不断重新分配内存，可以预先分配固定大小的缓存；缓存会无限增长，可以用滑动窗口截断。他的观点是，自己动手实现一遍是真正理解 KV 缓存的最好方式。

@@ -1,0 +1,11 @@
+https://kentcdodds.com/blog/dont-sync-state-derive-it
+
+别同步状态，推导它（Don't Sync State. Derive It!） ｜ Kent C. Dodds ｜ 文章 ｜ https://kentcdodds.com/blog/dont-sync-state-derive-it
+
+React 教育者 Kent C. Dodds 用井字棋例子说明：能从别的值算出来的东西，不要再单独做成 state。他的工作坊作业里，squares 用 useState，而 nextValue、winner、status 都是根据 squares 算出来的"派生状态"。
+
+他先演示天真做法：四个变量全用 useState，每次选格都要一起 set。若再加"一次选两格"，同样的计算和 set 又要抄一遍，稍有疏漏就会和真正的 squares 脱节——有经验的人都知道那种不同步有多难受。把更新收进一个 setNewState 能减少重复，但多源状态、多处更新时仍容易漏。
+
+正确做法是只保留 squares 这一份源状态，其余在每次渲染时当场计算。加"一次选两格"时只改 squares，派生值自动正确，不必再写同步函数。useReducer 也能把派生算进 reducer，脱节概率更低，但对这个例子仍比渲染时计算更绕。若 squares 来自父组件 props，用 useEffect 或渲染里 setState 去同步更是常见坑，直接按 props 计算即可；文中还提到 getDerivedStateFromProps 在 hooks 里若真需要，应在渲染期间调用更新函数（见 React Hooks FAQ）。
+
+性能上，JavaScript 很快：calculateWinner 基准约每秒千万次量级，手机上几百万次也够用；真贵再用 useMemo。派生有时反而比同步少触发多余重渲染。Reselect、MobX 的 computed 在访问时才算，更细；简单情况自己判断是否需要再调用昂贵函数就够了。结论：能派生就派生，别同步。

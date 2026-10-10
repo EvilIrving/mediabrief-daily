@@ -1,0 +1,154 @@
+https://overreacted.io/before-you-memo/
+
+在你用 memo() 之前
+2021 年 2 月 23 日
+
+关于 React 性能优化的文章已经有很多了。一般来说，如果某次状态更新很慢，你需要：
+
+- 确认你运行的是生产构建。（开发构建会刻意更慢，极端情况下甚至慢一个数量级。）
+- 确认你没有把状态放在组件树中比实际需要更高的位置。（例如，把输入框的状态放进一个集中式 store 可能不是最好的主意。）
+- 运行 React DevTools Profiler，看看哪些组件被重新渲染了，再用 memo() 包裹开销最大的子树。（并在需要的地方加上 useMemo()。）
+
+最后这一步很烦人，尤其是对那些夹在中间的组件来说，理想情况下应该由编译器替你完成。将来也许会的。
+
+在这篇文章里，我想分享两种不同的技巧。它们出奇地基础，所以人们很少意识到它们能提升渲染性能。
+
+这些技巧是对你已有知识的补充！它们不会取代 memo 或 useMemo，但通常值得先试一试。
+
+一个（人为制造的）慢组件
+
+下面这个组件有严重的渲染性能问题：
+
+import { useState } from 'react';
+ 
+export default function App() {
+  let [color, setColor] = useState('red');
+  return (
+    <div>
+      <input value={color} onChange={(e) => setColor(e.target.value)} />
+      <p style={{ color }}>Hello, world!</p>
+      <ExpensiveTree />
+    </div>
+  );
+}
+ 
+function ExpensiveTree() {
+  let now = performance.now();
+  while (performance.now() - now < 100) {
+    // 人为延迟——100 毫秒内什么也不做
+  }
+  return <p>I am a very slow component tree.</p>;
+}
+
+问题在于，每当 App 内部的 color 改变时，我们都会重新渲染 <ExpensiveTree />，而它被我们人为地拖得非常慢。
+
+我可以给它加上 memo() 就收工，但关于这一点已经有很多文章了，我就不在这上面花时间了。我想展示两种不同的解决方案。
+
+方案一：把状态往下移
+
+如果你仔细看渲染代码，会注意到返回的树中只有一部分真正关心当前的 color：
+
+export default function App() {
+  let [color, setColor] = useState('red');
+  return (
+    <div>
+      <input value={color} onChange={(e) => setColor(e.target.value)} />
+      <p style={{ color }}>Hello, world!</p>
+      <ExpensiveTree />
+    </div>
+  );
+}
+
+所以我们把这一部分提取成一个 Form 组件，并把状态下移到它里面：
+
+export default function App() {
+  return (
+    <>
+      <Form />
+      <ExpensiveTree />
+    </>
+  );
+}
+ 
+function Form() {
+  let [color, setColor] = useState('red');
+  return (
+    <>
+      <input value={color} onChange={(e) => setColor(e.target.value)} />
+      <p style={{ color }}>Hello, world!</p>
+    </>
+  );
+}
+
+现在如果 color 改变，只有 Form 会重新渲染。问题解决了。
+
+方案二：把内容往上提
+
+如果这块状态被用在慢组件树上方的某处，上面的方案就行不通了。例如，假设我们把 color 设在父级的 <div> 上：
+
+export default function App() {
+  let [color, setColor] = useState('red');
+  return (
+    <div style={{ color }}>
+      <input value={color} onChange={(e) => setColor(e.target.value)} />
+      <p>Hello, world!</p>
+      <ExpensiveTree />
+    </div>
+  );
+}
+
+现在看起来，我们没法再把不使用 color 的部分"提取"到另一个组件里，因为那样会包含父级 <div>，而它又包含 <ExpensiveTree />。这次总躲不开 memo 了吧？
+
+真的吗？
+
+玩一玩这个沙盒，看看你能不能想出办法。
+……
+……
+……
+
+答案非常朴素：
+
+export default function App() {
+  return (
+    <ColorPicker>
+      <p>Hello, world!</p>
+      <ExpensiveTree />
+    </ColorPicker>
+  );
+}
+ 
+function ColorPicker({ children }) {
+  let [color, setColor] = useState("red");
+  return (
+    <div style={{ color }}>
+      <input value={color} onChange={(e) => setColor(e.target.value)} />
+      {children}
+    </div>
+  );
+}
+
+我们把 App 组件一分为二。依赖 color 的部分，连同 color 状态变量本身，都移进了 ColorPicker。
+
+不关心 color 的部分留在 App 组件中，作为 JSX 内容（也就是 children 属性）传给 ColorPicker。
+
+当 color 改变时，ColorPicker 会重新渲染。但它拿到的 children 属性仍然是上次从 App 得到的那个，所以 React 不会访问那棵子树。
+
+结果就是，<ExpensiveTree /> 不会重新渲染。
+
+这件事的寓意是什么？
+
+在使用 memo 或 useMemo 这类优化之前，也许值得先看看能不能把会变的部分和不会变的部分拆开。
+
+这些方法有意思的地方在于，它们本身其实和性能没什么关系。用 children 属性来拆分组件，通常会让应用的数据流更容易理解，也减少了需要一层层往下传的 props。在这类场景里，性能提升只是锦上添花，而不是最终目的。
+
+有趣的是，这种模式在未来还会带来更多性能上的好处。
+
+例如，等服务端组件（Server Components）稳定、可以采用时，我们的 ColorPicker 组件就可以从服务器接收它的 children。整个 <ExpensiveTree /> 组件或其中的一部分可以在服务器上运行，即使是顶层的 React 状态更新，在客户端上也会"跳过"这些部分。
+
+这是连 memo 都做不到的！不过再说一次，这两种方法是互补的。不要忽视把状态往下移（以及把内容往上提！）
+
+然后，在这样还不够的地方，再使用 Profiler，撒上那些 memo。
+
+我以前是不是读到过这个？
+
+这不是一个新想法。它是 React 组合模型的自然结果。它简单到常被低估，值得多一点关注。

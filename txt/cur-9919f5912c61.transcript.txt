@@ -1,0 +1,482 @@
+https://overreacted.io/progressive-json/
+
+渐进式 JSON
+
+你知道渐进式 JPEG 吗？这里有一篇不错的解释，介绍什么是渐进式 JPEG。它的思路是，图片不是从上到下加载，而是一开始模糊，然后逐渐变得清晰。
+
+如果把同样的思路用在传输 JSON 上呢？
+
+假设你有一棵包含一些数据的 JSON 树：
+
+{
+  header: 'Welcome to my blog',
+  post: {
+    content: 'This is my article',
+    comments: [
+      'First comment',
+      'Second comment',
+      // ...
+    ]
+  },
+  footer: 'Hope you like it'
+}
+
+现在设想你想通过网络传输它。因为格式是 JSON，在最后一个字节加载完之前，你不会得到一棵合法的对象树。你必须等整个东西加载完，再调用 JSON.parse，然后处理它。
+
+在服务器发送最后一个字节之前，客户端对 JSON 什么也做不了。如果 JSON 的某一部分在服务器上生成得很慢（比如加载 comments 需要一趟很慢的数据库访问），那么在服务器完成所有工作之前，客户端无法开始任何工作。
+
+你会把这叫作好的工程吗？然而这就是现状，99.9999%* 的应用都是这样发送和处理 JSON 的。我们敢不敢改进它？
+
+* 这是我编的
+
+流式 JSON
+
+我们可以尝试实现一个流式 JSON 解析器来改进这一点。流式 JSON 解析器能够从不完整的输入中生成一棵对象树：
+
+{
+  header: 'Welcome to my blog',
+  post: {
+    content: 'This is my article',
+    comments: [
+      'First comment',
+      'Second comment'
+
+如果你在这个时刻要结果，流式解析器会交给你这个：
+
+{
+  header: 'Welcome to my blog',
+  post: {
+    content: 'This is my article',
+    comments: [
+      'First comment',
+      'Second comment'
+      // (The rest of the comments are missing)
+    ]
+  }
+  // (The footer property is missing)
+}
+
+然而，这也不怎么好。
+
+这种方法的一个缺点是，对象有点畸形。例如，顶层对象本应有三个属性（header、post 和 footer），但 footer 缺失了，因为它还没在流中出现。post 本应有三条 comments，但你实际上无法判断是还有更多 comments 要来，还是这已经是最后一条。
+
+从某种意义上说，这是流式传输固有的，我们不就是想拿到不完整的数据吗？但这让客户端很难真正使用这些数据。由于缺少字段，所有类型都“对不上”。我们不知道什么是完整的，什么不是。这就是为什么除了小众场景，流式 JSON 并不流行。在应用逻辑中真正利用它实在太难了，因为应用逻辑通常假设类型是正确的、“就绪”就意味着“完整”，等等。
+
+用 JPEG 来类比，这种朴素的流式方法对应默认的“自上而下”加载机制。你看到的画面很清晰，但只看到顶部的 10%。所以尽管保真度很高，你其实看不出画面上是什么。
+
+有趣的是，HTML 本身的流式传输默认也是这样工作的。如果你在慢速连接下加载一个 HTML 页面，它会按文档顺序流式传输：
+
+<html>
+  <body>
+    <header>Welcome to my blog</header>
+    <article>
+      <p>This is my article</p>
+        <ul class="comments">
+          <li>First comment</li>
+          <li>Second comment</li>
+
+这有一些好处，浏览器能够部分地显示页面，但它也有同样的问题。截断点是任意的，可能在视觉上很突兀，甚至打乱页面布局。不清楚是否还有更多内容要来。下面的任何东西，比如页脚，都被截掉了，即使它在服务器上已经准备好了、本可以更早发送。当我们按顺序流式传输数据时，一个慢的部分会拖延一切。
+
+我们再说一遍：当我们按出现的顺序流式传输时，一个慢的部分会拖延它后面的一切。你能想到什么办法来解决这个问题吗？
+
+渐进式 JSON
+
+还有另一种处理流式传输的方式。
+
+到目前为止，我们一直是深度优先地发送。我们从顶层对象的属性开始，进入该对象的 post 属性，再进入那个对象的 comments 属性，以此类推。如果某样东西很慢，其他一切都会被耽搁。
+
+然而，我们也可以广度优先地发送数据。
+
+假设我们这样发送顶层对象：
+
+{
+  header: "$1",
+  post: "$2",
+  footer: "$3"
+}
+
+这里，"$1"、"$2"、"$3" 指的是尚未发送的信息片段。它们是占位符，可以在之后的流中逐步填充。
+
+例如，假设服务器又向流中发送了几行数据：
+
+{
+  header: "$1",
+  post: "$2",
+  footer: "$3"
+}
+/* $1 */
+"Welcome to my blog"
+/* $3 */
+"Hope you like it"
+
+注意，我们没有义务按任何特定顺序发送这些行。在上面的例子中，我们刚刚发送了 $1 和 $3，但 $2 那一行还在等待中！
+
+如果客户端在这个时刻尝试重建这棵树，它可能是这样的：
+
+{
+  header: "Welcome to my blog",
+  post: new Promise(/* ... not yet resolved ... */),
+  footer: "Hope you like it"
+}
+
+我们把尚未加载的部分表示为 Promise。
+
+然后假设服务器又流式传来几行：
+
+{
+  header: "$1",
+  post: "$2",
+  footer: "$3"
+}
+/* $1 */
+"Welcome to my blog"
+/* $3 */
+"Hope you like it"
+/* $2 */
+{
+  content: "$4",
+  comments: "$5"
+}
+/* $4 */
+"This is my article"
+
+从客户端的角度看，这会“填上”一些缺失的部分：
+
+{
+  header: "Welcome to my blog",
+  post: {
+    content: "This is my article",
+    comments: new Promise(/* ... not yet resolved ... */),
+  },
+  footer: "Hope you like it"
+}
+
+post 的 Promise 现在会 resolve 为一个对象。然而，我们仍然不知道 comments 里有什么，所以现在它们被表示为一个 Promise。
+
+最后，评论可以流式传来：
+
+{
+  header: "$1",
+  post: "$2",
+  footer: "$3"
+}
+/* $1 */
+"Welcome to my blog"
+/* $3 */
+"Hope you like it"
+/* $2 */
+{
+  content: "$4",
+  comments: "$5"
+}
+/* $4 */
+"This is my article"
+/* $5 */
+["$6", "$7", "$8"]
+/* $6 */
+"This is the first comment"
+/* $7 */
+"This is the second comment"
+/* $8 */
+"This is the third comment"
+
+现在，从客户端的角度看，整棵树就完整了：
+
+{
+  header: "Welcome to my blog",
+  post: {
+    content: "This is my article",
+    comments: [
+      "This is the first comment",
+      "This is the second comment",
+      "This is the third comment"
+    ]
+  },
+  footer: "Hope you like it"
+}
+
+通过分块、广度优先地发送数据，我们获得了在客户端渐进处理数据的能力。只要客户端能应对某些部分“未就绪”（表示为 Promise）并处理其余部分，这就是一个改进！
+
+内联
+
+既然有了基本机制，我们来调整它，让输出更高效。我们再看一遍上一个例子中的整个流式序列：
+
+{
+  header: "$1",
+  post: "$2",
+  footer: "$3"
+}
+/* $1 */
+"Welcome to my blog"
+/* $3 */
+"Hope you like it"
+/* $2 */
+{
+  content: "$4",
+  comments: "$5"
+}
+/* $4 */
+"This is my article"
+/* $5 */
+["$6", "$7", "$8"]
+/* $6 */
+"This is the first comment"
+/* $7 */
+"This is the second comment"
+/* $8 */
+"This is the third comment"
+
+我们在这里可能把流式传输做得有点过头了。除非生成某些部分确实很慢，否则把它们作为单独的行发送并没有任何好处。
+
+假设我们有两个不同的慢操作：加载文章，以及加载文章的评论。这种情况下，总共发送三块是合理的。
+
+首先，我们发送外壳：
+
+{
+  header: "Welcome to my blog",
+  post: "$1",
+  footer: "Hope you like it"
+}
+
+在客户端，它会立即变成：
+
+{
+  header: "Welcome to my blog",
+  post: new Promise(/* ... not yet resolved ... */),
+  footer: "Hope you like it"
+}
+
+然后我们发送 post 的数据（但不含 comments）：
+
+{
+  header: "Welcome to my blog",
+  post: "$1",
+  footer: "Hope you like it"
+}
+/* $1 */
+{
+  content: "This is my article",
+  comments: "$2"
+}
+
+从客户端的角度看：
+
+{
+  header: "Welcome to my blog",
+  post: {
+    content: "This is my article",
+    comments: new Promise(/* ... not yet resolved ... */),
+  },
+  footer: "Hope you like it"
+}
+
+最后，我们把评论作为一整块发送：
+
+{
+  header: "Welcome to my blog",
+  post: "$1",
+  footer: "Hope you like it"
+}
+/* $1 */
+{
+  content: "This is my article",
+  comments: "$2"
+}
+/* $2 */
+[
+  "This is the first comment",
+  "This is the second comment",
+  "This is the third comment"
+]
+
+这样客户端就得到了整棵树：
+
+{
+  header: "Welcome to my blog",
+  post: {
+    content: "This is my article",
+    comments: [
+      "This is the first comment",
+      "This is the second comment",
+      "This is the third comment"
+    ]
+  },
+  footer: "Hope you like it"
+}
+
+这样更紧凑，也达到了同样的目的。
+
+总的来说，这种格式让我们可以灵活决定何时把东西作为一块发送、何时作为多块发送。只要客户端能承受数据块乱序到达，服务器就可以选择不同的批处理和分块启发式策略。
+
+外联
+
+这种方法的一个有趣结果是，它还为我们提供了一种自然的方式来减少输出流中的重复。如果我们正在序列化一个之前已经见过的对象，就可以把它外联为单独的一行，然后复用它。
+
+例如，假设我们有这样一棵对象树：
+
+const userInfo = { name: 'Dan' };
+ 
+[
+  { type: 'header', user: userInfo },
+  { type: 'sidebar', user: userInfo },
+  { type: 'footer', user: userInfo }
+]
+
+如果把它序列化为普通 JSON，我们最终会重复 { name: 'Dan' }：
+
+[
+  { type: 'header', user: { name: 'Dan' } },
+  { type: 'sidebar', user: { name: 'Dan' } },
+  { type: 'footer', user: { name: 'Dan' } }
+]
+
+然而，如果我们是渐进地提供 JSON，就可以选择把它外联：
+
+[
+  { type: 'header', user: "$1" },
+  { type: 'sidebar', user: "$1" },
+  { type: 'footer', user: "$1" }
+]
+/* $1 */
+{ name: "Dan" }
+
+我们也可以采取更平衡的策略，例如默认内联对象（为了紧凑），直到看到某个对象被使用两次或更多次，这时再把它单独发出，并在流的其余部分去重。
+
+这也意味着，与普通 JSON 不同，我们可以支持序列化循环对象。循环对象只是有一个属性指向它自己在流中的“行”。
+
+流式传输数据与流式传输 UI
+
+上面的方法本质上就是 React Server Components（RSC）的工作方式。
+
+假设你用 React Server Components 写了一个页面：
+
+function Page() {
+  return (
+    <html>
+      <body>
+        <header>Welcome to my blog</header>
+        <Post />
+        <footer>Hope you like it</footer>
+      </body>
+    </html>
+  );
+}
+ 
+async function Post() {
+  const post = await loadPost();
+  return (
+    <article>
+      <p>{post.text}</p>
+      <Comments />
+    </article>
+  );
+}
+ 
+async function Comments() {
+  const comments = await loadComments();
+  return <ul>{comments.map(c => <li key={c.id}>{c.text}</li>)}</ul>;
+}
+
+React 会把 Page 的输出作为渐进式 JSON 流提供。在客户端，它会被重建为一棵渐进加载的 React 树。
+
+最初，客户端上的 React 树看起来是这样的：
+
+<html>
+  <body>
+    <header>Welcome to my blog</header>
+    {new Promise(/* ... not resolved yet */)}
+    <footer>Hope you like it</footer>
+  </body>
+</html>
+
+然后，随着 loadPost 在服务器上 resolve，更多内容会流式传来：
+
+<html>
+  <body>
+    <header>Welcome to my blog</header>
+    <article>
+      <p>This is my post</p>
+      {new Promise(/* ... not resolved yet */)}
+    </article>
+    <footer>Hope you like it</footer>
+  </body>
+</html>
+
+最后，当 loadComments 在服务器上 resolve 时，客户端会收到剩下的部分：
+
+<html>
+  <body>
+    <header>Welcome to my blog</header>
+    <article>
+      <p>This is my post</p>
+      <ul>
+        <li key="1">This is the first comment</li>
+        <li key="2">This is the second comment</li>
+        <li key="3">This is the third comment</li>
+      </ul>
+    </article>
+    <footer>Hope you like it</footer>
+  </body>
+</html>
+
+不过，关键在这里。
+
+你其实并不希望页面随着数据流入而任意跳动。例如，也许你永远不想显示没有文章内容的页面。
+
+这就是为什么 React 不会为待定的 Promise 显示“空洞”，而是显示最近的声明式加载状态，用 <Suspense> 来标示。
+
+在上面的例子中，树里没有 <Suspense> 边界。这意味着，虽然 React 会以流的形式接收数据，但它实际上不会向用户显示一个“跳动”的页面。它会等整个页面准备就绪。
+
+不过，你可以通过把 UI 树的一部分包进 <Suspense>，选择启用一种渐进揭示的加载状态。这不会改变数据的发送方式（它仍然尽可能地“流式”），但会改变 React 何时把它揭示给用户。
+
+例如：
+
+import { Suspense } from 'react';
+ 
+function Page() {
+  return (
+    <html>
+      <body>
+        <header>Welcome to my blog</header>
+        <Post />
+        <footer>Hope you like it</footer>
+      </body>
+    </html>
+  );
+}
+ 
+async function Post() {
+  const post = await loadPost();
+  return (
+    <article>
+      <p>{post.text}</p>
+      <Suspense fallback={<CommentsGlimmer />}>
+        <Comments />
+      </Suspense>
+    </article>
+  );
+}
+ 
+async function Comments() {
+  const comments = await loadComments();
+  return <ul>{comments.map(c => <li key={c.id}>{c.text}</li>)}</ul>;
+}
+
+现在用户会感知到两个阶段的加载过程：
+
+- 首先，文章连同页眉、页脚以及评论的占位闪烁效果一起“弹出”。页眉和页脚永远不会单独出现。
+- 然后，评论单独“弹出”。
+
+换句话说，UI 被揭示的阶段与数据到达的方式是解耦的。数据一可用就流式传输，但我们只想按照刻意设计的加载状态把内容揭示给用户。
+
+从某种意义上说，你可以把 React 树中的那些 Promise 看作几乎像 throw 一样起作用，而 <Suspense> 几乎像 catch 一样起作用。数据以服务器准备好发送的任意顺序尽快到达，而 React 负责优雅地呈现加载过程，并让开发者控制视觉上的揭示。
+
+请注意，我到目前为止描述的一切都与“SSR”或 HTML 无关。我描述的是一种流式传输以 JSON 表示的 UI 树的通用机制。你可以把这棵 JSON 树转换成渐进揭示的 HTML（React 能做到这一点），但这个思路比 HTML 更宽泛，也适用于类似单页应用（SPA）的导航。
+
+结语
+
+在这篇文章中，我勾勒了 RSC 的一项核心创新。它不是把数据作为一整块发送，而是由外向内地发送组件树的 props。因此，只要有一个刻意设计的加载状态可以显示，React 就能在页面其余数据流式传入的同时把它显示出来。
+
+我希望促使更多工具采用渐进式的数据流式传输。如果你遇到这样的情况：在服务器停止做某件事之前，客户端无法开始做某件事，那就是流式传输能派上用场的明显例子。如果一个慢的东西会拖慢它之后的一切，那是另一个警示信号。
+
+正如我在这篇文章中展示的，光有流式传输是不够的，你还需要一个能够利用流式传输、并优雅处理不完整信息的编程模型。React 用刻意设计的 <Suspense> 加载状态解决了这个问题。如果你知道有哪些系统以不同的方式解决这个问题，我很想听听！

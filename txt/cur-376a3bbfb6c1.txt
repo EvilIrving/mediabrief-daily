@@ -1,0 +1,9 @@
+https://lucumr.pocoo.org/2026/8/22/fast-hard-code/
+
+又快又难的代码 Fast and Hard Code ｜ Armin Ronacher ｜ 文章 ｜ https://lucumr.pocoo.org/2026/8/22/fast-hard-code/
+
+Flask 作者 Armin Ronacher 的一篇短文，观察 AI 写代码之后，开发者选语言和技术的方式发生了什么变化。
+
+推特上流行"编程已经被解决了"的说法，他不确定到底解决了多少，但有一点很清楚：熟悉一门语言的成本对 agent 来说不再重要，很多对人有意义的摩擦对 agent 不存在。所以语言选择没以前那么要紧了，不喜欢可以让模型换语言重写，甚至用一门你完全不熟的语言。结果是人们更多地按语言的"营销形象"来选。作为老 Rust 程序员，他发现很多原本不会选 Rust 的人开始交付 Rust 代码。他归因于两股风向：大家越来越多地谈论想要快的软件，也越来越相信大模型能在不破坏行为的前提下优化代码。Mitchell Hashimoto、Charlie Marsh、Jarred Sumner、Daniel Lemire 这些一向痴迷性能的人恰好都乐于让 agent 写代码；有了自动化研究这类做法，你甚至不必懂所有技巧，派个 agent 上去就行，当然懂行仍然大有帮助。
+
+受益的不只 Rust。Zig 的创建者和部分核心社区对 AI 相当负面，但 Zig 也在受益：Cloudflare 新的 Artifacts 服务用纯 Zig 写的 Git 协议引擎，编译成约 100 KB 的 WebAssembly；Vercel 发布的编程 agent fx 也用 Zig，主打小而快，这些项目看起来大多有大模型参与。更明显的是，人们开始碰"更难"的技术：DWARF 文件、eBPF、自定义网卡驱动、自定义密码学、很老的硬件，这些过去对多数开发者是禁区，密码学甚至被懂行的人有意设了门槛。他的结论是：世界也许会有更多劣质代码，但也可能会有更多想把东西做得又快又小的开发者。

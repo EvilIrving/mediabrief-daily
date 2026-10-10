@@ -1,0 +1,212 @@
+https://overreacted.io/the-two-reacts/
+
+两个 React
+2024 年 1 月 4 日
+
+假设我想在你的屏幕上显示点什么。无论我想显示的是像这篇博文一样的网页、一个可交互的 Web 应用，还是你可能从某个应用商店下载的原生应用，至少都要涉及两台设备。
+
+你的设备，和我的设备。
+
+一切从我设备上的一些代码和数据开始。例如，我正在笔记本电脑上把这篇博文当作一个文件来编辑。如果你在屏幕上看到了它，那它一定已经从我的设备传到了你的设备。在某个时刻、某个地方，我的代码和数据变成了指示你的设备显示这些内容的 HTML 和 JavaScript。
+
+那么这和 React 有什么关系？React 是一种 UI 编程范式，它让我可以把要显示的东西（一篇博文、一个注册表单，甚至整个应用）拆分成叫作组件的独立部分，并像乐高积木一样组合它们。我假设你已经了解并且喜欢组件；入门介绍可以看 react.dev。
+
+组件是代码，而代码必须在某个地方运行。但是等等——它们该在谁的电脑上运行？该在你的电脑上运行吗？还是在我的电脑上？
+
+我们来为双方各自辩护一下。
+
+首先，我来论证组件应该在你的电脑上运行。
+
+这里有一个小小的计数按钮，用来演示交互性。点几下试试！
+
+假设这个组件的 JavaScript 代码已经加载好了，数字就会增加。注意，按下的瞬间它就增加了，没有延迟。不需要等服务器，也不需要下载任何额外的数据。
+
+之所以能做到这一点，是因为这个组件的代码正在你的电脑上运行：
+
+import { useState } from "react";
+ 
+export function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <button
+      className="dark:color-white rounded-lg bg-purple-700 px-2 py-1 font-sans font-semibold text-white focus:ring active:bg-purple-600"
+      onClick={() => setCount(count + 1)}
+    >
+      You clicked me {count} times
+    </button>
+  );
+}
+
+这里的 count 是一段客户端状态——你电脑内存中的一小段信息，每次你按下按钮它都会更新。我不知道你会按多少次按钮，所以我无法在我的电脑上预测并准备好它所有可能的输出。我在我的电脑上最多只敢准备初始的渲染输出（"你点了我 0 次"），并以 HTML 的形式发送出去。但从那一刻起，就必须由你的电脑接手运行这段代码。
+
+你可能会说，其实仍然没有必要在你的电脑上运行这段代码。也许我可以让它在我的服务器上运行？每当你按下按钮，你的电脑就可以向我的服务器请求下一个渲染输出。在那些客户端 JavaScript 框架出现之前，网站不就是这样工作的吗？
+
+当用户预期会有一点延迟时——例如点击一个链接——向服务器请求新的 UI 效果很好。当用户知道自己正在前往应用中的另一个地方时，他们会等待。然而，任何直接操作（比如拖动滑块、切换标签页、在发帖框里打字、点击点赞按钮、滑动卡片、悬停菜单、拖动图表等等），如果不能可靠地提供至少一些即时反馈，就会让人觉得坏掉了。
+
+这条原则并不纯粹是技术性的——它是来自日常生活的直觉。例如，你不会指望电梯按钮瞬间就把你送到下一层。但当你推门把手时，你确实期望它直接跟随你手的动作，否则就会感觉卡住了。事实上，即便是电梯按钮，你也会期望至少有一些即时反馈：它应该随着你手的按压而下陷，然后亮起来，确认你按下了它。
+
+当你构建用户界面时，你需要能够以有保证的低延迟、零网络往返来响应至少一部分交互。
+
+你可能见过有人把 React 的心智模型描述成一种等式：UI 是状态的函数，即 UI = f(state)。这并不是说你的 UI 代码必须真的是一个以状态为参数的单一函数；它只意味着当前状态决定了 UI。状态改变时，UI 需要重新计算。既然状态"住"在你的电脑上，计算 UI 的代码（你的组件）也必须在你的电脑上运行。
+
+至少这个论点是这么说的。
+
+接下来，我来论证相反的观点——组件应该在我的电脑上运行。
+
+这是本博客另一篇文章的预览卡片：
+
+A Chain Reaction
+2,452 词
+
+这个页面上的组件是怎么知道那个页面的字数的？
+
+如果你查看"网络"面板，会发现没有额外的请求。我没有为了数字数而从 GitHub 下载那整篇博文，也没有把那篇博文的内容嵌入这个页面。我没有调用任何 API 来数字数。我当然也没有自己去数那些字。
+
+那么这个组件是怎么工作的？
+
+这个组件在我的电脑上运行。当我想读一个文件时，我就用 fs.readFile 读文件。当我想解析它的 Markdown 头部时，我就用 gray-matter 解析。当我想数字数时，我就把文本拆开来数。我不需要做任何额外的事情，因为我的代码就运行在数据所在的地方。
+
+import { readFile } from "fs/promises";
+import matter from "gray-matter";
+ 
+export async function PostPreview({ slug }) {
+  const fileContent = await readFile("./public/" + slug + "/index.md", "utf8");
+  const { data, content } = matter(fileContent);
+  const wordCount = content.split(" ").filter(Boolean).length;
+ 
+  return (
+    <section className="rounded-md bg-black/5 p-2">
+      <h5 className="font-bold">
+        <a href={"/" + slug} target="_blank">
+          {data.title}
+        </a>
+      </h5>
+      <i>{wordCount.toLocaleString()} words</i>
+    </section>
+  );
+}
+
+假设我想列出博客上的所有文章以及它们的字数。
+
+很简单：
+
+A Chain Reaction（2,452 词）
+A Complete Guide to useEffect（9,913 词）
+A Lean Syntax Primer（5,460 词）
+A Social Filesystem（6,291 词）
+Algebraic Effects for the Rest of Us（3,062 词）
+Before You memo()（856 词）
+Beyond Booleans（3,523 词）
+Coping with Feedback（669 词）
+Fix Like No One’s Watching（251 词）
+Functional HTML（3,714 词）
+Goodbye, Clean Code（1,196 词）
+Hire Me in Japan（1,333 词）
+How Are Function Components Different from Classes?（2,519 词）
+How Does React Tell a Class from a Function?（3,000 词）
+How Does setState Know What to Do?（1,511 词）
+How Does the Development Mode Work?（1,930 词）
+How I Vibed a Proof of Conway’s Conjecture（7,137 词）
+How Imports Work in RSC（4,230 词）
+How to Fix Any Bug（2,325 词）
+I'm Doing a Little Consulting（429 词）
+Impossible Components（4,207 词）
+Introducing RSC Explorer（1,297 词）
+JSX Over The Wire（11,212 词）
+Making setInterval Declarative with React Hooks（2,769 词）
+My Decade in Review（5,865 词）
+My Wishlist for Hot Reloading（2,602 词）
+Name It, and They Will Come（774 词）
+npm audit: Broken by Design（2,628 词）
+On let vs const（673 词）
+One Roundtrip Per Navigation（3,721 词）
+Open Social（4,472 词）
+Optimized for Change（225 词）
+Preparing for a Tech Talk, Part 1: Motivation（1,122 词）
+Preparing for a Tech Talk, Part 2: What, Why, and How（891 词）
+Preparing for a Tech Talk, Part 3: Content（1,401 词）
+Progressive JSON（2,450 词）
+React as a UI Runtime（6,760 词）
+React for Two Computers（16,499 词）
+RSC for Astro Developers（1,803 词）
+RSC for LISP Developers（614 词）
+Static as a Server（641 词）
+Suppressions of Suppressions（630 词）
+The “Bug-O” Notation（1,127 词）
+The Elements of UI Engineering（1,971 词）
+The Math Is Haunted（2,040 词）
+The Two Reacts（1,638 词）
+The WET Codebase（196 词）
+There Are No Instances in atproto（1,232 词）
+Things I Don’t Know as of 2018（1,198 词）
+What Are the React Team Principles?（1,196 词）
+What Does "use client" Do?（2,641 词）
+What Is JavaScript Made Of?（2,899 词）
+Where It's at://（2,472 词）
+Why Do React Hooks Rely on Call Order?（3,891 词）
+Why Do React Elements Have a $$typeof Property?（910 词）
+Why Do We Write super(props)?（912 词）
+Why Does RSC Integrate with a Bundler?（849 词）
+Why Isn’t X a Hook?（1,328 词）
+Writing Resilient Components（4,689 词）
+
+我所需要做的，就是为每个文章文件夹渲染一个 <PostPreview />：
+
+import { readdir } from "fs/promises";
+import { PostPreview } from "./post-preview";
+ 
+export async function PostList() {
+  const entries = await readdir("./public/", { withFileTypes: true });
+  const dirs = entries.filter(entry => entry.isDirectory());
+  return (
+    <div className="mb-4 flex h-72 flex-col gap-2 overflow-scroll font-sans">
+      {dirs.map(dir => (
+        <PostPreview key={dir.name} slug={dir.name} />
+      ))}
+    </div>
+  );
+}
+
+这些代码都不需要在你的电脑上运行——实际上它也不可能在你的电脑上运行，因为你的电脑上没有我的文件。我们来看看这段代码是什么时候运行的：
+
+<p className="text-purple-500 font-bold">
+  {new Date().toString()}
+</p>
+
+Fri Sep 18 2026 20:39:29 GMT+0000 (Coordinated Universal Time)
+
+啊哈——这正是我上一次把博客部署到静态网站托管服务的时间！我的组件是在构建过程中运行的，所以它们可以完全访问我的文章。
+
+让组件在靠近数据源的地方运行，它们就能读取自己的数据，并在把任何信息发送到你的设备之前先进行预处理。
+
+等你加载这个页面时，已经没有 <PostList>，也没有 <PostPreview>，没有 fileContent，没有 dirs，没有 fs，也没有 gray-matter。取而代之的只有一个 <div>，里面有几个 <section>，每个 <section> 里有 <a> 和 <i>。你的设备只收到了它实际需要显示的 UI（渲染好的文章标题、链接 URL 和文章字数），而不是你的组件用来计算这个 UI 的全部原始数据（文章本身）。
+
+在这种心智模型下，UI 是服务器数据的函数，即 UI = f(data)。那些数据只存在于我的设备上，所以组件就应该在那里运行。
+
+至少这个论点是这么说的。
+
+UI 由组件构成，但我们为两种截然不同的愿景做了论证：
+
+- UI = f(state)，其中状态在客户端，f 在客户端运行。这种方式让我们能写出像 <Counter /> 这样即时可交互的组件。（在这里，f 也可以带着初始状态在服务器上运行，以生成 HTML。）
+- UI = f(data)，其中数据在服务器端，f 只在服务器上运行。这种方式让我们能写出像 <PostPreview /> 这样处理数据的组件。（在这里，f 绝对只在服务器上运行。构建时也算作"服务器"。）
+
+如果我们把熟悉度带来的偏见放在一边，这两种方式在各自最擅长的事情上都很有说服力。遗憾的是，这两种愿景似乎互不兼容。
+
+如果我们想实现 <Counter /> 所需的那种即时交互，就必须在客户端运行组件。但像 <PostPreview /> 这样的组件原则上不能在客户端运行，因为它们使用了 readFile 这样只有服务器才有的 API。（这正是它们存在的全部意义！否则我们还不如直接在客户端运行它们。）
+
+好吧，那如果我们改为在服务器上运行所有组件呢？但在服务器上，像 <Counter /> 这样的组件只能渲染它们的初始状态。服务器不知道它们的当前状态，而在服务器和客户端之间传递这个状态又太慢（除非它很小，比如一个 URL），甚至并不总是可行（例如我博客的服务器代码只在部署时运行，所以你没法把东西"传"给它）。
+
+又一次，看起来我们必须在两个不同的 React 之间做出选择：
+
+- "客户端"的 UI = f(state) 范式，让我们能写出 <Counter />。
+- "服务器"的 UI = f(data) 范式，让我们能写出 <PostPreview />。
+
+但在实践中，真正的"公式"更接近 UI = f(data, state)。如果你没有数据或者没有状态，它也能退化到那些情况。但理想情况下，我希望我的编程范式能够同时处理这两种情况，而不必去选另一种抽象，而且我知道你们中至少有一些人也希望如此。
+
+那么，要解决的问题就是：如何把我们的"f"拆分到两个截然不同的编程环境中。这到底可能吗？请记住，我们说的并不是某个真的叫 f 的函数——在这里，f 代表我们所有的组件。
+
+有没有什么办法，能把组件拆分到你的电脑和我的电脑上，同时保留 React 的优点？我们能把来自两个不同环境的组件组合、嵌套起来吗？那会如何运作？
+
+它应该如何运作？
+
+好好想一想，下次我们再来对一对笔记。

@@ -1,0 +1,806 @@
+https://overreacted.io/writing-resilient-components/
+
+编写有韧性的组件
+Dan Abramov ｜ Overreacted ｜ 2019-03-16
+
+人们开始学 React 时，常常会要一份风格指南。在项目中统一应用一些规则固然是好主意，但其中很多规则是任意的——所以 React 对它们没有强烈的主张。
+
+你可以使用不同的类型系统，偏好函数声明或箭头函数，把 props 按字母顺序排列，或者按你觉得顺眼的顺序排列。
+
+这种灵活性使得 React 可以[集成](https://reactjs.org/docs/add-react-to-a-website.html)到已有约定的项目中。但它也招致了无休止的争论。
+
+**确实*存在*每个组件都应努力遵循的重要设计原则。但我不认为风格指南很好地体现了这些原则。我们先谈风格指南，然后再[看看那些真正*有用*的原则](https://overreacted.io/writing-resilient-components/#writing-resilient-components)。**
+
+---
+
+## 别被想象中的问题分散注意力
+
+在讨论组件设计原则之前，我想就风格指南说几句。这不是个受欢迎的观点，但总得有人说出来！
+
+在 JavaScript 社区，有几份由 linter 强制执行的、主张强烈的严格风格指南。我个人的观察是，它们带来的摩擦往往大于其价值。我数不清有多少次，有人给我看一段完全合法的代码，说“React 对这里报错了”，但其实是他们的 lint 配置在报错！这会导致三个问题：
+
+* 人们习惯于把 linter 看作一个**过分热心、聒噪的守门人**，而不是有用的工具。有用的警告淹没在一片风格挑刺的海洋里。结果，人们在调试时不再浏览 linter 的信息，错过了有用的提示。此外，不太习惯写 JavaScript 的人（比如设计师）会更难参与到代码工作中。
+
+* 人们学不会**区分某种模式的合理用法和不合理用法**。例如，有一条流行规则禁止在 `componentDidMount` 中调用 `setState`。但如果它总是“坏的”，React 干脆就不会允许它！它有一个合理的用例，那就是测量 DOM 节点布局——比如定位一个 tooltip。我见过有人加一个 `setTimeout` 来“绕过”这条规则，这完全没抓住要点。
+
+* 最终，人们会形成“执法者心态”，对那些**不会带来实质差别**、但在代码里很容易检查出来的事情产生强烈主张。“你用了函数声明，但*我们*项目用的是箭头函数。”每当我强烈地想要强制执行这样一条规则时，深究下去就会发现，我在这条规则上投入了情感——因而很难放手。它让我陷入一种虚假的成就感，却没有让我的代码变得更好。
+
+我是在说我们应该停止 lint 吗？完全不是！
+
+**配置得当的话，linter 是在 bug 发生之前抓住它们的绝佳工具。**是过分关注*风格*，才让它变成了干扰。
+
+---
+
+## 用断舍离整理你的 lint 配置
+
+我建议你周一这样做：把团队召集起来开半小时会，逐条过一遍项目配置中启用的每条 lint 规则，问自己：*“这条规则帮我们抓到过 bug 吗？”*如果没有，*就关掉它。*（你也可以从一张白纸开始，使用不含任何风格规则的 [`eslint-config-react-app`](https://www.npmjs.com/package/eslint-config-react-app)。）
+
+至少，你的团队应该有一个流程，用来删除那些造成摩擦的规则。不要以为一年前你或别人加进 lint 配置的东西就是“最佳实践”。去质疑它、寻找答案。别让任何人告诉你，你不够聪明，选不了自己的 lint 规则。
+
+**那格式呢？**用 [Prettier](https://prettier.io/)，忘掉那些“风格挑刺”吧。如果另一个工具能替你修好，你就不需要一个工具因为你多打了一个空格而冲你大喊。用 linter 去找 *bug*，而不是去强制执行*美 学*。
+
+当然，编码风格中有些方面与格式没有直接关系，但如果在项目中不一致，仍然会让人烦恼。
+
+然而，其中很多太过微妙，lint 规则本来也抓不住。这就是为什么在团队成员之间**建立信任**、并以 wiki 页面或简短设计指南的形式分享有用经验很重要。
+
+并非所有东西都值得自动化！*真正阅读*这类指南中的理由所获得的洞见，可能比遵循“规则”更有价值。
+
+**但如果遵循严格的风格指南是一种干扰，那么真正重要的是什么？**
+
+这就是本文的主题。
+
+---
+
+## 编写有韧性的组件
+
+再多的缩进调整或按字母排序 import 也修不好一个糟糕的设计。所以，与其关注代码*看起来*怎样，我会关注它*如何运作*。有几条组件设计原则我觉得非常有用：
+
+1. **不要阻断数据流**
+2. **随时准备好渲染**
+3. **没有组件是单例**
+4. **保持本地状态隔离**
+
+即使你不用 React，对于任何单向数据流的 UI 组件模型，你很可能也会通过反复试错发现同样的原则。
+
+---
+
+## 原则一：不要阻断数据流
+
+### 不要在渲染中阻断数据流
+
+当别人使用你的组件时，他们期望可以随时间传入不同的 props，并且组件会反映这些变化：
+
+```
+// isOk 可能由 state 驱动，随时可能变化
+<Button color={isOk ? 'blue' : 'red'} />
+```
+
+一般来说，React 默认就是这样工作的。如果你在 `Button` 组件内使用 `color` prop，你会看到那次渲染时从上层传入的值：
+
+```
+function Button({ color, children }) {
+  return (
+    // ✅ `color` 永远是最新的！
+    <button className={'Button-' + color}>
+      {children}
+    </button>
+  );
+}
+```
+
+然而，学习 React 时的一个常见错误是把 props 复制到 state 中：
+
+```
+class Button extends React.Component {
+  state = {
+    color: this.props.color
+  };
+  render() {
+    const { color } = this.state; // 🔴 `color` 是过时的！
+    return (
+      <button className={'Button-' + color}>
+        {this.props.children}
+      </button>
+    );
+  }
+}
+```
+
+如果你在 React 之外用过类，一开始这可能看起来更直观。**然而，把 prop 复制到 state，你就忽略了它的所有更新。**
+
+```
+// 🔴 在上面的实现下，更新不再生效
+<Button color={isOk ? 'blue' : 'red'} />
+```
+
+在极少数情况下，如果这种行为*确实*是有意为之，务必把那个 prop 命名为 `initialColor` 或 `defaultColor`，以表明对它的修改会被忽略。
+
+但通常你会希望**直接在组件中读取 props**，避免把 props（或任何由 props 计算出的东西）复制到 state 中：
+
+```
+function Button({ color, children }) {
+  return (
+    // ✅ `color` 永远是最新的！
+    <button className={'Button-' + color}>
+      {children}
+    </button>
+  );
+}
+```
+
+---
+
+计算值是人们有时试图把 props 复制到 state 的另一个原因。例如，假设我们以背景 `color` 为参数，通过一个昂贵的计算来确定*按钮文字*的颜色：
+
+```
+class Button extends React.Component {
+  state = {
+    textColor: slowlyCalculateTextColor(this.props.color)
+  };
+  render() {
+    return (
+      <button className={
+        'Button-' + this.props.color +
+        ' Button-text-' + this.state.textColor // 🔴 `color` prop 更新时会过时
+      }>
+        {this.props.children}
+      </button>
+    );
+  }
+}
+```
+
+这个组件有 bug，因为它在 `color` prop 变化时不会重新计算 `this.state.textColor`。最简单的修复方法是把 `textColor` 的计算移到 `render` 方法里，并把它改成 `PureComponent`：
+
+```
+class Button extends React.PureComponent {
+  render() {
+    const textColor = slowlyCalculateTextColor(this.props.color);
+    return (
+      <button className={
+        'Button-' + this.props.color +
+        ' Button-text-' + textColor // ✅ 永远是最新的
+      }>
+        {this.props.children}
+      </button>
+    );
+  }
+}
+```
+
+问题解决了！现在如果 props 变化，我们会重新计算 `textColor`，而 props 相同时则避免了昂贵的计算。
+
+不过，我们可能还想进一步优化。如果变化的是 `children` prop 呢？在这种情况下重新计算 `textColor` 似乎有点可惜。我们的第二次尝试可能是在 `componentDidUpdate` 中执行计算：
+
+```
+class Button extends React.Component {
+  state = {
+    textColor: slowlyCalculateTextColor(this.props.color)
+  };
+  componentDidUpdate(prevProps) {
+    if (prevProps.color !== this.props.color) {
+      // 😔 每次更新都会多一次重渲染
+      this.setState({
+        textColor: slowlyCalculateTextColor(this.props.color),
+      });
+    }
+  }
+  render() {
+    return (
+      <button className={
+        'Button-' + this.props.color +
+        ' Button-text-' + this.state.textColor // ✅ 最终渲染时是最新的
+      }>
+        {this.props.children}
+      </button>
+    );
+  }
+}
+```
+
+然而，这意味着我们的组件在每次变化后都要进行第二次重渲染。如果我们是想优化它，这也不理想。
+
+你可以为此使用旧的 `componentWillReceiveProps` 生命周期。然而，人们常常也在那里放副作用。这反过来又常常给即将到来的并发渲染[特性，比如时间切片（Time Slicing）和 Suspense](https://reactjs.org/blog/2018/03/01/sneak-peek-beyond-react-16.html) 带来问题。而“更安全”的 `getDerivedStateFromProps` 方法又很笨重。
+
+我们退一步想想。实际上，我们想要的是[*记忆化*（memoization）](https://en.wikipedia.org/wiki/Memoization)。我们有一些输入，除非输入变化，否则不想重新计算输出。
+
+用类的话，可以借助一个[辅助工具](https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#what-about-memoization)做记忆化。而 Hooks 更进一步，提供了一种内置方式来记忆化昂贵的计算：
+
+```
+function Button({ color, children }) {
+  const textColor = useMemo(
+    () => slowlyCalculateTextColor(color),
+    [color] // ✅ 在 `color` 变化之前不重新计算
+  );
+  return (
+    <button className={'Button-' + color + ' Button-text-' + textColor}>
+      {children}
+    </button>
+  );
+}
+```
+
+你需要的代码就这么多！
+
+在类组件中，你可以用 [`memoize-one`](https://github.com/alexreardon/memoize-one) 这样的辅助工具来实现。在函数组件中，`useMemo` Hook 提供了类似的功能。
+
+现在我们看到，**即使是为了优化昂贵的计算，也不是把 props 复制到 state 的好理由。**我们的渲染结果应该尊重 props 的变化。
+
+---
+
+### 不要在副作用中阻断数据流
+
+到目前为止，我们讨论了如何让渲染结果与 props 的变化保持一致。避免把 props 复制到 state 是其中一部分。然而，重要的是，**副作用（比如数据请求）也是数据流的一部分**。
+
+来看这个 React 组件：
+
+```
+class SearchResults extends React.Component {
+  state = {
+    data: null
+  };
+  componentDidMount() {
+    this.fetchResults();
+  }
+  fetchResults() {
+    const url = this.getFetchUrl();
+    // 执行请求……
+  }
+  getFetchUrl() {
+    return 'http://myapi/results?query' + this.props.query;
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+很多 React 组件都是这样的——但如果我们仔细看，会发现一个 bug。`fetchResults` 方法使用 `query` prop 来请求数据：
+
+```
+getFetchUrl() {
+    return 'http://myapi/results?query' + this.props.query;
+  }
+```
+
+但如果 `query` prop 变了呢？在我们的组件里，什么都不会发生。**这意味着组件的副作用没有尊重其 props 的变化。**这是 React 应用中非常常见的 bug 来源。
+
+为了修复这个组件，我们需要：
+
+* 查看 `componentDidMount` 以及从它调用的每个方法。
+    * 在我们的例子中，就是 `fetchResults` 和 `getFetchUrl`。
+* 写下这些方法用到的所有 props 和 state。
+    * 在我们的例子中，就是 `this.props.query`。
+* 确保这些 props 每次变化时，我们都重新运行副作用。
+    * 我们可以通过添加 `componentDidUpdate` 方法来做到。
+
+```
+class SearchResults extends React.Component {
+  state = {
+    data: null
+  };
+  componentDidMount() {
+    this.fetchResults();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.query !== this.props.query) { // ✅ 变化时重新请求
+      this.fetchResults();
+    }
+  }
+  fetchResults() {
+    const url = this.getFetchUrl();
+    // 执行请求……
+  }
+  getFetchUrl() {
+    return 'http://myapi/results?query' + this.props.query; // ✅ 更新得到了处理
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+现在我们的代码尊重了 props 的所有变化，连副作用也是如此。
+
+然而，要记住不再把它弄坏是很有挑战的。例如，我们可能在本地 state 中加入 `currentPage`，并在 `getFetchUrl` 中使用它：
+
+```
+class SearchResults extends React.Component {
+  state = {
+    data: null,
+    currentPage: 0,
+  };
+  componentDidMount() {
+    this.fetchResults();
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.query !== this.props.query) {
+      this.fetchResults();
+    }
+  }
+  fetchResults() {
+    const url = this.getFetchUrl();
+    // 执行请求……
+  }
+  getFetchUrl() {
+    return (
+      'http://myapi/results?query' + this.props.query +
+      '&page=' + this.state.currentPage // 🔴 更新被忽略了
+    );
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+唉，我们的代码又有 bug 了，因为副作用没有尊重 `currentPage` 的变化。
+
+**props 和 state 都是 React 数据流的一部分。渲染和副作用都应该反映数据流中的变化，而不是忽略它们！**
+
+为了修复代码，我们可以重复上面的步骤：
+
+* 查看 `componentDidMount` 以及从它调用的每个方法。
+    * 在我们的例子中，就是 `fetchResults` 和 `getFetchUrl`。
+* 写下这些方法用到的所有 props 和 state。
+    * 在我们的例子中，就是 `this.props.query` **和 `this.state.currentPage`**。
+* 确保这些 props 每次变化时，我们都重新运行副作用。
+    * 我们可以通过修改 `componentDidUpdate` 方法来做到。
+
+我们来修复组件，让它处理 `currentPage` state 的更新：
+
+```
+class SearchResults extends React.Component {
+  state = {
+    data: null,
+    currentPage: 0,
+  };
+  componentDidMount() {
+    this.fetchResults();
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.currentPage !== this.state.currentPage || // ✅ 变化时重新请求
+      prevProps.query !== this.props.query
+    ) {
+      this.fetchResults();
+    }
+  }
+  fetchResults() {
+    const url = this.getFetchUrl();
+    // 执行请求……
+  }
+  getFetchUrl() {
+    return (
+      'http://myapi/results?query' + this.props.query +
+      '&page=' + this.state.currentPage // ✅ 更新得到了处理
+    );
+  }
+  render() {
+    // ...
+  }
+}
+```
+
+**如果我们能以某种方式自动抓住这些错误，岂不是很好？**这不正是 linter 能帮上忙的事吗？
+
+---
+
+不幸的是，自动检查类组件的一致性太难了。任何方法都可以调用任何其他方法。对 `componentDidMount` 和 `componentDidUpdate` 中的调用做静态分析，会充斥着误报。
+
+然而，*可以*设计一种*能够*被静态分析一致性的 API。[React 的 `useEffect` Hook](https://overreacted.io/a-complete-guide-to-useeffect/) 就是这样一种 API：
+
+```
+function SearchResults({ query }) {
+  const [data, setData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    function fetchResults() {
+      const url = getFetchUrl();
+      // 执行请求……
+    }
+
+    function getFetchUrl() {
+      return (
+        'http://myapi/results?query' + query +
+        '&page=' + currentPage
+      );
+    }
+
+    fetchResults();
+  }, [currentPage, query]); // ✅ 变化时重新请求
+
+  // ...
+}
+```
+
+我们把逻辑放在 effect *内部*，这样更容易看出它依赖于*React 数据流中的哪些值*。这些值被称为“依赖”，在我们的例子中是 `[currentPage, query]`。
+
+注意，这个“effect 依赖”数组其实并不是一个新概念。在类中，我们必须在所有方法调用中寻找这些“依赖”。`useEffect` API 只是把同一个概念显式化了。
+
+这反过来又让我们可以自动验证它们：
+
+（动图：exhaustive-deps lint 规则的演示）
+
+*（这是新推荐的 `exhaustive-deps` lint 规则的演示，它是 `eslint-plugin-react-hooks` 的一部分，很快会被纳入 Create React App。）*
+
+**注意，无论你把组件写成类还是函数，effect 都必须尊重所有 prop 和 state 的更新，这一点很重要。**
+
+使用类 API，你必须自己考虑一致性，并验证每个相关 prop 或 state 的变化都由 `componentDidUpdate` 处理了。否则，你的组件对 prop 和 state 的变化就不具备韧性。这甚至不是 React 特有的问题。它适用于任何让你分别处理“创建”和“更新”的 UI 库。
+
+**`useEffect` API 通过鼓励一致性扭转了默认情况。**这[一开始可能让人感觉陌生](https://overreacted.io/a-complete-guide-to-useeffect/)，但结果是你的组件对逻辑的变化更有韧性。而且由于“依赖”现在是显式的，我们可以用 lint 规则来*验证* effect 是一致的。我们正在用 linter 抓 bug！
+
+---
+
+### 不要在优化中阻断数据流
+
+还有一种情况可能让你意外忽略 props 的变化。这个错误可能发生在你手动优化组件时。
+
+注意，使用浅比较的优化方式，比如 `PureComponent` 和使用默认比较的 `React.memo`，是安全的。
+
+**然而，如果你试图通过编写自己的比较逻辑来“优化”组件，可能会不小心忘记比较函数类型的 props：**
+
+```
+class Button extends React.Component {
+  shouldComponentUpdate(prevProps) {
+    // 🔴 没有比较 this.props.onClick
+    return this.props.color !== prevProps.color;
+  }
+  render() {
+    const onClick = this.props.onClick; // 🔴 不会反映更新
+    const textColor = slowlyCalculateTextColor(this.props.color);
+    return (
+      <button
+        onClick={onClick}
+        className={'Button-' + this.props.color + ' Button-text-' + textColor}>
+        {this.props.children}
+      </button>
+    );
+  }
+}
+```
+
+一开始很容易忽略这个错误，因为在类中，你通常向下传递的是一个*方法*，所以它的身份反正都是相同的：
+
+```
+class MyForm extends React.Component {
+  handleClick = () => { // ✅ 永远是同一个函数
+    // 做点什么
+  }
+  render() {
+    return (
+      <>
+        <h1>Hello!</h1>
+        <Button color='green' onClick={this.handleClick}>
+          Press me
+        </Button>
+      </>
+    )
+  }
+}
+```
+
+所以我们的优化不会*立刻*出问题。然而，如果 `onClick` 的值随时间变化而其他 props 不变，它会一直“看到”旧的 `onClick` 值：
+
+```
+class MyForm extends React.Component {
+  state = {
+    isEnabled: true
+  };
+  handleClick = () => {
+    this.setState({ isEnabled: false });
+    // 做点什么
+  }
+  render() {
+    return (
+      <>
+        <h1>Hello!</h1>
+        <Button color='green' onClick={
+          // 🔴 Button 忽略了 onClick prop 的更新
+          this.state.isEnabled ? this.handleClick : null
+        }>
+          Press me
+        </Button>
+      </>
+    )
+  }
+}
+```
+
+在这个例子中，点击按钮本应禁用它——但这并没有发生，因为 `Button` 组件忽略了 `onClick` prop 的任何更新。
+
+如果函数身份本身依赖于某个可能随时间变化的东西，比如这个例子中的 `draft.content`，情况会更加令人困惑：
+
+```
+drafts.map(draft =>
+    <Button
+      color='blue'
+      key={draft.id}
+      onClick={
+        // 🔴 Button 忽略了 onClick prop 的更新
+        this.handlePublish.bind(this, draft.content)
+      }>
+      Publish
+    </Button>
+  )
+```
+
+虽然 `draft.content` 可能随时间变化，但我们的 `Button` 组件忽略了 `onClick` prop 的变化，所以它继续看到的是绑定了原始 `draft.content` 的“第一版” `onClick` 方法。
+
+**那么如何避免这个问题？**
+
+我建议避免手动实现 `shouldComponentUpdate`，也避免给 `React.memo()` 指定自定义比较函数。`React.memo` 默认的浅比较会尊重函数身份的变化：
+
+```
+function Button({ onClick, color, children }) {
+  const textColor = slowlyCalculateTextColor(color);
+  return (
+    <button
+      onClick={onClick}
+      className={'Button-' + color + ' Button-text-' + textColor}>
+      {children}
+    </button>
+  );
+}
+export default React.memo(Button); // ✅ 使用浅比较
+```
+
+在类中，`PureComponent` 有同样的行为。
+
+这确保了把一个不同的函数作为 prop 传入时总能正常工作。
+
+如果你坚持使用自定义比较，**务必不要跳过函数：**
+
+```
+shouldComponentUpdate(prevProps) {
+    // ✅ 比较了 this.props.onClick
+    return (
+      this.props.color !== prevProps.color ||
+      this.props.onClick !== prevProps.onClick
+    );
+  }
+```
+
+正如我前面提到的，在类组件中很容易忽略这个问题，因为方法的身份通常是稳定的（但并非总是如此——而 bug 正是在那些时候变得难以调试）。使用 Hooks，情况有点不同：
+
+1. 函数*在每次渲染时*都不同，所以你会[立刻](https://github.com/facebook/react/issues/14972#issuecomment-468280039)发现这个问题。
+2. 借助 `useCallback` 和 `useContext`，你可以[完全避免把函数层层往下传](https://reactjs.org/docs/hooks-faq.html#how-to-avoid-passing-callbacks-down)。这让你可以优化渲染而不必担心函数。
+
+---
+
+总结本节：**不要阻断数据流！**
+
+每当你使用 props 和 state 时，都要考虑它们变化时应该发生什么。在大多数情况下，组件不应该区别对待首次渲染和更新。这让它对逻辑的变化具有韧性。
+
+使用类时，在生命周期方法中使用 props 和 state 很容易忘记处理更新。Hooks 会推动你做正确的事——但如果你还不习惯这样做，需要一些思维上的调整。
+
+---
+
+## 原则二：随时准备好渲染
+
+React 组件让你在编写渲染代码时不必过多担心时间。你描述 UI 在任意给定时刻*应该*是什么样子，React 负责让它实现。好好利用这个模型！
+
+不要试图给组件行为引入不必要的时序假设。**你的组件应该随时准备好重新渲染。**
+
+怎样会违反这条原则？React 并没有让这件事变得很容易——但你可以通过使用旧的 `componentWillReceiveProps` 生命周期方法做到：
+
+```
+class TextInput extends React.Component {
+  state = {
+    value: ''
+  };
+  // 🔴 每次父组件渲染都会重置本地 state
+  componentWillReceiveProps(nextProps) {
+    this.setState({ value: nextProps.value });
+  }
+  handleChange = (e) => {
+    this.setState({ value: e.target.value });
+  };
+  render() {
+    return (
+      <input
+        value={this.state.value}
+        onChange={this.handleChange}
+      />
+    );
+  }
+}
+```
+
+在这个例子中，我们把 `value` 保存在本地 state 中，但*同时*也从 props 接收 `value`。每当我们“接收到新的 props”，就重置 state 中的 `value`。
+
+**这种模式的问题在于，它完全依赖于偶然的时序。**
+
+也许今天这个组件的父组件很少更新，所以我们的 `TextInput` 只在发生重要事情（比如保存表单）时才“接收 props”。
+
+但明天你可能给 `TextInput` 的父组件加了一些动画。如果父组件更频繁地重渲染，它就会不断[“冲掉”](https://codesandbox.io/s/m3w9zn1z8x)子组件的状态！你可以在[《你可能不需要派生状态》](https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html)中读到更多关于这个问题的内容。
+
+**那么如何修复？**
+
+首先，我们需要修正心智模型。我们需要停止把“接收 props”看作与普通“渲染”不同的东西。由父组件引起的重渲染，不应该和由自身本地状态变化引起的重渲染表现不同。**组件应该能承受更少或更频繁的渲染，否则它们就和特定的父组件耦合得太紧了。**
+
+*（[这个演示](https://codesandbox.io/s/m3w9zn1z8x)展示了重渲染如何破坏脆弱的组件。）*
+
+虽然在你*真的*想从 props 派生状态时，有几种[不同的](https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#preferred-solutions)[解决方案](https://reactjs.org/docs/hooks-faq.html#how-do-i-implement-getderivedstatefromprops)，但通常你应该使用完全受控组件：
+
+```
+// 方案一：完全受控组件。
+function TextInput({ value, onChange }) {
+  return (
+    <input
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
+```
+
+或者使用非受控组件，并用 key 来重置它：
+
+```
+// 方案二：完全非受控组件。
+function TextInput() {
+  const [value, setValue] = useState('');
+  return (
+    <input
+      value={value}
+      onChange={e => setValue(e.target.value)}
+    />
+  );
+}
+
+// 之后可以通过改变 key 来重置它的内部状态：
+<TextInput key={formId} />
+```
+
+本节的要点是：你的组件不应该仅仅因为它或它的父组件更频繁地重渲染就出问题。只要避免使用旧的 `componentWillReceiveProps` 生命周期方法，React 的 API 设计就能让这件事变得容易。
+
+要对组件做压力测试，可以临时在它的父组件中加入这段代码：
+
+```
+componentDidMount() {
+  // 别忘了马上删掉它！
+  setInterval(() => this.forceUpdate(), 100);
+}
+```
+
+**别把这段代码留在里面**——它只是一个快速检查父组件比预期更频繁重渲染时会发生什么的办法。它不应该让子组件出问题！
+
+---
+
+你可能会想：“我会继续在 props 变化时重置 state，但用 `PureComponent` 来阻止不必要的重渲染。”
+
+这段代码应该能行，对吧？
+
+```
+// 🤔 应该能阻止不必要的重渲染……对吧？
+class TextInput extends React.PureComponent {
+  state = {
+    value: ''
+  };
+  // 🔴 每次父组件渲染都会重置本地 state
+  componentWillReceiveProps(nextProps) {
+    this.setState({ value: nextProps.value });
+  }
+  handleChange = (e) => {
+    this.setState({ value: e.target.value });
+  };
+  render() {
+    return (
+      <input
+        value={this.state.value}
+        onChange={this.handleChange}
+      />
+    );
+  }
+}
+```
+
+一开始，这个组件似乎解决了父组件重渲染时“冲掉”状态的问题。毕竟，如果 props 相同，我们就直接跳过更新——于是 `componentWillReceiveProps` 不会被调用。
+
+然而，这给了我们一种虚假的安全感。**这个组件对*真正的* prop 变化仍然没有韧性。**例如，如果我们加了*另一个*经常变化的 prop，比如一个带动画的 `style`，我们仍然会“丢失”内部状态：
+
+```
+<TextInput
+  style={{opacity: someValueFromState}}
+  value={
+    // 🔴 TextInput 中的 componentWillReceiveProps
+    // 会在每个动画帧把状态重置为这个值。
+    value
+  }
+/>
+```
+
+所以这种方法仍然有缺陷。我们可以看到，`PureComponent`、`shouldComponentUpdate` 和 `React.memo` 这类优化不应被用来控制*行为*。只在有帮助的地方用它们来提升*性能*。如果去掉某个优化会*破坏*组件，那它从一开始就太脆弱了。
+
+这里的解决方案和前面描述的一样。不要把“接收 props”当作一个特殊事件。避免“同步” props 和 state。在大多数情况下，每个值要么应该是完全受控的（通过 props），要么是完全非受控的（放在本地 state 中）。[能避免时](https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#preferred-solutions)就避免派生状态。**并且随时准备好渲染！**
+
+---
+
+## 原则三：没有组件是单例
+
+有时我们会假设某个组件永远只显示一次，比如导航栏。这在一段时间内可能是对的。然而，这种假设常常导致设计问题，而这些问题要很久以后才会暴露出来。
+
+例如，也许你需要在路由切换时，在两个 `Page` 组件——前一个 `Page` 和下一个 `Page`——*之间*实现一个过渡动画。动画期间两者都需要被挂载。然而，你可能会发现，每个组件都假设自己是屏幕上唯一的 `Page`。
+
+检查这类问题很容易。纯当好玩，试着把你的应用渲染两次：
+
+```
+ReactDOM.render(
+  <>
+    <MyApp />
+    <MyApp />
+  </>,
+  document.getElementById('root')
+);
+```
+
+到处点一点。（做这个实验时你可能需要调整一些 CSS。）
+
+**你的应用表现还符合预期吗？**还是你看到了奇怪的崩溃和错误？时不时对复杂组件做一下这种压力测试，确保它们的多个副本不会互相冲突，是个好主意。
+
+我自己写过好几次的一个有问题的模式，是在 `componentWillUnmount` 中执行全局状态“清理”：
+
+```
+componentWillUnmount() {
+  // 重置 Redux store 中的某些东西
+  this.props.resetForm();
+}
+```
+
+当然，如果页面上有两个这样的组件，卸载其中一个就可能破坏另一个。在*挂载*时重置“全局”状态也好不到哪里去：
+
+```
+componentDidMount() {
+  // 重置 Redux store 中的某些东西
+  this.props.resetForm();
+}
+```
+
+在这种情况下，*挂载*第二个表单会破坏第一个。
+
+这些模式很好地指示了组件在哪里是脆弱的。***显示*或*隐藏*一棵树，不应该破坏这棵树之外的组件。**
+
+无论你是否打算把这个组件渲染两次，解决这些问题从长远看都会有回报。它会引导你走向更有韧性的设计。
+
+---
+
+## 原则四：保持本地状态隔离
+
+设想一个社交媒体的 `Post`（帖子）组件。它有一个 `Comment`（评论）线程列表（可以展开），还有一个 `NewComment`（新评论）输入框。
+
+React 组件可以有本地状态。但哪些状态是真正本地的？帖子内容本身是不是本地状态？评论列表呢？或者记录哪些评论线程已展开的状态？或者评论输入框的值？
+
+如果你习惯把所有东西都放进一个“状态管理器”，回答这个问题可能会很有挑战。所以这里有一个简单的判断方法。
+
+**如果你不确定某个状态是否是本地的，问问自己：“如果这个组件被渲染了两次，这个交互应该反映到另一份副本上吗？”只要答案是“不”，你就找到了本地状态。**
+
+例如，假设我们把同一个 `Post` 渲染了两次。来看看其中可以变化的各种东西。
+
+* *帖子内容。*我们会希望在一棵树中编辑帖子时，另一棵树也随之更新。因此，它可能**不应该**是 `Post` 组件的本地状态。（帖子内容可以放在 Apollo、Relay 或 Redux 之类的缓存中。）
+
+* *评论列表。*这和帖子内容类似。我们会希望在一棵树中添加新评论时，另一棵树也能反映出来。所以理想情况下我们会为它使用某种缓存，它**不应该**是 `Post` 的本地状态。
+
+* *哪些评论已展开。*如果在一棵树中展开一条评论，另一棵树中也跟着展开，那就很奇怪了。在这种情况下，我们交互的是某个特定 `Comment` 的 *UI 表示*，而不是抽象的“评论实体”。因此，“已展开”标志**应该**是 `Comment` 的本地状态。
+
+* *新评论输入框的值。*如果在一个输入框里输入评论，另一棵树里的输入框也随之更新，那会很怪。除非输入框明显是成组的，否则人们通常期望它们相互独立。所以输入值**应该**是 `NewComment` 组件的本地状态。
+
+我不建议教条地理解这些规则。当然，在更简单的应用中，你可能想把所有东西都用本地状态，包括那些“缓存”。我说的只是[从第一性原理出发](https://overreacted.io/the-elements-of-ui-engineering/)的理想用户体验。
+
+**避免把真正的本地状态变成全局的。**这与我们“韧性”的主题有关：组件之间发生的意外同步会更少。额外的好处是，这*还*能修复一大类性能问题。当状态处在正确的位置时，“过度渲染”就不那么成问题了。
+
+---
+
+## 回顾
+
+我们再回顾一遍这些原则：
+
+1. **不要阻断数据流。**props 和 state 都可能变化，组件应该在变化发生时随时处理它们。
+2. **随时准备好渲染。**组件不应该因为渲染得更频繁或更少而出问题。
+3. **没有组件是单例。**即使一个组件只渲染一次，如果渲染两次也不会出问题，你的设计也会变得更好。
+4. **保持本地状态隔离。**想清楚哪些状态是某个特定 UI 表示的本地状态——不要把这些状态提升到超出必要的高度。
+
+**这些原则帮助你编写[为变化而优化](https://overreacted.io/optimized-for-change/)的组件。它们易于添加、修改和删除。**
+
+最重要的是，一旦我们的组件有了韧性，我们就可以回到那个紧迫的难题上来了：props 到底该不该按字母排序。

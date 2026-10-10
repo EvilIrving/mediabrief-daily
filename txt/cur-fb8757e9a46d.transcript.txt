@@ -1,0 +1,409 @@
+https://www.joshwcomeau.com/css/has/
+
+CSS :has 无可否认的实用性
+
+引言
+
+不知道你有没有注意到，CSS 世界最近可谓火热。🔥
+
+在幕后，各大浏览器厂商和 CSS 规范作者一直在通力合作，交付大量呼声很高的 CSS 特性，比如容器查询、原生 CSS 嵌套、相对颜色语法、文本平衡等等。
+
+其中一个新特性就是 :has 伪类。老实说，我起初不确定它对我有多大用处。我主要用 React 构建 Web 应用，这意味着我很少使用复杂的选择器。在这种场景下，:has 伪类真的能带来多少好处吗？
+
+过去几个月，我用各种现代 CSS 的花样重建了这个博客。天哪，我对 :has 的看法完全错了。即使在 CSS-in-JS 的场景下，它也是一个极其好用的工具！
+
+在这篇博文中，我会介绍 :has，并分享迄今为止我发现的一些最有趣的实际用例，以及一些真正令人大开眼界的实验。
+
+基础知识
+
+历来，CSS 选择器都是"自上而下"工作的。
+
+比如，用空格分隔多个选择器，我们就可以根据父元素有选择地为子元素设置样式：
+
+（代码演练场）
+
+```
+<style>  /*    Style all <a> tags that are    contained within <p> tags:  */  p a {    font-weight: bold;    color: inherit;    text-decoration-color: hotpink;    text-decoration-thickness: 2px;  }</style>
+<p>  This paragraph includes <a href="/">an anchor tag, commonly known as a “link”</a>. Using the child combinator, we’re applying styles to anchor tags when they’re included in a paragraph.</p>
+<p>  By contrast, these links aren’t in a paragraph, so they don't get the same styles:</p>
+<footer>  <ul>    <li>      <a href="/">Home</a>    </li>    <li>      <a href="/">About</a>    </li>    <li>      <a href="/">Contact</a>    </li>  </ul></footer>
+```
+
+而 :has 伪选择器是"自下而上"工作的：它让我们可以根据子元素来为父元素设置样式：
+
+（代码演练场）
+
+```
+<style>  /*    Style all <p> tags that contain    at least 1 <a> tag:  */  p:has(a) {    outline: 4px dashed hotpink;    outline-offset: 4px;    border-radius: 1px;  }</style>
+<p>  This paragraph includes <a href="/">an anchor tag, commonly known as a “link”</a>. As a result, it is given a dashed outline.</p>
+<p>  By contrast, this paragraph does not contain a link, and so it does not receive an outline.</p>
+```
+
+这看起来也许不算什么大事，但它打开了许许多多有趣的新大门。过去几个月里，我经历了一次又一次的顿悟，一次次惊呼："哇，这意味着我能做到这个？？"
+
+浏览器支持
+
+在展示所有酷炫的演示之前，我们应该简单谈谈浏览器支持。四大主流浏览器都已支持 :has，起始版本如下：
+
+- Safari 15.4，2022 年 3 月发布
+- Chrome/Edge 105，2022 年 8 月发布
+- Firefox 121，2023 年 12 月发布
+
+在我写下这篇文章的 2024 年 9 月，:has 的浏览器支持率约为 92%。（原文此处嵌入了实时更新的支持率数据。）
+
+老实说，就浏览器支持而言，92% 并不算很好……这意味着大约每 12 个人里就有 1 个在使用不支持的浏览器！
+
+幸运的是，我发现的大多数 :has 用例都是可有可无的锦上添花，所以即使不是每个人都能看到，也没什么大不了。而在其他情况下，我们可以用特性检测来提供后备 CSS。
+
+特性检测
+
+@supports 规则允许我们根据用户的浏览器是否支持某项特性来有条件地应用 CSS。它看起来是这样的：
+
+```
+p {
+  /* Fallback styles here */
+}
+
+@supports selector(p:has(a)) {
+  p:has(a) {
+    /* Fancy modern styles here */
+  }
+}
+```
+
+如果当前浏览器无法理解传给 selector() 函数的选择器，里面的所有内容都会被忽略。如果用户的浏览器更老，连 @supports 规则都不认识，那么整个代码块都会被忽略。无论哪种情况，结果都没问题。
+
+不过问题在于，用旧的 CSS 无法"模仿"出 :has。我们的后备样式并不能真正复现同样的效果。相反，我们应该把它看作两套样式，用不同的方式实现同一个目标。下一节我会给出一个例子。
+
+基于状态的样式
+
+在这个博客新的"关于 Josh"页面上，我使用了一种"便当盒"布局，里面有一堆小卡片。其中一些卡片带有可点击的子元素。
+
+然而，对于用键盘浏览的人来说，体验就有点怪了。有些子元素的尺寸会动态变化，导致出现奇怪的焦点轮廓。
+
+为了解决这个问题，我把焦点轮廓移到了父容器上。现在它看起来是这样的。
+
+这解决了我们的问题，而且我觉得看起来也挺不错！
+
+我们来深入看看它是如何实现的。HTML 大致是这样的：
+
+```
+<div class="bento-card">
+  <p>
+    I'm
+    <button>188cm</button>
+    tall.
+  </p>
+</div>
+```
+
+以前，我可能会把整个 .bento-card 容器做成一个 <button> 来解决这个问题，但这不是个好主意。往按钮里塞这么多东西会带来一些可用性和无障碍问题，比如用户无法通过点击拖动来选中按钮里的文本！
+
+幸运的是，我们可以保留良好的语义化标记，用 :has 来实现目标：
+
+```
+.bento-card:has(button:focus-visible) {
+  outline: 2px solid var(--color-primary);
+}
+
+/* Remove the default button focus outline */
+.bento-card button {
+  outline: none;
+}
+```
+
+当 .bento-card 包含一个获得焦点的按钮时，我们就给它加上轮廓。轮廓应用在父元素 .bento-card 上，而不是按钮本身。
+
+如果你不熟悉 :focus-visible 伪类：它的作用和 :focus 完全一样，但只在浏览器检测到用户使用键盘（或其他非指针设备）浏览时才生效。用鼠标的用户通过点击让按钮获得焦点时，:focus-visible 不会被触发，也不会显示焦点轮廓。
+
+我还去掉了按钮默认的焦点轮廓，以避免出现双重焦点指示。这一点我们应该非常谨慎。事实上，我们的方案还不完整，因为还需要为使用旧浏览器的人提供后备体验。
+
+后备方案是这样的：
+
+```
+@supports selector(:has(*)) {
+  .bento-card:has(button:focus-visible) {
+    outline: 2px solid var(--color-primary);
+  }
+
+  .bento-card button {
+    outline: none;
+  }
+}
+```
+
+在这个更新后的版本中，只有使用现代浏览器访问的人才会应用这些轮廓修改。如果有人使用旧版浏览器，这些都不会生效，他们会看到标准的焦点轮廓。虽然有点怪，但我认为这是一个合理的后备体验。
+
+这里我还走了个小捷径：我没有检测我实际使用的那个选择器（.bento-card:has(button:focus-visible)），而是使用了最小的合法 :has 选择器 :has(*)。浏览器并不会真的去解析我们提供的选择器，所以选中了哪些元素无关紧要。@supports 的工作方式是查看语法，判断它是否合法。
+
+另一个基于状态的例子
+
+除了 :focus-visible，CSS 还有几十种伪类，我们可以借助 :has 用其中任何一种来有条件地应用 CSS！
+
+我们再看一个来自这个博客的例子。这是我在几个地方用到的一个自定义表单控件，我叫它"X/Y 面板"。
+
+（这是一个可交互的元素！你可以点击并拖动手柄来改变 X/Y 的值。键盘用户可以让手柄获得焦点，然后用方向键操作。）
+
+注意，当你拖动或调整手柄时，容器会改变颜色！代码大概是这样的：
+
+```
+<style>
+  .xy-pad {
+    --dot-color: gray;
+  }
+  .xy-pad:has(.handle:active),
+  .xy-pad:has(.handle:focus-visible), {
+    --dot-color: var(--color-primary);
+  }
+</style>
+
+<div class="xy-pad">
+  <svg>
+    <!-- Dotted background here -->
+  </svg>
+
+  <button class="handle"></button>
+</div>
+```
+
+如果你不熟悉，:active 伪类会在按钮被点击并按住时生效。用户拖动手柄时，我们的 :has 选择器就会匹配，于是我们改变 CSS 变量 --dot-color 的值。
+
+此外，我还加了一个带 :focus-visible 的辅助选择器，让键盘用户也能得到同样的效果。
+
+--dot-color 这个 CSS 变量用在好几个地方：边框、线条和圆点。圆点本身是以一堆 SVG 圆形动态生成的：
+
+<circle fill="var(--dot-color)">
+
+全局检测
+
+这可能是我迄今为止发现的最酷的用例。我们可以把 :has 当作一种全局事件监听器来使用。
+
+比如，假设我们在构建一个模态框（对话框）组件。模态框打开时，我们想禁止页面滚动。可以通过给 <html> 标签加一些 CSS 来实现：
+
+```
+/* Scrolling disabled while this is set: */
+html {
+  overflow: hidden;
+}
+```
+
+以前，用 React 这样的 JS 框架，我会这样解决这个问题：
+
+```
+// Register a side-effect that runs whenever `isOpen` changes:
+React.useEffect(() => {
+  if (isOpen) {
+    // Save the current value for `overflow`,
+    // so that we can restore it later:
+    const { overflow } =
+      document.documentElement.getComputedStyle();
+
+    // Apply the new value to disable scrolling:
+    document.documentElement.style.overflow = "hidden";
+
+    // Register a cleanup function that undoes this work,
+    // when `isOpen` flips back to `false`:
+    return () => {
+      document.documentElement.style.overflow = overflow;
+    };
+  }
+}, [isOpen]);
+```
+
+如果你不熟悉 React 也不用担心。重点在于，这是一种非常笨拙的解决方式！
+
+用 :has 我们可以更优雅地解决它：
+
+```
+html:has([data-disable-document-scroll="true"]) {
+  overflow: hidden;
+}
+```
+
+只要 HTML 中包含一个设置了这个 data 属性的元素，无论它在 DOM 的什么位置，我们都会应用 overflow: hidden。
+
+在 Modal 组件内部，我们通过有条件地设置这个 data 属性来触发它：
+
+```
+function Modal({ isOpen, children }) {
+  return (
+    <div
+      data-disable-document-scroll={isOpen}
+    >
+      {/* Modal stuff here */}
+    </div>
+  );
+}
+```
+
+这简直太酷了吧？？模态框一打开，这个 data 属性就变成 "true"，于是 :has 选择器的条件满足，滚动就被禁止了。如果这个 data 属性变回 "false"，或者元素本身被从 DOM 中移除，滚动就会自动恢复。✨
+
+这个例子用的是 React，但同样的技巧也可以用在原生 JavaScript 中。下面是一个简单的示意：
+
+```
+function toggleModal(isOpen) {
+  const element = document.querySelector('...');
+  element.dataset.disableDocumentScroll = isOpen;
+}
+```
+
+无需 JavaScript 的深色模式
+
+Jen Simmons 发现，我们可以用这个技巧做出一个不需要 JavaScript 的"深色模式"开关。下面是一个例子：
+
+```
+<style>
+  /* Default (light mode) colors: */
+  body {
+    --color-text: black;
+    --color-background: white;
+  }
+
+  /* Dark mode colors: */
+  body:has(#dark-mode-toggle:checked) {
+    --color-text: white;
+    --color-background: black;
+  }
+</style>
+
+<!-- Somewhere in the DOM: -->
+<input id="dark-mode-toggle" type="checkbox">
+<label for="dark-mode-toggle">
+  Enable Dark Mode
+</label>
+```
+
+当用户点击复选框时，它会获得 :checked 伪类，从而让我们的 :has 选择器匹配。我们用新的深色模式变量覆盖基础的 CSS 变量，主题就有效地切换了！
+
+需要说明的是，深色模式是一件出奇复杂的事情，这种方法并不是一个完整的实现（比如，它不会保存和恢复用户的偏好设置，也不会继承操作系统的默认主题）。而且，我也不希望一项核心功能依赖一个支持率只有约 92% 的 CSS 特性。但不管怎样，只用一条 CSS 规则、不写任何 JS 就能加上一个"深色模式"开关，真是太酷了！
+
+你可以在 Jen 那篇精彩的博文中了解这种方法的更多细节，看到很多其他很酷的例子。
+
+缺失的选择器
+
+到目前为止，我们看过的所有例子都是根据某个后代元素来为父元素设置样式。这非常酷，但只是冰山一角。
+
+看看这个：
+
+（代码演练场）
+
+```
+<style>  p:has(+ figure) {    font-weight: bold;  }</style>
+<p>  This is a regular paragraph, with no  custom styles applied.</p>
+<p>  This paragraph introduces this figure:</p>
+<figure>  <img    src="/images/css-has/punk-cat.png"    alt="Photo of a hairless cat with a doodled mohawk"  ></figure>
+<p>  See how the paragraph right before the <em>figure</em> was given bold text, while the other paragraphs like this one are untouched?</p>
+```
+
+在这个场景里，我选中的是所有紧挨在 <figure> 标签之前的段落。这里最大的区别在于没有父子关系：段落和 figure 是兄弟元素！
+
+需要说明的是，用"相邻兄弟组合器" + ，我们在 CSS 中早就能做类似的事情了。这个小家伙让我们可以选中紧跟在某个选择器之后的元素：
+
+（代码演练场）
+
+```
+<style>  figure + p {    font-weight: bold;  }</style>
+<p>  This paragraph comes <i>before</i> the figure.</p>
+<figure>  <img    src="/images/css-has/fancy-cat.png"    alt="Photo of a gray cat with a doodled top hat and monocle"  ></figure>
+<p>  This paragraph comes <i>after</i> the figure.</p>
+```
+
+单独使用时，+ 组合器只能选中在 DOM 中位于某个选择器之后的元素，它只能朝一个方向工作。有了 :has，我们就能反转顺序，这意味着两者结合起来，我们就能朝任意方向选择元素！
+
+（代码演练场）
+
+```
+<style>  p:has(+ figure),  figure + p {    font-weight: bold;  }</style>
+<p>  By combining the previous two selectors, we can select paragraphs on either side of the figure!</p>
+<figure>  <img    src="/images/css-has/sparkly-cat.png"    alt="Photo of an orange cat with doodled glasses and sparkles"  ></figure>
+<p>  See? This paragraph is bold too! ✨</p><p>  This paragraph is unselected, since it isn’t adjacent to a &lt;figure&gt;.</p>
+```
+
+我们也不局限于直接的兄弟元素。有了 :has，我们可以根据一个完全不同容器中的另一个元素，来为某个元素设置样式！
+
+下面是一个疯狂的例子，改编自 Ahmad 那篇关于 :has 的全面博文。试着把鼠标悬停在分类按钮和书本上：
+
+（代码演练场）
+
+```
+<style>  html:has(    [data-category="sci-fi"]:hover  ) [data-category="sci-fi"],  html:has(    [data-category="fantasy"]:hover  ) [data-category="fantasy"],  html:has(    [data-category="romance"]:hover  ) [data-category="romance"] {    background: var(--highlight-color);  }</style>
+<header>  Categories:  <ul>    <li>      <button data-category="sci-fi">        Sci-Fi      </button>    </li>    <li>      <button data-category="fantasy">        Fantasy      </button>    </li>    <li>      <button data-category="romance">        Romance      </button>    </li>  </ul></header>
+<!--  These are 4 of my favourite books!  If you like sci-fi/fantasy, check  them out. 😄--><div class="book-grid">  <a data-category="sci-fi">    <img      alt="Book cover"      src="/images/css-has/psalm.jpg"    />    A Psalm For The Wild-Built  </a>  <a data-category="fantasy">    <img      alt="Book cover"      src="/images/css-has/season.jpg"    />    The Fifth Season  </a>  <a data-category="sci-fi">    <img      alt="Book cover"      src="/images/css-has/glory.jpg"    />    Some Desperate Glory  </a>  <a data-category="romance">    <img      alt="Book cover"      src="/images/css-has/winter.jpg"    />    Winter’s Orbit  </a></div>
+```
+
+悬停在某个分类按钮上时，按钮本身会出现悬停状态，所有匹配所选分类的书也会！同样，悬停在某本书上，也会高亮对应的分类。
+
+在演练场有限的空间里很难看清 CSS，所以这里把核心的 CSS 逻辑放在一个更宽敞的框里：
+
+```
+html:has(
+  [data-category="sci-fi"]:hover
+) [data-category="sci-fi"] {
+  background: var(--highlight-color);
+}
+```
+
+这个选择器的第一部分使用了我们前面看到的"全局检测"逻辑。我们在检查 DOM 中是否存在这样一个节点：
+
+- 它把 category 这个 data 属性设置为 "sci-fi"，并且
+- 它当前正被鼠标悬停。
+
+不过，我们并不是直接给 <html> 标签应用样式，而是寻找所有 category 属性被设为 "sci-fi" 的后代元素。
+
+换个说法，我实际上是在说："如果 HTML 文档中至少有 1 个 category 为 "sci-fi" 的元素正被悬停，就对所有属于该分类的元素应用以下 CSS。"在这个例子里，我应用的是淡紫色背景，但它可以是任何样式！
+
+这个例子的疯狂之处在于，实际的 DOM 结构无关紧要。分类按钮和书本元素位于 DOM 中完全不同的部分。它们之间没有父子关系，甚至没有兄弟关系！它们唯一的共同点是都是根 <html> 标签的后代，和文档中的任何其他节点一样。
+
+感觉 :has 就像是 CSS 中那个"缺失的选择器"。历来有很多关系是我们根本无法用 CSS 表达的。有了 :has，我们可以根据任何其他元素的属性或状态来选择任何元素。没有限制！
+
+最合适的工具
+
+正如我们所见，:has 选择器极其强大。以前需要 JavaScript 才能做到的事情，现在完全可以只用 CSS 实现！
+
+但仅仅因为我们能这样解决问题，就意味着我们应该这样做吗？
+
+我非常推崇用复杂度最低的工具来解决问题。当一个问题既能用 CSS 也能用 JavaScript 解决时，CSS 方案往往要简单得多。
+
+然而，用了 :has，事情可能会变得相当复杂。下面是我们刚才看到的那段代码的"最终"版本，包括了针对移动端和键盘的替代控制：
+
+```
+html:where(
+  :has([data-category="sci-fi"]:hover),
+  :has([data-category="sci-fi"]:focus-visible),
+  :has([data-category="sci-fi"]:active),
+) [data-category="sci-fi"],
+html:where(
+  :has([data-category="fantasy"]:hover),
+  :has([data-category="fantasy"]:focus-visible),
+  :has([data-category="fantasy"]:active),
+) [data-category="fantasy"],
+html:where(
+  :has([data-category="romance"]:hover),
+  :has([data-category="romance"]:focus-visible),
+  :has([data-category="romance"]:active),
+) [data-category="romance"] {
+  background: var(--highlight-color);
+}
+```
+
+（:where 伪类让我们可以把相关的选择器"分组"。它等价于把每个子句分别写成独立的选择器。）
+
+如果我用 React 这样的框架来构建这个界面，我认为创建一个状态变量来跟踪当前激活的分类实际上会更简单，也更灵活：分类可以是动态的，而不是写死的；书可以属于多个分类；而且它还能在 Internet Explorer 中运行。
+
+我之所以收录这个例子，是因为它确实是 :has 能力的一次惊人展示；但如果我真要构建这个界面，我会用 JavaScript 来实现这段逻辑。
+
+在实践中，我发现自己使用 :has 的方式没那么宏大，比如"关于"页面上的焦点轮廓，或者在移动端禁止滚动。在这些场景下，它是一个超级好用的选择器，在 React 应用中也表现得很好！
+
+正如前面提到的，我最近用一堆现代 CSS 重建了这个博客。这是我计划写的系列博文中的第一篇 😄。如果你想在我发布新内容时收到通知，可以订阅我的新闻通讯。
+
+如果你想进一步了解 :has，网上有大量很棒的资源。以下是我最喜欢的几篇，包括 Ahmad Shadeed 的《CSS :has() 交互式指南》和 Stephanie Eckles 的《用 :has() 选择器提升你的 CSS 技能》。
+
+最后更新于 2024 年 9 月 9 日
+
+页面中的另一段代码（便当卡片焦点轮廓的另一种写法）：
+
+```
+.bento-card:focus-within {
+  outline: 2px solid var(--color-primary);
+}
+```

@@ -1,0 +1,11 @@
+https://shoptalkshow.com/668/
+
+第 668 期：Jake Archibald 谈原生 HTML 引入（668: Jake Archibald on Native HTML Includes） ｜ ShopTalk Show ｜ 播客 ｜ https://shoptalkshow.com/668/
+
+《ShopTalk Show》2025 年 6 月的一期，主持人 Dave Rupert 和 Chris Coyier，嘉宾是 Jake Archibald，他当时在 Mozilla 做开发者关系。整期像一场现场设计讨论：如果 HTML 要原生支持"把另一个 HTML 文件引入当前页面"，这个特性应该长什么样。
+
+他们先从 iframe 谈起。Dave 回忆在早期创业公司把第三方表单用 iframe 嵌进页面，高度一变就得用 postMessage 来回调整，这是老问题。Chrome 当时有一个让 iframe 自动适应内容高度的提案：嵌入页面和被嵌入页面都要选择加入，但只在加载完成时调整一次。Jake 在 Blink 开发者邮件列表里反馈说这解决不了真正的问题，比如提案自己举的 Disqus 评论"加载更多"场景，之后若还要用 JS API 通知高度变化，就和 postMessage 没什么两样。Chris 还提到 iOS 上的 iframe 本来就会自动撑开，而且无法关闭，给 CodePen 添过麻烦。
+
+然后三人开始一步步"设计"原生引入。是否阻塞解析：Jake 解释浏览器的预加载扫描器会在解析暂停时提前抓取看起来像 link、script 的资源，而 document.write 这类旧特性让这一切复杂化；如果引入默认不阻塞解析，内容晚到就会造成布局跳动，在重视 Core Web Vitals 的今天不可能通过，所以应默认阻塞，也许可以用 async 属性让懂行的人选择异步。标签必须完整：被引入的片段里没闭合的 div 会在引入结束时自动闭合，Chris 和 Dave 承认这会让他们以前在 PHP 和 WordPress 主题里"header.php 开标签、footer.php 关标签"的写法失效。嵌套引入和瀑布：允许引入的文件再引入别的文件，但这会像 JS 模块一样产生请求瀑布；禁止循环引入，想绕开就自己加查询字符串。安全：只允许同源，否则就会变成第三方脚本问题；那些允许用户发 HTML 但过滤掉 script 的老论坛，可能因此被利用，需要考虑；还有引入超大文件造成拒绝服务的担忧，以及应要求 text/html 之类的内容类型。不过 Jake 反复指出，这些事用 JS 的 fetch 本来就能做到，并没有引入新能力。元素名字他们开玩笑地讨论了 include 还是 fetch，"我们要让 fetch 成真"。推广方面，它可以用 JS 做 polyfill，但社交平台预览和大模型爬虫都不运行 JS，看不到内容。
+
+Jake 认为这个提案在标准界屡屡受阻，是因为大家觉得它比现状倒退了一步，而现状就是在服务器上拼接；他遗憾的是 GitHub Pages、Netlify 这类托管平台没有提供像 Apache 服务端包含那样的基础功能，否则这根本不会成为话题。节目中段他们还岔开聊了流式传输：浏览器早就能边收边渲染 HTML，fetch 让 JS 也能逐块读取数据，在 HTTP/2 下保持响应打开不成问题，双工流目前只有 Node 和 Deno 支持。最后谈到 Web Components：Chris 希望一个只负责样式、不需要交互的卡片组件可以完全不依赖 JS；Jake 说声明式 Shadow DOM 已经可以不用 JS 创建，但每个实例都得重复写一遍，一旦需要按实例变化就需要条件逻辑，他把组件分成两类：交互式组件，以及只是输入数据、输出 HTML 的"HTML 宏"，后者正是 HTML 引入可能发挥作用的地方。

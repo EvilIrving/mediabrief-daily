@@ -1,0 +1,15 @@
+https://kentcdodds.com/blog/application-state-management-with-react
+
+用 React 做应用状态管理 Application State Management with React ｜ Kent C. Dodds ｜ 文章 ｜ https://kentcdodds.com/blog/application-state-management-with-react
+
+Kent C. Dodds 2020 年的一篇经典博文，主张在 React 里做状态管理，大多数时候根本不需要额外的库——React 本身就是状态管理库。他认为状态管理之所以显得难，很大程度上是因为我们过度设计；关键是把应用状态映射到组件树结构上去思考。
+
+他先解释 Redux 为何流行：真正打动开发者的不是 reducer、action creator 这套机制，而是 react-redux 的 connect 解决了“属性逐层传递”（prop drilling）的痛点。问题在于人们把所有状态都塞进 Redux，连弹窗是否打开、表单输入值这类局部状态也不放过，结果改一个简单交互就得在多个文件里追踪 action、reducer 和 dispatch，应用越大越难维护。把所有状态放在一个大对象里，即使不用 Redux 也会有性能问题：Context.Provider 的值一变，所有消费它的组件都会重渲染（react-redux v6 曾这样做，因与 hooks 不兼容在 v7 改了方案）。
+
+他给出的路径是循序渐进的：第一步，状态放在用它的组件里（useState，类组件同样适用）；需要共享时，按 React 文档的老办法“状态提升”到共同父组件；遇到 prop drilling，先用组件组合（把子元素作为 props/children 传进去）来缓解，并提醒 prop drilling 往往并不是坏事；组合也不够时再用 Context。他示范了标准写法：createContext 加一个 Provider 组件（用 useMemo 包住 value）和一个自定义 hook（useCount，在 Provider 外调用就抛错），还可以把常用的更新逻辑（如 increment）封装进 hook，或者把 useState 换成 useReducer。两条要点：状态不必放进单一对象，按逻辑拆成多个 Provider（用户设置和通知不必同处一个 context）；Context 也不必全局，尽量靠近需要它的地方——比如通知页、用户页各自拥有自己的 Provider，代码分割也自然成立，想知道数据从哪来只要看对应的 Provider。
+
+他特别强调区分两类状态：服务器缓存（存在服务器上、客户端为快速访问而缓存的数据，如用户数据）和 UI 状态（只在界面里控制交互，如弹窗 isOpen）。把两者混在一起是错误；服务器数据本质上是缓存，而缓存是计算机科学里最难的问题之一，所以他推荐 react-query（并称赞作者 Tanner Linsley），并辩解说它不是状态管理库而是缓存。
+
+关于性能：遵循上述就近放置原则，性能很少成问题。出现问题时先看一次状态变化重渲染了多少组件、是否必要；如果必要，问题在渲染速度而非状态机制；如果大量组件在无 DOM 变化时白白渲染且真成了瓶颈，可以拆分状态、优化 Provider，或引入 jotai。他认为对少数 React 内置方案不擅长的场景，原子化状态库 jotai 最有前途，与 Recoil 解决同类问题，但他更偏好 jotai；不过多数应用用不上这类工具。
+
+结论：状态尽可能局部化，只有在 prop drilling 真正成为问题时才用 Context，这样状态交互最容易维护。

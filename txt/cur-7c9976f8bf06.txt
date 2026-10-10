@@ -1,0 +1,11 @@
+https://www.openwall.com/lists/oss-security/2024/03/29/4
+
+上游 xz/liblzma 后门可导致 SSH 服务器被攻破（Backdoor in upstream xz/liblzma leading to SSH server compromise） ｜ Andres Freund（oss-security） ｜ 文章 ｜ https://www.openwall.com/lists/oss-security/2024/03/29/4
+
+PostgreSQL 贡献者 Andres Freund 2024 年 3 月 29 日发到 Openwall oss-security 邮件列表的披露信。他在 Debian sid 上观察到 ssh 登录特别吃 CPU、还有 valgrind 报错，最终发现：xz 上游仓库与发行 tarball 已被植入后门，不是 Debian 打包独有问题。Red Hat 分配了 CVE-2024-3094。
+
+后门一部分只存在于分发的 tarball（5.6.0 / 5.6.1）：configure 末尾注入混淆脚本，利用仓库里伪装成测试数据的 .xz / .lzma 文件，在特定条件下改写 liblzma 的 Makefile，把恶意目标编进库。git 里的"源码"链接往往干净，正式 tarball 才中招。仓库里那几份测试文件最初甚至没被测试用到；5.6.1 里还有人为配合后门预期栈布局去"修" valgrind 崩溃的提交，持续数周，作者认为提交者直接参与的可能性高于机器被入侵。
+
+构建侧条件很挑：主要针对 x86-64 Linux、gcc 与 GNU ld，以及 Debian/RPM 打包构建，降低被随手分析撞上的概率；注入代码也更可能只在 glibc 系统上生效。当时多数发行版尚未广泛纳入这两个版本。影响路径是：OpenSSH 本身不直接链 liblzma，但 Debian 等为 systemd 通知给 sshd 打了补丁，libsystemd 依赖 lzma，于是带后门的库进了 sshd 进程。症状是公钥登录明显变慢。运行时还检查环境：无 TERM、argv[0] 为 /usr/sbin/sshd、未设 LD_DEBUG/LD_PROFILE、设了 LANG，并试图规避部分调试环境。
+
+机制上，后门替换 crc32/crc64 的 ifunc 解析器，在符号解析早期挂钩动态链接器的 audit hook，等到主程序里 RSA_public_decrypt 的 PLT 被解析时改成指向后门代码（此时 GOT 尚未因 RELRO 只读），随后卸掉 hook。追踪显示公钥登录会走进这段代码，再回调 libcrypto 做正常认证流程——预认证阶段被劫持，很可能允许某种未授权访问或远程代码执行。他自称不是安全研究员，分析多来自 perf/gdb 观察。因疑似上游参与，未向上游报 bug，而是先报 Debian 安全组再报 distros@，并由发行版通知 CISA。信末附检测脚本作者 Vegard Nossum，并敦促尽快升级可能受影响的系统。

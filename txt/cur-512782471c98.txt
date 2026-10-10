@@ -1,0 +1,11 @@
+https://overreacted.io/npm-audit-broken-by-design/
+
+npm audit：设计上就是坏的（npm audit: Broken by Design） ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/npm-audit-broken-by-design/
+
+React 核心成员、Create React App 维护者 Dan Abramov 2021 年的一篇檄文，矛头指向 npm 默认开启的 npm audit：它在大量场景里产生 99% 以上的误报，是一场"安全表演"。
+
+他拿一个新建的 Create React App 项目演示：npm audit 报了几个"中危""高危"漏洞，他一个个看。browserslist 的正则拒绝服务，前提是攻击者能改你机器上的配置文件，而你的应用最后只是一堆静态 HTML、CSS、JS，用户根本碰不到配置。webpack-dev-server 依赖链里 glob-parent 的问题，只在你本地开发服务器上处理你自己的文件路径时才可能变慢，真能登录你机器的攻击者只会去偷密钥。被标红的"高危" css-what，前提是攻击者能往你源码里塞一个特制 SVG 让构建变慢，那他还不如直接塞个挖矿程序。另外两条是同一问题换了依赖路径。五条全是"狼来了"，而且这样的报告有好几百条，他花了几个小时翻了几个月来收到的所有 audit 问题，在构建工具场景下全是误报。
+
+他认为这让所有人受苦：初学者第一次接触 Node 就被一堆看不懂的警告吓到；有经验的开发者要么白费工夫，要么跟安全部门解释这工具不适合做安全审计；维护者被迫不停发版应付假漏洞；长远看，整整一代开发者被训练成无视警告，真正的漏洞迟早会被埋掉。npm audit fix --force 还有 bug，他一跑就把主依赖降到了一个三年前、真有漏洞的版本。
+
+他也讨论了几种出路：把依赖移到 devDependencies，但 audit 默认仍会报，而且开发依赖本身就是危险的攻击面；像 Vite、Next.js 那样发布时把依赖打包进去，虽然能躲开误报，却违背 npm 的初衷，激励机制令人担忧；让维护者能声明"这个漏洞不可能影响我的用户"，他的反问是"不信我的判断，为什么还在你电脑上跑我的代码"。他表示今后会直接关闭那些不对应真实风险的 audit issue，并呼吁其他维护者也这样做，问题的根源在 npm，修复的权力也在 npm 手里。

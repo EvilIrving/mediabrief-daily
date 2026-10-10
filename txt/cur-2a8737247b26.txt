@@ -1,0 +1,15 @@
+https://www.joshwcomeau.com/animation/scroll-driven-animations/
+
+滚动驱动动画 Scroll-Driven Animations ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/animation/scroll-driven-animations/
+
+Josh W. Comeau 的这篇教程介绍 CSS 原生的滚动驱动动画（Animation Timeline API）。滚动时让元素动起来是给网站增添个性的好办法，他在自己课程 Whimsical Animations 的主页上就做了这样的效果；过去这类效果只能靠 JavaScript，现在纯 CSS 就能实现。他试用了几个月，评价是“太好用了”，因为它非常优雅地建立在现有 CSS 原语之上：会写关键帧动画，就已经掌握了大半。
+
+核心概念是：关键帧动画的百分比原本按时间（duration）推进，现在改为按滚动距离推进。@keyframes 本身从未规定百分比指的是什么，任何从 0% 到 100% 的输入都可以驱动它。设置 animation-timeline: view() 后，元素穿过视口的进度就成了动画进度，向下滚动就像拖动播放条。缓动函数照常可用：他用夸张的 cubic-bezier 实现“快进慢停”的旋转，甚至用 linear() 函数做出弹簧缓动（他自嘲这有点“邪门”，只为展示能力）。他特别称赞 CSS 工作组（CSSWG）复用并扩展了关键帧动画，而不是另起炉灶，让开发者已有的知识可以直接迁移。
+
+动画区间由 animation-range 控制。默认 cover 覆盖元素从第一个像素进入视口到最后一个像素离开的全过程；contain 只在元素完全处于视口内时计量，适合想看到完整动画的场景（例如从屏幕外滑入的图形）；entry 是元素从探头到完全进入视口的阶段，非常适合常见的“进入时淡入”；exit 则是元素越过视口顶部离开的阶段。一个元素可以用逗号分隔同时挂上淡入与淡出两个动画，分别对应 entry 和 exit。还可以用 animation-range-start / animation-range-end 精确到百分比，比如从 cover 0% 到 cover 50%（元素到达视口正中时完成），也能混用不同区间（contain 0% 到 exit 50%）；四值简写他觉得容易混淆，个人更偏好分开写。
+
+除了追踪单个元素的视图进度时间线（view），还有追踪整体滚动进度的滚动进度时间线 scroll()。他坦言想不出太多用途，主要就是博客和新闻网站顶部的阅读进度条，并调侃这和滚动条功能有点重复。
+
+进阶部分是“关联时间线”：用一个元素的滚动位置驱动另一个元素的动画。例子中左侧方块是粘性定位、并不移动，右侧段落设置 view-timeline: --tracked-elem 创建具名时间线，方块再用 animation-timeline: --tracked-elem 订阅它。最大的坑是这类具名变量不是全局的，只有创建它的元素及其后代能引用；方块不是段落的后代，所以需要在最近的共同祖先（这里是 main）上用 timeline-scope 预先声明变量，他称这是 CSSWG 预见到问题后留的“逃生舱”。
+
+他承认一篇文章只能浅尝辄止，文末推广他花了一年半打造的动画课程 Whimsical Animations，其第三部分深入讲解滚动驱动动画，还涉及 View Transitions 和光标追踪效果。

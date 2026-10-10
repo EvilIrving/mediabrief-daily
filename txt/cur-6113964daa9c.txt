@@ -1,0 +1,13 @@
+https://lucumr.pocoo.org/2026/10/6/codemode/
+
+什么是 Codemode（What is Codemode） ｜ Armin Ronacher ｜ 文章 ｜ https://lucumr.pocoo.org/2026/10/6/codemode/
+
+Flask 作者 Armin Ronacher 2026 年 10 月谈他在 agent 工具 Pi 1.0 里加入的 Codemode，以及这和一年前"别往上下文里塞自定义工具、多用脚本 / MCP 需要代码"的主张如何衔接。命名归功于 Cloudflare。
+
+背景是：harness（大脑）给模型工具定义，模型经强化学习学会何时调用。他偏爱 CLI 和 bash，因为好组合，训练时模型也学过文件系统——echo 写完文件就知道 /tmp 里多了东西。但 bash 只能组合"能跑起来的程序"；有些能力必须是 harness 的原生工具，比如多模态读图不能靠 cat，子 agent 的编排也很难纯靠套接字和 CLI 做干净。
+
+关键是把系统劈成两半：harness 大脑在一台受信任的机器上；执行环境（手）跑 bash 和工具，文件系统与信任级别都不同——例如 Gondolin 沙箱管得住 bash，管不住 harness 本身。Codemode 正是让模型在 harness 侧、而不是执行环境侧，用代码编排复杂操作：在 Pi 里跑在 WASM 上的 QuickJS 沙箱里，无网络、无文件系统、无定时器、内存受限，唯一出路是再调工具。语言目前是 JavaScript，也可以想象 Scheme。
+
+好处包括：组合工具调用时不必把中间结果全塞进模型上下文；Codemode 侧能拿到更大、更结构化的输出；可用 Promise 表达并发与工作流（先探针 5–10 条再写脚本处理后面 n 条）；还能把状态 store 进会话记录供后续 Codemode 读取——这些状态在 harness 主机上，不在沙箱里。Pi 还把不适合做成常规工具、却浪费上下文的能力（生图、一次性分类器 Jev 等）只暴露给 Codemode。MCP 默认开启时才带 Codemode，也可在设置里用 defaultTools 打开。
+
+他举了真实会话里模型自己写的例子：调用图像模型并 image() 回灌；用 Jev 批量给 GitHub issue 做情绪与类型分类再 store；用 Jev 驱动坦克游戏调试循环；直接调 Sentry MCP；以及 Cloudflare MCP 那种"Codemode 套 Codemode"（双层 JSON 转义、内层调不了外层工具）的糟糕现状。他对 MCP 的建议是：返回结构化 JSON（outputSchema）、结果形状要稳定、大二进制仍弱、跨多服务器的可组合工具搜索仍缺。结论：这不是否定 CLI，而是生态终于走到"代码"这条路上；Codemode 还给 harness 内更多自由。待解问题包括持久化（或许要借鉴工作流引擎快照，或更确定性的 Starlark）、二进制与小模型适配——模式有用，但还不完美。

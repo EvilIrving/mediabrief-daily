@@ -1,0 +1,57 @@
+https://www.joshwcomeau.com/react/why-react-re-renders/
+
+为什么 React 会重新渲染
+
+坦白说，我用 React 做专业开发好几年，却一直没真正搞懂重渲染过程。😅 很多 React 开发者也一样：够用就行，但若问「什么会触发 React 重渲染？」往往得到一堆含糊答案。误解很多，带来不确定：不理解渲染循环，怎能懂得何时用 React.memo、何时用 useCallback？
+
+本教程建立「何时、为何」重渲染的心智模型，并用 React DevTools 判断某个组件为何重渲。
+
+核心 React 循环
+
+基本事实：每次重渲染都始于状态变更。这是组件重渲的唯一「扳机」（过去的 forceUpdate 已不存在）。
+
+你可能觉得不对——props 变了呢？Context 呢？关键在于：组件重渲时，也会重渲它的全部后代。
+
+例子：App 渲染 Counter，Counter 渲染 BigCountNumber。状态变量挂在特定组件实例上；这里 count 属于 Counter。count 变则 Counter 重渲，BigCountNumber 作为其子也会重渲。交互图里点 Increment 可看绿闪表示重渲。
+
+清除大误解 #1：状态一变整应用都重渲。——不是。重渲只影响拥有该状态的组件及其后代。本例 App 不必因 count 变化而重渲。
+
+别死记规则，看「为什么」。React 的主职是让 UI 与状态同步；重渲是为了弄清该改什么。首次挂载时 React 渲出 DOM「草图」；用户点击后 count 从 0 到 1，再跑 Counter 与 BigCountNumber，得到新草图，再玩「找不同」——段落文本从 0 改成 1——然后等待下一次状态变更。这就是核心循环。
+
+count 挂在 Counter 上，数据不能向上流，故不可能影响 App，无需重渲 App。但必须重渲显示 count 的子组件 BigCountNumber，否则快照里不知道文本该变。重渲是为了弄清状态变化如何影响 UI，故须重渲所有可能受影响的组件以得到准确快照。
+
+与 props 无关
+
+大误解 #2：组件因 props 变化而重渲。——我们给 Counter 加一个不依赖 count 的 Decoration（帆船装饰）。直觉以为它不会随 count 重渲——其实会。组件重渲时会尝试重渲全部后代，不论是否通过 props 传入该状态。
+
+为何？React 很难 100% 确定 Decoration 是否直接或间接依赖 count。理想世界组件总是「纯」的：同样 props 总产出同样 UI。现实里很多不纯，例如读 new Date() 的 CurrentTime，每次渲染显示不同；更隐蔽的是把 ref 当 prop——React 不知上次渲染后是否突变过，于是为安全起见选择重渲。React 第一目标是 UI 与状态同步，宁可偏多渲染，也不愿给用户过期 UI。
+
+所以：props 与「是否触发重渲」无关。BigCountNumber 不是因为 count prop 变了才重渲；而是拥有状态的祖先重渲后，重渲沿树向下级联，以便填满新快照。标准流程如此，但可以微调。
+
+创建纯组件
+
+React.memo（或类组件 PureComponent）让我们忽略某些重渲请求。用 memo 包住 Decoration，等于告诉 React：「我知道它纯，除非 props 变否则不必重渲。」这是记忆化：记住上一张快照，props 未变就复用，不重新生成。若 BigCountNumber 与 Decoration 都 memo：count 变时 Counter 重渲；BigCountNumber 因 count prop 变而重渲；Decoration 无 props 变化则复用旧快照。可把 memo 想成懒摄影师：连拍五张完全一样的东西，它只拍一张然后交五份复印件。对后代很多或内部很重的组件，这招很有用。
+
+那 Context 呢？
+
+默认上，组件状态变则其全部后代重渲；用 Context 把状态提供给后代，并不改变这一点——反正都会重渲。对纯组件而言，Context 有点像「隐形 props」或「内部 props」。例如 memo 包着的 GreetUser 用 useContext(UserContext)：无显式 props，但有对 context 里 user 的隐形依赖；user 变时它会生成新快照而非复用旧图。React 能察觉它在消费该 Context，于是当 prop 对待。等价于把 user 当普通 prop 传入的 memo 组件。注意：只有真正用 useContext 消费的纯组件才会如此；不必担心 Context「弄坏」一堆并未消费它的纯组件。
+
+用 React DevTools 做性能分析
+
+真实项目里某个组件为何重渲往往并不明显。装 Chrome/Firefox 的 React DevTools，打开 DevTools 可见 Components 与 Profiler。在 Profiler 齿轮里勾选「Record why each component rendered while profiling」。流程：点蓝圆开始录 → 在应用里操作 → 停止 → 用箭头浏览各次快照；侧栏显示某组件因何重渲；纯组件还会标出是哪些 prop 导致更新。他本人不常用，但用时往往救命。
+
+还可开「Highlight updates when components render」，重渲的组件周围会闪绿框，便于看状态更新波及多远、纯组件是否成功躲过。
+
+更深入
+
+开始用 Profiler 后会发现：有时纯组件在「看起来什么都没变」时仍重渲。微妙之处：组件是 JavaScript 函数，渲染即调用函数；组件内部定义的一切每次渲染都重新创建。例如 App 里每次 new 一个 dog 对象再传给 DogProfile——即便包了 memo，子组件仍会因「新对象」引用不等而重渲。续篇《Understanding useMemo and useCallback》继续展开记忆化与优化；这些教程也摘自课程 The Joy of React。
+
+附赠：性能建议
+
+- Profiler 显示的毫秒数在开发模式下不可信；React 生产模式快得多。要真正了解表现，用已部署的生产应用 + 浏览器 Performance 面板，看真实重渲以及 layout/paint。
+- 强烈建议在低端硬件上测（他为本站偶尔用几年前印度流行的红米 8），感受第 90 百分位体验。
+- Lighthouse 分数不是真实体验的准确反映；他更信任亲手用应用的质性感受。
+- 几年前在 React Europe 谈过后加载体验（常被忽视），可在 YouTube 观看。
+- 别过度优化！学了 Profiler 容易陷入「尽量减少渲染次数」的狂欢；React 开箱已经很快。这些工具最好在感觉卡顿、真有性能问题后再用。
+
+最后更新：2025 年 12 月 3 日。
