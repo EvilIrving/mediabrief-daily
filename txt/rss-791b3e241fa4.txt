@@ -1,0 +1,47 @@
+本期节目里，laike9m 回顾了Agent 编程工具的发展历史，并结合他在 Google 做 coding agent 的观察，讨论了 2026 年的新趋势。
+
+播客讨论的文章 《What's next in Agentic Coding Products? 》
+
+请大家尊重嘉宾，不要发表人身攻击言论。本期原意是做成单口，小A 作为朋友是来活跃气氛和捧哏的。
+
+主播
+
+laike9m
+
+章节
+
+00:00:59 工作中大家还手写代码吗？
+
+00:02:18 Agent 编程工具的发展历史
+
+手写代码 → AI 写代码过渡阶段 (2023 ~ 2025):
+编辑器 + AI 聊天侧边栏
+
+Coding Agent CLI
+
+🤖 Agent-native 工作流 (2025 ~ now):
+AI coworker 协作软件
+
+Agent 指令中心 (Codex, Cursor 3, Antigravity 2.0)
+
+00:06:08 Agent 指令中心
+
+不再是以编辑器为中心，而是以 agent 对话为中心，必要时才在右侧展开编辑器。并且把同时操作多个 agent 当作一等公民来支持。
+
+典型例子比如 Codex
+
+00:10:59 Agent 编程工具未来发展方向
+
+更好的 Agent Harnesses
+
+主动式 Agent
+
+团队协作
+
+可验证性
+
+链接
+
+Loop Engineering
+
+爱发电上赞助

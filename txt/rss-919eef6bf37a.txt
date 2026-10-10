@@ -1,0 +1,7 @@
+if(kakao)26 첫째 날은 신뢰와 안전, AI 방향성, 상생과 성장, Model & Agent에 대해 이야기합니다.
+키노트를 제외한 총 22개의 기술 세션들이 아래와 같이 진행됩니다.
+
+[AI 방향성]
+1. You Only Train Once: 더 효율적으로 Kanana SLM 개발하기 (류민호, 한규빈)
+단 한 번의 학습으로, 4개의 Small Dense Model Family를 개발한 노하우를 공유합니다!
+최근 공개한 Kanana-2 SLM 개...

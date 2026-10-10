@@ -1,0 +1,1 @@
+Agents don't build trust for another reason, structurally worse than the first. It isn't only that the tool keeps changing shape. It's that the feedback loop you would need in order to learn the tool is broken at the point of measurement.

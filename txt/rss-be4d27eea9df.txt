@@ -1,0 +1,141 @@
+An essay version of the video is below.
+
+You can subscribe to the audio-only podcast feed over on Apple’s Podcast app and other apps if audio is more your speed.
+
+It’s also available as a raw podcast feed if you want to subscribe to it directly in the podcast app of your choice.
+
+For fans of video, there’s both the YouTube channel and the TikTok account.
+
+Overview #
+
+The “parasocial” illusion that’s created by social media platforms helps deceive and misguide you, the audience.
+
+Video #
+
+Audio #
+
+ Why influencers really aren't your friend
+
+ Download audio 
+
+Parasocial media #
+
+Those people aren’t your friends.
+
+By those people I mean social media influencers and similarly popular accounts on your preferred social media platform. Obviously online friendships are real. I’ve based my entire career on the relationships I’ve built online. None of my work over the past 25 years would have happened without the mutual connections that you can build on the various social media networks. And those friendships are as real, as rewarding, as the ones I’ve formed in “real life”.
+
+They might possibly be better because I have a problem with eye contact for various neurodivergent reasons. It’s quite a bit easier to communicate with people in text or mediated through a computer in some other way without having to think about looking at their eyes. So I’m hugely grateful to the relationships I’ve built on social media, but that isn’t as much the case with social media today as it was when I started.
+
+I benefit from the fact that the social media experience twenty years ago or even twenty-five years ago, when I first started blogging, is very different from what passes as social media today.
+
+This is a bit of an informal series on how the design of social media – the technical side, the media design, the format of it – affects the way we get our information.
+
+I first covered the limitations of short-form video like TikTok. There are plenty of limitations to the form, but I focused specifically on the length and how that forces you to use editing to create an impression of an argument, as opposed to making an actual argument.
+
+In the last essay I focused on the context collapse that exists in most social media, but I focused specifically on text-oriented media such as X, Threads, Bluesky, or Mastodon because on those platforms it destroys our ability to deliver the specialised discourse that is needed to cover difficult topics.
+
+This time, it’s the false promise behind the term we use to label the platforms where we find each other: social media.
+
+Because that’s where things get dicey.
+
+I’m not focusing on anxiety or mental health or similar issues in this series, but instead on how it affects the way we get our information. When it comes to social media the asymmetry that now defines it wasn’t there at the beginning.
+
+The asymmetry I’m referring to is what danah boyd, an academic I’ve referred to before, called the parasocial nature of the current social media networks.
+
+In a recent paper she has argued that these networks have long since ceased to be “social” and are more properly parasocial networks:
+
+To more effectively interrogate what we are witnessing, we need to stop presuming that these tools are “social media” and begin recognizing that they are now “parasocial media.” Doing so raises new questions about digitally mediated sociality, not to mention the politics and governance of these platforms.
+
+Many social interactions on these sites have become largely an illusion.
+
+They don’t exist to build a symmetrical, two-way relationship between people. They’re there to give you the illusion of interacting with anything ranging from a minor celebrity to a major celebrity. You might talk to somebody on social media who has hundreds of thousands of followers, and you might actually get a reply. But that gives you the sense – the feeling – that you’re in a relationship with them and that there’s a mutual connection between you. But there usually isn’t.
+
+That effect is an illusion that comes from the design and structure of the social media platform. The asymmetry is designed such a way that it makes you feel like it’s a symmetrical relationship.
+
+This design was invented. This wasn’t the way that social media was at the beginning. Like if you look at the early days of, for example, Facebook.
+
+Facebook used to be symmetrical. It didn’t have public pages you could just follow. When you friended somebody on Facebook you had to have the friend request accepted and it went both ways. That was an actual symmetrical, two-way connection which limited its availability and use for celebrities and politicians, because it was purposefully designed to create a network of peers.
+
+(Then to “monetise” and control that network, of course. It wasn’t a benevolent attempt to unite humanity.)
+
+That design meant that the interactions that took place on the on in the early days of Facebook were actual social interactions.
+
+They were often annoying, but annoying in the same way as a never-ending high school reunion would have been annoying.
+
+Twitter broke that mould where it let you follow somebody without them following you back. That created this environment of instant social media influencer – micro celebrity – that had a ten, hundred, or thousand times more followers than they followed themselves. The interactions they had with their followers would give their follower the feeling of mutuality, of sort of being peers and equals, but in effect you were dealing with a broadcaster.
+
+It was just a broadcast that was wrapped up in an illusion of equal social interactions. That’s where the term “parasocial” comes into the picture.
+
+This “feature” then became a hard requirement for any other social networking platform to succeed and has been causing problems ever since.
+
+It is harmless for certain uses. Like having a parasocial interaction or relationship with an online cat. Somebody posts pictures of their cat, and you know you like it. You feel like you know the cat. But you don’t. Because the cat doesn’t even understand or know what the internet is, let alone what an internet friend might even be.
+
+The other end of the parasocial spectrum are relationships with, for example, people in your field of practice or study.
+
+These are people you might encounter somewhere outside the social media platform. You might have a realistic possibility of encountering them if you go to a conference, or if they’re invited to talk at your university, or if you go to a meetup in the town where you live. There is a very real difference between the parasocial interactions you have with people who you might have a social relationship with at some point, versus the people who you’ll never ever see.
+
+The people in the latter group is never going to be your friends.
+
+Consider the field of web development or industries like certain parts of publishing. Quite a few of the relationships I have online – both in web dev and in publishing – started off parasocial. Either they followed me because of something I was writing, or I followed them because of something they were writing. Then I ran into them at a conference, or we started talking and a symmetrical social interaction grew from there.
+
+That’s possible in some circumstances. That’s not possible – that’s not going to happen – with the celebrity. That’s not going happen with a politician, or a columnist, or reporter with millions of followers, or a musician with a global audience. And once you get into the sphere where that symmetry is never going to be available to you, that’s when you get into dangerous disinformation territory.
+
+We are, as human beings, hardwired to trust what people – our peers, our social environment – tells us. This is, for example, how superstitious nonsense like homeopathy and naturopathy, and all sorts of quackery and snake oil, gets distributed.
+
+A friend of yours tries it, they feel better, they talk about it to you, and you’re like “oh my god, my friend got better!” That feels more real to you and feels more convincing than the entirety of science ganging up against what is actually complete and utter bullshit.
+
+Your friend feels it works so you feel it probably works.
+
+This is already problematic. It’s one of the ways that our brain short circuits our ability to reason about the world around us and figure out how things work.
+
+But it gets extra problematic when that friend isn’t actually your friend – when your trusted peer will never know your name and will never care.
+
+They won’t miss you when you stop going onto their pages. They won’t notice if you stop commenting, or if you unsubscribe. They are not your friend.
+
+This supercharges misinformation. Where people are isolated and have fewer friends, they might not have social interactions at work, but they have the influencer, the person on the podcast, or on YouTube or on Tiktok, who feels like their friend. That influencer is taking advantage of that relationship by um scaring them, by hyping up their anxiety and worry, and then selling them something. Selling them, again, the same snake-oil that usually tends to get distributed via the superstitious network built on hearsay and peer recommendations.
+
+It’s also one of the reasons why we feel betrayed when somebody like Hank Green or Adam Conover on YouTube does something dumb, or says something ridiculous, or turns out to be, you know, an asshole.
+
+The feeling of betrayal is there because we have formed this relationship on our side, in our mind, and we have the expectations of a friendship. We feel like there’s a relationship there, but they only expect a semi-passive audience. Letting these asymmetrical relationships hold the same role in our emotional lives as actual relationships is only going to lead us to misery and all sorts of crises.
+
+For example, recently there was referendum here in Iceland on whether we should restart negotiations on joining the EU. It failed.
+
+It didn’t failed because voters looked at the question, at all the facts, and made a choice. That would have been fine.
+
+I understand being sceptical of things that are proposed by large institutions that might not have your interests at heart. But, after the vote was completed, much of the “information” that had been spreading, that people were basing their opinions on, were simply outright lies.
+
+They had come from TikTok, from influencers, from discussions online, from the individuals that large groups of people had parasocial with, and it was largely wrong. Some of them implied that the EU had an army and mandatory military service. Some implied the EU had banned their favourite type of car. Both statements are false.
+
+But the youngest voters trusted them because they trusted the person they felt that was their friend. But they aren’t your friend.
+
+I’m not your friend.
+
+(Unless you are one of my friends reading this then… Hi!)
+
+For the most part we are in a parasocial relationship online. We are having unequal, uneven asymmetrical relationships to varying degrees. I might interact or respond to some of your comments, but I will not know you.
+
+I won’t know you to the same degree that you might know my voice.
+
+I don’t know your voice, whether in writing or in speech. I don’t know the cadence that you speak with. I don’t know your personality or what matters to you.
+
+Be careful with trusting people like me who are posting on social media and YouTube.
+
+More importantly, since we’re on these networks in the first place, since we need to be on them, try and focus your relationships on people whose connection to you might become symmetrical at some point.
+
+People who you might run into at conferences. The people who you might get in touch with via friend of a friend. Those are the connections – the loose connections – that are valuable, that you can make through social media networking, that are harder to build outside those platforms.
+
+And keep the parasocial relationships to a minimum.
+
+Treat communications on social media like the broadcasts that they are.
+
+I can watch an interview with Sandra Bullock – one of my favourite actresses. I don’t think I’m in any sort of relationship with her. I don’t feel like I know her beyond her work.
+
+That’s healthier than feeling like I’m in some sort of friendship with somebody just because I watch their videos.
+
+You can enjoy these people’s work. You can enjoy people’s broadcasts and their media without engaging in a relationship that is only going to do both of you a disservice.
+
+You don’t need to be friends with authors. You just need to like their work.
+
+As with so many things, it’s a question of boundaries. Social media is designed to undermine the boundaries that we set for ourselves and others
+
+We would be well served to not let it do that.

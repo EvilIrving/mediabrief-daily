@@ -1,0 +1,38 @@
+Haroon Meer is back! Haroon is the Founder of Thinkst, the ~50-person bootstrapped company behind Canary and Canarytokens — honeypots and tripwires you sprinkle inside your network and forget about until an attacker touches one. We talk about the AWS API key token attackers just can’t resist trying, the real credit card token backed by an actual bank partnership, Breadcrumbs (their brand-new feature that leads intruders straight to your canaries), a live demo where a hardware Canary becomes a Synology NAS in one click, and how a company with zero outbound sales and no price increase in ten years quietly passed $22.5 million in ARR.
+
+Join the discussion
+Changelog++ members get a bonus 4 minutes at the end of this episode and zero ads. Join today!
+Sponsors:
+Buildkite – You deserve better CI. Buildkite is engineered for frontier scale and trusted by the teams setting the pace.
+
+WorkOS – Auth for CLI with AuthKit from WorkOS — Bring secure browser-based login to your terminal apps using the OAuth Device Flow, with the same polished AuthKit experience plus SSO, MFA, and passkeys. Learn more at WorkOS.com and AuthKit.com
+
+Featuring:
+Haroon Meer – Website, LinkedIn, X
+Adam Stacoviak – Website, GitHub, LinkedIn, Mastodon, X
+
+Show Notes:
+
+Thinkst
+
+Thinkst Canary
+
+Thinkst Canary Security
+
+Canary Tokens
+
+Canary Tokens Docs
+
+Canary Tokens on GitHub
+
+OpenCanary on GitHub
+
+OpenCanary Docs
+
+TechCrunch: A decade in, bootstrapped Thinkst Canary reaches $20M in ARR without VC funding
+
+Grafana Labs: Canary Tokens, the unsung heroes of security
+
+Canary Love
+
+Something missing or broken? PRs welcome!

@@ -1,0 +1,67 @@
+Scott and Wes talk about how non-developers are actually using AI today. They also cover the stuff they don’t think holds up, like AI-staged listings and automated marketing.
+
+Show Notes
+
+00:00 Intro
+
+00:38 Welcome to Syntax!
+
+Wes’ post about using AI
+
+01:50 Finding Parts With AI: Van Buckles and Weird Bolts
+
+03:59 Brought to you by Sentry!
+
+04:37 Fixing Printers, Drivers, and Annoying Home Network Stuff
+
+Skylight Calendar
+
+05:32 Rescuing E-Waste: Flashing a Broken Skylight Calendar
+
+08:42 Red Tape, Permits, and Filling Out Awful PDF Forms
+
+09:57 Self-Hosting Made Easy: Updating Your NAS and Docker Containers
+
+11:18 Fighting Home Assistant Rot With Agents
+
+13:20 Inbox and Calendar Management for a Family of Six
+
+18:05 AI in Real Estate and Property Staging
+
+Real Estate Canada subreddit
+
+21:10 Using Agents for Video Editing and Multicam Automation
+
+23:53 GFX.computer: Building Better Infographics
+
+25:59 Things That Won’t Hold Up: Generated Text and Automated Marketing
+
+30:27 Home Lab Management Over Tailscale and SSH
+
+32:46 3D Printing Parts With Nurb: Stands, Cases, and Airflow
+
+Nurb
+
+34:51 MCP Servers for Software You Only Use Occasionally
+
+36:58 Travel Planning: Great at Logistics, Terrible at Taste
+
+39:31 Proposals and Job Applications: Everybody Sounds the Same
+
+42:14 Sick Picks + Shameless Plugs
+
+Sick Picks
+
+Scott: Nomadix Backpack
+
+Wes: Silicone chair socks
+
+Hit us up on Socials!
+
+Syntax: X Instagram Tiktok LinkedIn Threads
+
+Wes: X Instagram Tiktok LinkedIn Threads
+
+Scott: X Instagram Tiktok LinkedIn Threads
+
+Randy: X Instagram YouTube Threads

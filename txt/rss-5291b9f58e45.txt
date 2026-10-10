@@ -1,0 +1,15 @@
+As the web continues to be the medium for all users, standards bodies need to continue to provide new APIs to enrich user experience and accessibility. One underused API for unsighted users is speechSynthesis, an API to programmatically direct the browser to audibly speak any arbitrary string.
+
+The Code
+
+You can direct the browser to utter speech with window.speechSynthesis and SpeechSynthesisUtterance:
+
+window.speechSynthesis.speak(
+ new SpeechSynthesisUtterance('Hey Jude!')
+)
+
+speechSynthesis.speak will robotically tell the user anything you provide as a SpeechSynthesisUtterance string. Support for this API is available in all modern browsers.
+
+I wouldn’t consider speechSynthesis as a replacement for native accessibility tools, but this API could be used to improve what native tools provide!
+
+The post JavaScript SpeechSynthesis API appeared first on David Walsh Blog.

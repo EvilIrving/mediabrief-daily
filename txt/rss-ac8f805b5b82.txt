@@ -1,0 +1,13 @@
+The ability to download media on the internet almost feels like a lost art. When I was in my teens, piracy of mp3s, movies, and just about everything else via torrents and apps like Kazaa, LimeWire, Napster, etc. was in full swing. These days sites use blob URLs and other means to prevent downloads. Luckily we have tools like yt-dlp to download individual YouTube videos or entire channels of content.
+
+To download an entire channel, you can use yt-dlp:
+
+yt-dlp https://www.youtube.com/@beetlejuicearchives3490
+
+If you’re like me and only care for the audio, you can use a few more arguments:
+
+yt-dlp -x --audio-format mp3 https://www.youtube.com/@beetlejuicearchives3490
+
+youtube-dl used to be the standard for downloading YouTube videos but yt-dlp seems to have taken the throne. YouTube has such a wealth of information on just about anything, be sure to download content for travel, long walks, or any other reason!
+
+The post How to Download a YouTube Video or Channel appeared first on David Walsh Blog.

@@ -1,0 +1,25 @@
+Recently, four pillars of the JavaScript community (James Snell, Natalia Venditto, Michael Dawson & Matteo Collina) teamed up to create a resource that lays out nine principles for doing Node.js right in enterprise environments. On this episode, Natalia & Matteo join Jerod to discuss all nine.
+
+Join the discussion
+Changelog++ members save 6 minutes on this episode because they made the ads disappear. Join today!
+Sponsors:
+Notion – Notion is a place where any team can write, plan, organize, and rediscover the joy of play. It’s a workspace designed not just for making progress, but getting inspired. Notion is for everyone — whether you’re a Fortune 500 company or freelance designer, starting a new startup or a student juggling classes and clubs.
+
+WorkOS – A platform that gives developers a set of building blocks for quickly adding enterprise-ready features to their application. Add Single Sign-On (Okta, Azure, Google, Microsoft OAuth), sync users from any SCIM directory, HRIS integration, audit trails (SIEM), free magic link sign-in. WorkOS is designed for developers and offers a single, elegant interface that abstracts dozens of enterprise integrations. Learn more and get started at WorkOS.com
+
+Jam.dev – One click bug reports developers love — Never explain another bug report again. Jam auto-captures all the info engineers need to debug and repro.
+
+Featuring:
+Natalia Venditto – GitHub, LinkedIn, X
+Matteo Collina – Website, GitHub, Mastodon, X
+Jerod Santo – GitHub, LinkedIn, Mastodon, X
+
+Show Notes:
+
+Nine Node Pillars
+
+close-with-grace
+
+TypeSpec
+
+Something missing or broken? PRs welcome!

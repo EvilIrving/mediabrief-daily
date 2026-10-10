@@ -1,0 +1,2 @@
+Tips on how to improve the accessibility of your JavaScript components and provide users with more and better ways to interact with your website or web app.
+My blog doesn't support comments yet, but you can reply via blog@matuzo.at.

@@ -1,0 +1,1 @@
+Agents are great at producing code. The valuable work left for you is deciding what should exist, how it should behave, and what you're willing to trade for it.

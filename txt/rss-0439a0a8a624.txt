@@ -1,0 +1,30 @@
+从 Claude Code、Codex 到 OpenClaw，哪些 Skills 真正改变了工作流？为什么越来越多人开始不看代码，只看结果？GrillMe、TDD、Playwright、Computer Use 等热门 Skills 到底解决了什么问题？以及在 Coding 之外，知识管理、投资研究、邮件处理等场景里，Skills 又能带来哪些意想不到的价值。
+如果你正在思考如何让 Agent 真正成为自己的数字分身，这期节目或许会给你不少启发。
+本shownotes由 castwise.ai 制作
+Podwise - Podcast Knowledge at 10x Speed!
+podwise.ai
+Apple Store 下载👉🏻 apps.apple.com
+硬地笔记
+00:49 AI Skills 的筛选标准与应用场景
+06:36 前端设计与需求澄清的 AI 辅助工具
+14:34 Agent 驱动的开发工作流与架构设计
+27:54 知识管理与日常事务的自动化实践
+34:33 AI 时代对失控感的心理适应与信任重构
+43:31 自定义 Skill 的开发与自动化沉淀
+
+欢迎关注我们
+知识星球:t.zsxq.com
+
+官网: hardhacker.com
+
+小手册: book.hardhacker.com
+
+用爱发电不容易，请我们喝咖啡☕️: afdian.net
+
+公众号/小红书: 硬地骇客
+
+商务合作: hardhackerlabs@gmail.com
+
+另外，现在加入「硬地骇客」会员服务，即可在会员专属的微信群与其他朋友一起畅所欲言，成为会员也是对我们持续更新最大的鼓励！
+
+在小宇宙查看该单集文稿

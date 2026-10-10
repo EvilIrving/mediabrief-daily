@@ -1,0 +1,57 @@
+This week I’m joined by Peer Richelsen, co-founder of Cal.com. What if the majority of open source repositories are already compromised and we just don’t know it yet? That’s the theory Peer brings to the table this week. We dig into how AI has flattened the knowledge graph to the point that a 16-year-old can vibe hack a power station just as easily as their mom can vibe code an iOS app, why the reporting culture that has kept open source safe all these years is collapsing under AI generated noise, Cal.com’s move to fork its own codebase and take the sensitive parts private, and the eye opening reality that shipping “$1 of AI tokens for pennies on the dollar” is now a common startup business model.
+
+Join the discussion
+Changelog++ members save 10 minutes on this episode because they made the ads disappear. Join today!
+Sponsors:
+Coder.com – Secure environments where devs and agents work in parallel. Open by design. Secure by default.
+
+Buildkite – You deserve better CI. Buildkite is engineered for frontier scale and trusted by the teams setting the pace.
+
+WorkOS – Auth for CLI with AuthKit from WorkOS — Bring secure browser-based login to your terminal apps using the OAuth Device Flow, with the same polished AuthKit experience plus SSO, MFA, and passkeys. Learn more at WorkOS.com and AuthKit.com
+
+Fly.io – The home of Changelog.com — Deploy your apps close to your users — global Anycast load-balancing, zero-configuration private networking, hardware isolation, and instant WireGuard VPN connections. Push-button deployments that scale to thousands of instances. Check out the speedrun to get started in minutes.
+
+Featuring:
+Peer Richelsen – Website, GitHub, LinkedIn, X
+Adam Stacoviak – Website, GitHub, LinkedIn, Mastodon, X
+
+Show Notes:
+Editorial disclosure: Adam states in the episode that he is a small seed investor in Cal.com.
+
+Cal.com and Cal.diy
+
+Cal.com is going closed source — here’s why
+
+Moving to closed-source: the technical changes
+
+Cal.diy on GitHub
+
+Cal.diy contributing guide
+
+Cal.com
+
+Open source, agents, and contribution workflows
+
+Swamp Club
+
+OpenClaw
+
+Mitchell Hashimoto: Vibing a Non-Trivial Ghostty Feature
+
+GitHub Agentic Workflows
+
+GitHub issue-intent, rationale, confidence, and approvals
+
+AI-assisted security
+
+Mozilla: Hardening Firefox with Anthropic’s Red Team
+
+Mozilla: The zero-days are numbered
+
+Anthropic and Mozilla’s Firefox security collaboration
+
+Next.js security advisories
+
+LiteLLM issue: malicious package and credential stealer
+
+Something missing or broken? PRs welcome!

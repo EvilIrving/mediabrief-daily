@@ -1,0 +1,67 @@
+Scott and Wes ditch Electron and Tauri for GPUI, the GPU accelerated Rust UI framework from the Zed team. They get into its React-like API, styling that feels a lot like Tailwind, GPUI Kit components, the community fork drama, and the tiny desktop apps Scott has built with it.
+
+Show Notes
+
+00:00 Welcome to Syntax!
+
+GPUI
+
+01:24 Electron, Tauri, and the Trouble With Web Views
+
+04:05 Enter GPUI: Why We Don’t Take Money to Talk About Tools
+
+05:32 Brought to you by Sentry.io
+
+05:59 What GPUI Is: GPU Accelerated, Cross Platform, Native All the Way Down
+
+06:50 A React Like API in Rust: Divs, Flex, and Chained Methods
+
+09:35 Components, Props, and State in GPUI
+
+Scott’s GPUI Demo Gist
+
+11:21 How Much of CSS Does GPUI Actually Reimplement?
+
+12:52 Flexbox Everywhere, But Where Is CSS Grid?
+
+14:17 Where Does Your App Logic Live? No RPC Layer Needed
+
+15:53 Render vs RenderOnce: Stateful and Static Components
+
+16:57 GPUI Kit: The shadcn of GPUI
+
+18:46 GPUI CE: The Community Fork and Ecosystem Tension
+
+21:29 Apps Scott Built With GPUI: Gendo, File Bro, and Mr. Space
+
+22:48 Why Tiny Utility Apps Should Stay Tiny
+
+24:25 File Bro: File Automations a la Hazel
+
+25:27 Mr. Space: Building a macOS Window Manager
+
+27:05 The Downsides: No Native UI Elements and No Browser DOM
+
+Scott’s Rust Best Practices Skill
+
+29:56 Testing GPUI Apps With Jev and the Accessibility Tree
+
+gpui-agent
+
+30:39 GPUI Mobile: Experimental, But It Works
+
+GPUI Kit Mobile Docs
+
+gpui-mobile
+
+31:52 Final Verdict: GPUI for Personal Desktop Software
+
+Hit us up on Socials!
+
+Syntax: X Instagram Tiktok LinkedIn Threads
+
+Wes: X Instagram Tiktok LinkedIn Threads
+
+Scott: X Instagram Tiktok LinkedIn Threads
+
+Randy: X Instagram YouTube Threads

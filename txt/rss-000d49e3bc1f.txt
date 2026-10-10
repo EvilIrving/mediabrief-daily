@@ -1,0 +1,36 @@
+Carmen Huidobro joins Amy, KBall & Nick on the show to talk about her work, the importance of writing docs, and her upcoming conference talk at React Summit US!
+
+Join the discussion
+Changelog++ members save 5 minutes on this episode because they made the ads disappear. Join today!
+Sponsors:
+Fly.io – The home of Changelog.com — Deploy your apps close to your users — global Anycast load-balancing, zero-configuration private networking, hardware isolation, and instant WireGuard VPN connections. Push-button deployments that scale to thousands of instances. Check out the speedrun to get started in minutes.
+
+Jam.dev – One click bug reports developers love — Never explain another bug report again. Jam auto-captures all the info engineers need to debug and repro.
+
+Featuring:
+Carmen Huidobro – Website, GitHub, X
+Nick Nisi – Website, GitHub, Mastodon, X
+Kevin Ball – Website, GitHub, LinkedIn, X
+Amy Dutton – GitHub, X
+
+Show Notes:
+
+Divio
+
+Docs for Developers
+
+Intuitive Tooling
+
+Martin Fowler - if it hurts, do it often
+
+Declutter your JavaScript & TypeScript projects | Knip
+
+React Summit
+
+F*cking Block Syntax
+
+Bad Website Club
+
+The Annoying Site
+
+Something missing or broken? PRs welcome!

@@ -1,0 +1,1 @@
+Route mailto links to any email app or webmail

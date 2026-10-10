@@ -1,0 +1,11 @@
+Nickolas Sharp worked for Ubiquiti, a company that makes networking equipment. He noticed that there were some security problems at work. He tried to point them out, but didn't feel like he was being listened to enough. What do you do when the company you work for isn't securing their software up to your standards? Well, he thought he needed to teach them a lesson, but in the end, he learned an even bigger lesson.
+Sponsors
+This show is brought to you by Drata. Drata is the trust management platform that uses AI-driven automation to modernize governance, risk, and compliance, helping thousands of businesses stay audit-ready and scale securely. Learn more at drata.com/darknetdiaries.
+
+This show is sponsored by Material Security. Your cloud office (think Google Workspace or Microsoft 365) is the core of your business, but it’s often protected by scattered tools and manual fixes. Material is a purpose-built detection and response platform that closes the gaps those point solutions leave behind. From email threats to misconfigurations and account takeovers, Material monitors everything and steps in with real-time fixes to keep your data flowing where it should. Learn more at https://material.security.
+
+Support for this show comes from ThreatLocker. ThreatLocker is a Zero Trust Platform that gives organizations control over what can run and what users and devices can access. It combines prevention with real time detection and automated response, helping security teams stop unauthorized activity and quickly contain compromised machines. Learn how ThreatLocker can strengthen your defenses at threatlocker.com/Darknet.
+
+View all active sponsors.
+Sources
+Full list of sources on the show page: https://darknetdiaries.com/episode/178/

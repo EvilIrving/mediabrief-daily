@@ -1,0 +1,2 @@
+I was in the mood to learn something new and so I decided to take a look at the CSS Font Loading API.
+My blog doesn't support comments yet, but you can reply via blog@matuzo.at.

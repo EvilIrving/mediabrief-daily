@@ -1,0 +1,1 @@
+Semantic search alone wasn't good enough. Here's how I improved search on kentcdodds.com through three rounds of iteration with Cursor and GPT-5.4, each time learning something that the previous design missed.

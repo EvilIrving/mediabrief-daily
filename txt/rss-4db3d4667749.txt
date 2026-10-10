@@ -1,0 +1,345 @@
+TApplicationException · UNKNOWN_METHOD
+
+Invalid method name: 'get_table'
+
+이 글은 네이버의 Hadoop 플랫폼인 C3의 Metastore를 Apache Hive 4.2로 올리는 과정에서 Spark 잡(job)이 실패한 현상과 그 원인을 추적해, Metastore Thrift 인터페이스에서 조용히 사라졌던 RPC 하나를 복원하기까지의 과정을 다룹니다. 코드 변경 자체는 IDL 두 줄과 서버 구현 몇 줄이 전부지만, 그 이면에는 Thrift RPC의 동작 방식과 Hive와 Spark 사이의 오래된 버전 호환성이라는 맥락이 얽혀 있습니다. 그리고 직접 수정한 코드보다 훨씬 큰 비중을 차지하는 'Thrift 생성 코드를 어디까지 확인해야 변경이 완료되는가'라는 질문도 함께 다룹니다.
+
+이 글의 내용은 사내 Apache Hive 포크(aida-4.2.0)를 기준으로 작성되었으며, 코드 예시는 설명을 위해 일부가 축약, 편집되었습니다.
+
+문제 상황: Invalid method name: 'get_table'
+
+네이버의 사내 Hadoop 플랫폼 C3는 HDFS, YARN, Hive, Spark 등 다양한 컴포넌트가 한데 묶여 동작하는 대규모 데이터 플랫폼입니다. 최근 저희 팀은 이 플랫폼의 근간을 이루는 Hive Metastore(이하 HMS)를 오랫동안 사용해 온 버전에서 Apache Hive 4.2 기반의 사내 포크(aida-4.2.0)로 올리는 작업을 진행했습니다. 동시에 HMS와 HiveServer2(이하 HS2)를 기존의 물리 서버 배포에서 Kubernetes 위의 컨테이너 배포로 전환하는 현대화 작업도 함께 진행했습니다.
+
+HMS는 이름 그대로 테이블, 파티션, 스키마 같은 메타데이터의 단일 창구입니다. Hive뿐 아니라 Spark, Trino, 그리고 각종 사내 배치 파이프라인이 이 HMS에 "이 테이블의 스키마가 뭐야?", "이 파티션은 어디에 있어?"를 묻습니다. 그만큼 HMS는 신경 써서 다뤄야 하는 공용 인프라입니다. 호환성이 한 곳이라도 깨지면 그 파장이 플랫폼 전체 사용자에게 미칩니다.
+
+업그레이드한 HMS를 스테이징 환경에 올리고 검증하던 중, Spark 잡에서 다음과 같은 예외가 보고되기 시작했습니다.
+
+# spark driver: stack trace
+org.apache.thrift.TApplicationException: Invalid method name: 'get_table'
+ at org.apache.thrift.TApplicationException.read(TApplicationException.java:111)
+ at org.apache.thrift.TServiceClient.receiveBase(TServiceClient.java:79)
+ at ...ThriftHiveMetastore$Client.recv_get_table(...)
+ at ...ThriftHiveMetastore$Client.get_table(...)
+ at ...HiveMetaStoreClient.getTable(...)
+ at org.apache.spark.sql.hive.client.HiveClientImpl...
+
+증상은 명확했습니다.
+
+Hive CLI나 Beeline(Hive의 JDBC 기반 명령줄 클라이언트) 같은 Hive 4.2 클라이언트로는 정상 동작합니다.
+
+Spark에서 테이블 메타데이터를 조회하는 순간 위 예외가 발생하며 잡이 실패합니다.
+
+오류 메시지는 인증 실패나 네트워크 문제가 아니라 Invalid method name: 'get_table', 즉 '그런 이름의 메서드는 없다'는 서버의 응답입니다.
+
+HMS는 살아 있고, 대부분의 요청은 정상 처리됩니다.
+
+그런데 Spark가 던지는 특정 요청 하나만 서버가 '그런 API는 모른다'고 거절하고 있었습니다. 왜 유독 get_table만, 그리고 왜 유독 Spark에서만 문제가 되었을까요? 이 질문에 답하려면 HMS가 요청을 받아 처리하는 방식, 즉 Thrift RPC의 구조부터 짚어야 합니다.
+
+배경지식: HMS는 어떻게 요청을 처리하는가
+
+HMS의 요청 처리는 세 부분으로 이루어집니다. 먼저 Thrift IDL(Interface Definition Language)이 인터페이스를 정의합니다. 그다음 서버가 들어온 요청의 메서드 이름으로 처리 함수를 찾습니다. 그 함수의 실제 로직은 HMSHandler 클래스가 구현합니다. 즉, 세 부분 모두 같은 IDL 선언에 매여 있는 셈입니다.
+
+Thrift IDL과 코드 생성
+
+HMS의 모든 원격 API는 Apache Thrift로 정의되어 있습니다. Thrift는 언어 중립적인 IDL에 서비스와 메서드를 선언해 두면, 이를 바탕으로 각 언어의 클라이언트/서버 스텁(stub, 원격 호출을 로컬 메서드처럼 쓸 수 있게 감싸 주는 자동 생성 코드)을 만들어 주는 RPC 프레임워크입니다.
+
+HMS의 인터페이스는 hive_metastore.thrift 한 파일에 정의되어 있고, 그 안에 ThriftHiveMetastore라는 거대한 서비스가 선언되어 있습니다.
+
+// hive_metastore.thrift
+service ThriftHiveMetastore extends fb303.FacebookService
+{
+ ...
+ list<string> get_all_tables(1: string db_name) throws (1: MetaException o1)
+
+ list<ExtendedTableInfo> get_tables_ext(1: GetTablesExtRequest req) throws (1: MetaException o1)
+ GetTableResult get_table_req(1: GetTableRequest req) throws (1: MetaException o1, 2: NoSuchObjectException o2)
+ ...
+}
+이 .thrift 파일로부터 Thrift 컴파일러가 Java, C++, Python 등의 스텁을 생성합니다. 실제로 저장소에는 생성 결과물(gen-javabean, gen-cpp, gen-py 등)이 함께 커밋되어 있습니다.
+
+여기서 한 가지 미리 기억해 둘 점이 있습니다. IDL의 필드는 번호와 타입으로 정의되고, 이 정의가 생성 코드의 직렬화와 역직렬화에 그대로 반영됩니다. 즉, 인터페이스 호환성은 메서드 이름뿐 아니라 인자의 필드 번호, 타입, 반환 타입, 예외 정의까지 포함하는 개념입니다. 이 사실은 뒤에서 레거시 RPC를 복원할 때 다시 등장합니다(필드 번호와 타입 선언은 Apache Thrift IDL 명세, 반환 타입과 예외 정의는 Thrift 타입 시스템 문서 참고).
+
+메서드 이름 기반 디스패치
+
+여기서 핵심은 Thrift가 메서드를 '이름 문자열'로 구분한다는 점입니다. 클라이언트가 get_table을 호출하면, 실제 네트워크로는 "get_table"이라는 메서드 이름과 인자가 직렬화되어 전송됩니다. 서버는 수신한 메서드 이름을 자신의 프로세서 맵(process map, 메서드 이름과 처리 함수를 짝지어 둔 표)에서 찾아 해당 핸들러로 넘깁니다(디스패치). get_table과 get_table_req가 같은 목적의 기능을 제공한다고 해서 Thrift가 두 이름을 알아서 연결해 주지는 않습니다.
+
+이 맵에 요청된 이름이 없으면 서버는 다음과 같이 응답합니다. HMS 서버는 인증 설정에 따라 서로 다른 Thrift 프로세서 클래스를 사용하는데(저희 환경에서는 TUGIBasedProcessor), 어느 쪽이든 처리 함수를 찾지 못하면 이 예외를 만들어 돌려줍니다.
+
+# server response
+TApplicationException(
+ type = UNKNOWN_METHOD,
+ message = "Invalid method name: 'get_table'"
+)
+
+바로 저희가 마주친 그 오류입니다. 즉, 이 예외는 '요청 처리 중 실패'가 아니라 '애초에 서버가 그 이름의 RPC를 갖고 있지 않다'는 의미입니다. 서버의 IDL에 정의되지 않았거나, 정의에서 제거되었다는 뜻이죠. 이 경로에서는 테이블 존재 여부를 확인하는 조회 로직에 도달하기도 전에 요청 처리가 끝납니다. 따라서 이런 오류를 분석할 때는 저장된 메타데이터가 아니라, 클라이언트가 보내는 RPC 이름과 서버에 등록된 RPC 목록을 먼저 확인해야 합니다.
+
+서버 측 구현: HMSHandler
+
+Thrift가 생성한 서버 스텁의 실제 로직은 HMSHandler 클래스가 구현합니다. 이 클래스는 ThriftHiveMetastore.Iface에 선언된 모든 메서드를 구현해야 하며, 각 RPC 요청은 최종적으로 이 클래스의 메서드로 흘러들어 옵니다. 예를 들어 테이블 조회의 실제 로직은 getTableInternal(GetTableRequest)이라는 내부 메서드에 모여 있습니다.
+
+원인 분석: 진화한 API와 뒤처진 클라이언트
+
+문제의 뿌리는 Hive Metastore API가 세대를 거치며 진화한 방식에 있었습니다.
+
+get_table에서 get_table_req로의 전환
+
+초기 Hive의 테이블 조회 RPC는 인자를 직접 나열하는 단순한 형태였습니다.
+
+// legacy: 인자를 직접 나열
+Table get_table(1: string dbname, 2: string tbl_name)
+ throws (1: MetaException o1, 2: NoSuchObjectException o2)
+그러나 시간이 지나며 테이블 조회에 필요한 옵션이 늘어났습니다. 카탈로그(catalog, 데이터베이스 위에 한 단계 더 둔 이름 공간) 개념 도입, 컬럼 통계 동시 조회, 클라이언트 capability 선언(클라이언트가 이해할 수 있는 기능을 서버에 알리는 정보), 트랜잭션 정보 등입니다. 인자를 계속 추가하면 시그니처가 매번 깨지므로, Hive는 이 모든 옵션을 요청 객체(request struct) 하나로 감싸는 패턴으로 전환했습니다.
+
+// modern: 요청 객체로 캡슐화
+GetTableResult get_table_req(1: GetTableRequest req)
+ throws (1: MetaException o1, 2: NoSuchObjectException o2)
+두 인터페이스의 차이를 정리하면 다음과 같습니다.
+
+항목
+레거시 인터페이스
+요청 객체 기반 인터페이스
+
+RPC 이름
+get_table
+get_table_req
+
+입력
+데이터베이스 이름, 테이블 이름
+GetTableRequest
+
+반환값
+Table
+GetTableResult
+
+요청 정보 확장
+기존 인자만으로 표현
+요청 구조체에 필드를 정의해 표현
+
+GetTableRequest에 필드를 추가하는 것은 Thrift의 필드 번호 규칙 덕분에 하위 호환을 유지한 채 가능하므로, 이후의 모든 신규 기능은 이 get_table_req를 중심으로 확장되었습니다.
+
+그리고 업스트림에서는 Hive 이슈 HIVE-26537: Deprecate older APIs in the HMS의 일환으로 레거시 API 정리가 진행되었고, 2024년 7월 병합된 PR #3599에서 get_table 선언이 Thrift 인터페이스에서 제거되었습니다. 이 변경은 Hive 4.0.1 릴리스부터 반영되어 있고, 저희가 기반으로 삼은 Hive 4.2 계열 포크에도 그대로 포함되어 있습니다. 그래서 get_table은 IDL에서 사라지고 서버의 프로세서 맵에서도 빠진 상태였습니다.
+
+이것은 저희만의 문제도, Spark만의 문제도 아닙니다. 같은 이유로 PyIceberg처럼 구버전 IDL로 만든 Metastore 클라이언트를 쓰는 도구들도 최신 HMS 앞에서 동일한 Invalid method name: 'get_table' 오류를 만났습니다(apache/iceberg-python#1222, apache/iceberg#12878). Spark는 4.0.0 버전에서 Hive 4.0 Metastore 클라이언트 지원을 추가하는 방식으로 대응했습니다(Spark 이슈 SPARK-45265: Support Hive 4.0 metastore).
+
+그런데 Spark는 여전히 레거시 RPC를 부른다
+
+문제는 Spark가 HMS와 통신할 때, 자체적으로 들고 있는(bundled) Hive Metastore 클라이언트를 쓴다는 점입니다. Spark는 다양한 버전의 HMS와 호환되기 위해 spark.sql.hive.metastore.version 설정에 맞는 Hive 클라이언트 jar들을 격리된 클래스로더(IsolatedClientLoader, Spark 본체와 충돌하지 않도록 Hive 클라이언트 jar만 따로 로드하는 장치)로 로드합니다.
+
+여기서 이 설정의 의미를 정확히 읽어야 합니다. spark.sql.hive.metastore.version은 Spark가 Metastore와 통신할 때 사용할 '클라이언트 라이브러리' 버전을 고르는 설정이지, 원격 Metastore '서버'의 버전을 바꾸는 설정이 아닙니다. 실제로 어떤 클라이언트 jar가 로드되는지는 spark.sql.hive.metastore.jars 설정과 함께 확인해야 합니다(Spark 3.5.5의 HiveUtils, Spark 문서: Interacting with Different Versions of Hive Metastore).
+
+이 클라이언트 버전은 대개 HMS 서버 버전보다 낮게 고정되어 있습니다. Spark 3.5.5의 기본값은 Hive 2.3.9 클라이언트이고, 저희 스테이징 환경도 여기에 해당합니다. 이때 테이블 조회의 실제 호출 경로는 다음과 같습니다.
+
+# call chain: Spark 3.5.5 + Hive 2.3.9 클라이언트
+Spark의 HiveClientImpl.getTableOption()
+ → getRawTableOption()
+ → HiveShim.getTable()
+ → Hive.getTable()
+ → HiveMetaStoreClient.getTable() // Spark에 내장된 구버전 클라이언트
+ → Thrift RPC: get_table(dbname, tbl_name) // ← 사라진 RPC 호출
+ → Hive Metastore 서버
+
+Spark의 Hive 연동 코드는 Hive 라이브러리의 Java API를 호출할 뿐이고, 네트워크로 어떤 RPC 이름이 나가는지는 그 안의 Hive 클라이언트 구현이 결정합니다. 실제로 같은 이름의 getTable() 메서드라도 클라이언트 라이브러리 버전에 따라 서로 다른 RPC를 호출합니다. Hive 2.3.9의 HiveMetaStoreClient.getTable()은 레거시 get_table을 직접 호출하지만, Hive 3.1.3의 같은 메서드는 GetTableRequest를 만들어 get_table_req를 호출합니다. 애플리케이션 코드에 getTable()이 있다는 사실만으로는 서버가 어떤 RPC를 지원해야 하는지 알 수 없다는 뜻입니다(Spark 3.5.5의 HiveClientImpl, HiveShim, Hive 2.3.9의 HiveMetaStoreClient, Hive 3.1.3의 HiveMetaStoreClient).
+
+정리하면 원인은 다음 한 문장으로 요약됩니다.
+
+서버(Hive 4.2)는 get_table을 IDL에서 제거했고, 클라이언트(Spark 내장 구버전)는 여전히 get_table을 부르고 있었다.
+
+Hive 자체 클라이언트로는 문제가 없었던 이유도 여기서 설명됩니다. Hive 4.2 클라이언트는 당연히 get_table_req를 호출하니까요. 구버전 클라이언트를 내장한 Spark만이 사라진 RPC로 요청을 보내고 있었던 것입니다.
+
+해결: 사라진 RPC를 되살리되, 로직은 재사용한다
+
+원인이 분명해지자 해법의 방향도 분명해졌습니다. 선택지는 크게 넷이었습니다.
+
+해결방안
+내용
+판단
+
+1. Spark 쪽 Metastore 클라이언트 버전을 올린다
+Spark 4.0부터는 spark.sql.hive.metastore.version으로 Hive 4.0.x 클라이언트를 공식 지원합니다(SPARK-45265).
+저희 플랫폼 사용자 대다수는 Spark 3.x를 쓰고, Spark 3.x는 Hive 3.1.3 버전까지만 지원합니다. 클러스터 공통 설정으로 일괄 변경할 수는 있지만, 클라이언트 버전이 바뀌면 모든 잡을 재검증해야 해 파급 범위가 지나치게 큽니다. Spark 4.x 전환은 별도 로드맵으로 진행합니다.
+
+2. get_table 호출을 프록시 계층에서 변환한다
+HMS 앞에 별도 계층을 두어 레거시 요청을 신형 요청으로 바꿉니다.
+새 계층만큼 복잡도가 높아지고 운영 부담이 커집니다.
+
+3. 서버(HMS)에 get_table RPC를 하위 호환용으로 복원한다 [채택]
+변경이 HMS 한 곳에 국한되고, 기존 조회 로직을 그대로 재사용합니다.
+클라이언트와 사용자 측 변경이 전혀 필요 없습니다.
+
+4. API 호환 Metastore 클라이언트를 만들어 Spark에 배포한다
+Trino의 자체 Thrift 클라이언트나 PyIceberg의 get_table_req 전환과 같은 접근입니다.
+저희가 통제하지 못하는 배포본(사용자가 직접 가져온 Spark 등)에서는 오류를 막을 수 없습니다.
+
+저희는 세 번째 방법을 택했습니다. HMS는 공용 인프라이므로 "받는 것에는 관대하게(be liberal in what you accept)"라는 견고성 원칙(RFC 1122 §1.2.2)대로 동작하는 편이 옳고, 무엇보다 새로 로직을 짤 필요 없이 이미 검증된 getTableInternal에 그대로 위임하면 되기 때문입니다. 다만 이번 글의 범위는 실제로 문제가 된 get_table에 한정합니다.
+
+1) IDL에 get_table 복원
+
+먼저 hive_metastore.thrift의 서비스 정의에 레거시 시그니처를 다시 선언했습니다.
+
+ list<string> get_all_tables(1: string db_name) throws (1: MetaException o1)
+
++ Table get_table(1: string dbname, 2: string tbl_name)
++ throws (1: MetaException o1, 2: NoSuchObjectException o2)
+
+ list<ExtendedTableInfo> get_tables_ext(1: GetTablesExtRequest req) throws (1: MetaException o1)
+ GetTableResult get_table_req(1: GetTableRequest req) throws (...)
+이때 복원하는 선언은 RPC 이름뿐 아니라 인자의 필드 번호와 타입, 반환 타입, 예외 정의까지 기존 인터페이스와 정확히 일치해야 합니다. 구버전 클라이언트의 생성 코드는 '필드 1번은 string, 응답은 Table 구조체'라는 기존 정의에 맞춰 직렬화와 역직렬화를 수행하기 때문입니다. 예컨대 반환형을 현재 인터페이스처럼 GetTableResult로 바꿔 선언할 수는 없습니다. 기존 클라이언트는 Table이 돌아온다고 믿고 응답을 해석하니까요. 하위 호환용 메서드를 추가할 때는 Java 시그니처만 볼 것이 아니라 IDL에 정의된 계약 전체를 봐야 합니다.
+
+2) Thrift 코드 재생성: 생성 코드에서 확인할 것
+
+IDL을 고쳤으니 스텁을 다시 생성했습니다. 흥미로운 점은 직접 수정한 코드는 IDL 선언과 서버 구현을 합쳐 20줄이 채 되지 않는데, 코드 생성 결과물은 Java, C++, Python에 걸쳐 약 1,800줄이 새로 만들어졌다는 것입니다. 커밋의 대부분을 이 생성물이 차지합니다.
+
+이 대목이 Thrift의 특성을 잘 보여 줍니다. 개발자는 인터페이스만 손대고, 반복적이고 실수하기 쉬운 직렬화와 디스패치 코드는 도구가 책임집니다. 다만 metastore-common은 저장소에 커밋된 src/gen/thrift/gen-javabean을 그대로 컴파일하고 재생성은 별도의 thriftif 프로파일에서만 일어나므로, 도구가 만든 결과라도 저장소에 온전히 반영되었는지는 확인이 필요합니다.
+
+RPC 하나가 살아나려면 생성 코드 안에서 다음 연결이 모두 갖춰져야 합니다.
+
+클라이언트 쪽: 인터페이스와 요청 전송/응답 수신 코드(send_get_table / recv_get_table)
+
+인자, 반환값, 예외를 담는 직렬화 구조체
+
+서버 쪽: Processor의 프로세서 맵 등록과 처리 클래스
+
+비동기 AsyncProcessor와 언어별(C++, Python 등) 바인딩의 일관성
+
+예를 들어 클라이언트 쪽에는 다음과 같은 코드가 생성됩니다.
+
+public void send_get_table(String dbname, String tbl_name)
+ throws org.apache.thrift.TException {
+ get_table_args args = new get_table_args();
+ args.setDbname(dbname);
+ args.setTbl_name(tbl_name);
+ sendBase("get_table", args);
+}
+그리고 서버 쪽에는 프로세서 맵 등록이 있어야 합니다.
+
+processMap.put("get_all_tables", new get_all_tables());
+processMap.put("get_tables_ext", new get_tables_ext());
+processMap.put("get_table_req", new get_table_req());
+processMap.put("get_table", new get_table()); // ← 이 한 줄이 빠지면
+ // 서버는 여전히 UNKNOWN_METHOD를 던집니다
+생성 파일 어딘가에 get_table이라는 문자열이 보인다는 것만으로는 충분하지 않습니다. 클라이언트의 전송 코드부터 서버의 프로세서 맵 등록까지 실제 RPC 경로가 모두 이어졌는지가 확인의 기준이어야 합니다.
+
+3) 서버 구현: 기존 조회 로직에 위임
+
+마지막으로 HMSHandler에 실제 구현을 추가했습니다. 핵심은 '새 로직을 만들지 않는 것'입니다. 레거시 시그니처의 인자를 신형 GetTableRequest로 변환한 뒤, get_table_req가 사용하는 것과 동일한 getTableInternal에 그대로 넘깁니다.
+
+// HMSHandler.java
+@Override
+@Deprecated
+public Table get_table(final String dbname, final String name)
+ throws MetaException, NoSuchObjectException {
+ String[] parsedDbName = parseDbName(dbname, conf);
+ GetTableRequest getTableRequest =
+ new GetTableRequest(parsedDbName[DB_NAME], name);
+ getTableRequest.setCatName(parsedDbName[CAT_NAME]);
+ return getTableInternal(getTableRequest);
+}
+현재 인터페이스인 get_table_req 역시 같은 내부 메서드를 사용합니다.
+
+@Override
+public GetTableResult get_table_req(GetTableRequest req)
+ throws MetaException, NoSuchObjectException {
+ req.setCatName(
+ req.isSetCatName() ? req.getCatName() : getDefaultCatalog(conf));
+ return new GetTableResult(getTableInternal(req));
+}
+두 진입점의 관계를 그림으로 정리하면 다음과 같습니다.
+
+get_table(dbname, tbl_name) get_table_req(req)
+ │ │
+ GetTableRequest 생성 기본 카탈로그 보완
+ │ │
+ └───────────┐ ┌───────────────┘
+ ▼ ▼
+ getTableInternal()
+ 테이블 조회
+ │
+ ┌─────────────┴─────────────┐
+ ▼ ▼
+ Table 반환 GetTableResult로 감싸 반환
+
+몇 가지 설계 의도를 짚어 두면 다음과 같습니다.
+
+@Deprecated 명시: 이 메서드는 어디까지나 구버전 클라이언트를 위한 하위 호환 창구임을 코드 수준에서 분명히 했습니다. 신규 코드는 get_table_req를 써야 합니다.
+
+카탈로그 파싱 재사용: parseDbName으로 DB 이름 문자열에서 카탈로그와 DB를 분리해, 카탈로그 개념이 없던 구버전 클라이언트의 요청도 현재 모델에 자연스럽게 매핑합니다. 레거시 RPC에 카탈로그 인자가 없다고 해서 특정 카탈로그 이름을 코드에 고정해 버리면, 서버의 기본 카탈로그 설정이나 기존 이름 해석 규칙과 어긋날 수 있습니다. 기존 유틸리티를 쓰면 이 규칙까지 함께 재사용됩니다.
+
+단일 경로 유지: 실제 조회는 getTableInternal 한곳으로 모입니다. 조회 처리뿐 아니라 클라이언트 capability 확인, PreReadTableEvent 호출, 조회 시작/종료 처리 같은 부가 동작도 이 공통 경로를 통해 수행되므로, 두 진입점 사이에 동작 불일치나 보안 우회의 여지가 생기지 않습니다. 조회 동작을 수정할 일이 생겨도 두 경로를 따로 고칠 필요가 없습니다.
+
+또한 추상 클래스 AbstractThriftHiveMetastore에도 기본 구현(미지원 예외)을 추가해, 이 인터페이스를 구현하는 다른 클래스들이 컴파일 오류 없이 새 메서드를 이어받도록 했습니다.
+
+// AbstractThriftHiveMetastore.java
+@Override
+public Table get_table(String dbname, String tbl_name)
+ throws MetaException, NoSuchObjectException, TException {
+ throw new UnsupportedOperationException("this method is not supported");
+}
+한 가지 주의할 점은, 추상 기반 클래스에 메서드가 생겼다는 사실과 실제 서버가 그 요청을 처리한다는 사실은 별개라는 것입니다. 이 기본 구현은 예외를 던질 뿐이고, 실제 조회 동작은 이를 재정의한 HMSHandler 쪽에 있습니다.
+
+더 알아보기: 두 경로가 완전히 같아지는 것은 아니다
+
+조회 로직을 한곳으로 모았다고 해서 레거시 경로가 신규 버전의 경로와 100% 동일해지는 것은 아닙니다. 두 문자열만 받는 get_table로는 GetTableRequest가 표현할 수 있는 모든 정보를 전달할 수 없기 때문입니다. 이번 변환 코드는 데이터베이스, 테이블, 카탈로그만 채우며, 클라이언트 capability 정보나 validWriteIdList(트랜잭션 테이블에서 어느 쓰기까지를 유효한 것으로 볼지 나타내는 정보)를 새로 만들어 넣지 않고, 컬럼 통계 동시 조회도 요청하지 않습니다.
+
+이 차이는 공통 메서드를 거쳐도 남습니다. 예를 들어 getTableInternal에는 insert-only 테이블(ACID 기능 중 삽입만 지원하는 관리형 테이블 유형)에 대한 클라이언트 capability 확인이 있고, capability 정보가 비어 있으면 일부 메타데이터 변환을 건너뛰는 분기가 있습니다. 서버 설정 hive.metastore.client.capability.check를 끄면 이 확인을 건너뛸 수 있지만, 비호환 클라이언트가 잘못된 결과를 받을 수 있으므로 권장하지 않습니다.
+
+즉, 레거시 RPC를 복원했다고 해서 모든 테이블 유형과 모든 요청 옵션을 신형 클라이언트와 동일하게 지원하는 것은 아니며, '이 하위 호환 창구로 어떤 테이블 유형과 어떤 요청 범위까지 지원할 것인가'를 함께 정의해 두어야 합니다. 저희의 목표는 명확했습니다. 구버전 클라이언트를 쓰는 Spark의 일반 테이블 메타데이터 조회 경로를 되살리는 것입니다.
+
+검증
+
+검증에서 먼저 짚을 것은 '무엇을 테스트해야 이 변경이 검증되는가'입니다. HMSHandler.get_table()을 직접 호출하는 단위 테스트는 요청 변환과 내부 조회 동작을 확인하는 데는 유용하지만, Thrift의 요청 해석과 프로세서 맵의 처리 함수 선택 과정을 거치지 않습니다. 만약 문제가 '등록 누락'이라면 이런 테스트로는 발견할 수 없습니다. 따라서 검증은 기존 형식으로 직렬화된 get_table 요청이 서버 Processor를 통과하는지에서 시작해, 실제로 지원하려는 Hive 클라이언트와 Spark를 연결해 확인하는 것으로 이어져야 합니다.
+
+수정한 HMS 이미지를 다시 빌드해 스테이징에 배포한 뒤, 문제가 되었던 경로를 그대로 재현하며 다음 항목을 확인했습니다. 레거시 경로는 Spark 3.5.5에 내장된 Hive 2.3.9 클라이언트로, 현재 경로는 Beeline 등 Hive 4.2 클라이언트로 확인했습니다.
+
+검증 대상
+확인할 내용
+결과
+
+레거시 RPC 전달
+get_table 요청이 UNKNOWN_METHOD로 끝나지 않고 핸들러에 도달하는지
+통과
+
+일반 테이블 조회
+구버전 클라이언트가 스키마, 저장 위치 등 필요한 Table 정보를 해석하는지
+통과
+
+현재 RPC의 동작
+get_table_req의 반환 구조와 요청 옵션이 기존대로 동작하는지
+통과
+
+실제 Spark 연동
+지원할 클라이언트 버전과 설정으로 테이블 조회 및 대표 쿼리가 동작하는지
+통과
+
+앞서 실패하던 Spark 잡은 정상적으로 테이블 메타데이터를 조회하고 완료되었으며, Invalid method name 예외는 더 이상 발생하지 않았습니다. Hive 4.2 클라이언트는 여전히 get_table_req 경로로 동작하고, 두 경로 모두 서버에서는 동일한 getTableInternal로 수렴하므로 필터링, 권한 검사 등 부가 동작이 일관되게 적용됩니다. 즉, 신규 클라이언트의 동작은 그대로 유지하면서 구버전 클라이언트 쪽에만 제거됐던 경로를 열어 준 셈입니다.
+
+마치며
+
+지금까지 Hive 4.2 기반 HMS에서 Spark 잡이 실패한 현상을 추적해, Metastore Thrift 인터페이스에서 사라진 RPC 하나를 복원하기까지의 과정을 살펴보았습니다. 원인은 업스트림이 레거시 API를 정리하며 get_table 선언을 IDL에서 제거한 것이었습니다. Spark는 내장한 구버전 클라이언트로 여전히 그 RPC를 부르고 있었습니다. 저희는 HMS에 get_table을 하위 호환용으로 되살리되 조회 로직은 getTableInternal 하나로 모으는 방법을 택했습니다. 그 결과 클라이언트와 사용자 측 변경 없이 구버전 클라이언트의 조회 경로가 되살아났고, 신규 클라이언트의 동작은 그대로 유지됐습니다.
+
+이번 작업에서 직접 작성한 코드는 IDL 선언 두 줄과 서버 쪽 메서드 두 개(핸들러 구현과 기본 구현)가 전부입니다. 하지만 그 과정에서 몇 가지를 다시 확인할 수 있었습니다.
+
+RPC 인터페이스 제거는 하위 호환성을 깨뜨리기 쉽다. 서버-클라이언트가 강하게 결합된 인프라에서 '이 API는 이제 안 쓰이겠지'라는 가정은 위험합니다. Spark처럼 클라이언트를 내장한 도구를 쓰는 환경에서는 오래된 진입점을 장기간 유지해야 할 수 있습니다.
+
+호환성은 새로 만들기보다 잇는 것이 안전하다. 단, 이음새의 완성은 생성 코드와 실제 요청으로 확인해야 한다. 사라진 API를 되살리되 로직은 getTableInternal 하나로 수렴시킨 덕분에 동작 불일치나 보안 사각지대 없이 최소한의 변경으로 문제를 해결할 수 있었습니다. 동시에, 클라이언트가 보내는 RPC 이름이 서버의 프로세서 맵에 등록되어 핸들러를 거쳐 기존 인터페이스 정의대로 응답으로 돌아오는 전체 경로를 확인하기 전까지는 변경이 완료된 것이 아니라는 점도 분명해졌습니다.
+
+C3 플랫폼의 Hive 4.2 전환은 계속 진행 중입니다. HMS와 HS2의 Kubernetes 배포, 세션 단위 스토리지 자격 증명 전파 등 이어지는 이야기들도 기회가 되면 따로 정리해 공유하겠습니다. 같은 전환을 준비하는 분들께 이 기록이 작은 이정표가 되기를 바랍니다.
+
+참고 자료
+
+Apache Thrift: IDL / Types & Services
+
+HIVE-26537: Deprecate older APIs in the HMS / apache/hive PR #3599: Deprecate older APIs in the HMS thrift interface
+
+apache/iceberg-python#1222: Hive metastore 4.0.1 remove deprecated thrift APIs
+
+apache/iceberg#12878: org.apache.thrift.TApplicationException: Invalid method name: 'get_table'
+
+SPARK-45265: Support Hive 4.0 metastore
+
+Spark 3.5.5 문서: Hive Tables, Interacting with Different Versions of Hive Metastore
+
+Spark 3.5.5: HiveClientImpl / HiveShim / HiveUtils
+
+Hive 2.3.9: HiveMetaStoreClient / Hive 3.1.3: HiveMetaStoreClient
+
+RFC 1122 §1.2.2: Robustness Principle

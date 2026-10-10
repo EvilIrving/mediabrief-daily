@@ -1,0 +1,16 @@
+Longtime followers of Practical AI know that multi-repeat guest and friend Demetrios Brinkmann combines brilliant insight and playful banter into one fun-filled show, and this conversion with Chris was no different. They had a blast!
+As AI agents become more capable of using computers, interacting with software, and taking action on behalf of users, what does that mean for the way we work and interact with the internet? Chris and Demetrios explore computer-use agents, MCP, agent harnesses, agent-to-agent interactions, and prognosticate the emerging possibilities around agentic commerce. They also discuss how these tools are already being used to automate everyday tasks, the challenges of bringing computer-use agents into enterprise environments, and how the relationship between models and agent harnesses is evolving.
+In fact, they had so much fun that their conversation continued long after the show was over, but we didn’t get that here. 🤷‍♂️
+Featuring:
+Demetrios Brinkmann – LinkedIn
+Chris Benson – Website, LinkedIn, Bluesky, GitHub, X
+Links:
+Agentic AI Foundation
+MLOps Community
+AGNTCon + MCPCon – the Agentic AI Foundation’s flagship conference
+Sponsors:
+Midwest AI Summit: Join AI practitioners on October 15 in Indianapolis for practical sessions, hands-on discussions, and real-world AI solutions. Use code PracticalAI20 to save 20% on your registration. https://midwestaisummit.com/#tickets
+Resources and Events:
+Register for upcoming webinars here!
+Prior Webinars from our partner Prediction Guard
+Midwest AI Summit 2026

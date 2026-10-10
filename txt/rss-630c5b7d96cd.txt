@@ -1,0 +1,1 @@
+The interesting part of moving kentcdodds.com to npm workspaces was not the file moves. It was everything the file moves broke.

@@ -1,0 +1,20 @@
+最近 Harness 成了 AI 圈的热门话题，但当我们讨论 AI Agent 如何真正完成任务时，我觉得有一个经常被忽略的问题：
+
+AI 怎么知道生产环境到底发生了什么？
+#Axiom #日志 #AI编程 #MCP #Harness #DeepSeekHarness #ClaudeCode #CodingAgent #AI智能体 #可观测性 #DevOps #程序员 #asynctalk
+
+这期我想聊聊我最近一直在用的日志服务 Axiom。
+
+从传统的日志查询，到 Dataset、Dashboard 和 Monitor，Axiom 本身已经是一个相当不错的日志平台。但真正让我觉得它有意思的，是它提供的 MCP Server。
+
+当日志系统接入 MCP 之后，Coding Agent 就不只是写代码了。它可以直接分析生产日志、查找错误、定位问题，甚至结合代码自动修复 Bug、补充日志。
+
+进一步想象一下：
+
+让 Agent 定期检查生产环境的日志 → 发现异常 → 分析代码 → 尝试修复 → 提交 PR。
+
+日志不再只是给开发者 Debug 的工具，而开始成为 AI Agent 了解真实生产环境的一扇窗口。
+
+视频里也简单聊到了我最近在关注的 Superlog，以及我对「Harness + MCP + 可观测性」这条路线的一些想法。
+
+如果你有更好的日志管理方案，或者已经在尝试让 AI Agent 自动分析生产环境，欢迎一起讨论。

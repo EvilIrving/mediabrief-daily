@@ -1,0 +1,3 @@
+Broad Institute와 UMass Chan Medical School이 개발한 프리온 단백질 표적 siRNA 후보물질이 첫 인체 시험에 들어감. 1상 임상시험 PRiSM에서 안전성과 내약성, 용량을 평가함
+
+후보물질은 동일한 siRNA 두 개를 연결한 이가성 siRNA로, 프리온 단백질을 만드는 R...

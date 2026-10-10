@@ -1,0 +1,91 @@
+Sam Lambert is back after 4 years and he does not hold back! We cover $5 PlanetScale Postgres, the Neki “do-over” of Vitess, agents shipping schema changes through deploy requests, rolling back a 500TB table in seconds, and the very real question of whether to open source any of it. Plus: why he thinks the sleeping, lazy giants should be broken up.
+
+Join the discussion
+Changelog++ members save 9 minutes on this episode because they made the ads disappear. Join today!
+Sponsors:
+Buildkite – You deserve better CI. Buildkite is engineered for frontier scale and trusted by the teams setting the pace.
+
+WorkOS – Auth for CLI with AuthKit from WorkOS — Bring secure browser-based login to your terminal apps using the OAuth Device Flow, with the same polished AuthKit experience plus SSO, MFA, and passkeys. Learn more at WorkOS.com and AuthKit.com
+
+Coder.com – Secure environments where devs and agents work in parallel. Open by design. Secure by default.
+
+Fly.io – The home of Changelog.com — Deploy your apps close to your users — global Anycast load-balancing, zero-configuration private networking, hardware isolation, and instant WireGuard VPN connections. Push-button deployments that scale to thousands of instances. Check out the speedrun to get started in minutes.
+
+Featuring:
+Sam Lambert – Website, GitHub, LinkedIn, X
+Adam Stacoviak – Website, GitHub, LinkedIn, Mastodon, X
+
+Show Notes:
+PlanetScale products and features
+
+PlanetScale Postgres
+
+PlanetScale Metal
+
+Neki
+
+Vitess
+
+Database branching
+
+Non-blocking schema changes
+
+Deploy requests
+
+Schema reverts
+
+Database Traffic Control
+
+Query Insights
+
+PlanetScale MCP server
+
+PlanetScale Skills
+
+Benchmarking Postgres
+
+Databases and infrastructure
+
+PostgreSQL
+
+MySQL
+
+NVM Express (NVMe)
+
+Amazon Aurora PostgreSQL Limitless Database
+
+Amazon Web Services
+
+Google Cloud
+
+Companies and tools
+
+Cursor
+
+Y Combinator
+
+Kick
+
+Square
+
+Cash App
+
+GitHub
+
+Pierre
+
+Salesforce
+
+Supabase
+
+Multigres
+
+Talks and prior episodes
+
+Sam Lambert: Agents and Infrastructure — Cursor Compile 2026
+
+Making the last database you’ll ever need — Founders Talk #85
+
+Bringing Vitess to Postgres — Changelog Interviews #651
+
+Something missing or broken? PRs welcome!

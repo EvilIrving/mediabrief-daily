@@ -1,0 +1,28 @@
+Back at React Summit in New York, KBall & Nick sat down with Tom Occhino & Shruti Kapoor for more fascinating conversations.
+
+Tom Occhino, a key figure in React’s history at Facebook (now Meta), reveals the origin story of React, which began when an ads engineer presented a revolutionary approach to web UI rendering. The discussion extends to React’s evolution through Next.js.
+
+Then, Shruti Kapoor breaks down React 19’s major features, including React Server Components (RSC), the new compiler implementation, and enhanced APIs that promise to streamline development workflows.
+
+Join the discussion
+Changelog++ members save 7 minutes on this episode because they made the ads disappear. Join today!
+Sponsors:
+Fly.io – The home of Changelog.com — Deploy your apps close to your users — global Anycast load-balancing, zero-configuration private networking, hardware isolation, and instant WireGuard VPN connections. Push-button deployments that scale to thousands of instances. Check out the speedrun to get started in minutes.
+
+WorkOS – AuthKit offers 1,000,000 monthly active users (MAU) free — The world’s best login box, powered by WorkOS + Radix. Learn more and get started at WorkOS.com and AuthKit.com
+
+Jam.dev – One click bug reports developers love — Never explain another bug report again. Jam auto-captures all the info engineers need to debug and repro.
+
+Featuring:
+Tom Occhino – Website, LinkedIn, X
+Shruti Kapoor – Website, GitHub, X
+Nick Nisi – Website, GitHub, Mastodon, X
+Kevin Ball – Website, GitHub, LinkedIn, X
+
+Show Notes:
+
+React.js: The Documentary
+
+React 19 RC
+
+Something missing or broken? PRs welcome!

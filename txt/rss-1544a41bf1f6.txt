@@ -1,0 +1,12 @@
+curl is one of those great utilities that’s been around seemingly forever and has endless use cases. These days I find myself using curl to batch download files and test APIs. Sometimes my testing leads me to using different HTTP headers in my requests.
+
+To add a header to a curl request, use the -H flag:
+
+curl -X 'GET' \
+ 'https://nft.api.cx.metamask.io/collections?chainId=1' \
+ -H 'accept: application/json' \
+ -H 'Version: 1'
+
+You can add multiple headers with multiple -H uses. Header format is usually [key]: [value].
+
+The post How to Add a Header to a curl Request appeared first on David Walsh Blog.

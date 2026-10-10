@@ -1,0 +1,70 @@
+Is Jev actually a leap forward for classification or just hype and fake demos? We dig in, plus Claude Code’s new AGENTS.md support, TinyCast (the free, open-source Raycast alternative), an iPhone Fold simulator in Xcode, and a stack of dev tools you’ll want to try
+
+Show Notes
+
+ 00:00 Welcome to Syntax!
+
+ 01:17 The iPhone Fold Simulator and Foldable Web APIs
+
+ Features behind a flag
+
+ Syntax Meetup in San Francisco
+
+ 07:03 Claude Code Finally Supports agents.md
+ Changelog
+
+ 11:42 Using Your Claude Subscription Inside PI
+
+ 13:07 Raycast Pricing Changes and the Rise of Tinycast
+
+ 18:24 Our Most Used Raycast Features
+
+ 21:22 Browser Hopping: Back on Helium After Ditching Dia
+
+ 22:12 1Password’s Redesign and Reliability Problems
+
+ 23:11 Jev Explained: A Model That Only Answers Questions
+
+ 31:59 CJ’s Jev Chat Bot Demo With MCP Tools
+
+ 36:09 The Kevs in the Room: Open Source Jev Alternatives
+
+ Cloudflare’s Kev
+
+ Jared Palmer’s Kev
+
+ 45:39 What We’ve Actually Built With Jev So Far
+
+ Jev Benchmarks
+
+ 51:59 Brought to you by Sentry.io
+
+ 52:55 GPUI Kit: Building Native Rust Desktop Apps
+
+ 58:07 Antfu’s DevFrame: A Framework for Building Dev Tools
+
+ 59:45 Where Is the Line on Using AI in Video Editing?
+
+ Runwayml Upscaling
+
+ 01:06:00 AI Upscaled Security Photos and Internet Detectives
+
+ 01:08:07 Qwen Image 2.1 and Real Transparent Backgrounds
+
+ 01:10:18 AI Generated Posters Don’t Have to Be Horrible
+
+ 01:13:28 Orca: A GUI for Wrangling Your Fleet of Agents
+
+ 01:15:37 Grok 4.7 First Impressions and Its Pricing
+
+ 01:18:58 Waiting on Google and Microsoft’s Big Models
+
+Hit us up on Socials!
+
+Syntax: X Instagram Tiktok LinkedIn Threads
+
+Wes: X Instagram Tiktok LinkedIn Threads
+
+Scott: X Instagram Tiktok LinkedIn Threads
+
+Randy: X Instagram YouTube Threads

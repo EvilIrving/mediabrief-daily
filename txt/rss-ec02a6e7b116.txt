@@ -1,0 +1,79 @@
+If you’re anything like me, you’re sick of hearing about so-called “AI”. We are not a fringe. The majority consensus amongst actual regular people is that this is being forced down our throats and stuffed into our eyes and ears.
+
+That’s why it pains me that I’m about to add more fecal matter onto the ever-growing pile of shit by writing yet another hot take related to large language models.
+
+If you stop reading now, I don’t blame you. In fact, I applaud you.
+
+Anyway…
+
+The last time I made the mistake of writing about large language models, I set out my stall thusly:
+
+ Software is almost certainly the killer app for large language models.
+
+ I think the artists, writers, and musicians will be okay, or at least as okay as they ever were. It turns out that humans like things made by other humans.
+
+ And y’know what? If I had to choose which endeavour I’d rather see automated away—programming or art—it’s no competition.
+
+I stand by that. But it doesn’t mean that software development gets a free pass to use exploitative extractive tools with a clear conscience.
+
+You can use these tools in a thoughtless way or you can use them thoughtfully. I really like Robin Sloan’s approach:
+
+ The consensus vision seems to involve AI working for you day-to-day, a constant ambient presence, sparkles in everything; even cautious Apple has succumbed. I’m not interested in that.
+
+ My alternative: get your wish, then stuff the genie back into the lamp.
+
+He’s got a set of rules:
+
+ You must actually and consistently use anything you build for two months before posting about it.
+
+ Ideally, never post about it. (I know I am breaking this rule, but my purpose is pedagogical, and anyway, I’ve got more apps I didn’t tell you about.)
+
+ Don’t let the AI agent name the app. You pick the name.
+
+ Don’t distribute the app, not even for free. Don’t post the code on GitHub. This is not software for glory; it is software for you.
+
+For most of my career, I’ve wanted web development to become something that anyone could do. I really like the World Wide Web and I think it would be great if more people had their own websites. But I totally get that most people have no interest in learning HTML.
+
+One of my biggest fears for the web was that it would become the domain of professionals only; a gatekeeping priesthood who get to make stuff while everyone else goes without.
+
+The efficacy of large language models for coding would seem to lessen that possibility. Especially if you apply Robin’s approach.
+
+The Session has an API. There are also weekly data dumps of everything on the site. The idea is that other people can use these to build other useful tools for themselves.
+
+Lately, there’s been a big uptick of these kinds of tools, mostly made by someone with the help of large language models. Often they have no previous experience of making software.
+
+This is good. But I get uneasy when I see people selling these tools to other people. Call me old-fashioned but I feel that if you’re going to ask people to pay for a thing, you should understand that thing. I think that’s why Robin’s list of suggestions resonates with me.
+
+But…
+
+To build software with large language models today, you pretty much have to pay some money to the absolute worst sort of people, the ones pedalling tokens to their “hyperscale” products. You can’t avoid being complicit because there isn’t really an alternative.
+
+I think that might change.
+
+I’m not going to make predictions. That’s a mug’s game. But I might attempt a gentle unspooling of one potential future…
+
+First off, there’s a crash coming. That’s pretty much inevitable at this point. The only question is how much collatoral damage it’s going to do to the world.
+
+Right now, tokens are subsidised. The hyperscalers lose money when people use their products. It’s possible that we are now living through a golden age of making software relatively cheaply with large language models. That will change when the hyperscalers start charging for the true cost of tokens.
+
+Not for everyone though. I believe that enterprise software companies will happily pay the true price for tokens. It’ll be like Google Glass; that was an absolute disaster for the consumer market but went on to have a productive second life in factories.
+
+You know when you’re in an airport and you see advertisements that are not for you, but for faceless corporations? You know the ones. They’re all “cloud” this and “sap” that. Now they’re all about “AI”. It’s not for us. It’s for them.
+
+Does this spell the end of making home-cooked apps with large language models?
+
+I don’t think so.
+
+The hyperscalers might become unaffordable to most people, but keep an eye on open models. And keep your other eye on local models.
+
+Right now, open local models aren’t as good as the large language models that require data centres of computation and energy. But they aren’t massively far behind. And if the recent history of large language models has taught us anything, it’s that “good enough” is fine.
+
+Take Google Search. They decided to fuck it up by forcing generated summaries into your eyeballs above the actual search results. These summaries aren’t 100% accurate. Let’s be generous and say they’re accurate more than 90% of the time. According to Google, that’s good enough.
+
+So, sure, local open models may never reach the levels of data-centre-powered large language models. But they don’t need to. They just need to be good enough.
+
+I’m really looking forward to that.
+
+My issue with large language models has never been the actual technology, which is genuinely fascinating. My issue is with the power dynamics, of being robbed of agency, of the over-inflated hype and criti-hype being used to convince us of an inevitable future where a small group of very rich men are masters over our lives.
+
+I’d love to see the technology decoupled from the current depressing narrative. I’d love to see a thousand homemade software flowers bloom from open local language models.

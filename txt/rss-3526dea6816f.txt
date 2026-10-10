@@ -1,0 +1,3 @@
+New Pro teams now default to a 30-day deployment retention period.Coding agents have accelerated development, increasing deployment frequency and the amount of stored deployment history. Shorter retention keeps recent history available while limiting older history and its storage costs.You can choose a longer retention period in your team's settings when you need more history for inspection or rollback. Deployment Storage and Functions Storage each cost $0.10 per GB-month. Older deployments may be deleted under your retention policy. Deleted deployments cannot be restored or used for rollback.Review the Deployment Retention Policy and storage optimization guide.
+
+ Read more

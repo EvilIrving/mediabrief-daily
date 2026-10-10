@@ -1,0 +1,16 @@
+AI search is changing how people discover information and how brands need to think about visibility. Daniel and Chris talk with Liam Dunne and Ben Moore, co-founders of Discovered Labs, about the shift from traditional SEO to AI search, what happens behind the scenes when an LLM generates an answer, and why retrieval and citations don't always tell the whole story. They dig into AI visibility, Reddit strategy, query fan-out, representation in model weights, and consensus. They also look ahead to a world where AI agents don't just discover websites, but interact with them and take actions on behalf of users.
+Featuring: 
+Liam Dunne – LinkedIn
+Ben Moore – LinkedIn
+Daniel Whitenack – Website, GitHub, X
+Chris Benson – Website, LinkedIn, Bluesky, GitHub, X
+Links:
+What AI models know about 1,000 B2B SaaS brands before web search
+Discovered Labs
+Sponsors:
+Midwest AI Summit: Join AI practitioners on October 15 in Indianapolis for practical sessions, hands-on discussions, and real-world AI solutions. Use code PracticalAI20 to save 20% on your registration. https://midwestaisummit.com/#tickets
+Framer: The enterprise-grade website builder that lets your team ship faster. Get 30% off at framer.com/practicalai
+Resources and Events:
+Register for upcoming webinars here!
+Prior Webinars from our partner Prediction Guard
+Midwest AI Summit 2026
