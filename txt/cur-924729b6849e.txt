@@ -1,0 +1,11 @@
+https://softwareengineeringdaily.com/podcasts/biome-and-the-future-of-javascript-tooling/
+
+这期 Software Engineering Daily（2026 年 6 月）由 Josh Goldberg 主持，嘉宾是 Biome 创建者兼首席维护者 Emanuele Stoppa（Ema）——他同时是 Cloudflare 高级系统工程师、Astro 负责人之一。话题从 Ema 的入行讲起：本想做游戏，大学游戏设计课缺教授，转去做 PHP、Postgres、jQuery，一路走到 React；他调侃如今 SSR、岛屿架构不过是旧模式换了 JavaScript 外衣，只是工具干净多了。
+
+转向工具之前，他因天天跟 Webpack 较劲进了 Webpack CLI 团队，又被 Rome Tools 的"一体化"使命吸引：格式化、lint、打包、测试塞进一个二进制。Rome 当时用 TypeScript，后来公司化并雇了他；他主导了向 Rust 的迁移。选 Rust 有三点：严格类型让依赖破坏更少、编译期就能抓住；原生内存管理摆脱 Node 极限（Rome 自打包一度吃掉 8GB）；wasm-bindgen 让 playground 一类场景好做。Rome 背后公司倒闭后，志愿者继续发版，直到 NPM token 过期被迫改名——前 CTO James 曾提过"第二罗马 / Biome"，Ema 征得同意后，Rome 十二月倒下、次年八月 Biome 亮相。资源变少后使命收窄：不做打包器和测试套件，纵向深挖格式化器与 linter。
+
+谈打包器时，Ema 把它比作链接器：从页面入口长出依赖树，处理单文件组件里 JS/HTML/样式的顺序、脚本执行次序，以及图片、字体、WASM 等资产；插件系统很强，但代价是 Webpack 式几千行配置、打包半小时。他如今更倾向配置静态可预测——ESLint flat config 虽伤生态，长期值得；给用户足够权力、但不要多到维护者无法创新。Biome 的卖点是一份依赖、合理默认、CLI 与编辑器体验一致，匹配约 97% 的 Prettier 格式化，并读 gitignore、对接编辑器配置，同时拥抱 Svelte、Vue、Astro、CSS Modules、Tailwind。Lint 规则强调可操作、讲清"为什么是错"——例如教人不要在 `.reduce` 里用展开累加器。
+
+架构上两大差异：模块图可在 lint 前扫全项目，做 no-import-cycles、未安装依赖检测，以及"用了未定义 CSS class"这类跨语言规则；类型感知规则靠类型推断而非 TypeScript 编译器（Vercel 曾雇核心贡献者推进），配合单文件语义模型（作用域、CSS 优先级等）做出 no-floating-promises、noUnnecessaryConditions 等。插件走 GritQL DSL，适合项目特有规矩，即将支持自动修复，也可当 codemod。即将到来的还有 `lint --watch`（底层本就是 watcher）、Markdown（CommonMark 已 100%）、更多 Vue/Svelte 规则，以及借模块图做 go-to-definition 的 LSP 野心——业务逻辑写一遍，CLI、编辑器、playground 同一套诊断。
+
+社区方面，Ema 强调快速回复 Discord、积极分享，Markdown 解析器和大量特性来自核心团队外。迁移建议：用命令从 ESLint/Prettier 生成近似配置，`biome lint --suppress` 先压住存量违规再逐步处理；大格式化变更单独开 PR，并用 git blame 忽略文件躲开无意义提交。新项目 `biome init` 即可，`biome explain <规则>` 可离线看文档。网站 biomejs.dev，Discord 在 biomejs.dev/chat。收尾聊游戏：他在玩《刺客信条：影》，爱 RPG；想做游戏就自己做独立项目。本人在 Bluesky / GitHub：ematipico.xyz。

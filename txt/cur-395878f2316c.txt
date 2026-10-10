@@ -1,0 +1,11 @@
+https://mizchi.dev/202009122126-cloudflare-workers
+
+mizchi 在 2020 年 9 月花了几个周末研究 Cloudflare Workers，写下这篇总结，并说明自己只在本地试过，没上过生产。他的核心判断是：别把 Workers 当成又一个 Node.js FaaS，它更像"在 CDN 边缘用 JavaScript 写的 L7 代理"，API 沿用 ServiceWorker。
+
+在边缘运行代码，意味着请求到达源站之前就能被处理或直接用缓存返回：到源站 100ms、到边缘 15ms，一个往返就省下 170ms，多次往返的应用收益更大。他认为前端在移动端 4G 和 Web Vitals 的压力下必须重视性能，信条是"HTML 请求到达应用服务器就输了"。
+
+他看好 Workers 的理由有三：响应快、便宜（$5/月起，每百万请求 0.5 美元，Lambda@Edge 为 0.6 美元）、开发体验好。限制是 CPU 时间 50ms（只算同步执行）、内存 128MB，大型 SPA 的 SSR 这类重活不适合。Cloudflare 的基准显示，第 95 百分位上 Lambda 882ms、Lambda@Edge 216ms、Workers 40ms，他自己用下来也没有冷启动。npm 从 Varnish VCL 迁到 Workers 的案例说明，Node 工程师可以直接在边缘做 A/B 分流、金丝雀发布和多语言分发。
+
+低价背后是技术原因：Workers 不为每个函数开容器，而是在同一运行时里开出大量相互隔离的 V8 Isolate，启动速度约为 Node 进程的百倍，内存小几个数量级。代价是只能写 JS（WASM 也能跑），这和 Fastly 用编译器优化 WASM 的路线不同。全局缓存靠 Workers KV：读多写少，最终一致（传播最多 60 秒），不支持事务。cdnjs 迁到 KV 时，靠预先压缩成 Brotli 和 gzip 绕过了 10MiB 的单值上限。
+
+他称赞 wrangler 的脚手架、本地模拟器和几秒完成的部署，也抱怨内置 webpack 多此一举、文档不清、示例几乎全是官方自己的，还有 30 个项目的上限。他承认边缘脚本尚未融入生态，不值得为它推翻现有代码。他设想的是一个"CDN Edge First"框架：以 next.js 式的混合静态生成为基础，压低内存，必要时跑 50ms 以内的逻辑，其余尽量命中缓存。最后他批评 Cloudflare 的技术宣传做得不够，但仍推荐早期采用者试试。

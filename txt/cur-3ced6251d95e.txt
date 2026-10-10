@@ -1,0 +1,9 @@
+https://syntax.fm/855
+
+起因是 McMaster-Carr 的网站在网上走红：一家百年老公司，网站却快得惊人。Wes 发现它最见效的一招，是鼠标悬停在链接上就预加载目标页面的 HTML，于是借这个话题和 Scott 聊浏览器新推出的 Speculation Rules API。
+
+他们先回顾老办法。link 标签的 preconnect 会提前做好 DNS 解析和 TLS 握手，preload 则提前下载字体、CSS 这类资源，免得 HTML、CSS、字体一层层排队请求。Scott 打了个比方：preload 像是"穿鞋上车出发"，preconnect 像是"先把导航打开"。新 API 则是在页面里放一个 type="speculationrules" 的脚本，用 CSS 选择器写规则，指定哪些链接要 prefetch（只下载 HTML）、哪些要 prerender（像后台标签页那样完整渲染出来）。积极程度用 eagerness 设定，分 immediate、eager、moderate、conservative 四档，浏览器还会看网速、设备性能甚至电量，自己决定做不做。
+
+代价是两人讨论的重点。预取太激进，托管带宽账单就会涨，用户的流量也会被耗掉。缓解的办法有：用 CDN 缓存和 stale-while-revalidate；把状态放进 URL 参数，生成一次就缓存起来；个人数据页不能放进全局缓存。Vercel 的人用 Next.js 仿写了一个 Next Faster，Wes 请他们公开账单：4.5 万独立访客、约 100 万次浏览，总共 513 美元，其中 Edge 请求 220 美元，图片优化 160 美元是一次性的。两人认为自己托管能便宜得多。这个 API 目前只有 Chrome 支持，但很容易用 polyfill 补上；Next.js 则能细到组件层面去预取。
+
+最后他们批评了对 PageSpeed/Lighthouse 分数的迷信。McMaster-Carr 分数很低，普通用户却都夸它快；vercel.com 移动端只有 44 分，用起来照样飞快；同一个网站多跑几次，分数能从 80 掉到 50。Scott 的结论是，用户实际感受到的速度比分数重要，预加载、缓存和本地优先应用才是让网站"感觉快"的正道。

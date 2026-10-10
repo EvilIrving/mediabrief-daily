@@ -1,0 +1,1120 @@
+https://overreacted.io/react-as-a-ui-runtime/
+
+大多数教程都把 React 介绍成一个 UI 库。这很合理，因为 React *就是*一个 UI 库，它的标语上就是这么写的！
+
+![图 1：React 首页截图："A JavaScript library for building user interfaces"（一个用于构建用户界面的 JavaScript 库）](https://overreacted.io/react-as-a-ui-runtime/react.png)
+
+我以前写过构建[用户界面](https://overreacted.io/the-elements-of-ui-engineering/)的种种挑战。但这篇文章换一个角度来谈 React——更多地把它当作一种[编程运行时](https://en.wikipedia.org/wiki/Runtime_system)。
+
+**这篇文章不会教你任何关于构建用户界面的东西。**但它也许能帮你更深入地理解 React 的编程模型。
+
+* * *
+
+**注意：如果你正在*学习* React，请去看[官方文档](https://reactjs.org/docs/getting-started.html#learn-react)。**
+
+⚠️
+
+**这是一篇深度剖析——这不是一篇面向初学者的文章。**在这篇文章里，我会从第一性原理出发描述 React 编程模型的大部分内容。我不讲怎么用它，只讲它是怎么运作的。
+
+本文面向有经验的程序员，以及那些在做其他 UI 库、问过 React 某些取舍的人。希望你会觉得有用！
+
+**很多人用了好几年 React，从没思考过这里的大部分话题，照样用得很好。**这显然是一种以程序员为中心的 React 视角，而不是比如[以设计师为中心的视角](http://mrmrs.cc/writing/developing-ui/)。但我觉得两种资料都有并没有坏处。
+
+免责声明说完了，我们开始吧！
+
+* * *
+
+## [宿主树](https://overreacted.io/react-as-a-ui-runtime/#host-tree)
+
+有些程序输出数字，有些程序输出诗。不同的语言及其运行时往往针对某一类用例做了优化，React 也不例外。
+
+React 程序通常输出**一棵可能随时间变化的树**。它可能是一棵 [DOM 树](https://www.npmjs.com/package/react-dom)、一个 [iOS 视图层级](https://developer.apple.com/library/archive/documentation/General/Conceptual/Devpedia-CocoaApp/View%20Hierarchy.html)、一棵由 [PDF 图元](https://react-pdf.org/)构成的树，甚至是一棵 [JSON 对象](https://reactjs.org/docs/test-renderer.html)树。不过通常我们是想用它来表示某种 UI。我们称之为"*宿主*树"，因为它是 React 之外的*宿主环境*的一部分——比如 DOM 或 iOS。宿主树通常有[它](https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild)[自己](https://developer.apple.com/documentation/uikit/uiview/1622616-addsubview)的命令式 API，React 是架在它上面的一层。
+
+那么 React 有什么用？非常抽象地说，它帮你编写这样一种程序：能够针对外部事件（比如交互、网络响应、定时器等）可预测地操作一棵复杂的宿主树。
+
+当一个专用工具能够施加并利用特定的约束时，它就比通用工具更好用。React 押注于两条原则：
+
+*   **稳定性。**宿主树相对稳定，大多数更新不会彻底改变它的整体结构。如果一个应用每秒都把所有可交互元素重新排列成完全不同的组合，那它会很难用。那个按钮跑哪儿去了？我的屏幕怎么在跳舞？
+
+*   **规律性。**宿主树可以拆解成外观和行为一致的 UI 模式（比如按钮、列表、头像），而不是随机的形状。
+
+**这两条原则恰好对大多数 UI 都成立。**然而，当输出中没有稳定的"模式"时，React 就不太适合了。例如，React 也许能帮你写一个 Twitter 客户端，但对一个 [3D 管道屏保](https://www.youtube.com/watch?v=Uzx9ArZ7MUU)就没什么用。
+
+## [宿主实例](https://overreacted.io/react-as-a-ui-runtime/#host-instances)
+
+宿主树由节点组成，我们称之为"宿主实例"。
+
+在 DOM 环境中，宿主实例就是普通的 DOM 节点——就像你调用 `document.createElement('div')` 时得到的对象。在 iOS 上，宿主实例可以是在 JavaScript 中唯一标识某个原生视图的值。
+
+宿主实例有自己的属性（例如 `domNode.className` 或 `view.tintColor`），也可以包含其他宿主实例作为子节点。
+
+（这跟 React 没有关系——我描述的是宿主环境。）
+
+通常会有一套操作宿主实例的 API。例如，DOM 提供了 `appendChild`、`removeChild`、`setAttribute` 等 API。在 React 应用中，你通常不会调用这些 API，那是 React 的活儿。
+
+## [渲染器](https://overreacted.io/react-as-a-ui-runtime/#renderers)
+
+*渲染器*教 React 如何与特定的宿主环境对话并管理其宿主实例。React DOM、React Native，甚至 [Ink](https://mobile.twitter.com/vadimdemedes/status/1089344289102942211) 都是 React 渲染器。你也可以[创建你自己的 React 渲染器](https://github.com/facebook/react/tree/master/packages/react-reconciler)。
+
+React 渲染器可以工作在两种模式之一。
+
+绝大多数渲染器使用"可变"（mutating）模式。DOM 就是这样工作的：我们可以创建一个节点，设置它的属性，之后再给它添加或移除子节点。宿主实例是完全可变的。
+
+React 也可以工作在["持久"（persistent）](https://en.wikipedia.org/wiki/Persistent_data_structure)模式下。这种模式适用于不提供 `appendChild()` 之类方法、而是克隆父树并始终替换顶层子节点的宿主环境。宿主树层面的不可变性让多线程更容易实现。[React Fabric](https://facebook.github.io/react-native/blog/2018/06/14/state-of-react-native-2018) 就利用了这一点。
+
+作为 React 用户，你永远不需要考虑这些模式。我只是想强调，React 并不只是一个把一种模式转换成另一种模式的适配器。它的价值与目标底层视图 API 采用哪种范式是正交的。
+
+## [React 元素](https://overreacted.io/react-as-a-ui-runtime/#react-elements)
+
+在宿主环境中，宿主实例（比如 DOM 节点）是最小的构建单元。而在 React 中，最小的构建单元是 *React 元素*。
+
+React 元素是一个普通的 JavaScript 对象，它可以*描述*一个宿主实例。
+
+```
+// JSX 是这些对象的语法糖。
+// <button className="blue" />
+{
+  type: 'button',
+  props: { className: 'blue' }
+}
+```
+
+React 元素是轻量的，没有绑定任何宿主实例。再说一遍，它只是对你想在屏幕上看到什么的一份*描述*。
+
+和宿主实例一样，React 元素也可以组成一棵树：
+
+```
+// JSX 是这些对象的语法糖。
+// <dialog>
+//   <button className="blue" />
+//   <button className="red" />
+// </dialog>
+{
+  type: 'dialog',
+  props: {
+    children: [{
+      type: 'button',
+      props: { className: 'blue' }
+    }, {
+      type: 'button',
+      props: { className: 'red' }
+    }]
+  }
+}
+```
+
+*（注：我省略了[一些属性](https://overreacted.io/why-do-react-elements-have-typeof-property/)，它们对这里的解释不重要。）*
+
+不过要记住，**React 元素没有自己持久的身份。**它们本来就是要不断地被重新创建、然后丢弃的。
+
+React 元素是不可变的。例如，你不能修改一个 React 元素的子元素或某个属性。如果之后想渲染不同的东西，你要用一棵从头创建的新 React 元素树来*描述*它。
+
+我喜欢把 React 元素想象成电影里的一帧帧画面。它们记录了 UI 在某个特定时刻应该是什么样子，它们不会改变。
+
+## [入口](https://overreacted.io/react-as-a-ui-runtime/#entry-point)
+
+每个 React 渲染器都有一个"入口"。这个 API 让我们告诉 React：在某个容器宿主实例里渲染一棵特定的 React 元素树。
+
+例如，React DOM 的入口是 `ReactDOM.render`：
+
+```
+ReactDOM.render(
+  // { type: 'button', props: { className: 'blue' } }
+  <button className="blue" />,
+  document.getElementById('container')
+);
+```
+
+当我们写 `ReactDOM.render(reactElement, domContainer)` 时，意思是：**"亲爱的 React，请让 `domContainer` 这棵宿主树和我的 `reactElement` 保持一致。"**
+
+React 会查看 `reactElement.type`（在我们的例子里是 `'button'`），让 React DOM 渲染器为它创建一个宿主实例并设置属性：
+
+```
+// ReactDOM 渲染器中的某处（简化版）
+function createHostInstance(reactElement) {
+  let domNode = document.createElement(reactElement.type);
+  domNode.className = reactElement.props.className;
+  return domNode;
+}
+```
+
+在我们的例子里，React 实际上会这样做：
+
+```
+let domNode = document.createElement('button');
+domNode.className = 'blue';
+ 
+domContainer.appendChild(domNode);
+```
+
+如果 React 元素在 `reactElement.props.children` 中有子元素，React 在首次渲染时也会递归地为它们创建宿主实例。
+
+## [协调](https://overreacted.io/react-as-a-ui-runtime/#reconciliation)
+
+如果我们对同一个容器调用两次 `ReactDOM.render()`，会发生什么？
+
+```
+ReactDOM.render(
+  <button className="blue" />,
+  document.getElementById('container')
+);
+ 
+// ……稍后……
+ 
+// 这应该*替换*掉 button 宿主实例
+// 还是只更新现有实例上的一个属性？
+ReactDOM.render(
+  <button className="red" />,
+  document.getElementById('container')
+);
+```
+
+再说一遍，React 的工作是*让宿主树与给定的 React 元素树保持一致*。根据新信息来判断该对宿主实例树*做什么*的过程，有时被称为[协调（reconciliation）](https://reactjs.org/docs/reconciliation.html)。
+
+有两种做法。一个简化版的 React 可以把现有的树整个推倒，然后从头重建：
+
+```
+let domContainer = document.getElementById('container');
+// 清空这棵树
+domContainer.innerHTML = '';
+// 创建新的宿主实例树
+let domNode = document.createElement('button');
+domNode.className = 'red';
+domContainer.appendChild(domNode);
+```
+
+但在 DOM 中，这样做很慢，而且会丢失焦点、选区、滚动状态等重要信息。我们希望 React 改成这样做：
+
+```
+let domNode = domContainer.firstChild;
+// 更新现有的宿主实例
+domNode.className = 'red';
+```
+
+换句话说，React 需要决定什么时候*更新*现有的宿主实例来匹配新的 React 元素，什么时候创建一个*新的*宿主实例。
+
+这就引出了*身份*的问题。React 元素每次都可能不同，但它们什么时候在概念上指向同一个宿主实例？
+
+在我们的例子里，这很简单。之前我们渲染了一个 `<button>` 作为第一个（也是唯一一个）子节点，现在又想在同一个位置渲染一个 `<button>`。那里已经有一个 `<button>` 宿主实例了，何必重新创建？直接复用就行。
+
+这和 React 的思路已经相当接近了。
+
+**如果在树中同一位置上，前后两次渲染的元素类型"对得上"，React 就会复用现有的宿主实例。**
+
+下面是一个例子，注释大致说明了 React 会做什么：
+
+```
+// let domNode = document.createElement('button');
+// domNode.className = 'blue';
+// domContainer.appendChild(domNode);
+ReactDOM.render(
+  <button className="blue" />,
+  document.getElementById('container')
+);
+ 
+// 能复用宿主实例吗？能！（button → button）
+// domNode.className = 'red';
+ReactDOM.render(
+  <button className="red" />,
+  document.getElementById('container')
+);
+ 
+// 能复用宿主实例吗？不能！（button → p）
+// domContainer.removeChild(domNode);
+// domNode = document.createElement('p');
+// domNode.textContent = 'Hello';
+// domContainer.appendChild(domNode);
+ReactDOM.render(
+  <p>Hello</p>,
+  document.getElementById('container')
+);
+ 
+// 能复用宿主实例吗？能！（p → p）
+// domNode.textContent = 'Goodbye';
+ReactDOM.render(
+  <p>Goodbye</p>,
+  document.getElementById('container')
+);
+```
+
+同样的启发式规则也适用于子树。例如，当我们更新一个里面有两个 `<button>` 的 `<dialog>` 时，React 先决定是否复用 `<dialog>`，然后对每个子节点重复这个判断过程。
+
+## [条件](https://overreacted.io/react-as-a-ui-runtime/#conditions)
+
+如果 React 只在前后更新的元素类型"对得上"时才复用宿主实例，那我们怎么渲染条件内容呢？
+
+假设我们一开始只想显示一个输入框，但之后要在它前面渲染一条消息：
+
+```
+// 首次渲染
+ReactDOM.render(
+  <dialog>
+    <input />
+  </dialog>,
+  domContainer
+);
+ 
+// 下一次渲染
+ReactDOM.render(
+  <dialog>
+    <p>I was just added here!</p>
+    <input />
+  </dialog>,
+  domContainer
+);
+```
+
+在这个例子里，`<input>` 宿主实例会被重新创建。React 会遍历元素树，与上一个版本逐一比较：
+
+*   `dialog → dialog`：能复用宿主实例吗？**能——类型匹配。**
+    *   `input → p`：能复用宿主实例吗？**不能，类型变了！**需要移除现有的 `input`，创建一个新的 `p` 宿主实例。
+    *   `（无） → input`：需要创建一个新的 `input` 宿主实例。
+
+所以 React 实际执行的更新代码大致是这样：
+
+```
+let oldInputNode = dialogNode.firstChild;
+dialogNode.removeChild(oldInputNode);
+ 
+let pNode = document.createElement('p');
+pNode.textContent = 'I was just added here!';
+dialogNode.appendChild(pNode);
+ 
+let newInputNode = document.createElement('input');
+dialogNode.appendChild(newInputNode);
+```
+
+这不太好，因为*在概念上*，`<input>` 并没有被 `<p>` *替换*——它只是移动了位置。我们不希望因为重新创建 DOM 而丢失它的选区、焦点状态和内容。
+
+虽然这个问题有一个简单的解决办法（我们马上会讲到），但它在 React 应用中其实并不常出现。原因值得一看。
+
+实际上，你很少会直接调用 `ReactDOM.render`。React 应用往往被拆分成这样的函数：
+
+```
+function Form({ showMessage }) {
+  let message = null;
+  if (showMessage) {
+    message = <p>I was just added here!</p>;
+  }
+  return (
+    <dialog>
+      {message}
+      <input />
+    </dialog>
+  );
+}
+```
+
+这个例子就不会遇到我们刚才描述的问题。如果用对象表示法代替 JSX，可能更容易看出原因。看看 `dialog` 的子元素树：
+
+```
+function Form({ showMessage }) {
+  let message = null;
+  if (showMessage) {
+    message = {
+      type: 'p',
+      props: { children: 'I was just added here!' }
+    };
+  }
+  return {
+    type: 'dialog',
+    props: {
+      children: [
+        message,
+        { type: 'input', props: {} }
+      ]
+    }
+  };
+}
+```
+
+**无论 `showMessage` 是 `true` 还是 `false`，`<input>` 都是第二个子元素，在多次渲染之间不会改变它在树中的位置。**
+
+如果 `showMessage` 从 `false` 变成 `true`，React 会遍历元素树，与上一个版本比较：
+
+*   `dialog → dialog`：能复用宿主实例吗？**能——类型匹配。**
+    *   `(null) → p`：需要插入一个新的 `p` 宿主实例。
+    *   `input → input`：能复用宿主实例吗？**能——类型匹配。**
+
+React 执行的代码大致如下：
+
+```
+let inputNode = dialogNode.firstChild;
+let pNode = document.createElement('p');
+pNode.textContent = 'I was just added here!';
+dialogNode.insertBefore(pNode, inputNode);
+```
+
+现在输入框的状态不会丢失了。
+
+## [列表](https://overreacted.io/react-as-a-ui-runtime/#lists)
+
+比较树中同一位置的元素类型，通常就足以决定是复用还是重建对应的宿主实例。
+
+但这只有在子节点位置固定、不会重新排序时才有效。在上面的例子里，尽管 `message` 可能是一个"空位"，我们仍然知道输入框在消息之后，而且没有其他子节点。
+
+对于动态列表，我们无法确定顺序是否始终不变：
+
+```
+function ShoppingList({ list }) {
+  return (
+    <form>
+      {list.map(item => (
+        <p>
+          You bought {item.name}
+          <br />
+          Enter how many do you want: <input />
+        </p>
+      ))}
+    </form>
+  )
+}
+```
+
+如果购物清单 `list` 被重新排序，React 会发现里面所有的 `p` 和 `input` 元素类型都一样，于是不知道要移动它们。（从 React 的角度看，变化的是*条目本身*，而不是它们的顺序。）
+
+React 为重排 10 个条目而执行的代码大致是这样：
+
+```
+for (let i = 0; i < 10; i++) {
+  let pNode = formNode.childNodes[i];
+  let textNode = pNode.firstChild;
+  textNode.textContent = 'You bought ' + items[i].name;
+}
+```
+
+所以 React 并不会*重新排序*它们，而是实际上逐个*更新*它们。这可能带来性能问题和潜在的 bug。例如，排序*之后*，第一个输入框的内容仍然会显示在第一个输入框里——尽管从概念上说，它们可能对应购物清单里不同的商品！
+
+**这就是为什么每当你在输出中包含一个元素数组时，React 都会唠叨着让你指定一个叫 `key` 的特殊属性：**
+
+```
+function ShoppingList({ list }) {
+  return (
+    <form>
+      {list.map(item => (
+        <p key={item.productId}>
+          You bought {item.name}
+          <br />
+          Enter how many do you want: <input />
+        </p>
+      ))}
+    </form>
+  )
+}
+```
+
+`key` 告诉 React：即使某个条目在多次渲染之间在父元素中的*位置*不同，也应该把它视为*概念上*的同一个条目。
+
+当 React 在一个 `<form>` 里看到 `<p key="42">` 时，它会检查上一次渲染是否也在同一个 `<form>` 里包含 `<p key="42">`。即使 `<form>` 的子节点顺序变了，这也行得通。如果存在同一 key 的旧宿主实例，React 就会复用它，并相应地重新排列兄弟节点。
+
+注意，`key` 只在某个特定的父 React 元素（比如一个 `<form>`）内部才有意义。React 不会尝试在不同父元素之间"匹配"具有相同 key 的元素。（React 没有惯用的方式支持把一个宿主实例在不同父节点之间移动而不重建它。）
+
+`key` 取什么值合适？有个简单的判断方法，问问自己：**即使顺序变了，*你*会在什么情况下说某个条目还是"同一个"？**例如在我们的购物清单里，商品 ID 能在兄弟节点之间唯一标识它。
+
+## [组件](https://overreacted.io/react-as-a-ui-runtime/#components)
+
+我们已经见过返回 React 元素的函数了：
+
+```
+function Form({ showMessage }) {
+  let message = null;
+  if (showMessage) {
+    message = <p>I was just added here!</p>;
+  }
+  return (
+    <dialog>
+      {message}
+      <input />
+    </dialog>
+  );
+}
+```
+
+它们被称为*组件*。它们让我们打造自己的"工具箱"，里面有按钮、头像、评论等等。组件是 React 的看家本领。
+
+组件接收一个参数——一个对象哈希。它包含"props"（"properties"即"属性"的缩写）。这里的 `showMessage` 就是一个 prop。它们就像具名参数。
+
+## [纯粹性](https://overreacted.io/react-as-a-ui-runtime/#purity)
+
+React 假定组件相对于其 props 是纯的。
+
+```
+function Button(props) {
+  // 🔴 行不通
+  props.isActive = true;
+}
+```
+
+一般来说，修改（mutation）在 React 中不是惯用做法。（之后我们会进一步讨论响应事件、更新 UI 的惯用方式。）
+
+不过，*局部修改*是完全没问题的：
+
+```
+function FriendList({ friends }) {
+  let items = [];
+  for (let i = 0; i < friends.length; i++) {
+    let friend = friends[i];
+    items.push(
+      <Friend key={friend.id} friend={friend} />
+    );
+  }
+  return <section>{items}</section>;
+}
+```
+
+我们是在*渲染过程中*创建了 `items`，没有其他组件"看到"过它，所以在把它作为渲染结果交出去之前，我们想怎么修改都行。没必要为了避免局部修改而把代码写得别别扭扭。
+
+同样，惰性初始化虽然不完全"纯"，也是可以的：
+
+```
+function ExpenseForm() {
+  // 只要不影响其他组件就没问题：
+  SuperCalculator.initializeIfNotReady();
+ 
+  // 继续渲染……
+}
+```
+
+只要多次调用一个组件是安全的，而且不影响其他组件的渲染，React 并不在乎它在严格的函数式编程意义上是否 100% 纯。对 React 来说，[幂等性](https://stackoverflow.com/questions/1077412/what-is-an-idempotent-operation)比纯粹性更重要。
+
+话虽如此，React 组件中不允许出现用户能直接看到的副作用。换句话说，仅仅*调用*一个组件函数，本身不应该在屏幕上产生变化。
+
+## [递归](https://overreacted.io/react-as-a-ui-runtime/#recursion)
+
+怎样在一个组件里*使用*其他组件？组件就是函数，所以我们*可以*直接调用它们：
+
+```
+let reactElement = Form({ showMessage: true });
+ReactDOM.render(reactElement, domContainer);
+```
+
+然而，这*并不是*在 React 运行时中使用组件的惯用方式。
+
+惯用的方式是用我们之前见过的同一种机制——React 元素。**这意味着你不直接调用组件函数，而是让 React 稍后替你调用**：
+
+```
+// { type: Form, props: { showMessage: true } }
+let reactElement = <Form showMessage={true} />;
+ReactDOM.render(reactElement, domContainer);
+```
+
+然后在 React 内部的某个地方，你的组件会被调用：
+
+```
+// React 内部某处
+let type = reactElement.type; // Form
+let props = reactElement.props; // { showMessage: true }
+let result = type(props); // Form 返回的任何内容
+```
+
+按照惯例，组件函数名首字母大写。当 JSX 转换看到的是 `<Form>` 而不是 `<form>` 时，它会让对象的 `type` 本身成为一个标识符，而不是字符串：
+
+```
+console.log(<form />.type); // 'form' 字符串
+console.log(<Form />.type); // Form 函数
+```
+
+这里没有任何全局注册机制——当我们写 `<Form />` 时，就是在按名字直接引用 `Form`。如果 `Form` 在局部作用域中不存在，你会看到一个 JavaScript 错误，就像平时用错变量名一样。
+
+**好，那么当元素类型是一个函数时，React 会做什么？它会调用你的组件，问这个组件想渲染什么元素。**
+
+这个过程会递归地进行下去，[这里](https://reactjs.org/blog/2015/12/18/react-components-elements-and-instances.html)有更详细的描述。简单来说，它是这样的：
+
+*   **你：**`ReactDOM.render(<App />, domContainer)`
+*   **React：**嘿，`App`，你要渲染成什么？
+    *   `App`：我渲染一个 `<Layout>`，里面放着 `<Content>`。
+
+*   **React：**嘿，`Layout`，你要渲染成什么？
+    *   `Layout`：我把我的子元素渲染在一个 `<div>` 里。我的子元素是 `<Content>`，所以我猜它就放进 `<div>` 里。
+
+*   **React：**嘿，`<Content>`，你要渲染成什么？
+    *   `Content`：我渲染一个 `<article>`，里面有一些文字和一个 `<Footer>`。
+
+*   **React：**嘿，`<Footer>`，你要渲染成什么？
+    *   `Footer`：我渲染一个 `<footer>`，里面再放些文字。
+
+*   **React：**好的，给你：
+
+```
+// 最终的 DOM 结构
+<div>
+  <article>
+    Some text
+    <footer>some more text</footer>
+  </article>
+</div>
+```
+
+这就是为什么我们说协调是递归的。React 遍历元素树时，可能会遇到 `type` 是组件的元素。它会调用这个组件，然后沿着返回的 React 元素树继续往下走。最终，组件会被遍历完，React 就知道该在宿主树中改些什么了。
+
+我们之前讨论过的协调规则在这里同样适用。如果同一位置（由索引和可选的 `key` 决定）上的 `type` 变了，React 会扔掉其中的宿主实例并重新创建。
+
+## [控制反转](https://overreacted.io/react-as-a-ui-runtime/#inversion-of-control)
+
+你可能会好奇：为什么不直接调用组件？为什么要写 `<Form />` 而不是 `Form()`？
+
+**如果 React "知道"你的组件，而不是只看到递归调用它们之后得到的 React 元素树，它就能把工作做得更好。**
+
+```
+// 🔴 React 根本不知道 Layout 和 Article 的存在。
+// 你在调用它们。
+ReactDOM.render(
+  Layout({ children: Article() }),
+  domContainer
+)
+ 
+// ✅ React 知道 Layout 和 Article 的存在。
+// React 调用它们。
+ReactDOM.render(
+  <Layout><Article /></Layout>,
+  domContainer
+)
+```
+
+这是[控制反转](https://en.wikipedia.org/wiki/Inversion_of_control)的经典例子。把调用组件的控制权交给 React，我们能得到几个有意思的特性：
+
+*   **组件不再只是函数。**React 可以给组件函数加上一些特性，比如与组件在树中的身份绑定的*局部状态*。好的运行时会提供与手头问题相匹配的基础抽象。前面说过，React 专门面向渲染 UI 树并响应交互的程序。如果你直接调用组件，就得自己构建这些特性。
+
+*   **组件类型参与协调。**让 React 调用你的组件，也就是在告诉它更多关于这棵树概念结构的信息。例如，当你从渲染 `<Feed>` 切换到 `<Profile>` 页面时，React 不会尝试复用它们内部的宿主实例——就像你把 `<button>` 换成 `<p>` 时一样。所有状态都会消失——当你渲染一个概念上不同的视图时，这通常是好事。你不会希望在 `<PasswordForm>` 和 `<MessengerChat>` 之间保留输入框的状态，即使 `<input>` 在树中的位置碰巧在两者之间"对齐"了。
+
+*   **React 可以推迟协调。**如果 React 掌控了组件的调用，它就能做很多有意思的事。例如，它可以在组件调用之间让浏览器做一些工作，这样重新渲染一棵很大的组件树时就[不会阻塞主线程](https://reactjs.org/blog/2018/03/01/sneak-peek-beyond-react-16.html)。不重新实现 React 的一大部分，就很难手动编排这些。
+
+*   **更好的调试体验。**如果组件是库所知晓的一等公民，我们就能构建[丰富的开发者工具](https://github.com/facebook/react-devtools)，在开发时进行内省。
+
+让 React 调用你的组件函数，最后一个好处是*惰性求值*。我们来看看这是什么意思。
+
+## [惰性求值](https://overreacted.io/react-as-a-ui-runtime/#lazy-evaluation)
+
+在 JavaScript 中调用函数时，参数会在调用之前求值：
+
+```
+// (2) 这个后计算
+eat(
+  // (1) 这个先计算
+  prepareMeal()
+);
+```
+
+这通常符合 JavaScript 开发者的预期，因为 JavaScript 函数可能有隐式的副作用。如果我们调用了一个函数，它却要等到结果在 JavaScript 里被以某种方式"用到"时才执行，那会很令人意外。
+
+然而，React 组件是[相对](https://overreacted.io/react-as-a-ui-runtime/#purity)纯的。如果我们知道它的结果不会被渲染到屏幕上，就完全没有必要执行它。
+
+来看这个把 `<Comments>` 放进 `<Page>` 的组件：
+
+```
+function Story({ currentUser }) {
+  // return {
+  //   type: Page,
+  //   props: {
+  //     user: currentUser,
+  //     children: { type: Comments, props: {} }
+  //   }
+  // }
+  return (
+    <Page user={currentUser}>
+      <Comments />
+    </Page>
+  );
+}
+```
+
+`Page` 组件可以把传给它的子元素渲染在某个 `Layout` 里：
+
+```
+function Page({ user, children }) {
+  return (
+    <Layout>
+      {children}
+    </Layout>
+  );
+}
+```
+
+*（JSX 中的 `<A><B /></A>` 等同于 `<A children={<B />} />`。）*
+
+但如果它有一个提前退出的条件呢？
+
+```
+function Page({ user, children }) {
+  if (!user.isLoggedIn) {
+    return <h1>Please log in</h1>;
+  }
+  return (
+    <Layout>
+      {children}
+    </Layout>
+  );
+}
+```
+
+如果我们把 `Comments()` 当作函数调用，它会立即执行，不管 `Page` 想不想渲染它：
+
+```
+// {
+//   type: Page,
+//   props: {
+//     children: Comments() // 总是会执行！
+//   }
+// }
+<Page>
+  {Comments()}
+</Page>
+```
+
+但如果我们传入的是一个 React 元素，就根本不会自己去执行 `Comments`：
+
+```
+// {
+//   type: Page,
+//   props: {
+//     children: { type: Comments }
+//   }
+// }
+<Page>
+  <Comments />
+</Page>
+```
+
+这让 React 来决定什么时候调用它，以及*是否*调用它。如果 `Page` 组件忽略了 `children` prop，转而渲染 `<h1>Please log in</h1>`，React 甚至不会尝试调用 `Comments` 函数。这有什么意义？
+
+这样很好，因为它既能让我们避免那些终将被丢弃的不必要渲染工作，又能让代码不那么脆弱。（用户未登录时，我们不在乎 `Comments` 会不会抛错——它根本不会被调用。）
+
+## [状态](https://overreacted.io/react-as-a-ui-runtime/#state)
+
+我们[前面](https://overreacted.io/react-as-a-ui-runtime/#reconciliation)讲过身份，以及元素在树中概念上的"位置"如何告诉 React 是复用宿主实例还是新建一个。宿主实例可以有各种局部状态：焦点、选区、输入内容等等。在概念上渲染同一个 UI 的多次更新之间，我们希望保留这些状态；而当我们渲染概念上不同的东西（比如从 `<SignupForm>` 切换到 `<MessengerChat>`）时，我们也希望可预测地销毁它们。
+
+**局部状态非常有用，所以 React 让*你自己的*组件也能拥有它。**组件仍然是函数，但 React 给它们加上了对 UI 有用的特性。与树中位置绑定的局部状态就是其中之一。
+
+我们把这些特性称为 *Hooks*。例如，`useState` 就是一个 Hook。
+
+```
+function Example() {
+  const [count, setCount] = useState(0);
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+它返回一对值：当前状态，以及更新它的函数。
+
+[数组解构](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Array_destructuring)语法让我们可以给状态变量随意起名。例如，我把这一对叫作 `count` 和 `setCount`，但也可以叫 `banana` 和 `setBanana`。下文中，不管具体例子里第二个值实际叫什么，我都用 `setState` 来指代它。
+
+*（你可以在[这里](https://reactjs.org/docs/hooks-intro.html)了解更多关于 `useState` 以及 React 提供的其他 Hooks。）*
+
+## [一致性](https://overreacted.io/react-as-a-ui-runtime/#consistency)
+
+即使我们想把协调过程本身拆分成[非阻塞](https://www.youtube.com/watch?v=mDdgfyRB5kg)的工作块，实际的宿主树操作仍然应该一次性同步完成。这样我们就能确保用户不会看到更新到一半的 UI，浏览器也不会为用户本不该看到的中间状态做多余的布局和样式重算。
+
+这就是为什么 React 把所有工作分为"渲染阶段"和"提交阶段"。*渲染阶段*是 React 调用你的组件并执行协调的阶段，它可以被安全地中断，[将来](https://reactjs.org/blog/2018/03/01/sneak-peek-beyond-react-16.html)会是异步的。*提交阶段*是 React 操作宿主树的阶段，它始终是同步的。
+
+## [记忆化](https://overreacted.io/react-as-a-ui-runtime/#memoization)
+
+当父组件通过调用 `setState` 安排一次更新时，React 默认会协调它的整棵子树。这是因为 React 无法知道父组件的更新是否会影响子组件，而 React 默认选择保持一致。这听起来开销很大，但实际上对中小规模的子树来说不成问题。
+
+当树变得太深或太宽时，你可以告诉 React 对某棵子树进行[记忆化（memoize）](https://en.wikipedia.org/wiki/Memoization)，在 props 浅比较相等时复用上次的渲染结果：
+
+```
+function Row({ item }) {
+  // ...
+}
+ 
+export default React.memo(Row);
+```
+
+现在，父组件 `<Table>` 中的 `setState` 会跳过对那些 `item` 与上次渲染时引用相等的 `Row` 的协调。
+
+借助 [`useMemo()` Hook](https://reactjs.org/docs/hooks-reference.html#usememo)，你可以在单个表达式的层面做细粒度的记忆化。这个缓存局限于组件在树中的位置，会和它的局部状态一起被销毁。它只保存最后一项。
+
+React 有意不默认对组件做记忆化。很多组件每次收到的 props 都不同，对它们做记忆化反而得不偿失。
+
+## [原始模型](https://overreacted.io/react-as-a-ui-runtime/#raw-models)
+
+讽刺的是，React 并没有用"响应式"（reactivity）系统来做细粒度更新。换句话说，顶层的任何更新都会触发协调，而不是只更新受变化影响的组件。
+
+这是一个有意为之的设计决策。在面向消费者的 Web 应用中，[可交互时间](https://calibreapp.com/blog/time-to-interactive/)是一个关键指标，而遍历模型去建立细粒度监听器会耗费这段宝贵的时间。此外，在很多应用中，交互要么导致小更新（按钮悬停），要么导致大更新（页面切换），这两种情况下细粒度订阅都是在浪费内存。
+
+React 的核心设计原则之一是它处理的是原始数据。如果你从网络上拿到一堆 JavaScript 对象，可以不做任何预处理，直接把它们灌进组件里。不会有"哪些属性能访问"的坑，也不会在结构稍有变化时遇到意外的性能断崖。React 渲染的复杂度是 O(*视图大小*) 而不是 O(*模型大小*)，而你可以用[窗口化（windowing）](https://react-window.now.sh/#/examples/list/fixed-size)大幅缩减*视图大小*。
+
+有些类型的应用确实能从细粒度订阅中受益——比如股票行情。这是"所有东西同时不断更新"的少见例子。虽然命令式的逃生舱可以帮助优化这类代码，但 React 可能并不是这种用例的最佳选择。不过，你仍然可以在 React 之上实现自己的细粒度订阅系统。
+
+**注意，有些常见的性能问题，即使是细粒度订阅和"响应式"系统也解决不了。**例如，在不阻塞浏览器的前提下渲染一棵*新的*深层树（每次页面切换都会发生）。变更追踪并不会让它更快——反而会更慢，因为我们得做更多工作去建立订阅。另一个问题是，我们必须等数据到了才能开始渲染视图。在 React 中，我们希望用[并发渲染（Concurrent Rendering）](https://reactjs.org/blog/2018/03/01/sneak-peek-beyond-react-16.html)来解决这两个问题。
+
+## [批处理](https://overreacted.io/react-as-a-ui-runtime/#batching)
+
+多个组件可能想响应同一个事件来更新状态。下面这个例子是刻意构造的，但它展示了一种常见模式：
+
+```
+function Parent() {
+  let [count, setCount] = useState(0);
+  return (
+    <div onClick={() => setCount(count + 1)}>
+      Parent clicked {count} times
+      <Child />
+    </div>
+  );
+}
+ 
+function Child() {
+  let [count, setCount] = useState(0);
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Child clicked {count} times
+    </button>
+  );
+}
+```
+
+事件派发时，子组件的 `onClick` 先触发（调用它的 `setState`）。然后父组件在自己的 `onClick` 处理函数中调用 `setState`。
+
+如果 React 在每次 `setState` 调用时都立即重新渲染组件，子组件就会被渲染两次：
+
+```
+*** Entering React's browser click event handler ***
+Child (onClick)
+  - setState
+  - re-render Child // 😞 多余的
+Parent (onClick)
+  - setState
+  - re-render Parent
+  - re-render Child
+*** Exiting React's browser click event handler ***
+```
+
+第一次 `Child` 渲染是白费的。而且我们没法让 React 跳过第二次 `Child` 渲染，因为 `Parent` 可能会根据更新后的状态给它传入不同的数据。
+
+**这就是为什么 React 会对事件处理函数中的更新进行批处理：**
+
+```
+*** Entering React's browser click event handler ***
+Child (onClick)
+  - setState
+Parent (onClick)
+  - setState
+*** Processing state updates                     ***
+  - re-render Parent
+  - re-render Child
+*** Exiting React's browser click event handler  ***
+```
+
+组件中的 `setState` 调用不会立即触发重新渲染。React 会先执行所有事件处理函数，然后触发一次重新渲染，把所有这些更新批量合并在一起。
+
+批处理对性能有好处，但如果你写出这样的代码，结果可能会让你意外：
+
+```
+const [count, setCount] = useState(0);
+ 
+  function increment() {
+    setCount(count + 1);
+  }
+ 
+  function handleClick() {
+    increment();
+    increment();
+    increment();
+  }
+```
+
+如果 `count` 一开始是 `0`，这就只是三次 `setCount(1)` 调用。为了解决这个问题，`setState` 提供了一个接受"更新函数"（updater）的重载：
+
+```
+const [count, setCount] = useState(0);
+ 
+  function increment() {
+    setCount(c => c + 1);
+  }
+ 
+  function handleClick() {
+    increment();
+    increment();
+    increment();
+  }
+```
+
+React 会把这些更新函数放进一个队列，之后依次执行，最终以 `count` 为 `3` 进行重新渲染。
+
+当状态逻辑比几次 `setState` 调用更复杂时，我建议用 [`useReducer` Hook](https://reactjs.org/docs/hooks-reference.html#usereducer) 把它表达为一个局部状态 reducer。它就像是这种"更新函数"模式的进化版，每种更新都有一个名字：
+
+```
+const [counter, dispatch] = useReducer((state, action) => {
+    if (action === 'increment') {
+      return state + 1;
+    } else {
+      return state;
+    }
+  }, 0);
+ 
+  function handleClick() {
+    dispatch('increment');
+    dispatch('increment');
+    dispatch('increment');
+  }
+```
+
+`action` 参数可以是任何东西，不过对象是常见的选择。
+
+## [调用树](https://overreacted.io/react-as-a-ui-runtime/#call-tree)
+
+编程语言运行时通常有一个[调用栈](https://medium.freecodecamp.org/understanding-the-javascript-call-stack-861e41ae61d4)。当函数 `a()` 调用 `b()`，`b()` 又调用 `c()` 时，JavaScript 引擎里的某个地方就有一个类似 `[a, b, c]` 的数据结构，"记录"着你在哪里、接下来要执行什么代码。一旦你从 `c` 退出，它的调用栈帧就没了——噗！不再需要了。我们跳回 `b`。等我们退出 `a` 时，调用栈就空了。
+
+当然，React 本身运行在 JavaScript 中，遵守 JavaScript 的规则。但我们可以想象，React 内部有某种它自己的调用栈，用来记住我们当前在渲染哪个组件，例如 `[App, Page, Layout, Article /* 我们在这里 */]`。
+
+React 不同于通用的语言运行时，因为它的目标是渲染 UI 树。这些树需要"保持存活"，我们才能与之交互。DOM 不会在我们第一次调用 `ReactDOM.render()` 之后就消失。
+
+这个比喻可能有点牵强，但我喜欢把 React 组件想象成处在一棵"调用树"中，而不只是一个"调用栈"中。当我们从 `Article` 组件"出来"时，它在 React "调用树"中的帧并不会被销毁。我们需要把局部状态和对宿主实例的引用保存在[某个地方](https://medium.com/react-in-depth/the-how-and-why-on-reacts-usage-of-linked-list-in-fiber-67f1014d0eb7)。
+
+这些"调用树"帧*确实*会连同它们的局部状态和宿主实例一起被销毁，但只在[协调](https://overreacted.io/react-as-a-ui-runtime/#reconciliation)规则认为有必要时才会。如果你读过 React 源码，可能见过这些帧被称为 [Fiber](https://en.wikipedia.org/wiki/Fiber_(computer_science))。
+
+Fiber 就是局部状态真正存放的地方。当状态更新时，React 会把下方的 Fiber 标记为需要协调，并调用那些组件。
+
+## [Context](https://overreacted.io/react-as-a-ui-runtime/#context)
+
+在 React 中，我们通过 props 把东西向下传给其他组件。有时，大多数组件都需要同一样东西——例如当前选择的视觉主题。一层一层往下传就很麻烦。
+
+在 React 中，这个问题由 [Context](https://reactjs.org/docs/context.html) 解决。它本质上就像是组件的[动态作用域](http://wiki.c2.com/?DynamicScoping)。它像一个虫洞，让你在顶部放一样东西，底部的每个子组件都能读到它，并在它变化时重新渲染。
+
+```
+const ThemeContext = React.createContext(
+  'light' // 作为兜底的默认值
+);
+ 
+function DarkApp() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <MyComponents />
+    </ThemeContext.Provider>
+  );
+}
+ 
+function SomeDeeplyNestedChild() {
+  // 取决于子组件渲染在哪里
+  const theme = useContext(ThemeContext);
+  // ...
+}
+```
+
+当 `SomeDeeplyNestedChild` 渲染时，`useContext(ThemeContext)` 会在树中向上寻找最近的 `<ThemeContext.Provider>`，并使用它的 `value`。
+
+（实际上，React 在渲染时会维护一个 context 栈。）
+
+如果上方没有 `ThemeContext.Provider`，`useContext(ThemeContext)` 调用的结果就是 `createContext()` 调用中指定的默认值。在我们的例子里是 `'light'`。
+
+## [副作用](https://overreacted.io/react-as-a-ui-runtime/#effects)
+
+前面提到过，React 组件在渲染期间不应该有可观察到的副作用。但副作用有时是必要的。我们可能想管理焦点、在 canvas 上绘图、订阅某个数据源等等。
+
+在 React 中，这是通过声明一个 effect 来完成的：
+
+```
+function Example() {
+  const [count, setCount] = useState(0);
+ 
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+在可能的情况下，React 会把 effect 推迟到浏览器重绘屏幕之后再执行。这很好，因为像数据源订阅这样的代码不应该拖累[可交互时间](https://calibreapp.com/blog/time-to-interactive/)和[首次绘制时间](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint)。（有一个[很少用到](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)的 Hook 可以让你退出这种行为、同步地做事。尽量别用。）
+
+Effect 不只运行一次。组件第一次展示给用户之后会运行，每次更新之后也会运行。Effect 可以闭包捕获当前的 props 和 state，比如上例中的 `count`。
+
+Effect 可能需要清理，比如订阅的情况。为了在之后自行清理，effect 可以返回一个函数：
+
+```
+useEffect(() => {
+    DataSource.addSubscription(handleChange);
+    return () => DataSource.removeSubscription(handleChange);
+  });
+```
+
+React 会在下一次应用这个 effect 之前执行返回的函数，在组件被销毁之前也会执行。
+
+有时候，每次渲染都重新运行 effect 并不理想。你可以告诉 React，如果某些变量没变，就[跳过](https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects)这个 effect：
+
+```
+useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  }, [count]);
+```
+
+不过，这往往是过早优化，如果你不熟悉 JavaScript 闭包的工作方式，还可能引发问题。
+
+例如，这段代码就有 bug：
+
+```
+useEffect(() => {
+    DataSource.addSubscription(handleChange);
+    return () => DataSource.removeSubscription(handleChange);
+  }, []);
+```
+
+它有 bug，是因为 `[]` 的意思是"永远不要重新执行这个 effect"。但这个 effect 闭包捕获了定义在它外面的 `handleChange`，而 `handleChange` 可能引用了任何 props 或 state：
+
+```
+function handleChange() {
+    console.log(count);
+  }
+```
+
+如果我们永远不让 effect 重新运行，`handleChange` 就会一直指向首次渲染时的那个版本，它里面的 `count` 永远是 `0`。
+
+要解决这个问题，请确保如果你指定了依赖数组，它就要包含**所有**可能变化的东西，包括函数：
+
+```
+useEffect(() => {
+    DataSource.addSubscription(handleChange);
+    return () => DataSource.removeSubscription(handleChange);
+  }, [handleChange]);
+```
+
+根据你的代码，你可能仍会看到不必要的重复订阅，因为 `handleChange` 本身每次渲染都不一样。[`useCallback`](https://reactjs.org/docs/hooks-reference.html#usecallback) Hook 可以帮你解决这个问题。或者，你也可以干脆让它重新订阅。例如，浏览器的 `addEventListener` API 非常快，费尽周折去避免调用它，带来的问题可能比收益还多。
+
+*（你可以在[这里](https://reactjs.org/docs/hooks-effect.html)了解更多关于 `useEffect` 以及 React 提供的其他 Hooks。）*
+
+## [自定义 Hooks](https://overreacted.io/react-as-a-ui-runtime/#custom-hooks)
+
+既然 `useState` 和 `useEffect` 这样的 Hooks 都是函数调用，我们就可以把它们组合成自己的 Hooks：
+
+```
+function MyResponsiveComponent() {
+  const width = useWindowWidth(); // 我们的自定义 Hook
+  return (
+    <p>Window width is {width}</p>
+  );
+}
+ 
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
+  return width;
+}
+```
+
+自定义 Hooks 让不同组件可以共享可复用的有状态逻辑。注意，共享的不是*状态本身*。每次调用 Hook 都会声明它自己独立的状态。
+
+*（你可以在[这里](https://reactjs.org/docs/hooks-custom.html)了解更多关于编写自己的 Hooks 的内容。）*
+
+## [静态调用顺序](https://overreacted.io/react-as-a-ui-runtime/#static-use-order)
+
+你可以把 `useState` 看作定义"React 状态变量"的一种语法。当然，它并不*真的*是语法，我们写的仍然是 JavaScript。但我们正在把 React 当作一个运行时环境来看，而由于 React 把 JavaScript 量身改造成描述 UI 树的工具，它的特性有时更接近语言层面。
+
+如果 `use` *真的是*一种语法，那它放在顶层就说得通：
+
+```
+// 😉 注意：并不是真的语法
+component Example(props) {
+  const [count, setCount] = use State(0);
+ 
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+把它放进条件、回调或组件外部，又是什么意思呢？
+
+```
+// 😉 注意：并不是真的语法
+ 
+// 这是局部状态……属于谁的？
+const [count, setCount] = use State(0);
+ 
+component Example() {
+  if (condition) {
+    // 条件为 false 时它会怎样？
+    const [count, setCount] = use State(0);
+  }
+ 
+  function handleClick() {
+    // 离开函数时它会怎样？
+    // 这和一个变量有什么区别？
+    const [count, setCount] = use State(0);
+  }
+```
+
+React 状态局限于*组件*及其在树中的身份。如果 `use` 是真正的语法，把它的作用域限定在组件顶层也是合理的：
+
+```
+// 😉 注意：并不是真的语法
+component Example(props) {
+  // 只在这里有效
+  const [count, setCount] = use State(0);
+ 
+  if (condition) {
+    // 这会是语法错误
+    const [count, setCount] = use State(0);
+  }
+```
+
+这就类似于 `import` 只能用在模块的顶层。
+
+**当然，`use` 实际上并不是语法。**（那不会带来多少好处，反而会造成很多摩擦。）
+
+然而，React *确实*要求所有 Hook 调用都只发生在组件顶层，并且是无条件的。这些 [Hooks 规则](https://reactjs.org/docs/hooks-rules.html)可以用[一个 linter 插件](https://www.npmjs.com/package/eslint-plugin-react-hooks)来强制执行。围绕这个设计选择有过激烈的争论，但在实践中，我没见过它让人困惑。我也写过文章，解释为什么常被提出的替代方案[行不通](https://overreacted.io/why-do-hooks-rely-on-call-order/)。
+
+在内部，Hooks 是用[链表](https://dev.to/aspittel/thank-u-next-an-introduction-to-linked-lists-4pph)实现的。每次调用 `useState`，我们就把指针移到下一项。当我们退出组件的["调用树"帧](https://overreacted.io/react-as-a-ui-runtime/#call-tree)时，就把得到的链表保存在那里，直到下一次渲染。
+
+[这篇文章](https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e)对 Hooks 的内部工作原理做了简化的解释。比起链表，数组可能是更容易理解的心智模型：
+
+```
+// 伪代码
+let hooks, i;
+function useState() {
+  i++;
+  if (hooks[i]) {
+    // 后续渲染
+    return hooks[i];
+  }
+  // 首次渲染
+  hooks.push(...);
+}
+ 
+// 准备渲染
+i = -1;
+hooks = fiber.hooks || [];
+// 调用组件
+YourComponent();
+// 记住 Hooks 的状态
+fiber.hooks = hooks;
+```
+
+*（如果你好奇，真正的代码在[这里](https://github.com/facebook/react/blob/master/packages/react-reconciler/src/ReactFiberHooks.new.js)。）*
+
+这大致就是每次 `useState()` 调用如何拿到正确状态的。我们[前面](https://overreacted.io/react-as-a-ui-runtime/#reconciliation)已经了解到，"把东西对上"对 React 来说并不新鲜——协调也以类似的方式依赖于元素在多次渲染之间能够对上。
+
+## [没讲到的内容](https://overreacted.io/react-as-a-ui-runtime/#whats-left-out)
+
+React 运行时环境几乎所有重要的方面我们都谈到了。如果你读完了这一页，你对 React 的了解可能已经比 90% 的用户都要详细。而且（不了解这些）也完全没问题！
+
+有些部分我没讲——主要是因为它们连我们自己都还不清楚。React 目前对多遍渲染（multipass rendering），也就是父组件渲染需要子组件信息的情况，还没有好的方案。此外，[错误处理 API](https://reactjs.org/docs/error-boundaries.html) 还没有 Hooks 版本。这两个问题有可能一起解决。Concurrent Mode 还不稳定，Suspense 如何融入这幅图景也还有一些有意思的问题。等这些成形、Suspense 能做的不仅仅是[懒加载](https://reactjs.org/blog/2018/10/23/react-v-16-6.html#reactlazy-code-splitting-with-suspense)时，也许我会再写一篇续篇。
+
+**我觉得，你可以在完全不考虑这里大部分话题的情况下走得很远，这本身就说明了 React API 的成功。**像协调启发式规则这样的良好默认行为，在大多数情况下都能做对。而像 `key` 警告这样的提示，会在你可能搬起石头砸自己脚的时候提醒你。
+
+如果你是个 UI 库发烧友，希望这篇文章还算有趣，并更深入地讲清了 React 是怎么工作的。又或者，你觉得 React 太复杂了，再也不想看它一眼。不管怎样，我都很乐意在 Twitter 上听听你的想法！感谢阅读。

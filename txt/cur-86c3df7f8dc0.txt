@@ -1,0 +1,13 @@
+https://changelog.com/jsparty/258
+
+这期 JS Party（2023 年 1 月）由 KBall 主持，嘉宾是以"原生 JS 达人"著称的 Chris Ferdinandi。Chris 的核心判断是：前端正处在新一轮四到十年一次的变革浪潮起点，上一波是"基于状态的 UI + 大型客户端库包揽一切"，这一波则是减少发往浏览器的 JavaScript，他戏称为"JavaScript 是新的 PHP"——JS 越来越多地挪到构建期和服务端，顺带把 PHP 一二十年前做过的事重新发明一遍。他强调这不等于 React 会死：就像 jQuery 至今仍遍布网络、靠惯性和好文档存续，React 也会长期存在，只是新的主流做法会演进到它之外。他甚至半开玩笑地说，在各自要解决的问题上，jQuery 比 React 做得更好。
+
+Chris 把当下的应对方案分成几类。一类是"更小的同类"：Preact 几乎照搬 React API，体积约十分之一、渲染更快；SolidJS 模式相近而更轻；尤雨溪受 Alpine.js 启发做了约 6KB 的 petite-vue。另一类是 Next.js、Nuxt 这种服务端渲染再在浏览器"交接"的混合方案，但仍把整个库发下去，没解决"JS 太多"的根本问题。真正的新方向是编译器路线：Svelte 让你用状态式写法，编译出的代码接近手写的精准 DOM 操作；Astro 更进一步，可以混用 React、Vue、Svelte 组件，输出以静态 HTML 为主、按需加 JS 的结果。他引用 Jason Lengstorf 的实验：一个 Next 项目几乎原样迁到 Astro，JS 减少约九成，加载运行快三倍。他的悬而未决之问是：Svelte、Astro 是"下一个 React"，还是像 jQuery 时代的 Umbrella.js、Shoestring 那样只是过渡桥梁——在他看来 Preact、Solid 属于后者，而 Astro、Svelte 的工作原理确实根本不同。
+
+KBall 把问题拆成三层：开发者体验与心智模型（组件化、声明式）、运行时（当年 jQuery 大量代码是在抹平浏览器差异，如今已无必要）、以及有多少工作能在发送前"编译掉"——后者本质是优化问题。Chris 认为最确定的是优化层面："HTML 多是好事，JS 多是坏事"正成为共识；心智模型大概会留下，但它对无障碍专家等非 JS 专家门槛偏高。他希望浏览器原生提供 DOM diff，像给 innerHTML 塞字符串一样简单；编译路线的代价则是调试变难。对于想渐进减负的 React 用户，他建议：先把 React 换成 Preact（难点主要在第三方组件兼容），新项目选小型替代品，在 Next 项目上加 Astro 的编译步骤，或直接用 SvelteKit——静态部分静态渲染、动态部分少量 JS，表单 Ajax 失败时还有服务端兜底。KBall 指出 React 圈的 Remix（刚被 Shopify 收购）也在做同样的事，"原来 HTTP 和 Web 当初设计得很好"。KBall 提到 React 极重向后兼容，这正是押注它不会丢饭碗的原因。
+
+两人也聊到平台正在吸收框架的能力：Web Components 本被寄望成为 React 组件的替代，结果是极其命令式的 API，"差一点就很棒"；Sanitizer API 有望替代 DOMPurify 这类重型库；模板字面量已能覆盖 JSX 九成用途；共享元素过渡 API 可以让多页面应用也有 SPA 式切换动画。KBall 补充，WebAssembly 解决的是 CPU 解析问题而非传输体积，类似图片——网络差时帮助不大。
+
+至于"为什么这次不一样"——KBall 指出框架使用其实一直在增长，甚至扩张到 React Native 和桌面应用。Chris 的回答是：以前"少用 JS"只是愿望，现在有了 Preact、Svelte、Astro 等真正可替代的工具；而且多年被"OK boomer"的性能论调终于引起行业重视。KBall 提出一个解释：疫情让大家从快速的办公室网络换到家庭宽带，自己尝到了慢的苦头；Chris 补充，同轴电缆、卫星、DSL 网速会随邻居同时上网而波动，居家视频会议让所有人都变慢。他们认为回归办公室的趋势不太会逆转这股势头。KBall 还提到 Miško Hevery 的 Qwik（主打可恢复性），它刻意模仿 React API 以降低采用门槛——React 已是所有新框架模仿的旗手。
+
+给新人的建议上，以反对用库著称的 Chris 反而说：想保证找到工作，就学 React，它就是行业标准；有余裕的话再去试 Svelte。结尾有一段 Vim 闲聊：KBall 至今全靠 Vim + Tmux、把 Caps Lock 映射成 Esc，嫌 VS Code 文件间导航离不开鼠标。Chris 预计四到五年后会有新工具成为标准，两人约定 2028 年 1 月 5 日回来验证"再也没人用 React 了"。Chris 的相关资源整理在 gomakethings.com/jsparty。

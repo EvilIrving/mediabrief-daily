@@ -1,0 +1,15 @@
+https://blog.uhy.ooo/entry/2021-07-24/react-state-management/
+
+uhyo 这篇 2021 年的文章不比 API 好坏，而是从"接口与职责"和"实际的性能、可维护性"两个角度，比较 React 里几种共享状态的方式。
+
+最基础的是 useState 加 props 逐层传递。状态放在共同祖先组件里，一层层传给末端的使用者，更新函数也这样往下传。作者的关键观察是：只负责转交的中间组件，在接口上也成了这个状态的"使用者"，所以接口上的使用者比实际使用者多。如果树上大部分组件本来就用这个状态，这种做法没问题；否则接口就和实际脱节。落到实处有两个代价：状态一变，中间组件都要重新渲染；重构时改状态的名字或类型，要改一大串组件，内聚度低。
+
+useContext 让依赖不再出现在 props 里，读状态变成组件的内部实现，性质上像从外部数据源 fetch，所以测试会难一点，可以用 container/presentational 拆分来缓解。性能上只有真正读 context 的组件会重新渲染，但同一个 context 的所有读者会一起刷新。要减少无用渲染，就得按状态种类拆出很多 context 和 Provider；全塞进一个 context，状态越大优势越少。结论是：要么管理很多 context，要么接受性能下降。树不大时这样可以接受，而且不用引入任何库。
+
+react-redux 把状态放在组件树外部的 Store 里，组件直接订阅。作者认为不靠 React 内置机制来订阅和重新渲染，正是用状态管理库的根本理由。useSelector 只挑出需要的部分，这部分没变就不重新渲染，所以渲染优化几乎没有成本；只用 useDispatch 的组件根本不会重新渲染，而 context 要做到这一点得把状态和更新函数分成两个 context。作者把 reducer 和 action 看作 Store 的材料：action 当更新手段显得冗余，它真正的价值在于配合 middleware 的消息传递，所以 Redux 同时承担着状态管理和消息传递两种职责。react-redux 真正独有的是"一个 Store 存所有状态，再用 selector 取出所需"这种接口，使用者总要面对整个状态。
+
+Recoil 的性能特性和 react-redux 类似，接口却完全不同。状态分散在多个 Atom 里，Selector 从 Atom 或其他 Selector 派生值，结果不变就不触发渲染。分散带来状态的代码分割，也让末端几个组件共享一点小状态变得很轻松。Atom、Selector 是底层零件，不强制任何架构，甚至可以用一个大 Atom 模仿 Redux。Recoil 还有 atomFamily/selectorFamily 和对异步的良好支持，有望与 React 18 的 Suspense 和并发渲染契合。状态其实存在 RecoilRoot 里，Atom 和 Selector 更像数据流 DAG 上的节点。
+
+MobX（mobx-react-lite）直接修改可变对象，没有"状态容器"或更新函数。组件声明为 observer，普通的 obj.foo 读取就会被追踪成隐式依赖，从而得到精确的渲染。observable 可以放在全局变量里，也可以通过 props 或 context 传，所以 MobX 更像是专门优化渲染的零件，而不是完整的状态管理方案。作者不太喜欢它：每个组件都得标成 observer，普通读取带上了副作用，与 React 的思路不合；想精细优化就得控制在哪里读取，维护起来很痛苦。
+
+问答部分：jotai 在架构上与 Recoil 相同，区别主要在 API。SWR、React Query 也提供全局状态，即缓存的服务端数据，靠 key 分散存放，架构上接近 Recoil，但走的是高层、易用路线。如果全局状态主要就是请求来的数据，也许根本不需要别的库；但它们自成一体，与大量其他状态混用时很难达到最佳性能，这时可以考虑改用 Recoil 一类的方案。

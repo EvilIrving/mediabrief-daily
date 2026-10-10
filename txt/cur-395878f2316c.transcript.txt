@@ -1,0 +1,233 @@
+https://mizchi.dev/202009122126-cloudflare-workers
+
+# Cloudflare Workers：把前端／Node.js 延伸到 CDN 边缘侧的东西
+
+最近 Cloudflare Workers 很火，我整个周末都在研究它。这篇文章是研究的总结。
+
+需要说明的是，我在本地用各种模式跑过、试过，但并没有在生产环境中实际运营过。请在了解这一点的前提下阅读。
+
+除非特别注明，引文均由 DeepL 翻译。
+
+## Cloudflare Workers 是什么
+
+Cloudflare Workers | 无服务器计算 | Cloudflare
+
+一句话概括，它是"在 CDN 边缘上运行、提供 ServiceWorker API 的 JavaScript 运行环境"。
+
+在 Technology Radar 中，它目前仍处于 ASSESS（评估）阶段。
+
+Cloudflare Workers | Technology Radar | ThoughtWorks
+
+话虽如此，只看这个说明，你可能会以为它是一个新的 Node.js PaaS（FaaS）。但实际用下来，把它当作 Node 的 FaaS 来理解会有偏差；更贴切的理解是：一个能在 CDN 上用 JavaScript 编写 L7 代理的东西。下面解释原因。
+
+## CDN 复习
+
+（已经了解的人请跳过）
+
+CDN 是一张全球规模的网络，主要目的是高效地传输静态内容。网站访问者访问这些内容时，请求会被路由到离该用户最近的边缘服务器来响应。而且这些服务器在操作系统内核层面做了优化，接入了通往各家云的专线，通信协议也经过优化，因此往往比普通服务器返回得更快。
+
+由于这种性质，个人或终端服务商自己搭建并不现实，通常要借用现有 CDN 服务商的网络。常见的有 Akamai、AWS Cloudfront、Fastly、Cloudflare 等。
+
+## 在 CDN 边缘运行 JavaScript 意味着什么
+
+除非你自己做地理路由，否则通常 HTTP(S) 请求会到达一个在地理上只有一处实体的应用服务器（集群），并在那里返回响应。
+
+JavaScript 能在边缘服务器上运行，就意味着可以在请求到达应用服务器之前的那一层处理它。或许可以说是一种 L7 代理。你可以直接把请求代理到应用服务器，也可以在持有缓存的情况下，不让请求到达应用服务器，由边缘自己返回响应。
+
+例如，假设到应用服务器的地理延迟是 100ms，到边缘是 15ms，1 个 RTT（往返时间）是其两倍，那么就能节省 170ms。
+
+复杂的应用在应用层可能有 3～5 个 RTT，这样一来效果就更明显了。
+
+能运行边缘脚本的服务并不只有 Cloudflare Workers，还有以下这些：
+
+- https://aws.amazon.com/jp/lambda/edge/
+- Edge compute technology | Fastly
+- IBM Cloud Internet Services - 概要 - 日本 | IBM
+- https://fly.io/
+
+一年前我写过一篇介绍 fly.io 的文章：Edge Worker PaaS 的 fly.io 很有意思 - mizchi's blog
+
+另外，在中间件层面，可以用一种叫 Varnish VCL 的 DSL 来控制请求。Fastly VCL 就是这个。
+
+VCL - Varnish Configuration Language — Varnish version trunk documentation
+
+## 为什么性能很重要
+
+2010 年代后半期的前端，为了提升开发者体验，在一定程度上损害了终端用户的体验。此外，浏览环境的主流已经从桌面转向移动端，要求内容的提供要适配比桌面光纤弱好几倍的 4G 网络。
+
+如今，已经有人提出了衡量多快能到达首屏的指标。特别是名为 Web Vitals 的指标，还与 Google 的 SEO 相关。
+
+性能调优的一个解法是"HTML 请求一旦到达应用服务器就输了"。到达应用服务器，通常意味着后端要跑 SQL 之类的重活，所以要做缓存优先的设计，从一开始就不让请求到达……为此，边缘侧脚本（Edge Side Scripting）为性能提供了一个带来新机制的层。
+
+如果问性能重不重要，我想大家都会回答 YES，但我的体感是，实际为此采取了某些措施的人很少。
+
+## Cloudflare Workers 好在哪里
+
+和其他公司的产品比较下来，我现在认为 Cloudflare Workers 是最好的。理由是……
+
+- 响应速度遥遥领先
+- 便宜，尤其是起步费用只要 $5/月
+- 规范和工具链完善，开发体验好
+
+为什么能做到这些，我追踪了它的技术细节后找到了原因，下面来解说。
+
+首先，我认为了解 Cloudflare Workers 的限制，就能思考它的架构和用法，所以从这里开始深挖。
+
+## Workers 的限制以及与 Lambda@Edge 的比较
+
+能做什么、不能做什么，最快的办法是看限制和定价。
+
+https://developers.cloudflare.com/workers/platform/limits#worker-limits
+
+Bundled 是从 $5/月起的付费套餐。起步费用低，真让人高兴……
+
+引人注目的是，即使是付费版，CPU 运行时间也只有 50ms，相当短。另外 128MB 的内存限制也很让人在意。（注：这是 V8 同步处理的时间，等待异步处理期间不计入，所以如果是访问外部数据库或反向代理之类的用途，就不成问题。）
+
+至于 128MB 的内存限制，官方也建议处理大数据时不要一次性全部载入内存，而是用 Stream 来处理。
+
+Using Streams · Cloudflare Workers docs
+
+例如，对一个巨大的 React SPA 做 SSR，有时会花 60ms。这种用途本身似乎就可能超出 128MB 的内存配额，所以 CPU 密集型的用途恐怕不太行。如果想在这里运行应用，可能需要重新考虑应用本身的设计。
+
+接下来看看与 Lambda Edge 的性能比较。
+
+Serverless Performance: Cloudflare Workers, Lambda and Lambda@Edge
+
+翻译一下重要的部分。
+
+这张图显示了对各服务的请求中，快于指定毫秒数的请求所占的比例。它基于过去 12 小时内从全世界均匀采样的数千次测试。在第 95 百分位，Workers 比 Lambda Function 快 441%，比 Lambda@Edge 快 192%。
+
+（中略）
+
+Workers 在第 50 百分位的速度是 13ms，比数据包走完到弗吉尼亚州一半的距离还要快得多。在第 95 百分位，Lambda 是 882ms，Lambda@Edge 是 216ms，Workers 是 40ms。这意味着你有 5% 的用户要为一个尽可能简单的 Lambda 响应等上将近 1 秒，根本不可能构建响应迅速的应用。
+
+这是 Cloudflare 自己发布的资料，需要打点折扣来看，但可以说性能相当不错。
+
+从我自己使用的感受来看，Cloudflare Workers 部署很快，响应也始终良好。尤其在刚部署完时特别明显：AWS Lambda／Cloud Function 在访问量少、或者没有持续访问的应用上启动很慢，体验很差，而 Cloudflare Workers 完全没有这种问题。
+
+结合限制来考虑，Cloudflare Workers 虽然自称 serverless，但不应该拿它和 serverless 常用的 AWS Lambda 或 Cloud Function 比较；由于它省内存、响应快，更好的认识是：**它是在 CDN 边缘运行的 JavaScript，可以用来写类似 Varnish VCL 那样的控制器**。
+
+在 https://www.cloudflare.com/ja-jp/products/cloudflare-workers/ 的 npm 公司采用案例中，刊载了 Laurie Voss 如下的赞誉：
+
+"使用 Workers，我们能把路由和缓存一直推到边缘，在改善数百万开发者所使用的 npm 的性能的同时，还能进一步扩展。从 VCL 迁移过来之后，我和最爱的 JavaScript 相处的时间更多了。"
+
+他是 npm 公司的 CTO，喜欢 JS 是理所当然的；不过看起来，从 Varnish VCL 迁移后，Node.js 工程师能在边缘侧发挥自己的能力，这才是采用它的一大理由。
+
+例如，即使是简单的场景，也可以想到按每次访问分发 AB 测试内容、金丝雀发布、根据 HTTP 头中的 locale 分发 i18n 多语言内容之类的处理。
+
+按访问量计费方面，Workers 是 `$0.50/million requests.`，而 `Lambda Edge は $0.60 per 1 million requests`（Lambda Edge 是每 100 万次请求 0.60 美元）。还有基础费用和其他各种价格，这里就不深入了，但整体感觉偏便宜。
+
+当然，如果在 JavaScript 里注意省内存的编程，我想把所有应用逻辑都放到 Cloudflare Workers 上也是可能的。在那种情况下，与其完整地带上编译器和应用服务器，不如采用类似 next.js Static Export 那样"静态站点生成器 + α"的控制方式。
+
+## 为什么能做到这一点
+
+老实说，一开始我恶意揣测：是不是为了推广新产品，在普及之前提供超低价？但读了下面这篇文章之后，看来是靠 V8 Isolate 的巧妙设计实现的。
+
+How Workers Works · Cloudflare Workers docs
+
+V8 编排 Isolate：它是一种轻量级上下文，把变量分组在一起，并包含被允许修改这些变量的代码。也可以把 Isolate 看作执行函数的"沙箱"。
+
+一个运行时可以运行成百上千个 Isolate，并在它们之间无缝切换。每个 Isolate 的内存是完全隔离的，因此每段代码都能免受运行时上其他不受信任的代码或用户编写的代码的影响。此外，Isolate 被设计为能够非常迅速地启动。它不是为每个函数创建一台虚拟机，而是在现有环境中创建 Isolate。这种模型消除了虚拟机模型的冷启动。
+
+与其他使用容器化进程运行语言运行时实例的无服务器提供商不同，Workers 只在边缘容器启动时支付一次 JavaScript 运行时的开销。Workers 进程通过为每次 Workers 函数调用创建一个 Isolate，几乎不产生单独的开销，就能运行本质上无限量的脚本。任意一个 Isolate 的启动速度大约是容器或虚拟机上 Node 进程的 100 倍。值得一提的是，Isolate 启动时的内存消耗要少几个数量级。
+
+我自己也是在读 node、deno、Chrome 的代码时了解到 V8 Isolate 的用途的。V8 有一种叫 V8 Snapshot 的机制，可以保存内存转储并把它唤起。借此，它从原始的 V8 状态（几乎只有纯 ECMAScript）构建出浏览器上下文、node、deno 执行的初始状态，每次执行时先唤起它，再注入用户代码。
+
+可以推测，Cloudflare Workers 是在 CDN 边缘上以每个 128MB 堆的方式大量预备这种 Isolate，每次执行时分配给进程。而且这个 Isolate 也起到了安全沙箱的作用。
+
+确实，用这种机制，虽然语言被限定为 JavaScript，但很轻量，并且能消除其他 Serverless 中存在的冷启动。部署也只是把用户代码作为静态资源通过 Cloudflare 的 CDN 分发出去而已。
+
+WebAssembly 也能运行，所以虽然入口点是 JavaScript，但似乎也可以执行 WASM 二进制。Fastly 的 Compute@Edge 用专用编译器优化 WASM 二进制，而 Cloudflare 的做法是大量预备 V8 Isolate，两者方法上的差异很有意思。
+
+参考
+
+- 比 VM、比容器更轻量的隔离技术：使用 V8 Isolate 提供无服务器计算的 Cloudflare Workers － Publickey
+- WebAssembly 在 50 微秒以内启动的"Lucet"，Fastly 开源了其编译器和运行时 － Publickey
+
+（Publickey 的 jniino 先生似乎一直在热心追踪这方面的技术……）
+
+## 全局缓存：Workers KV
+
+之所以想把逻辑放到边缘侧，是出于性能考虑：在针对用户地理位置进行优化的同时，在各个边缘持有缓存，不让请求到达应用服务器。
+
+为此需要的是边缘侧的区域缓存（Regional Cache），以及用于整体协调的全局缓存（Global Cache）。
+
+Lambda@Edge 用 DynamoDB 的全局复制（Global Replication）来实现边缘缓存，而 Workers 从一开始就集成了一个叫 Workers KV 的键值存储。
+
+一般来说，Workers KV 适用于写入频率相对较低、但需要快速且频繁读取的场景。它针对这类高读取应用做了优化，只有在频繁读取数据时才能最大限度地发挥性能。读取频率低的值存储在中心，热门的值则存储在全球各地的数据中心。
+
+KV 通过最终一致性来实现这种性能。变更传播可能最多需要 60 秒。如果需要原子操作支持，或者需要在一次事务中读写值，Workers KV 并不理想。
+
+How the Cache works · Cloudflare Workers docs
+
+由于不是强一致的，运维起来比较难，但只要理解了这一点，它就是一个相当强大的工具。
+
+## 案例：把 cdnjs 迁移到 Workers KV
+
+那么实际上用在什么场景呢？例如，Cloudflare 公司自己就介绍了在 cdnjs 上使用 Workers 的案例。
+
+https://blog.cloudflare.com/migrating-cdnjs-to-serverless-with-workers-kv/
+
+我们开始思考，如何同时提升提供 cdnjs 的方式的可靠性和性能。我们直奔 Cloudflare Workers——我们自己用于在边缘开发的平台。Workers 内置的强大工具之一是 Workers KV，一个低延迟、全球分布、针对高读取应用优化的键值存储。
+
+我们意识到，与其拉取 cdnjs/cdnjs 仓库并从磁盘提供文件，不如彻底砍掉物理机器，把数据分发到全世界，直接从边缘提供文件。这样一来，cdnjs 就能从任何源站数据中心的故障中恢复，可扩展性也会提高。
+
+然而在规划迁移的过程中，我们担心拥有 700 多万个资源的 cdnjs 中，肯定存在超出 Workers KV 10MiB 值大小限制的文件。调查之后，我们发现有数百个 cdnjs 文件超大。
+
+于是我们想到：把 cdnjs 文件的压缩版本存进 Workers KV，不仅能解决超大文件的问题，还能优化提供文件的方式。
+
+为互联网付费的人都知道带宽很贵！正因如此，所有现代浏览器只要条件允许，都会尝试获取压缩过的网页内容。同样，Cloudflare 也会尝试即时压缩以减少带宽，并在压缩内容被接受时始终提供压缩内容。因此，我们决定预先压缩所有 cdnjs 文件，并以最优的 Brotli 和 gzip 两种格式写入 Workers KV。这样做由于没有了等待时间上的要求，压缩级别可以比即时压缩更高。
+
+## 开发者体验好
+
+Cloudflare Workers 主要用一个叫 wrangler 的 CLI 工具来开发。它附带脚手架功能，跟着教程走一遍就能学到各种模式。
+
+Starters · Cloudflare Workers docs
+
+有一个能在本地运行的模拟器 wrangler dev，这一点给我的印象也很好。尤其是 Workers KV 能在本地运行，这很棒。题外话，GCP 和 AWS 的工具本地模拟器做得很差，这让开发体验变得糟糕。
+
+接触过 AWS Lambda 或 Cloud Function 的人，最感动的大概是部署极其快速，几秒钟就完成。部署了错误代码时能快速回滚，这带来了安全感。
+
+在应用代码层面，它沿用了 Service Worker 的 API，我觉得作为隐喻非常出色。这是一种在浏览器和服务器之间做"合法 MITM（中间人）"的 API，和在边缘做 MITM 的实际情况非常契合。如果好好设计，我觉得可以做出同时在 ServiceWorker 和 Workers 上运行的库。
+
+## 不满
+
+也有不少不安……
+
+- wrangler 内置了 webpack，说实话我觉得多管闲事。希望它不参与构建过程，把我指定的 JS 原封不动地扔上去就好。相应的选项也很难找。
+- 很多选项不读现有示例的 wrangler.toml 就搞不明白。另外，Workers KV 的预览模式在什么条件下能运行也很难弄懂。我把能想到的模式全试了一遍，暂且用着能跑的那个……
+- 出现的示例几乎都是 Cloudflare 自己的，让人不禁担心：真的有人在用吗？希望能多介绍一些来自社区的东西。
+- 我半开玩笑地建项目，结果差点撞上 30 个项目的上限，只好覆盖旧项目重复利用。有些产品就是因为这个才放弃的，所以哪怕要额外收费也好，希望能放开上限。
+
+## 基于以上考虑一个进化型框架
+
+前面一直在讲 Workers 的好处，但我也认为，实际上除非用例非常契合，否则为此抛弃现有代码的理由很弱。这是因为"边缘侧脚本"这一思路尚未融入当前开发者的生态。
+
+目前它只能在部分 PaaS 上运行，所以我觉得 OSS 生态接纳它还需要好几年。它在 Technology Radar 上处于 ASSESS 级别，大概也是这个原因。
+
+先行者 Lambda@Edge 目前没怎么普及，大概是因为它难用，好处却不明显。就这一点而言，我认为 Cloudflare Workers 凭借良好的开发体验和出色的性能，有跨越这道坎的潜力。
+
+如果为此从根本上重新思考架构，下面这些（都是我自己的文章）或许可以作为讨论的起点。
+
+- 在《超越光速的前端架构》（Speaker Deck）中，我提出了一种设计：把投机性的缓存清除（purge）放进应用逻辑，而不是放在 CI/CD 里。这可以用 Workers KV 实现。
+- 《用 Incremental Static Regeneration 实现的下一代服务器架构》（mizdev）讲解了 next.js 以静态站点生成器与 SSR 混合方式运行的架构。我在文中探讨，如果能在此基础上加一个考虑 CDN 边缘的优化层，就能做更深一步的优化。
+
+基于这些，我认为可以实现一个 CDN Edge First 的框架——它与其说是代理，不如说自身就是应用。以 next.js 这样的混合型静态站点生成器为基础，做省内存的调优，按需执行不到 50ms 的处理，并尽可能命中缓存。
+
+看 next.js 的发展，我感觉与其做一个快速的应用服务器，"会动的静态站点生成器"更有成长空间。如果能和 ServiceWorker／其回退方案以及 Workers 多级联动运行，就更好了。
+
+……其实我在本地已经在做原型，但模仿 next.js 的实现比想象中麻烦，就一直搁置着。等工作不忙了我想把它做出来……
+
+## 最后：关于 Cloudflare 的技术宣传
+
+这篇博客写得好像我是 Cloudflare 派来的托儿一样，那是因为我觉得，相对于 Workers 的潜力，无论国内国外，Cloudflare 的技术宣传都做得不太好。
+
+在日本国内，Cloudflare 这个名字因为"漫画村"事件，印象不太好；但我想像我这样的 Web 开发者都清楚 Cloudflare 在整个互联网中的地位，所以希望它能多做些对外发声。不希望它在 Qiita 上贴一份链接合集就心满意足了。
+
+最近 Cloudflare 好像设立了日本办公室，希望它能再加把劲，尤其包括翻译 Workers 的开发者博客。
+
+我一直想找机会把 Cloudflare Workers 塞进工作里，但由于它知名度还低，别人会感到不安，结果总是倒向用惯了的 GCP／AWS——这种事已经发生过好几次了，所以我希望他们能在这方面努力。这也是我写这篇博客的原因。
+
+除了 Cloudflare，我也还在调研其他服务，希望其他服务也加油。我尤其对 Fastly 抱有期待。
+
+对 Cloudflare 的牢骚暂且不提，作为早期采用者的玩具，它相当不错，大家要不要也试试看？

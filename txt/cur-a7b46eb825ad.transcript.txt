@@ -1,0 +1,1147 @@
+https://t-wada.hatenablog.jp/entry/design-for-testability
+
+# 从涉及当前时间的单元测试中学习可测试性设计
+
+#### 关于本文的背景
+
+本文是 2013/11/26 以可测试性设计为主题投稿给 CodeIQ MAGAZINE 的文章。遗憾的是，随着 CodeIQ 服务的终止，文章已无法访问，因此在征得原 CodeIQ MAGAZINE 编辑部各位的同意后，对当时的原稿做了部分重新编辑，并以 CC BY 许可（知识共享 — 署名 4.0 国际 — CC BY 4.0）重新公开。
+
+旧 URL 收到的书签和意见在这里（「这样你也是测试驱动开发大师！？和田卓人先生用解答代码讲解测试驱动开发问题～从涉及当前时间的测试中学习可测试性设计 #tdd｜CodeIQ MAGAZINE」）。旧文章收到了非常多的反响，在此衷心感谢。
+
+### 目录
+
+### 题目：涉及当前时间的测试
+
+大家好，我是和田（@t_wada）。本文将对前些天（※ 2013/09/30）出的一道关于 TDD 的题目进行总评，同时思考一下可测试性设计。我出的题目如下。
+
+问1. 请一边使用测试框架编写测试代码，一边实现下面的规格。
+【规格1】
+想要实现一个根据"当前时间"分别返回如下问候语的功能。
+（时区为 Asia/Tokyo）
+- 早上（05:00:00 及以后、12:00:00 之前）返回「おはようございます」（早上好）
+- 白天（12:00:00 及以后、18:00:00 之前）返回「こんにちは」（你好）
+- 晚上（18:00:00 及以后、05:00:00 之前）返回「こんばんは」（晚上好）
+例：13 点调用 `greeter.greet()` 返回 "こんにちは"
+问2. 请一边使用测试框架编写测试代码，一边实现下面的规格。
+（※问2是选做题。如果觉得能解答，请挑战一下）
+【规格2】
+想要实现一个根据"当前时间"和"区域设置（locale）"分别返回如下问候语的功能。
+（但时区仍为 Asia/Tokyo）
+locale 为 'ja' 时
+- 早上（05:00:00 及以后、12:00:00 之前）返回「おはようございます」
+- 白天（12:00:00 及以后、18:00:00 之前）返回「こんにちは」
+- 晚上（18:00:00 及以后、05:00:00 之前）返回「こんばんは」
+locale 为 'en' 时
+- 早上（05:00:00 及以后、12:00:00 之前）返回「Good Morning」
+- 白天（12:00:00 及以后、18:00:00 之前）返回「Good Afternoon」
+- 晚上（18:00:00 及以后、05:00:00 之前）返回「Good Evening」
+例：在 locale 'en' 下于 18 点（JST）调用 `greeter.greet()` 返回 "Good Evening"
+注：本题请挑战包括访问 locale 的方式在内的设计与测试。
+换句话说，本题考的不是 i18n 库之类的用法。
+
+#### 看似简单
+
+看一下题目，这似乎并不是多难的功能。但是，有些东西乍看是简单的函数/方法，真要写测试时却会变成麻烦的对象。这次的题目——涉及当前时间的逻辑——就是一写测试就变麻烦的代表。出这道题的意图，就是要出一道看似简单、实际上需要做一些小设计判断的题。
+
+#### 为什么涉及当前时间的测试很难
+
+为什么涉及当前时间的测试很难？我故意写一个坏例子来说明。
+
+例如，假设 A 在 14 点编写了问1 的测试。14 点时 `greet()` 方法返回「こんにちは」，所以很容易写出下面这样的测试（代码示例是 JavaScript，但请把它看作一般测试框架的例子）。
+
+```
+test('greet メソッド', function () {
+    var greeter = new Greeter();
+    assert.equal(greeter.greet(), 'こんにちは')
+});
+```
+
+写完这段测试代码马上运行，测试当然会通过。A 认为功能已经完成，就提交到了版本控制系统。CI 服务器检测到提交并运行测试，同样成功。
+
+但是，快下班的时候团队里一阵骚动。CI 上的测试失败了。失败的是 A 在 14 点写的那个测试。最近一次提交是 B 做的，所以 CI 服务器把在测试失败前提交的 B 报告为"嫌疑人"，但 B 只是提交了完全无关的内容。真凶是 A。
+
+那么测试为什么失败了呢？大家应该已经明白了。因为过了 18 点。
+
+#### [要点] 好的单元测试是 Repeatable（可重复、可再现）的
+
+涉及当前时间的测试之所以难，是因为（也许理所当然）当前时间会影响被测对象的行为，测试结果随时间而变。
+
+好的单元测试必须是 **Repeatable（可重复、可再现）**的。
+
+Repeatable 指的是，只要运行测试，**无论何时、运行多少次都以同样的方式运行**。如果测试结果随环境或时间而变化，这个测试就不是 Repeatable 的。
+测试代码没有变化，却因情况不同时而通过时而不通过的测试，在《xUnit Test Patterns》一书中被称为 Erratic Test（不稳定的测试）。
+
+依赖当前时间的测试违反了"单元测试应当 Repeatable"的原则。
+
+也就是说，依赖当前时间的单元测试的可测试性设计，就是**为了能够写出无论何时、重复多少次、在几点运行都以同样方式运作的测试而进行的设计**。
+
+### 需要考虑的事情
+
+那么，解这道题时需要考虑哪些事情呢？具体来说，大概必须考虑以下几点。
+
+- 采用什么样的接口
+- 测试数据的选择
+- 如何使之可测试（采用什么样的内部结构）
+
+下面一边看各位解答者的代码，一边思考这几点。
+
+#### 采用什么样的接口
+
+采用什么样的接口，换句话说，就是应该如何设计从外部看到的行为。不过，这次的题目有一点偏向。关于接口，其实题目里用「例：13 点调用 `greeter.greet()` 返回 "こんにちは"」做了引导，所以很多人都设计了一个名为 `Greeter`、拥有无参方法 `greet()` 的类。
+
+但是，挑战者中有几位设计的不是 `Greeter#greet`，而是可以结合默认参数使用的 `Greeter#greet(time)` 这一接口。这一设计选择也会对测试产生影响。
+
+#### 测试数据的选择
+
+不能漫无目的地测试，还必须考虑应该测试的数据。需要考虑的是结果相同的值的范围及其边界。按这次题目的规格，应测试的值的候选大概有以下这些。
+
+- 00:00:00
+- 04:59:59
+- 05:00:00
+- 11:59:59
+- 12:00:00
+- 17:59:59
+- 18:00:00
+- 23:59:59
+
+（不过，真的是这样吗？毫秒怎么办？夏令时怎么办？请作为进阶问题思考一下。）
+
+#### 如何使之可测试（采用什么样的内部结构）
+
+到这里接口大致确定了，但这个功能还没有变得可测试。
+
+更准确地说，测试是可以写的，但**还没有做出能写出可再现测试的设计**。要写出可再现的测试，就必须能从测试中控制时间。
+
+接下来就是设计的用武之地了。关于如何从测试中控制时间，各位解答者的方针分为以下几种。
+
+- 简单地传给目标方法的参数
+- 介入内置类/方法/函数
+- 介入只有目标类使用的内置类
+- 在测试中创建目标类的测试用子类（Test-Specific Subclass）
+- 让测试成为目标类的子类并覆盖（Self Shunt）
+- 在测试中改写目标类特定方法的定义
+- 抽取出访问当前时间的接口
+
+下面，以针对问1 的代码为素材，逐个详细查看每种方法，同时每次也对测试代码的写法和改进点进行评审。
+
+### 方法1：简单地传给目标方法的参数
+
+在方法可以使用默认参数、或者调用方可以省略参数等的语言中，把当前时间作为未传入参数时的默认值，即使不为可测试性做特别的设计，也能简洁地写出测试。
+
+有好几位选择了传给目标方法参数的设计，我们从中看看 ciel 的代码。
+
+```
+class Greeter
+    def greet(time=nil)
+        time ||= Time.now
+        hour = time.hour
+        return 'おはようございます' if 5<=hour && hour<12
+        return 'こんにちは' if 12<=hour && hour<18
+        return 'こんばんは'
+    end
+end
+```
+
+代码量少、简洁易读，给人印象很好。ciel 的测试代码（RSpec）如下。
+
+```
+describe Greeter do
+    before do
+        @greeter=Greeter.new
+    end
+    specify 'morning' do
+        (5...12).each{|i|
+            @greeter.greet(Time.mktime(2000,1,1,i)).should eq 'おはようございます'
+        }
+    end
+    specify 'afternoon' do
+        (12...18).each{|i|
+            @greeter.greet(Time.mktime(2000,1,1,i)).should eq 'こんにちは'
+        }
+    end
+    specify 'night' do
+        [*18...24]+[*0...5].each{|i|
+            @greeter.greet(Time.mktime(2000,1,1,i)).should eq 'こんばんは'
+        }
+    end
+end
+```
+
+只要向目标方法传入时间对象即可，因此不需要为测试准备的机制，可以看出很容易测试。
+
+#### 这种方法的优点
+
+这种方法的优点，首先是依赖少、简单。选择这种方法时，Greeter 类不持有状态。影响 `greet` 方法返回值的只有参数，所以通过改变从测试传入的参数，各种测试都变得简单。结果只由参数决定、易于测试，从这些方面看，也可以说是接近函数式编程的风格。
+
+#### 这种方法的缺点
+
+这种方法在不能省略参数的语言中无法使用。另外，条件增多时需要下功夫。例如问2 增加了 locale，之后若再增加功能，条件还会继续增多。当对象的复杂度增加时，单纯增加参数的方法会到达极限。可能需要运用重构手法『引入参数对象』或函数式编程的知识，努力不让代码的复杂度上升。
+
+另外需要注意，在 Python 中，默认参数的求值不是在函数调用时，而是在函数定义语句求值时进行的，所以这种方法有可能成为缺陷的原因（参考：「Python のデフォルト引数に datetime.now を渡してはいけない（不要把 datetime.now 传给 Python 的默认参数）| レコチョク的工程师博客」）。
+
+#### 这段代码可以改进的地方
+
+如果吹毛求疵的话，作为 Ruby 代码还有改进余地，而且代码依赖于本地时区是 Asia/Tokyo，但就目前而言已经是足够简单的代码了。不过，测试的写法有可以改进的地方。那就是**测试方法内的循环**。
+
+（注：接下来要讲的与可测试性设计的方法无关，是关于单元测试写法的一般论。）
+
+#### [要点] 断言轮盘赌（Assertion Roulette）
+
+测试方法内的循环，是一种被称为断言轮盘赌（Assertion Roulette）的测试坏味道。关于 Assertion Roulette，我从刚才的测试代码中拿出一个测试方法来说明。
+
+```
+specify 'morning' do
+    (5...12).each{|i|
+        @greeter.greet(Time.mktime(2000,1,1,i)).should eq 'おはようございます'
+    }
+end
+```
+
+由于使用了 RSpec 和 Ruby 的语法，改写成 Java 风格大概是下面这样。断言写在循环里面。
+
+```
+@Test
+public void testMorning() {
+    Greeter greeter = new Greeter();
+    for (i = 5; i < 12; i++) {
+        assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,i)));
+    }
+}
+```
+
+为了说明，再改写成不使用循环的代码（由此产生的代码重复不是 Assertion Roulette 说明的本质，请暂时忽略）。循环展开后，断言纵向排了 7 行。
+
+```
+@Test
+public void testMorning() {
+    Greeter greeter = new Greeter();
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,5)));
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,6)));
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,7)));
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,8)));
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,9)));
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,10)));
+    assertEquals("おはようございます", greeter.greet(Time.mktime(2000,1,1,11)));
+}
+```
+
+Assertion Roulette 在测试顺利时没有任何问题，但在测试失败时就会露出獠牙。这个测试失败时，**很难知道是哪个断言失败了**。Assertion Roulette 这个名字，取的是不知道子弹在弹巢哪个孔里的俄罗斯轮盘赌的意象。
+
+从测试名无法看出是哪个断言失败了，所以必须通过从测试失败时的堆栈跟踪中找行号等方法，读出是第几行的断言失败了。如果是在本地运行测试还算容易读出，但在 CI 服务器上运行时，推断失败的断言有时会很困难。
+
+另外，比如说因为某种原因，测试在第 4 个断言（针对 8 点的断言）失败了。这时，9 点、10 点、11 点的断言结果怎么样了呢？答案是"不知道"。更准确地说，是"因为没有执行，所以不知道"。
+
+在一般的测试框架中，**断言失败时会抛出异常，该测试方法的执行就此中止**。如果 8 点的断言失败，该行之后的断言都没有执行。只有 8 点失败，还是 9 点以后也失败，因为没有执行所以不知道（顺便一提，属于 Perl 或 Go 测试文化的测试框架在断言失败后测试仍会继续，情况稍有不同）。
+
+由此可知，Assertion Roulette，也就是纵向排了好几行的断言、或写在循环中的断言，有以下问题：
+
+- 很难知道是哪条数据导致测试失败
+- 测试失败之后的断言不会执行
+
+为了避免 Assertion Roulette，请记住**尽量不要在测试方法内写控制结构**。条件分支自不必说，循环也是有点不妙的坏味道。请尽量用别的方法来应对测试的分情况和组合。
+
+#### [要点] 目标是"每个测试方法一个断言"
+
+为了避免 Assertion Roulette，想要达到的状态是**每个测试方法一个断言（one assertion per test）**。如果每个测试方法只有一个断言，测试失败时是哪个断言失败就不言自明。另外，努力让每个测试只有一个断言，测试的焦点会变得清晰，也更容易向测试的读者传达这段代码想测什么。请记住：比起一个测试很多东西的测试方法，有很多只测一件事的测试方法更好。
+
+#### [要点] 使用自定义断言
+
+只使用测试框架默认提供的断言，也容易成为 Assertion Roulette 的原因。对于比较大的对象，比如有很多待验证属性的对象，只用默认断言来写测试方法，很容易陷入 Assertion Roulette 状态。这种时候，就创建自定义断言（Custom Assertion）吧。
+
+自定义断言，是根据项目特有的情况自己编写的断言。这次的 Greeter 返回值是字符串，所以没什么创建自定义断言的余地，但可以想象成这样：不是对较大领域对象的状态、或拥有很多属性的数据类的每一个属性逐一写断言，而是自己编写一个整体验证数据类的断言。设计良好的自定义断言，能在减少每个测试断言数的同时，提高测试代码的可读性和失败时的易分析性。
+
+关于自定义断言，JUnit 可以参考「能简单实现 JUnit 自定义断言的 cmtest」，RSpec 可以参考「Custom matchers - RSpec Expectations」，PHPUnit 可以参考「PHPUnit 的扩展 - 创建自定义断言」等。
+
+#### [要点] 简单的代码与测试失败时信息之间的平衡
+
+在能够在测试方法之外构建控制结构的编程语言中，也有人选择至少在测试方法外循环，而不是在测试方法内循环。例如下面这样的代码。它创造出的不是一个有很多断言的测试方法，而是很多个只有一个断言的测试方法。
+
+```
+describe Greeter do
+  before do
+    @greeter = Greeter.new
+  end
+  context 'morning' do
+    (5...12).each do |i|
+      specify "at #{i} AM" do
+        @greeter.greet(Time.mktime(2000,1,1,i)).should eq 'おはようございます'
+      end
+    end
+  end
+  # ...省略...
+end
+```
+
+这样做就能摆脱 Assertion Roulette 状态。诀窍在于把数据连接到测试名上，这样断言失败时能分辨出是哪个测试失败了。
+
+#### [要点] 切勿过度
+
+话虽如此，即使是在测试方法之外，在测试中写循环还是会损害可读性。过度到循环变成两层，测试的可读性就已经相当糟糕了。与产品代码一样，测试代码没有重复、保持 DRY（Don't Repeat Yourself）的状态很重要，但切勿过度。
+
+**测试代码是表达意图的简单代码，这一点很重要**。当避免 Assertion Roulette 的代码与简单的代码无法兼顾时，选择简单的代码很重要。凡事过于执着都不好。
+
+不仅是简单性，测试失败时的行为也很重要，所以想要追求的是：在编写能避免 Assertion Roulette 等失败时信息不足的测试代码的同时，追求简单代码的态度。
+
+为了**在保持简单性和失败时信息粒度的同时，得到更能表达意图的测试**，也请考虑进入下一节的"参数化测试"。
+
+#### [要点] 参数化测试（Parameterized Test）
+
+"名字很重要"这一编程基本原则，当然也适用于测试方法名。要写出可读性高的测试，测试方法名非常重要。
+
+但是，像上面的测试代码那样，对同一个行为、只有数据不同的测试，用心做到 one assertion per test 以避免 Assertion Roulette，写着写着就常常会陷入难以给测试方法起名的境地。在测试方法外写循环时，也可以说处于"比起测试的名字，数据更重要"的状况。
+
+在编写测试内容几乎相同、只改变数据的测试方法（无论是列举还是循环）时，你可能会觉得要是能给测试方法传参数就好了。这种时候，请用**参数化测试（Parameterized Test）**这个关键词去查找测试框架的功能。Parameterized Test 正是一种把相似的测试方法只改变测试数据、执行多次的手段，多数情况下作为测试框架的扩展功能提供。
+
+请一定查一查你所用测试框架中参数化测试的写法。JUnit4 可以用 Parameterized 注解或 Theories 注解，JUnit5 可以用 ParameterizedTest 注解，PHPUnit 可以用数据提供器（data provider），RSpec 可以用 rspec-parameterized 等。在 JUnit 中写参数化测试时，结合利用内部类的嵌套结构测试会很有效。关于 JUnit4 中的嵌套测试和参数化测试，详情请阅读『JUnit 実践入門』（JUnit 实践入门）。在 JUnit5 中写嵌套测试时，可以参考「JUnit 5 User Guide - Nested Tests」。
+
+把这次用 RSpec 写的测试代码用 rspec-parameterized 改写，例如会变成下面这样的测试代码。能把测试数据从测试方法中分离出来，这一参数化测试的特点应该体现出来了吧。
+
+```
+require 'rspec'
+require 'rspec-parameterized'
+require_relative './greeter'
+
+describe Greeter do
+  def greet_at(anHour)
+    greeter = Greeter.new
+    greeter.greet(Time.mktime(2000, 1, 1, anHour))
+  end
+
+  where(:hour, :expected_greet) do
+    [
+     [0,  'こんばんは'],
+     # 中间省略
+     [4,  'こんばんは'],
+     [5,  'おはようございます'],
+     # 中间省略
+     [11, 'おはようございます'],
+     [12, 'こんにちは'],
+     # 中间省略
+     [17, 'こんにちは'],
+     [18, 'こんばんは'],
+     # 中间省略
+     [23, 'こんばんは'],
+    ]
+  end
+
+  with_them do
+    it { expect(greet_at(hour)).to eq(expected_greet) }
+  end
+end
+```
+
+另外，如何使用参数化测试，在本题的嘉宾解答者后藤先生的代码中也会出现，请一定读一读。
+
+### 方法2：介入内置类/方法/函数
+
+好，进入下一种方法。这次选择人数最多的，就是这种"介入内置类"的方法。
+
+具体来说，就是动态替换许多语言都具备的"返回当前时间的方法"，使得获取当前时间时返回测试中设定的时间。能选择这种方法的主要是动态类型语言，不过きんきん（kinkin）在 C# 4.0 中使用名为 Moles 的库介入了标准类。看来只要有办法，静态类型语言也能采用这种方法（※ Moles 之后似乎被整合进了 Visual Studio 的 Fakes Framework。参考：「使用 Microsoft Fakes 在测试中隔离代码 - Visual Studio | Microsoft Docs」）。
+
+作为这种方法测试代码的代表例，我们来看看 ynak 的测试代码（RSpec）。产品代码可以认为与上一节 ciel 代码的无参版本几乎相同。
+
+```
+describe Greeting do
+    subject do
+        greeter = Greeting.new
+        greeter.greet()
+    end
+    context 'at morning' do
+        it do
+            Time.stub(:now).and_return(Time.new(2013,10,12,5))
+            expect(subject).to eq("おはようございます")
+        end
+    end
+
+    context 'at noon' do
+        it do
+            Time.stub(:now).and_return(Time.new(2013,10,12,12))
+            expect(subject).to eq("こんにちは")
+        end
+    end
+
+    context ' at night' do
+        it do
+            Time.stub(:now).and_return(Time.new(2013,10,12,18))
+            expect(subject).to eq("こんばんは")
+        end
+    end
+end
+```
+
+上一节 ciel 的代码中也出现过，Ruby 通过 `Time.now` 这个单例方法返回当前时间。
+
+ynak 的测试代码使用测试框架 RSpec 的 `stub` 功能，把 `Time.now` 替换成假货，让它在每个测试中返回想要的值。例如写成 `Time.stub(:now).and_return(Time.new(2013,10,12,5))`，`Time.now` 就会返回 `Time.new(2013,10,12,5)` 的结果，而不是当前时间。
+
+#### [要点] 测试替身
+
+为了实现可再现的测试而替换真实对象的测试用假对象，称为**测试替身（Test Double）**。Double 可以理解为替身演员那样的意思。测试替身有多种类型，本题的各位解答者似乎多用**桩（Stub）**或**模拟对象（Mock）**。
+
+测试替身是减少单元测试依赖、提高可再现性的非常强大的技术。正因为太强大，也有容易被滥用、容易成为脆弱测试（后述）的原因等问题，但它可以说是编写单元测试时必备的技术，请一定掌握。
+
+关于测试替身、桩、模拟对象等更详细的分类和说明，请阅读 xUnit Test Patterns Wiki 的 Test Double 页面，以及「xUnit Test Patterns 的 Test Double 模式（Mock、Stub、Fake、Dummy 等的定义）- 千里霧中」。
+
+#### 这种方法的优点
+
+这种方法的优点与上一节的方法相同：目标类不需要为测试准备的机制（也就是说，之后介绍的方法中或多或少都会出现为测试准备的机制或代码）。
+
+"为测试而写的代码本来是不需要的代码"这一主张，在某种程度上是对的。借助动态类型语言的力量或模拟库的能力，产品代码不做任何针对测试的考虑也能写测试，这意味着即使在实现之后、即使是针对别人写的代码，也能轻松地写测试。
+
+#### 这种方法的缺点
+
+这种方法的缺点是其强大的反面。能力伴随着责任。改变内置类/方法/函数的行为，是影响很大的改动。
+
+例如替换返回当前时间的方法 `Time.now` 时，受影响的是所有直接或间接使用 `Time.now` 的部分。很多人会觉得影响范围比想象的要广吧。标准库是一种名人，所以会产生全局污染。强大与风险相伴。必须注意意想不到的副作用。
+
+因此，使用这种方法时，重要的是不要忘记测试后的善后处理。如果不把在测试中改变了行为的标准类/方法/函数恢复原样，就会影响其他测试。
+
+#### [要点] 好的单元测试是 Independent（独立的）
+
+当某个测试的内容作用于其他测试的结果时，这些测试之间就存在依赖关系。但是，好的单元测试之间不能有依赖关系，必须彼此**独立（Independent）**。
+
+测试之间通过 static 区域、全局变量、外部文件、数据库、Singleton 等连接在一起的测试，就不是 Independent 的。
+
+不 Independent 的单元测试会产生 Erratic Test（不稳定的测试），比如不按特定顺序就不通过的测试，或者整组一起运行能通过、单独运行却莫名不通过（或者相反）的测试。特别是测试在背后相连、相互作用的情况，称为 Interacting Tests（相互作用的测试）。
+
+另外，不 Independent 的单元测试还有无法并行执行的弱点。因为执行顺序存在依赖关系的测试必须串行执行。
+
+#### [要点] 不要忘记善后，让测试彼此独立
+
+为了让测试彼此独立，请在每个测试之后把测试中替换的行为恢复原样。另外，测试框架自带的模拟库中，有的会在每个测试结束时自动恢复被替换的行为。例如这次 ynak 使用的 RSpec 的 mock/stub 功能，就会在每个测试后自动恢复被替换的行为。
+
+不依赖框架、自己替换了行为时，请在每个测试方法结束时调用的钩子（多数情况下名为 `tearDown` 或 `afterEach` 等）中恢复被替换的行为。
+
+本次的解答者中，ishiduca 在 JavaScript 中为 `Date` 类自行编写了桩，并在 `teardown` 中恢复原样。
+
+```
+// ...省略...
+q.module('.greet', {
+    setup: function () {
+        var stub = this.stub = {}
+        this.getUTCHours = Date.prototype.getUTCHours
+        this.getUTCMinutes = Date.prototype.getUTCMinutes
+        Date.prototype.getUTCHours   = function () { return stub.hour }
+        Date.prototype.getUTCMinutes = function () { return stub.min }
+    }
+  , teardown: function () {
+        Date.prototype.getUTCHours = this.getUTCHours
+        Date.prototype.getUTCMinutes = this.getUTCMinutes
+        this.stub = null
+    }
+})
+
+q.test('.greet は時刻によって適切な挨拶を返すか', function (t) {
+    var stub = this.stub
+    var g = new Greet
+    function subt (gmtHour, min, result) {
+        stub.hour = gmtHour
+        stub.min  = min
+        t.is(g.greet(), result)
+    }
+    subt(0,  0, 'おはようございます') //  9:00
+    subt(2, 59, 'おはようございます') // 11:59
+    subt(3,  0, 'こんにちは') // 12:00
+    subt(8, 59, 'こんにちは') // 17:59
+    subt(9,  0, 'こんばんは') // 18:00
+    subt(15, 0, 'こんばんは') // 24:00
+    subt(19, 0, 'こんばんは') //  4:00
+})
+// ...省略...
+```
+
+顺便一提，ishiduca 使用的是继承了 Perl 系测试文化的测试框架 QUnit，所以即使在纵向排列的断言中途失败，也不会中止而会继续往下执行。不过要注意，如果不给 `t.is` 传入断言消息参数，最终还是会变成 Assertion Roulette。
+
+### 方法3：介入只有目标类使用的内置类
+
+这与"介入内置类"的方法相似，但 antimon2 用了一种别具一格的方法来处理测试。首先看看产品代码（Ruby）。没有什么特别值得一提的地方，是简单稳妥的代码。
+
+```
+class Greeter
+  def greet
+    time = Time.now
+    hms = time.hour * 10000 + time.min * 100 + time.sec
+    case hms
+    when 50000...120000
+      "おはようございます"
+    when 120000...180000
+      "こんにちは"
+    else
+      "こんばんは"
+    end
+  end
+end
+```
+
+再来看看测试代码（test::unit）。
+
+```
+require 'test/unit'
+
+class Greeter
+  # 继承顶层的 Time 类并改变其行为
+  class Time < ::Time
+    @@now = nil
+
+    def initialize *args
+      if !@@now.nil? && args.empty?
+        args = [@@now.year, @@now.mon, @@now.day, @@now.hour, @@now.min, @@now.sec]
+      end
+      super *args
+    end
+
+    class << self
+      def now= time
+        @@now = time
+      end
+
+      def now
+        @@now || new
+      end
+    end
+  end
+end
+
+class GreeterTest < Test::Unit::TestCase
+  # ...省略...
+  def test_greet_afternoon_1759
+    Greeter::Time.now = Time.local(2013, 10, 8, 17, 59, 59)
+    greeter = Greeter.new
+    result = greeter.greet
+    assert_equal("こんにちは", result)
+  end
+
+  def test_greet_evening_1800
+    Greeter::Time.now = Time.local(2013, 10, 8, 18, 0, 0)
+    greeter = Greeter.new
+    result = greeter.greet
+    assert_equal("こんばんは", result)
+  end
+  # ...省略...
+end
+```
+
+在测试代码开头重新打开 Greeter 类的定义，改写了从 Greeter 看到的 Time。这样一来，改写内置类 Time 行为的影响范围就限制在 Greeter 类之内了。作为缩小测试影响范围的机制，我觉得是很有趣的思路。
+
+#### 这种方法的优点
+
+这种方法的优点是产品代码不需要为测试而写的代码，而且影响范围比"介入内置类"的方法小。
+
+#### 这种方法的缺点
+
+这种方法的缺点与"介入内置类"方法的缺点相同。强大伴随着风险，所以使用时要小心，不要忘记善后。另外当然也必须写明，根据编程语言的不同，这是一种无法选择的方法。
+
+#### 这段代码可以改进的地方
+
+这段测试代码让人在意的是测试方法之间的代码重复很多。另外，设置当前时间的代码在每个方法中都裸露在外，成了噪音。由此引出下一个改进要点"**减少测试代码的噪音**"。
+
+#### [要点] 减少测试代码的噪音
+
+当测试代码中的重复增多、组装测试条件部分的代码变复杂时，稍微看一下就很难读出在测试什么。**在测试方法中，希望只写出与其他测试方法不同的地方，并且让差异突显出来**。
+
+例如在这次的代码中，把可以共通化的部分抽取到每个测试方法开始时的钩子方法 `setup` 中，设置当前时间的部分也抽取成方法，使得只需写每个测试不同的部分即可。这样就可以写成例如下面这样。
+
+```
+class GreeterTest < Test::Unit::TestCase
+  def setup
+    @greeter = Greeter.new
+  end
+
+  # ...省略...
+  def test_greet_afternoon_1759
+    set_current_time(17, 59, 59)
+    assert_equal("こんにちは", @greeter.greet)
+  end
+
+  def test_greet_evening_1800
+    set_current_time(18, 0, 0)
+    assert_equal("こんばんは", @greeter.greet)
+  end
+  # ...省略...
+
+  private
+
+  def set_current_time(hour, minute, second)
+    Greeter::Time.now = Time.local(2013, 10, 8, hour, minute, second)
+  end
+end
+```
+
+每个测试不同的地方变得突出，可以看出测试的可读性提高了吧。减少噪音是作为测试代码重构可以轻松迈出的第一步，请一定尝试。
+
+### 方法4：在测试中创建目标类的测试用子类（Test-Specific Subclass）
+
+下一种方法，是在测试中部分覆盖目标类行为的方法。把获取当前时间的部分做成方法，只在测试中覆盖这个方法。用测试用子类覆盖被测对象一部分的方法，是一种还有 Test-Specific Subclass 这个名字的标准手法。
+
+解答者中，kencharos 采用了这种方法。来看看产品代码（Java）。
+
+```
+public class Greeter {
+  private static final int MORNING = 50000;
+  private static final int NOON = 120000;
+  private static final int NIGHT = 180000;
+
+  protected Calendar current() {
+    return Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
+  }
+
+  public String greet() {
+    Calendar cal = current();
+    int hh = cal.get(Calendar.HOUR_OF_DAY);
+    int mm = cal.get(Calendar.MINUTE);
+    int ss = cal.get(Calendar.SECOND);
+    int time = hh * 10000 + mm * 100 + ss;
+    if (MORNING <= time && time < NOON) {
+      return "おはようございます";
+    } else if (NOON <= time && time < NIGHT) {
+      return "こんにちわ";
+    } else {
+      return "こんばんわ";
+    }
+  }
+}
+```
+
+在 kencharos 的代码中，`current` 方法是被覆盖的目标方法。方针是在测试中创建只覆盖了这个方法的实例，并用于测试。
+
+来看看测试代码（JUnit 4.4）。
+
+```
+public class GreeterTest {
+  private Greeter setTime(final int hh, final int mm, final int ss) {
+    return new Greeter() {
+      protected Calendar current() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hh);
+        cal.set(Calendar.MINUTE, mm);
+        cal.set(Calendar.SECOND, ss);
+        return cal;
+      }
+    };
+  }
+  @Test
+  public void testMorningStert() {
+    Greeter greeter = setTime(5,0,0);
+    assertThat(greeter.greet(), is("おはようございます"));
+  }
+  @Test
+  public void testMorningEnd() {
+    Greeter greeter = setTime(11,59,59);
+    assertThat(greeter.greet(), is("おはようございます"));
+  }
+  // ...以下省略...
+```
+
+继承 Greeter 类并返回测试用实例的是 `setTime` 方法。从各个测试方法传入时、分、秒，下功夫让测试可再现。
+
+kencharos 测试代码的好处是每个测试方法的**噪音很少**。每个测试方法把准备、执行、验证归纳成了 2 行。容易变得繁杂的时间控制代码被切分到方法中，所以每个测试方法只需写数据，成了易读的测试代码。
+
+#### 这种方法的优点
+
+这种方法的优点是简单。只要是面向对象语言，无论动态还是静态都能选择这种方法，即使测试框架没有模拟功能等也能进行测试。为测试而覆盖了行为的部分简单地写在测试类里，所以容易看清全貌，这也算是优点。
+
+#### 这种方法的缺点
+
+这种方法的缺点是，产品代码一侧需要为可测试性准备的机制。
+
+要从测试中覆盖产品代码的一部分，测试代码就必须了解产品代码的内部。可以说这是耦合度高的状态。如果被测对象的实现变了，测试代码一侧也必须记得跟着改。
+
+另外，由于产品代码结构的知识有一部分流到了测试代码中，测试无法完全成为"从外部看到的行为的验证"。也就是说，**它变成了实现的测试，而不是规格的测试**。
+
+#### [要点] 脆弱的测试（Fragile Test）
+
+规格没有变、实现一变就失败的测试，在实现的知识泄漏到测试代码中时容易发生。也就是说，有可能是不必要地依赖于实现的测试。像这样在不该失败的时候失败的测试，称为脆弱的测试（Fragile Test）。对于在莫名其妙的时候失败的测试，请注意它是否变成了实现的测试。
+
+#### 这段代码可以改进的地方
+
+这已经是相当干净的那一类测试代码了，硬要挑改进点的话，从 `setTime` 这个名字很难想象它会返回 Greeter 子类的实例，如果这一点能改进，测试代码会更易读。再吹毛求疵一点，还想改正测试方法名的拼写错误等（译注：`testMorningStert` 应为 Start）。由此引出另一个改进点"**日语测试方法**"。
+
+#### [要点] 日语测试方法
+
+日语测试方法是这样一种想法：**在用日语沟通的项目中，用日语写测试方法名不也可以吗**。也可以换种说法：与其用别扭的英语描述再用注释补充，不如一开始就用日语写。用英语难以写出的细微差别等，用母语日语也许就能写出来。
+
+```
+@Test
+public void 朝の挨拶開始時刻は午前5時から() {
+  Greeter greeter = setTime(5,0,0);
+  assertThat(greeter.greet(), is("おはようございます"));
+}
+@Test
+public void 朝の挨拶終了時刻は午前11時59分59秒まで() {
+  Greeter greeter = setTime(11,59,59);
+  assertThat(greeter.greet(), is("おはようございます"));
+}
+```
+
+（译注：两个方法名的意思分别是"早上问候的开始时间是上午 5 点起"和"早上问候的结束时间截至上午 11 点 59 分 59 秒"。）
+
+日语测试方法还有一个好处。**在满是英文字母、数字和符号的代码与输出中，日语格外醒目**。
+
+我们故意把测试方法的内容改写成会失败的样子，看看失败时的输出。
+
+```
+    JUnit version 4.11
+    ...E...E
+    Time: 0.013
+    There were 2 failures:
+
+    1) 朝の挨拶終了時刻は午前11時59分59秒まで(GreeterTest)
+    java.lang.AssertionError:
+    Expected: is "おそようございます"
+         but: was "おはようございます"
+        at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:20)
+        at org.junit.Assert.assertThat(Assert.java:865)
+        at org.junit.Assert.assertThat(Assert.java:832)
+        at GreeterTest.朝の挨拶終了時刻は午前11時59分59秒まで(GreeterTest.java:27)
+
+    2) 朝の挨拶開始時刻は午前5時から(GreeterTest)
+    java.lang.AssertionError:
+    Expected: is "おはよう"
+         but: was "おはようございます"
+        at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:20)
+        at org.junit.Assert.assertThat(Assert.java:865)
+        at org.junit.Assert.assertThat(Assert.java:832)
+        at GreeterTest.朝の挨拶開始時刻は午前5時から(GreeterTest.java:22)
+```
+
+在讲 Assertion Roulette 时说过"很难知道是哪个断言失败了"，如果测试名也不好好起，最终还是得读代码去查是哪个测试失败了。如果测试名用日语恰当地写好了，只看失败测试的输出就能知道是什么样的测试失败了。条件合适的话，请一定考虑日语测试方法。
+
+关于日语测试方法的讨论，可以在「关于用日语写测试方法 - Togetter」以及「关于日语测试方法」等处读到。
+
+### 方法5：让测试成为目标类的子类并覆盖（Self Shunt）
+
+上一节的方法是在测试中创建被测类的子类。把这个想法再推进一步，就会得出这样的点子：既然为了让被测对象可测试而创建子类，那干脆让测试类本身成为被测类的子类不就好了？这种方法还有 Self Shunt（自分流）这个名字，其实是一种正统的技术。
+
+这次 anagotan 用 Self Shunt 方法解了这道题。我没想到解答者中会有人使用 Self Shunt，所以相当惊讶。首先来看 anagotan 的代码（Java）。
+
+```
+public class Greeter{
+
+    // 返回当前时间
+    public Date getDate(){
+        return new Date();
+    }
+
+    public String greet(){
+        SimpleDateFormat df=new SimpleDateFormat("HH");
+        int now=Integer.parseInt(df.format(getDate()));
+        if(5<=now && now<12){
+            return "おはようございます";
+        }else if(12<=now && now<18){
+            return "こんにちは";
+        }else{
+            return "こんばんわ";
+        }
+    }
+}
+```
+
+接下来看看使用了 Self Shunt 技术的测试代码（JUnit4）。
+
+```
+public class GreeterTest extends Greeter{
+    // 设为 static
+    private static Date date;
+
+    @Override
+    public Date getDate(){
+        // 为测试而覆盖
+        return date;
+    }
+
+    @Test
+    public void test(){
+        testWithHour(0,0,0,"こんばんわ");
+        testWithHour(4,59,59,"こんばんわ");
+        testWithHour(5,0,0,"おはようございます");
+        testWithHour(8,0,0,"おはようございます");
+        // ...以下省略...
+    }
+
+    private void testWithHour(int hour,int minute,int second,String answer){
+        Calendar now=Calendar.getInstance();
+        //设置测试用的时间
+        now.set(Calendar.HOUR_OF_DAY, hour);
+        now.set(Calendar.MINUTE, minute);
+        now.set(Calendar.SECOND, second);
+        date=now.getTime();
+        Assert.assertEquals(new GreeterTest().greet(),answer);
+    }
+}
+```
+
+GreeterTest 之所以能继承 Greeter，是因为 JUnit4 没有测试用的父类。只要是不继承特定父类也能写测试的测试框架，就可以采用 Self Shunt 方法。
+
+#### 这种方法的优点
+
+这种方法的优点是，由于测试类本身继承了被测类，从测试中访问目标类的内部状态会变得容易。测试类是被测类的子类，因此很容易写出覆盖目标任意方法、或查看被测对象内部实例变量状态的测试。
+
+#### 这种方法的缺点
+
+这种方法的缺点基本上与"在测试中创建目标类的测试用子类"方法相同，但 Self Shunt 的优缺点更加鲜明。由于测试类本身继承了被测类，测试代码与产品代码的耦合度更高。因此，陷入脆弱测试（Fragile Test）的危险也更高。
+
+另外也需要注意，根据编程语言或测试框架的不同，有时无法继承被测对象，那么根本无法选择 Self Shunt 方法。
+
+#### 这段代码可以改进的地方
+
+这段代码大致有三个可以改进的地方。
+
+- 成了 Assertion Roulette
+- 测试中的 `date` 变量没有必要是 static
+- `Greeter#getDate` 没有必要是 public
+
+首先，一个测试方法中纵向排列着断言（内含断言的方法），成了典型的 Assertion Roulette，所以请按测试数据拆分测试方法。另外，如果想用循环等表达测试的变化，由于 Java 没有能把测试用控制结构写在测试方法外的灵活性，最好一步到位地采用理想状态——参数化测试（Parameterized Test）。
+
+#### [要点] 避免 static，切断测试方法之间的依赖关系
+
+其次，测试中的 `date` 变量也没有必要是 static。**一旦设为 static，就会在测试方法之间产生隐式依赖关系**。隐式依赖关系违反了"单元测试应当彼此独立（Independent）"的原则，会成为 Interacting Tests 的原因。
+
+多数测试框架**会为每个测试方法实例化测试类**。也就是说，static 区域在测试方法之间共享，而实例变量不共享。测试中使用的数据，请使用每次都会生成/销毁的实例变量。
+
+至于测试框架为什么要为每个测试方法实例化测试类，请阅读「JUnit 新实例」。
+
+#### [要点] 降低只用于测试的部分的可见性
+
+最后，`Greeter#getDate` 没有必要是 public。由于使用了 Self Shunt，即使不是 public 也能覆盖，而且 `getDate` 方法与 Greeter 类的职责并没有直接关系。**只用于测试的部分，请尽量降低其可见性**。
+
+至于从测试中覆盖的对象设为什么可见性，在 Java 中设为 protected 或被称为 default（package private）的可见性比较妥当。也可以用反射介入 private 方法，但这会进一步不必要地依赖实现，令人头疼。由此引出下一个要点。
+
+#### [要点] private 方法与测试
+
+写单元测试时，经常会遇到"private 方法怎么办"的问题。想用反射等测试 private 方法、或为了测试想调用 private 方法时，最好把它看作某种不对劲的征兆。**想去碰 private，是被测对象承担了过多职责的信号**。与其硬着头皮直接用反射，不如通过重构来解决，多数情况下会带来更好的结果。关于 private 方法与测试的讨论，也请阅读「私有方法的测试就是不写的吗？」。
+
+### 方法6：在测试中改写目标类特定方法的定义
+
+作为继承目标类方法的一个变种，还有利用动态类型语言的特性、介入目标类定义的方法。就是使用语言本身的功能或测试框架的测试替身功能，在每个测试中对被测类的定义稍作改写后执行。
+
+各位解答者中，ushiboy 用这种方法解了题。来看看产品代码（JavaScript）。
+
+```
+// ...省略...
+/**
+ * 返回当前时间的问候语
+ *
+ * @return {String} 问候语
+ */
+Greeter.prototype.greet = function() {
+    // 当前时间
+    var now = this.getNow(),
+        // 上午的开始时间戳
+        amForm = (new Date(now)).setHours(0, 0, 0, 0) + 5 * 60 * 60 * 1000,
+        // 下午的开始时间戳
+        pmFrom = amForm + 7 * 60 * 60 * 1000,
+        // 傍晚的开始时间戳
+        nightFrom = pmFrom + 6 * 60 * 60 * 1000;
+    if (now >= amForm && now < pmFrom) {
+        return this.messages.am;
+    } else if (now >= pmFrom && now < nightFrom) {
+        return this.messages.pm;
+    }
+    return this.messages.night;
+};
+
+/**
+ * 以时间戳返回当前时间
+ *
+ * @private
+ * @return {Number} 当前时间
+ */
+Greeter.prototype.getNow = function() {
+    return Date.now();
+};
+// ...省略...
+```
+
+`getNow` 方法就是获取当前时间的方法。接下来看看测试代码（Jasmine）。
+
+```
+describe('#greet', function() {
+    it('朝の場合おはようございますを返す', function() {
+        var date = new Date();
+        spyOn(Greeter.prototype, 'getNow')
+          .andReturn(date.setHours(5, 0, 0, 0))
+          .andReturn(date.setHours(11, 59, 59, 999));
+        var greeter = new Greeter();
+        expect(greeter.greet()).toBe('おはようございます');
+        expect(greeter.greet()).toBe('おはようございます');
+    });
+    it('昼の場合こんにちはを返す', function() {
+        var date = new Date();
+        spyOn(Greeter.prototype, 'getNow')
+          .andReturn(date.setHours(12, 0, 0, 0))
+          .andReturn(date.setHours(17, 59, 59, 999));
+        var greeter = new Greeter();
+        expect(greeter.greet()).toBe('こんにちは');
+        expect(greeter.greet()).toBe('こんにちは');
+    });
+    // ...以下省略...
+});
+```
+
+使用 Jasmine 的测试替身功能 `spyOn` 方法，在 Greeter 实例化之前介入 `Greeter#getNow` 的定义，使其返回测试中指定的 Date。也可以说它定位于"在测试中创建目标类的测试用子类"方法的动态类型语言版。
+
+这段测试代码的每个测试方法中各有 2 行断言。为什么有 2 行，稍微看一眼可能难以读出意图，其实这与模拟库的一个常见功能有关。
+
+```
+spyOn(Greeter.prototype, 'getNow')
+  .andReturn(date.setHours(12, 0, 0, 0))
+  .andReturn(date.setHours(17, 59, 59, 999));
+```
+
+这一部分把 `Greeter#getNow` 方法的定义改写为：`getNow` 第 1 次被调用时返回 `date.setHours(12, 0, 0, 0)`，第 2 次被调用时返回 `date.setHours(17, 59, 59, 999)`。也就是让方法的返回值在第 1 次和第 2 次不同。能按每次调用改变返回值的功能，也是模拟库强大的地方。
+
+#### 这种方法的优点
+
+这种方法的优点是不需要创建子类，比使用继承的方法更轻便。另外，虽然使用继承的方法借助匿名内部类等也能做到，但它可以在每个测试方法中改变行为。
+
+#### 这种方法的缺点
+
+这种方法的缺点基本上与"在测试中创建目标类的测试用子类"相同。此外，由于在运行时改写了类定义，需要在测试后进行恢复定义之类的善后处理。请查一下测试框架或模拟库是否会自动恢复定义，如果不会，就需要自己恢复。
+
+另外，这不直接是这种方法的缺点，但这次的代码中，被覆盖的方法名 'getNow' 是以字符串描述的。**请注意，以字符串描述待修改方法的风格的库，很容易忘记随被测对象的变更而同步修改**。
+
+#### 这段代码可以改进的地方
+
+就这次的对象而言，使用按模拟调用次数改变返回值的功能可能有点过度了。它也成了测试代码中产生重复和噪音的原因。进行减少测试代码噪音的重构，分成早上、白天、晚上等子上下文，在各自之中形成多个各做一次断言的测试方法，不是更好吗？
+
+### 方法7：抽取出访问当前时间的接口
+
+好，本文介绍的最后一种方法是"抽取出访问当前时间的接口"。之前的方法基本上都是由一个产品代码类和一个测试代码类构成的。但在这种方法中，Greeter 类不自己获取当前时间，而是为了获取当前时间**与另一个对象（协作者，collaborator）交互**。
+
+作为这种方法的代表性代码，我们来看看 tdoi 的代码。
+
+首先，tdoi 把访问当前时间的接口命名为 `Environment`，只定义了对问1 而言必要且充分的 `getHour` 方法。
+
+```
+public interface Environment {
+    public int getHour();
+}
+```
+
+另外，还创建了与 Environment 接口配对的默认实现 `DefaultEnvironment`。这个 DefaultEnvironment 就是返回当前时间中小时部分的实现。
+
+```
+import java.util.Calendar;
+
+public class DefaultEnvironment implements Environment {
+    public int getHour() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+}
+```
+
+在这种方法中，**Greeter 类不知道当前时间**。它只知道谁知道当前时间。也就是说，Greeter 只承担一项职责：从实现了 Environment 接口的协作者那里获取当前时间，并返回问候语。
+
+```
+public class Greeter {
+
+    Environment environment = new DefaultEnvironment();
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public String greet() {
+        int hour = this.environment.getHour();
+        if (0 <= hour && hour < 12) {
+            return "おはようございます";
+        } else if (12 <= hour && hour < 18) {
+            return "こんにちは";
+        } else {
+            return "こんばんは";
+        }
+    }
+}
+```
+
+实例变量 `environment` 默认设置了 DefaultEnvironment 类的实例，所以只要没被测试等替换，Greeter 就会从 DefaultEnvironment 获取当前时间，返回与当前时间相符的问候语。
+
+（译注：这段代码中早上的判断条件是 `0 <= hour`，与规格中 5 点开始不符，原文如此；后文"测试数量不足"的点评也与此相关。）
+
+下面来看测试代码。
+
+```
+import static org.junit.Assert.*;
+import org.junit.*;
+import org.jmock.Mockery;
+import org.jmock.Expectations;
+
+public class GreeterTest {
+
+    Mockery context = new Mockery();
+
+    Greeter greeter = null;
+    Environment environment = null;
+
+    @Before
+    public void setUp() {
+        environment = context.mock(Environment.class);
+        greeter = new Greeter();
+        greeter.setEnvironment(environment);
+    }
+
+    @Test
+    public void responseShouldBeOhayogozaimasuAt0500() {
+        responseShouldBeExpectedWord(5, "おはようございます");
+    }
+
+    @Test
+    public void responseShouldBeKonnichiwaAt1200() {
+        responseShouldBeExpectedWord(12, "こんにちは");
+    }
+
+    @Test
+    public void responseShouldBeKonbanwaAt1800() {
+        responseShouldBeExpectedWord(18, "こんばんは");
+    }
+
+    private void responseShouldBeExpectedWord(int hour, String expected) {
+        final int currentHour = hour;
+        context.checking(new Expectations() {{
+            oneOf (environment).getHour(); will (returnValue(currentHour));
+        }});
+
+        String response = greeter.greet();
+
+        context.assertIsSatisfied();
+        assertEquals(expected, response);
+    }
+}
+```
+
+这里测试使用的库是 jMock2，一个模拟库，《实践测试驱动开发》（Growing Object-Oriented Software, Guided by Tests）的两位作者（Steve Freeman、Nat Pryce）也参与了它的开发。其实这两位还参与了模拟对象（mock object）的发现。
+
+在测试的准备部分（带 `@Before` 注解的方法会在每个测试方法前执行）调用 `context.mock(Environment.class)`，创建 Environment 接口的测试用假货（模拟对象），并使用 Greeter 的 `setEnvironment` 方法，事先把 Greeter 使用的 Environment 实例替换为测试用的模拟对象。
+
+每个测试分别设置模拟对象返回的值，测试是否有与时间对应的回答。
+
+产品代码和测试代码都被切分成了粒度适当的类/方法，我认为是平衡良好、稳妥的代码。印象相当好。
+
+另外，嘉宾解答者后藤先生也使用了"抽取出访问当前时间的接口"的方法。后藤先生做了什么样的设计，请一定读一读。
+
+#### 这段代码可以改进的地方
+
+一眼就能看出，测试数量有些不足。请一边注意 Assertion Roulette，一边补上缺少的测试。另外，目前已经是可读性足够高的测试代码，但如果使用日语测试方法，可读性会更高。
+
+另外，jMock2 很强大，但需要一些取巧的写法，最好与其他模拟库比较研究后再引入。例如，同样用 Java、用"抽取出访问当前时间的接口"方法解题的 Touchu 使用的是 mockito 这个库。模拟库的表达力会直接影响测试的可读性和易修改性，所以库的选择非常重要。
+
+#### 这种方法的优点
+
+这种方法的优点在于，它其实并没有引入为测试准备的机制。它是**通过设计变更而非技巧**，**从正门（替换协作者）而不是后门（覆盖实现）**进入，使得能够测试。
+
+它不是改写被测对象的内部，而是调包与被测对象交互的协作者。被测对象和平时一样只是在和 Environment 对象对话，所以没有为测试而覆盖被测对象的那种强硬。要点在于，**能够依据从外部看到的行为、而非被测对象的内部实现来进行测试**。
+
+Environment 的职责是以 `int` 返回当前时间的小时部分。而 Greeter 的职责是向 Environment 询问当前时间的数值，并根据该值返回问候语内容。各自的职责都很清晰。登场人物增加到了两个，但交换的信息只剩下 int。
+
+DefaultEnvironment 也需要单独测试，但它只需测试返回当前时间的小时部分，所以测试难度降低了。职责变简单了，所以即使不使用本文中的其他方法，应该也能写出测试吧。
+
+#### [要点] 在与外部环境的界面上创建接口，用测试替身替换
+
+关于当前时间的设计判断，其实不只是测试的问题。那个时间会被怎样使用呢？当规格里写着"保存当前时间"之类的内容时，需要好好想一想：它是否真的需要严格的当前时间？是否应该实现成在各处用 `Time.now` 等去获取？当前时间当然会随处理的时机而变化。处理耗时较长时，如果存在依赖当前时间的逻辑，可能会导致运行异常；之后筛选数据时，也无法按时间完全匹配来查找。
+
+例如在 Web 系统中，有时会事后发现，规格中所说的"当前时间"其实是请求的时间戳。如果获取当前时间的方法散布在代码各处，就必须逐个验证并修改。如果像 tdoi 那样抽取成了接口，只要新建并使用一个返回请求时间的 `Environment` 实现即可，修改之处就只有新增的类和使用配置部分。
+
+我经常做这样的设计判断：在从代码的世界、对象们的世界访问外部环境的界面部分创建接口，使之可以用测试替身替换。我认为当前时间也是与外部的界面。当前时间如今随着强大库的出现变得容易控制了，但也正因为强大而有副作用，依然是棘手的对手。此外，依赖外部网络的部分，例如调用外部 Web API 的部分，也最好借助测试替身使之可测试，这样就能写出不依赖外部状况的测试。
+
+关于当前时间的设计判断，详情请阅读「コード内で「現時刻」を気軽に取得してはいけない（不要在代码中随手获取"当前时间"）| Nekoya press」。
+
+#### 这种方法的缺点
+
+这种方法的缺点是，**有时容易招致"过度"**。
+
+从类和文件的数量比其他方法多也能看出，这种方法是通过职责的分离、重新配置以及设计变更来解决问题的。
+
+如果为测试而做的设计促使职责重新配置，整体上职责变得平衡而简单，那就说明测试引导我们走向了好的设计。但如果为测试而做的设计招致了更多的复杂性，那就是"过度"了。
+
+#### [要点] 把测试当作设计工具来使用
+
+写测试，会更容易注意到必要且充分的设计。
+
+设计是一个没有尽头的世界。而且，对设计想得太多，就很难察觉自己正踏入没有尽头的世界。这种时候，从测试的结果，也就是具体的目标出发去思考，就能从"这个也能做、那个或许也能做、还有那种做法啊"的飘忽状态，回到焦点清晰的状态。
+
+伴随测试代码一起进行设计和实现，由于写代码、并立即使用写好的代码，就会产生对设计的反馈。实际开始写测试和代码后，常常会发现只做设计时想得过多，实际上更简单就好。或者反过来，也常遇到设计时考虑不足，实际写代码或用具体值测试时马上就发现考虑欠缺的情况。
+
+写测试是从没有尽头的设计世界回到现实的契机之一。好的设计随情况而变。**请活用测试，以便从必要且充分的简单设计，毫无不安地迁移到下一个简单设计**。
+
+### 总结1：参与语言与方法的分布
+
+到这里，我们看完了这次所有的方法。在这次的题目中，为可测试性采用的方法大致分为 4 种。
+
+- 用参数传入当前时间
+- 介入时间库
+- 部分覆盖被测对象
+- 引入用于访问时间的协作者
+
+我把各位参与者的方法归纳成了下表。
+
+| 名字 | 语言 | 测试框架 | 方法 | 方法详情 |
+|---|---|---|---|---|
+| ciel | Ruby 2.0 | RSpec 2.14 | 用参数传入当前时间 | 把日期作为参数传给 greet 方法 |
+| こねこねこ | PHP 5.5 | 测试用 main | 用参数传入当前时间 | 把日期作为参数传给 greet 方法 |
+| ganchiku | PHP 5.4 | phpspec 2.0 | 用参数传入当前时间 | 向 greet 传参 & 模拟所传的日期 |
+| tbpgr | Ruby 1.9.3 | RSpec 2.14 + Timecop | 介入时间库 | 用 Timecop 固定标准库返回值 |
+| ynak | Ruby 1.9.3 | Rspec 2.14 | 介入时间库 | 用 RSpec 对标准库做 stub |
+| ishiduca | JavaScript | QUnit & qunit-tap | 介入时间库 | 对标准库自制 stub |
+| TatsushiD | Perl | Test::More | 介入时间库 | 在测试中覆盖标准函数 |
+| きんきん | C#4.0 | Visual Studio 2010 | 介入时间库 | 用 Moles 对标准库做 stub |
+| antimon2 | Ruby 2.0 | test::unit | 介入时间库 | 用自制子类对标准库做 stub |
+| kencharos | Java7 | JUnit 4.4 | 部分覆盖被测对象 | 在测试内子类中覆盖自制方法 current |
+| anagotan | Java7 | JUnit 4 | 部分覆盖被测对象 | 对被测类使用 Self Shunt |
+| ushiboy | JavaScript | Jasmine | 部分覆盖被测对象 | 对被测对象的方法 getNow 做 stub/spy |
+| tdoi | Java | JUnit 4 + JMock 2.6 | 引入用于访问时间的协作者 | 创建 Environment 对象并模拟 & setter 注入 |
+| Touchu | Java7 | JUnit 4.11 + Mockito 1.9.5 | 引入用于访问时间的协作者 | 模拟当前时间的 Factory & 构造函数注入 |
+
+这些方法中，没有哪一个是绝对的正确答案。本文说明了这些方法全都有优点和缺点。可测试性设计也会因编程语言动态/静态的性格、测试框架、模拟库的能力而不同。重要的是根据情况选择简单而恰当的方法。
+
+### 总结2：测试代码的要点
+
+最后，把在各个改进点部分逐一说明过的"要点"归纳一下。一边思考这些要点一边写测试代码，应该就能看到考虑了可测试性的设计。请各位读者也以本文为参考，一定思考一下自己代码的可测试性设计。
+
+#### 好的单元测试是 Repeatable（可重复、可再现）的
+
+- 熟练运用测试替身
+- 在与外部环境的界面上创建接口，用测试替身替换
+
+#### 好的单元测试是 Independent（独立的）
+
+- 不要忘记善后，让测试彼此独立
+- 避免 static，切断测试方法之间的依赖关系
+
+#### 注意断言轮盘赌（Assertion Roulette）
+
+- 目标是"每个测试方法一个断言"（但切勿过度）
+- 使用自定义断言
+- 熟练运用参数化测试（Parameterized Test）
+
+#### 注意脆弱的测试（Fragile Test）
+
+- 降低只用于测试的部分的可见性
+- 想处理 private 方法时要当心
+
+#### 把测试当作设计工具来使用
+
+- 减少测试代码的噪音
+- 尝试日语测试方法
+- 考虑简单代码与测试失败时信息之间的平衡
+
+### 参考文献
+
+xUnit Test Patterns: Refactoring Test Code (Addison-Wesley Signature Series (Fowler))
+
+- 作者：Meszaros, Gerard
+- 发售日：2007/05/21
+- 媒介：精装本
+
+実践テスト駆動開発 (Object Oriented SELECTION)（《实践测试驱动开发》，原书 Growing Object-Oriented Software, Guided by Tests）
+
+- 作者：Steve Freeman, Nat Pryce
+- 发售日：2012/09/14
+- 媒介：大开本
+
+JUnit実践入門 ~体系的に学ぶユニットテストの技法 (WEB+DB PRESS plus)（《JUnit 实践入门：系统学习单元测试技法》）
+
+- 作者：渡辺 修司
+- 发售日：2012/11/21
+- 媒介：平装本
+
+本文以知识共享 — 署名 4.0 国际 — CC BY 4.0 许可公开。

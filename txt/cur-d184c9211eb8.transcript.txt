@@ -1,0 +1,234 @@
+https://huyenchip.com//2023/08/16/llm-research-open-challenges.html
+
+# 大模型研究的开放挑战
+
+［LinkedIn 讨论、Twitter 讨论串］
+
+我这辈子从没见过这么多聪明人在为同一个目标努力：让大语言模型（LLM）变得更好。在和许多来自业界和学界的人交流之后，我注意到浮现出了十个主要的研究方向。前两个方向——幻觉和上下文学习——可能是当下讨论最多的。而我最感兴趣的是第 3 个（多模态）、第 5 个（新架构）和第 6 个（GPU 替代品）。
+
+## 1. 减少并度量幻觉
+
+幻觉已经被讨论得很多了，所以我简单说。幻觉就是 AI 模型凭空编造内容。对许多创意类用例来说，幻觉是一种特性；但对大多数其他用例来说，幻觉是一个缺陷。我最近参加了一个关于 LLM 的圆桌讨论，同台的有 Dropbox、Langchain、Elastic 和 Anthropic，他们认为企业在生产环境中采用 LLM 的头号障碍就是幻觉。
+
+缓解幻觉、开发度量幻觉的指标，是一个正在蓬勃发展的研究课题，我也看到很多创业公司专注于这个问题。此外还有一些减少幻觉的临时技巧，比如在提示词中加入更多上下文、使用思维链（chain-of-thought）、自洽性（self-consistency），或者要求模型回答得简洁一些。
+
+想进一步了解幻觉：
+
+- Survey of Hallucination in Natural Language Generation（Ji 等，2022）
+- How Language Model Hallucinations Can Snowball（Zhang 等，2023）
+- A Multitask, Multilingual, Multimodal Evaluation of ChatGPT on Reasoning, Hallucination, and Interactivity（Bang 等，2023）
+- Contrastive Learning Reduces Hallucination in Conversations（Sun 等，2022）
+- Self-Consistency Improves Chain of Thought Reasoning in Language Models（Wang 等，2022）
+- SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models（Manakul 等，2023）
+- NVIDIA NeMo-Guardrails 给出的一个关于事实核查与幻觉的简单示例
+
+## 2. 优化上下文长度与上下文构建
+
+绝大多数问题都需要上下文。比如我们问 ChatGPT：“最好的越南餐馆是哪家？”所需的上下文就是“在哪里”，因为越南最好的越南餐馆和美国最好的越南餐馆显然不同。
+
+根据一篇很酷的论文 SituatedQA（Zhang & Choi，2021），相当比例的信息检索类问题的答案依赖于上下文，例如在 Natural Questions 的 NQ-Open 数据集中大约占 16.5%。我个人猜测，在企业用例中这个比例会更高。比如一家公司为客服搭建聊天机器人，要让它回答任何客户关于任何产品的问题，所需的上下文可能就是该客户的历史记录或该产品的信息。
+
+由于模型是从提供给它的上下文中“学习”的，这一过程也被称为上下文学习（context learning）。
+
+上下文长度对 RAG——检索增强生成（Retrieval Augmented Generation，Lewis 等，2020）——尤其重要，而 RAG 已经成为 LLM 行业用例中的主流模式。对于还没被 RAG 热潮席卷的人，RAG 分两个阶段：
+
+阶段 1：分块（也称为建索引）
+
+1. 收集所有你希望 LLM 使用的文档
+2. 把这些文档切分成块，送入 LLM 生成嵌入向量，并把这些嵌入存入向量数据库。
+
+阶段 2：查询
+
+1. 用户发来一个查询，比如“*我的保险能报销药物 X 吗*”，LLM 把这个查询转换成一个嵌入向量，我们称之为 QUERY_EMBEDDING
+2. 向量数据库取出嵌入与 QUERY_EMBEDDING 最相似的那些块
+
+（截图来自 Jerry Liu 关于 LlamaIndex 的演讲，2023）
+
+上下文越长，我们能塞进上下文的块就越多。模型能获取的信息越多，它的回答就越好，对吧？
+
+并不总是如此。模型能使用多少上下文，和模型能多高效地使用这些上下文，是两个不同的问题。在努力增加模型上下文长度的同时，也有人在努力让上下文更高效。有人称之为“提示工程”或“提示构建”。例如，最近广为流传的一篇论文指出，模型对位于索引开头和结尾的信息的理解，远好于对中间部分的理解——Lost in the Middle: How Language Models Use Long Contexts（Liu 等，2023）。
+
+## 3. 融入其他数据模态
+
+在我看来，多模态非常强大，却被严重低估了。需要多模态的理由有很多。
+
+第一，有许多用例本身就需要多模态数据，尤其是在那些要处理多种数据模态混合的行业，比如医疗、机器人、电商、零售、游戏、娱乐等。例如：
+
+- 医学预测往往同时需要文本（如医生笔记、患者问卷）和图像（如 CT、X 光、核磁共振扫描）。
+- 商品元数据通常包含图片、视频、描述，甚至表格数据（如生产日期、重量、颜色）。你可能想根据用户评论或商品照片自动补全缺失的商品信息；你可能想让用户通过形状或颜色等视觉信息来搜索商品。
+
+第二，多模态有望大幅提升模型性能。一个既能理解文本又能理解图像的模型，难道不应该比只能理解文本的模型表现更好吗？基于文本的模型需要海量文本，以至于人们切实担心我们很快就会耗尽用来训练文本模型的互联网数据。一旦文本用完，我们就需要利用其他数据模态。
+
+我特别期待的一个用例是：多模态可以让视障人士浏览互联网、在现实世界中出行。
+
+很酷的多模态工作：
+
+- [CLIP] Learning Transferable Visual Models From Natural Language Supervision（OpenAI，2021）
+- Flamingo: a Visual Language Model for Few-Shot Learning（DeepMind，2022）
+- BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models（Salesforce，2023）
+- KOSMOS-1: Language Is Not All You Need: Aligning Perception with Language Models（Microsoft，2023）
+- PaLM-E: An embodied multimodal language model（Google，2023）
+- LLaVA: Visual Instruction Tuning（Liu 等，2023）
+- NeVA: NeMo Vision and Language Assistant（NVIDIA，2023）
+
+我一直在写一篇关于多模态的文章，希望很快能和大家分享！
+
+## 4. 让 LLM 更快、更便宜
+
+GPT-3.5 在 2022 年 11 月底刚推出时，很多人担心在生产中使用它的延迟和成本。然而从那以后，延迟/成本分析变化得非常快。不到半年，社区就找到了办法，造出一个性能相当接近 GPT-3.5、但内存占用只有 GPT-3.5 不到 2% 的模型。
+
+我的结论是：只要你做出了足够好的东西，人们就会想办法让它又快又便宜。
+
+| **日期** | **模型** | **参数量** | **量化** | **微调所需内存** | **可以在什么上训练** |
+| 2022 年 11 月 | GPT-3.5 | 175B | 16 位 | 375GB | 很多很多台机器 |
+| 2023 年 3 月 | Alpaca 7B | 7B | 16 位 | 15GB | 游戏台式机 |
+| 2023 年 5 月 | Guanaco 7B | 7B | 4 位 | 6GB | 任意一台 MacBook |
+
+下面是 Guanaco 论文中报告的 Guanaco 7B 与 ChatGPT GPT-3.5 和 GPT-4 的性能对比。注意：总体而言，这种性能比较远非完美。LLM 评估非常、非常难。
+
+四年前，当我开始写那些后来成为《设计机器学习系统》（Designing Machine Learning Systems）一书中“模型压缩”一节的笔记时，我写到了模型优化/压缩的四大技术：
+
+1. **量化**：迄今为止最通用的模型优化方法。量化通过用更少的比特来表示参数来减小模型体积，例如不用 32 位表示一个浮点数，而只用 16 位，甚至 4 位。
+2. **知识蒸馏**：训练一个小模型（学生）去模仿一个更大的模型或模型集成（老师）。
+3. **低秩分解**：核心思想是用低维张量替代高维张量来减少参数数量。例如，你可以把一个 3x3 张量分解为一个 3x1 张量和一个 1x3 张量的乘积，这样就只有 6 个参数而不是 9 个。
+4. **剪枝**
+
+这四种技术今天依然重要且流行。Alpaca 是用知识蒸馏训练的。QLoRA 结合使用了低秩分解和量化。
+
+## 5. 设计新的模型架构
+
+自 2012 年的 AlexNet 以来，我们见证了许多架构的兴起和过气，包括 LSTM、seq2seq。与它们相比，Transformer 的黏性惊人。它从 2017 年就已存在。这个架构还能流行多久，是个大问号。
+
+开发一个超越 Transformer 的新架构并不容易。过去 6 年里 Transformer 已被极度优化。新架构必须在人们今天关心的规模上、在人们关心的硬件上表现出色。顺带一提：Transformer 最初是 Google 为了在 TPU 上快速运行而设计的，后来才针对 GPU 做了优化。
+
+2021 年，Chris Ré 实验室的 S4 曾引起很大轰动——见 Efficiently Modeling Long Sequences with Structured State Spaces（Gu 等，2021）。我不太清楚它后来怎么样了。Chris Ré 的实验室仍在大力投入新架构的开发，最近的成果是与创业公司 Together 合作推出的 Monarch Mixer 架构（Fu 等，2023）。
+
+他们的核心思路是：在现有的 Transformer 架构中，注意力的复杂度是序列长度的平方级，MLP 的复杂度是模型维度的平方级。一个具有次平方复杂度的架构会更高效。
+
+我相信很多其他实验室也在研究这个思路，只是我还没看到有公开的尝试。如果你知道，请告诉我！
+
+## 6. 开发 GPU 的替代品
+
+自 2012 年 AlexNet 以来，GPU 一直是深度学习的主导硬件。事实上，AlexNet 之所以广受欢迎，一个公认的原因是它是第一篇成功用 GPU 训练神经网络的论文。在 GPU 之前，如果你想训练 AlexNet 规模的模型，就得用上数千块 CPU，比如 Google 在 AlexNet 发表前几个月发布的那套系统。与数千块 CPU 相比，几块 GPU 对博士生和研究人员来说要容易获得得多，由此引爆了深度学习研究热潮。
+
+过去十年里，许许多多公司——既有大企业也有创业公司——都尝试为 AI 打造新硬件。最引人注目的尝试有 Google 的 TPU、Graphcore 的 IPU（IPU 现在怎么样了？）和 Cerebras。SambaNova 融资超过十亿美元来开发新的 AI 芯片，但似乎已转型为一个生成式 AI 平台。
+
+有一段时间，人们对量子计算寄予厚望，主要参与者包括：
+
+- IBM 的 QPU
+- Google 的量子计算机今年早些时候在《自然》上报告了量子纠错方面的一个重大里程碑。它的量子虚拟机可以通过 Google Colab 公开访问
+- 各研究机构，如 MIT 量子工程中心、马克斯·普朗克量子光学研究所、芝加哥量子交易所（Chicago Quantum Exchange）、橡树岭国家实验室等。
+
+另一个同样非常令人兴奋的方向是光子芯片。这是我了解最少的方向——如有错误请指正。如今的芯片用电来传输数据，这既耗电又带来延迟。光子芯片用光子传输数据，借助光速实现更快、更高效的计算。这个领域的多家创业公司已融资数亿美元，包括 Lightmatter（2.7 亿美元）、Ayar Labs（2.2 亿美元）、Lightelligence（2 亿美元以上）和 Luminous Computing（1.15 亿美元）。
+
+下图是光子矩阵计算三大方法的进展时间线，出自论文 Photonic matrix multiplication lights up photonic accelerator and beyond（Zhou 等，Nature 2022）。这三种方法分别是平面光转换（PLC）、马赫-曾德尔干涉仪（MZI）和波分复用（WDM）。
+
+## 7. 让智能体真正可用
+
+智能体（agent）是能够采取行动的 LLM，比如浏览互联网、发送邮件、预订等。与本文其他研究方向相比，这可能是最年轻的一个。
+
+由于新颖性和巨大的潜力，人们对智能体有一种狂热的痴迷。Auto-GPT 按星标数计算如今已是 GitHub 史上第 25 受欢迎的仓库。GPT-Engineering 是另一个热门仓库。
+
+尽管热情高涨，人们仍然怀疑 LLM 是否足够可靠、足够强，能被赋予行动的权力。
+
+不过已经出现了一个用例：用智能体做社会研究，比如那个著名的斯坦福实验，它表明一个由生成式智能体组成的小社会会涌现出社会行为：*例如，仅从用户指定的一个设定——某个智能体想办一场情人节派对——出发，智能体们在接下来两天里自主地传播派对邀请、结识新朋友、互相邀约一起去派对……*（Generative Agents: Interactive Simulacra of Human Behavior，Park 等，2023）
+
+这个领域最知名的创业公司也许是 Adept，它由两位 Transformer 论文的共同作者（不过两人都已离开）和一位前 OpenAI 副总裁创立，迄今已融资近 5 亿美元。去年他们展示了一个演示：他们的智能体浏览互联网并在 Salesforce 中添加一个新账户。我很期待看到他们的新演示 🙂
+
+## 8. 改进从人类偏好中学习
+
+RLHF，即基于人类偏好的强化学习（Reinforcement Learning from Human Preference），很酷，但有点取巧。如果人们找到更好的方法来训练 LLM，我不会感到意外。RLHF 有许多悬而未决的问题，例如：
+
+**1. 如何用数学来表示人类偏好？**
+
+目前，人类偏好是通过比较来确定的：人类标注员判断回答 A 是否比回答 B 好。然而，这并没有考虑 A 比 B 好多少。
+
+**2. 什么是人类偏好？**
+
+Anthropic 从三个维度衡量模型回答的质量：有帮助（helpful）、诚实（honest）和无害（harmless）。见 Constitutional AI: Harmlessness from AI Feedback（Bai 等，2022）。
+
+DeepMind 试图生成能让最多人满意的回答。见 Fine-tuning language models to find agreement among humans with diverse preferences（Bakker 等，2022）。
+
+此外，我们想要的是能表明立场的 AI，还是一个回避任何可能有争议话题的平庸 AI？
+
+**3. 考虑到文化、宗教、政治倾向等方面的差异，谁的偏好才算“人类”偏好？**
+
+要获得能充分代表所有潜在用户的训练数据，面临诸多挑战。
+
+例如，OpenAI 的 InstructGPT 数据中，没有一位标注员超过 65 岁。标注员以菲律宾人和孟加拉人为主。见 InstructGPT: Training language models to follow instructions with human feedback（Ouyang 等，2022）。
+
+社区主导的努力虽然初衷可嘉，却可能导致数据偏差。例如，在 OpenAssistant 数据集中，222 位受访者中有 201 位（90.5%）自认为男性。Jeremy Howard 有一条很棒的 Twitter 讨论串谈这个问题。
+
+## 9. 提高聊天界面的效率
+
+自 ChatGPT 以来，关于聊天是否适合作为各种任务的界面，已经有过多次讨论。
+
+- Natural language is the lazy user interface（Austin Z. Henley，2023）
+- Why Chatbots Are Not the Future（Amelia Wattenberger，2023）
+- What Types of Questions Require Conversation to Answer? A Case Study of AskReddit Questions（Huang 等，2023）
+- AI chat interfaces could become the primary user interface to read documentation（Tom Johnson，2023）
+- Interacting with LLMs with Minimal Chat（Eugene Yan，2023）
+
+不过，这并不是一个新话题。在许多国家，尤其是亚洲，聊天作为超级应用的界面已经用了大约十年。Dan Grover 早在 2014 年就讨论过这个问题。
+
+2016 年这场讨论再度激烈起来，当时很多人认为应用已死，聊天机器人才是未来。
+
+- On chat as interface（Alistair Croll，2016）
+- Is the Chatbot Trend One Big Misunderstanding?（Will Knight，2016）
+- Bots won’t replace apps. Better apps will replace apps（Dan Grover，2016）
+
+我个人喜欢聊天界面，理由如下：
+
+1. 聊天是一种人人都能很快学会使用的界面，即便是从未接触过电脑或互联网的人。2010 年代初我在肯尼亚一个低收入居住区（可以叫贫民窟吗？）做志愿者时，那里的人们用手机通过短信办理银行业务的娴熟程度让我大为震惊。那个社区里没有人有电脑。
+2. 聊天界面无障碍。手忙不过来时，可以用语音代替文字。
+3. 聊天也是一种极其稳健的界面——你可以向它提出任何请求，它都会给出回应，哪怕回应不怎么好。
+
+不过，我认为聊天界面在某些方面还可以改进。
+
+1. 每轮多条消息。目前我们基本默认每轮一条消息。但我和朋友们发消息不是这样的。我常常需要好几条消息才能表达完一个想法，因为我需要插入不同的数据（如图片、位置、链接），或者前面的消息漏了什么，或者我只是不想把所有内容塞进一大段话里。
+2. 多模态输入。在多模态应用领域，大部分精力都花在构建更好的模型上，而很少花在构建更好的界面上。以 Nvidia 的 NeVA 聊天机器人为例。我不是 UX 专家，但我觉得这里可能有改进 UX 的空间。附言：NeVA 团队，抱歉点了你们的名。即使是这样的界面，你们的工作也超级酷！
+3. 把生成式 AI 融入你的工作流。Linus Lee 在他的演讲《超越聊天的生成式 AI 界面》（Generative AI interface beyond chats）中很好地讲了这一点。例如，如果你想就正在处理的图表中的某一列提问，你应该能直接指向那一列然后提问。
+4. 消息的编辑与删除。编辑或删除一条用户输入，会如何改变与聊天机器人的对话流程？
+
+## 10. 为非英语语言构建 LLM
+
+我们知道，当前以英语为先的 LLM 在许多其他语言上表现不佳，无论是性能、延迟还是速度。见：
+
+- ChatGPT Beyond English: Towards a Comprehensive Evaluation of Large Language Models in Multilingual Learning（Lai 等，2023）
+- All languages are NOT created (tokenized) equal（Yennie Jun，2023）
+
+以下是我所知道的一些项目。如果你知道其他项目，我很乐意把它们加进来。
+
+- Aya：一个加速多语言 AI 进展的开放科学项目
+- Symato：越南语 ChatGPT
+- Cabrita：用葡萄牙语数据微调 InstructLLaMA
+- Luotuo-Chinese-LLM（骆驼中文大模型）
+- Chinese-LLaMA-Alpaca
+- Chinese-Vicuna
+
+这篇文章的几位早期读者告诉我，他们认为我不应该把这个方向列进来，理由有二。
+
+1. 这与其说是研究问题，不如说是后勤问题。我们已经知道怎么做了，只需要有人投入资金和精力。这并不完全正确。大多数语言被认为是低资源语言，例如它们的高质量数据远少于英语或中文，可能需要不同的技术来训练大语言模型。见：
+  - Low-resource Languages: A Review of Past Work and Future Challenges（Magueresse 等，2020）
+  - JW300: A Wide-Coverage Parallel Corpus for Low-Resource Languages（Agić 等，2019）
+2. 更悲观的人认为，未来许多语言将会消亡，互联网将由两种语言构成的两个宇宙组成：英语和普通话。这种观点并不新鲜——还有人记得世界语（Esperanto）吗？
+
+AI 工具（如机器翻译和聊天机器人）对语言学习的影响仍不明朗。它们会帮助人们更快地学习新语言，还是会彻底消除学习新语言的必要？
+
+## 结语
+
+呼，引用的论文可真多，我毫不怀疑自己还漏了一大堆。如果你觉得我漏掉了什么，请告诉我。
+
+想看另一种视角，可以读读这篇全面的论文 Challenges and Applications of Large Language Models（Kaddour 等，2023）。
+
+上面提到的问题有些比其他的更难。例如，我认为第 10 个——为非英语语言构建 LLM——只要有足够的时间和资源，就比较直接。
+
+第 1 个——减少幻觉——会难得多，因为幻觉不过是 LLM 在做它的概率性工作。
+
+第 4 个——让 LLM 更快更便宜——永远不会被彻底解决。这个领域已经取得了很多进展，还会有更多进展，但改进空间永远不会耗尽。
+
+第 5 个和第 6 个——新架构和新硬件——非常有挑战性，但随着时间推移是必然会到来的。由于架构与硬件之间的共生关系——新架构需要针对常见硬件优化，硬件需要支持常见架构——它们可能会由同一家公司解决。
+
+有些问题仅靠技术知识是解决不了的。例如，第 8 个——改进从人类偏好中学习——可能更多是政策问题而非技术问题。第 9 个——提高聊天界面的效率——更多是 UX 问题。我们需要更多非技术背景的人和我们一起来解决这些问题。
+
+你最感兴趣的是哪个研究方向？你认为这些问题最有前景的解决方案是什么？很想听听你的看法。

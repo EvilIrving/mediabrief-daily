@@ -1,0 +1,744 @@
+https://lilianweng.github.io/posts/2021-05-31-contrastive/
+
+对比表示学习的目标，是学到这样一个嵌入空间：相似的样本对彼此靠近，不相似的样本对彼此远离。对比学习既可用于有监督场景，也可用于无监督场景。在处理无标注数据时，对比学习是自监督学习中最强大的方法之一。
+
+# 对比训练目标
+
+在早期的对比学习损失函数中，只涉及一个正样本和一个负样本。近来训练目标的趋势是在一个批次中纳入多个正样本对和负样本对。
+
+## 对比损失（Contrastive Loss）
+
+**对比损失**（Chopra et al. 2005）是以对比方式进行深度度量学习的最早训练目标之一。
+
+给定一组输入样本 $\{ \mathbf{x}_i \}$，每个样本在 $L$ 个类别中有对应的标签 $y_i \in \{1, \dots, L\}$。我们希望学习一个函数 $f_\theta(.): \mathcal{X}\to\mathbb{R}^d$，把 $x_i$ 编码成嵌入向量，使同类样本的嵌入相似、不同类样本的嵌入差别很大。因此，对比损失接收一对输入 $(x_i, x_j)$，当二者同类时最小化嵌入距离，否则最大化该距离。
+
+$$
+\mathcal{L}_\text{cont}(\mathbf{x}_i, \mathbf{x}_j, \theta) = \mathbb{1}[y_i=y_j] \| f_\theta(\mathbf{x}_i) - f_\theta(\mathbf{x}_j) \|^2_2 + \mathbb{1}[y_i\neq y_j]\max(0, \epsilon - \|f_\theta(\mathbf{x}_i) - f_\theta(\mathbf{x}_j)\|_2)^2
+$$
+
+其中 $\epsilon$ 是超参数，定义了不同类别样本之间距离的下界。
+
+## 三元组损失（Triplet Loss）
+
+**三元组损失**最初由 FaceNet（Schroff et al. 2015）论文提出，用于在不同姿态和角度下识别同一个人的人脸。
+
+图示：每个锚点给定一个正样本和一个负样本时的三元组损失。（图片来源：Schroff et al. 2015）
+
+给定一个锚点输入 $\mathbf{x}$，我们选取一个正样本 $\mathbf{x}^+$ 和一个负样本 $\mathbf{x}^-$，即 $\mathbf{x}^+$ 与 $\mathbf{x}$ 属于同一类，而 $\mathbf{x}^-$ 采样自另一个不同的类。三元组损失通过下式，同时最小化锚点 $\mathbf{x}$ 与正样本 $\mathbf{x}^+$ 之间的距离，并最大化锚点 $\mathbf{x}$ 与负样本 $\mathbf{x}^-$ 之间的距离：
+
+$$
+\mathcal{L}_\text{triplet}(\mathbf{x}, \mathbf{x}^+, \mathbf{x}^-) = \sum_{\mathbf{x} \in \mathcal{X}} \max\big( 0, \|f(\mathbf{x}) - f(\mathbf{x}^+)\|^2_2 - \|f(\mathbf{x}) - f(\mathbf{x}^-)\|^2_2 + \epsilon \big)
+$$
+
+其中间隔参数 $\epsilon$ 被设为相似样本对与不相似样本对距离之间的最小差值。
+
+选取有挑战性的 $\mathbf{x}^-$ 对真正提升模型至关重要。
+
+## 提升结构损失（Lifted Structured Loss）
+
+**提升结构损失**（Song et al. 2015）利用一个训练批次内的所有成对边，以获得更高的计算效率。
+
+图示：对比损失、三元组损失与提升结构损失的比较。红色和蓝色的边分别连接相似和不相似的样本对。（图片来源：Song et al. 2015）
+
+令 $D_{ij} = | f(\mathbf{x}_i) - f(\mathbf{x}_j) |_2$，结构化损失函数定义为
+
+$$
+\begin{aligned}
+\mathcal{L}_\text{struct} &= \frac{1}{2\vert \mathcal{P} \vert} \sum_{(i,j) \in \mathcal{P}} \max(0, \mathcal{L}_\text{struct}^{(ij)})^2 \\
+\text{where } \mathcal{L}_\text{struct}^{(ij)} &= D_{ij} + \color{red}{\max \big( \max_{(i,k)\in \mathcal{N}} \epsilon - D_{ik}, \max_{(j,l)\in \mathcal{N}} \epsilon - D_{jl} \big)}
+\end{aligned}
+$$
+
+其中 $\mathcal{P}$ 是正样本对的集合，$\mathcal{N}$ 是负样本对的集合。注意，稠密的成对平方距离矩阵可以在每个训练批次中很容易地算出。
+
+$\mathcal{L}_\text{struct}^{(ij)}$ 中的红色部分用于挖掘困难负样本。但它不光滑，实践中可能导致收敛到较差的局部最优。因此将其松弛为：
+
+$$
+\mathcal{L}_\text{struct}^{(ij)} = D_{ij} + \log \Big( \sum_{(i,k)\in\mathcal{N}} \exp(\epsilon - D_{ik}) + \sum_{(j,l)\in\mathcal{N}} \exp(\epsilon - D_{jl}) \Big)
+$$
+
+论文中还提出，在给定若干随机正样本对的情况下，主动纳入困难负样本，以提高每个批次中负样本的质量。
+
+## N-pair 损失
+
+**多类 N-pair 损失**（Sohn 2016）推广了三元组损失，使之包含与多个负样本的比较。
+
+给定一个由训练样本组成的 $(N + 1)$ 元组 $\{ \mathbf{x}, \mathbf{x}^+, \mathbf{x}^-_1, \dots, \mathbf{x}^-_{N-1} \}$，其中包含一个正样本和 $N-1$ 个负样本，N-pair 损失定义为：
+
+$$
+\begin{aligned}
+\mathcal{L}_\text{N-pair}(\mathbf{x}, \mathbf{x}^+, \{\mathbf{x}^-_i\}^{N-1}_{i=1}) 
+&= \log\big(1 + \sum_{i=1}^{N-1} \exp(f(\mathbf{x})^\top f(\mathbf{x}^-_i) - f(\mathbf{x})^\top f(\mathbf{x}^+))\big) \\
+&= -\log\frac{\exp(f(\mathbf{x})^\top f(\mathbf{x}^+))}{\exp(f(\mathbf{x})^\top f(\mathbf{x}^+)) + \sum_{i=1}^{N-1} \exp(f(\mathbf{x})^\top f(\mathbf{x}^-_i))}
+\end{aligned}
+$$
+
+如果每个类别只采样一个负样本，它就等价于多类分类的 softmax 损失。
+
+## NCE
+
+**噪声对比估计**（Noise Contrastive Estimation，简称 **NCE**）是一种估计统计模型参数的方法，由 Gutmann 和 Hyvärinen 于 2010 年提出。其思路是用逻辑回归把目标数据与噪声区分开。关于 NCE 如何用于学习词嵌入，可以在这里阅读更多。
+
+令 $\mathbf{x}$ 为目标样本 $\sim P(\mathbf{x} \vert C=1; \theta) = p_\theta(\mathbf{x})$，$\tilde{\mathbf{x}}$ 为噪声样本 $\sim  P(\tilde{\mathbf{x}} \vert C=0) = q(\tilde{\mathbf{x}})$。注意逻辑回归建模的是 logit（即对数几率），在这里我们希望建模的是：样本 $u$ 来自目标数据分布而非噪声分布的 logit：
+
+$$
+\ell_\theta(\mathbf{u}) = \log \frac{p_\theta(\mathbf{u})}{q(\mathbf{u})} = \log p_\theta(\mathbf{u}) - \log q(\mathbf{u})
+$$
+
+用 sigmoid $\sigma(.)$ 把 logit 转换成概率之后，就可以应用交叉熵损失：
+
+$$
+\begin{aligned}
+\mathcal{L}_\text{NCE} &= - \frac{1}{N} \sum_{i=1}^N \big[ \log \sigma (\ell_\theta(\mathbf{x}_i)) + \log (1 - \sigma (\ell_\theta(\tilde{\mathbf{x}}_i))) \big] \\
+\text{ where }\sigma(\ell) &= \frac{1}{1 + \exp(-\ell)} = \frac{p_\theta}{p_\theta + q}
+\end{aligned}
+$$
+
+这里列出的是 NCE 损失的原始形式，只适用于一个正样本和一个噪声样本。在许多后续工作中，纳入多个负样本的对比损失也被宽泛地称为 NCE。
+
+## InfoNCE
+
+CPC（对比预测编码，Contrastive Predictive Coding；van den Oord, et al. 2018）中的 **InfoNCE 损失**受 NCE 启发，使用类别交叉熵损失，从一组不相关的噪声样本中识别出正样本。
+
+给定上下文向量 $\mathbf{c}$，正样本应当从条件分布 $p(\mathbf{x} \vert \mathbf{c})$ 中采样，而 $N-1$ 个负样本从与上下文 $\mathbf{c}$ 无关的提议分布 $p(\mathbf{x})$ 中采样。简洁起见，把所有样本记为 $X=\{ \mathbf{x}_i \}^N_{i=1}$，其中只有一个 $\mathbf{x}_\texttt{pos}$ 是正样本。正确检测出正样本的概率为：
+
+$$
+p(C=\texttt{pos} \vert X, \mathbf{c}) 
+= \frac{p(x_\texttt{pos} \vert \mathbf{c}) \prod_{i=1,\dots,N; i \neq \texttt{pos}} p(\mathbf{x}_i)}{\sum_{j=1}^N \big[ p(\mathbf{x}_j \vert \mathbf{c}) \prod_{i=1,\dots,N; i \neq j} p(\mathbf{x}_i) \big]}
+= \frac{ \frac{p(\mathbf{x}_\texttt{pos}\vert c)}{p(\mathbf{x}_\texttt{pos})} }{ \sum_{j=1}^N \frac{p(\mathbf{x}_j\vert \mathbf{c})}{p(\mathbf{x}_j)} }
+= \frac{f(\mathbf{x}_\texttt{pos}, \mathbf{c})}{ \sum_{j=1}^N f(\mathbf{x}_j, \mathbf{c}) }
+$$
+
+其中打分函数为 $f(\mathbf{x}, \mathbf{c}) \propto \frac{p(\mathbf{x}\vert\mathbf{c})}{p(\mathbf{x})}$。
+
+InfoNCE 损失优化的是正确分类正样本的负对数概率：
+
+$$
+\mathcal{L}_\text{InfoNCE} = - \mathbb{E} \Big[\log \frac{f(\mathbf{x}, \mathbf{c})}{\sum_{\mathbf{x}' \in X} f(\mathbf{x}', \mathbf{c})} \Big]
+$$
+
+$f(x, c)$ 估计的是密度比 $\frac{p(x\vert c)}{p(x)}$，这一点与互信息优化有关。为了最大化输入 $x$ 与上下文向量 $c$ 之间的互信息，我们有：
+
+$$
+I(\mathbf{x}; \mathbf{c}) = \sum_{\mathbf{x}, \mathbf{c}} p(\mathbf{x}, \mathbf{c}) \log\frac{p(\mathbf{x}, \mathbf{c})}{p(\mathbf{x})p(\mathbf{c})} = \sum_{\mathbf{x}, \mathbf{c}} p(\mathbf{x}, \mathbf{c})\log\color{blue}{\frac{p(\mathbf{x}|\mathbf{c})}{p(\mathbf{x})}}
+$$
+
+其中蓝色的对数项由 $f$ 来估计。
+
+对于序列预测任务，CPC 不直接建模未来观测 $p_k(\mathbf{x}_{t+k} \vert \mathbf{c}_t)$（这可能相当昂贵），而是建模一个密度函数，以保留 $\mathbf{x}_{t+k}$ 与 $\mathbf{c}_t$ 之间的互信息：
+
+$$
+f_k(\mathbf{x}_{t+k}, \mathbf{c}_t) = \exp(\mathbf{z}_{t+k}^\top \mathbf{W}_k \mathbf{c}_t) \propto \frac{p(\mathbf{x}_{t+k}\vert\mathbf{c}_t)}{p(\mathbf{x}_{t+k})}
+$$
+
+其中 $\mathbf{z}_{t+k}$ 是编码后的输入，$\mathbf{W}_k$ 是可训练的权重矩阵。
+
+## 软最近邻损失（Soft-Nearest Neighbors Loss）
+
+**软最近邻损失**（Salakhutdinov & Hinton 2007，Frosst et al. 2019）将其扩展为包含多个正样本。
+
+给定一批样本 $\{\mathbf{x}_i, y_i)\}^B_{i=1}$，其中 $y_i$ 是 $\mathbf{x}_i$ 的类别标签，以及一个衡量两个输入相似度的函数 $f(.,.)$，温度 $\tau$ 下的软最近邻损失定义为：
+
+$$
+\mathcal{L}_\text{snn} = -\frac{1}{B}\sum_{i=1}^B \log \frac{\sum_{i\neq j, y_i = y_j, j=1,\dots,B} \exp(- f(\mathbf{x}_i, \mathbf{x}_j) / \tau)}{\sum_{i\neq k, k=1,\dots,B} \exp(- f(\mathbf{x}_i, \mathbf{x}_k) /\tau)}
+$$
+
+温度 $\tau$ 用于调节特征在表示空间中的集中程度。例如在低温时，损失由小距离主导，相距很远的表示贡献很小，变得无关紧要。
+
+## 通用设定
+
+我们可以放宽软最近邻损失中"类别"和"标签"的定义，从无标注数据中构造正负样本对，例如通过数据增强生成原始样本的带噪版本。
+
+近来大多数研究都遵循下面这种对比学习目标的定义，以纳入多个正样本和负样本。按照（Wang & Isola 2020）中的设定，令 $p_\texttt{data}(.)$ 为 $\mathbb{R}^n$ 上的数据分布，$p_\texttt{pos}(., .)$ 为 $\mathbb{R}^{n \times n}$ 上正样本对的分布。这两个分布应满足：
+
+* 对称性：$\forall \mathbf{x}, \mathbf{x}^+, p_\texttt{pos}(\mathbf{x}, \mathbf{x}^+) = p_\texttt{pos}(\mathbf{x}^+, \mathbf{x})$
+* 边缘分布匹配：$\forall \mathbf{x}, \int p_\texttt{pos}(\mathbf{x}, \mathbf{x}^+) d\mathbf{x}^+ = p_\texttt{data}(\mathbf{x})$
+
+为了让编码器 $f(\mathbf{x})$ 学到 *L2 归一化的特征向量*，对比学习目标为：
+
+$$
+\begin{aligned}
+\mathcal{L}_\text{contrastive} 
+&= \mathbb{E}_{(\mathbf{x},\mathbf{x}^+)\sim p_\texttt{pos}, \{\mathbf{x}^-_i\}^M_{i=1} \overset{\text{i.i.d}}{\sim} p_\texttt{data} } \Big[ -\log\frac{\exp(f(\mathbf{x})^\top f(\mathbf{x}^+) / \tau)}{ \exp(f(\mathbf{x})^\top f(\mathbf{x}^+) / \tau) + \sum_{i=1}^M \exp(f(\mathbf{x})^\top f(\mathbf{x}_i^-) / \tau)} \Big] & \\
+&\approx \mathbb{E}_{(\mathbf{x},\mathbf{x}^+)\sim p_\texttt{pos}, \{\mathbf{x}^-_i\}^M_{i=1} \overset{\text{i.i.d}}{\sim} p_\texttt{data} }\Big[ - f(\mathbf{x})^\top f(\mathbf{x}^+) / \tau + \log\big(\sum_{i=1}^M \exp(f(\mathbf{x})^\top f(\mathbf{x}_i^-) / \tau)\big) \Big] & \scriptstyle{\text{; Assuming infinite negatives}} \\
+&= -\frac{1}{\tau}\mathbb{E}_{(\mathbf{x},\mathbf{x}^+)\sim p_\texttt{pos}}f(\mathbf{x})^\top f(\mathbf{x}^+) + \mathbb{E}_{ \mathbf{x} \sim p_\texttt{data}} \Big[ \log \mathbb{E}_{\mathbf{x}^- \sim p_\texttt{data}} \big[ \sum_{i=1}^M \exp(f(\mathbf{x})^\top f(\mathbf{x}_i^-) / \tau)\big] \Big] &
+\end{aligned}
+$$
+
+# 关键要素
+
+## 大量数据增强
+
+给定一个训练样本，需要用数据增强技术生成它自身的带噪版本，作为正样本送入损失。合适的数据增强设置对于学到良好且可泛化的嵌入特征至关重要。它在不改变语义的前提下给样本引入非本质的变化，从而促使模型学习表示中本质的部分。例如，SimCLR 的实验表明，随机裁剪与随机颜色失真的组合，对学好图像的视觉表示至关重要。
+
+## 大批次
+
+训练时使用大批次是许多对比学习方法（如 SimCLR、CLIP）成功的另一关键要素，尤其是依赖批内负样本时。只有批次足够大，损失函数才能覆盖足够多样的负样本集合，难度足以让模型学到有意义的表示来区分不同样本。
+
+## 困难负样本挖掘
+
+困难负样本应当与锚点样本标签不同，但嵌入特征与锚点嵌入非常接近。在有监督数据集中能拿到真实标签时，很容易识别出任务相关的困难负样本。例如学习句子嵌入时，可以把 NLI 数据集中标注为"矛盾"（contradiction）的句子对当作困难负样本对（如 SimCSE），或者把 BM25 返回的、关键词匹配最多的靠前错误候选当作困难负样本（DPR；Karpukhin et al., 2020）。
+
+然而，在希望保持无监督的情况下，困难负样本挖掘就变得棘手。增大训练批次或记忆库（memory bank）的规模会隐式地引入更多困难负样本，但副作用是带来巨大的内存开销。
+
+Chuang et al.（2020）研究了对比学习中的采样偏差，并提出了去偏损失。在无监督设定下，由于不知道真实标签，我们可能意外采到假负样本。采样偏差会导致性能显著下降。
+
+图示：对比学习中指假负样本的采样偏差会导致性能大幅下降。（图片来源：Chuang et al., 2020）
+
+假设锚点类别 $c$ 的概率是均匀的 $\rho(c)=\eta^+$，观测到另一个不同类别的概率为 $\eta^- = 1-\eta^+$。
+
+* 对 $\mathbf{x}$ 观测到正样本的概率为 $p^+_x(\mathbf{x}’)=p(\mathbf{x}’\vert \mathbf{h}_{x’}=\mathbf{h}_x)$；
+* 对 $\mathbf{x}$ 得到负样本的概率为 $p^-_x(\mathbf{x}’)=p(\mathbf{x}’\vert \mathbf{h}_{x’}\neq\mathbf{h}_x)$。
+
+当我们采样 $\mathbf{x}^-$ 时，无法获得真实的 $p^-_x(\mathbf{x}^-)$，因此 $\mathbf{x}^-$ 可能以概率 $\eta^+$ 采自（不希望的）锚点类别 $c$。实际的采样数据分布变为：
+
+$$
+p(\mathbf{x}') = \eta^+ p^+_x(\mathbf{x}') + \eta^- p_x^-(\mathbf{x}')
+$$
+
+因此我们可以用 $p^-_x(\mathbf{x}’) = (p(\mathbf{x}’) - \eta^+ p^+_x(\mathbf{x}’))/\eta^-$ 来采样 $\mathbf{x}^-$，以对损失去偏。用从 $p$ 中采样的 $N$ 个样本 $\{\mathbf{u}_i\}^N_{i=1}$，以及从 $p^+_x$ 中采样的 $M$ 个样本 $\{ \mathbf{v}_i \}_{i=1}^M$，可以估计对比学习损失分母中第二项的期望 $\mathbb{E}_{\mathbf{x}^-\sim p^-_x}[\exp(f(\mathbf{x})^\top f(\mathbf{x}^-))]$：
+
+$$
+g(\mathbf{x}, \{\mathbf{u}_i\}^N_{i=1}, \{\mathbf{v}_i\}_{i=1}^M) = \max\Big\{ \frac{1}{\eta^-}\Big( \frac{1}{N}\sum_{i=1}^N \exp(f(\mathbf{x})^\top f(\mathbf{u}_i)) - \frac{\eta^+}{M}\sum_{i=1}^M \exp(f(\mathbf{x})^\top f(\mathbf{v}_i)) \Big), \exp(-1/\tau) \Big\}
+$$
+
+其中 $\tau$ 是温度，$\exp(-1/\tau)$ 是 $\mathbb{E}_{\mathbf{x}^-\sim p^-_x}[\exp(f(\mathbf{x})^\top f(\mathbf{x}^-))]$ 的理论下界。
+
+最终的去偏对比损失如下：
+
+$$
+\mathcal{L}^{N,M}_\text{debias}(f) = \mathbb{E}_{\mathbf{x},\{\mathbf{u}_i\}^N_{i=1}\sim p;\;\mathbf{x}^+, \{\mathbf{v}_i\}_{i=1}^M\sim p^+} \Big[ -\log\frac{\exp(f(\mathbf{x})^\top f(\mathbf{x}^+)}{\exp(f(\mathbf{x})^\top f(\mathbf{x}^+) + N g(x,\{\mathbf{u}_i\}^N_{i=1}, \{\mathbf{v}_i\}_{i=1}^M)} \Big]
+$$
+
+图示：去偏对比学习所学表示的 t-SNE 可视化。（图片来源：Chuang et al., 2020）
+
+沿用上述记号，Robinson et al.（2021）修改了采样概率以瞄准困难负样本：将概率 $p^-_x(x’)$ 上调，使其与该样本和锚点样本的相似度成正比。新的采样概率 $q_\beta(x^-)$ 为：
+
+$$
+q_\beta(\mathbf{x}^-) \propto \exp(\beta f(\mathbf{x})^\top f(\mathbf{x}^-)) \cdot p(\mathbf{x}^-)
+$$
+
+其中 $\beta$ 是需要调节的超参数。
+
+分母中的第二项 $\mathbb{E}_{\mathbf{x}^- \sim q_\beta} [\exp(f(\mathbf{x})^\top f(\mathbf{x}^-))]$ 可以用重要性采样来估计，其中两个配分函数 $Z_\beta, Z^+_\beta$ 都可以通过经验估计。
+
+$$
+\begin{aligned}
+\mathbb{E}_{\mathbf{u} \sim q_\beta} [\exp(f(\mathbf{x})^\top f(\mathbf{u}))] &= \mathbb{E}_{\mathbf{u} \sim p} [\frac{q_\beta}{p}\exp(f(\mathbf{x})^\top f(\mathbf{u}))] = \mathbb{E}_{\mathbf{u} \sim p} [\frac{1}{Z_\beta}\exp((\beta + 1)f(\mathbf{x})^\top f(\mathbf{u}))] \\
+\mathbb{E}_{\mathbf{v} \sim q^+_\beta} [\exp(f(\mathbf{x})^\top f(\mathbf{v}))] &= \mathbb{E}_{\mathbf{v} \sim p^+} [\frac{q^+_\beta}{p}\exp(f(\mathbf{x})^\top f(\mathbf{v}))] = \mathbb{E}_{\mathbf{v} \sim p} [\frac{1}{Z^+_\beta}\exp((\beta + 1)f(\mathbf{x})^\top f(\mathbf{v}))]
+\end{aligned}
+$$
+
+图示：计算 NCE 损失、去偏对比损失以及困难负样本目标（设定 $M=1$ 时）的伪代码。（图片来源：Robinson et al., 2021）
+
+# 视觉：图像嵌入
+
+## 图像增强
+
+视觉领域的大多数对比表示学习方法，都依赖于对样本施加一系列数据增强技术来生成其带噪版本。增强应当显著改变样本的视觉外观，但保持语义不变。
+
+### 基本图像增强
+
+在保留语义的前提下修改图像的方法有很多。我们可以使用下列任意一种增强，或多种操作的组合。
+
+* 随机裁剪，然后缩放回原尺寸。
+* 随机颜色失真
+* 随机高斯模糊
+* 随机颜色抖动
+* 随机水平翻转
+* 随机灰度化
+* 多裁剪（multi-crop）增强：使用两个标准分辨率的裁剪，并额外采样一组只覆盖图像一小部分的低分辨率裁剪。使用低分辨率裁剪可以降低计算成本。（SwAV）
+* 还有很多……
+
+### 增强策略
+
+许多框架专门用于学习良好的数据增强策略（即多种变换的组合）。下面是几个常见的。
+
+* AutoAugment（Cubuk, et al. 2018）：受 NAS 启发，AutoAugment 把为图像分类学习最佳数据增强操作（如剪切、旋转、反色等）的问题建模为一个强化学习问题，寻找能在评估集上带来最高准确率的组合。
+* RandAugment（Cubuk et al., 2019）：RandAugment 用单一的幅度参数控制不同变换操作的幅度，大大缩小了 AutoAugment 的搜索空间。
+* PBA（基于种群的增强，Population based augmentation；Ho et al., 2019）：PBA 将 PBT（Jaderberg et al, 2017）与 AutoAugment 结合，用进化算法并行训练一群子模型，以演化出最佳增强策略。
+* UDA（无监督数据增强，Unsupervised Data Augmentation；Xie et al., 2019）：在一组可能的增强策略中，UDA 选择那些能使无标注样本与其增强版本的预测分布之间 KL 散度最小的策略。
+
+### 图像混合
+
+图像混合方法可以从已有数据点构造新的训练样本。
+
+* Mixup（Zhang et al., 2018）：它进行全局层面的混合，对两张已有图像 $I_1$ 和 $I_2$ 做逐像素加权组合：$I_\text{mixup} \gets \alpha I_1 + (1-\alpha) I_2$，$\alpha \in [0, 1]$。
+* Cutmix（Yun et al., 2019）：Cutmix 做区域层面的混合，把一张图像的局部区域与另一张图像的其余部分组合成新样本。$I_\text{cutmix} \gets \mathbf{M}_b \odot I_1 + (1-\mathbf{M}_b) \odot I_2$，其中 $\mathbf{M}_b \in \{0, 1\}^I$ 是二值掩码，$\odot$ 是逐元素乘法。这等价于用另一张图像的相同区域去填充 cutout（DeVries & Taylor 2017）区域。
+* MoCHi（"对比困难负样本混合"，Mixing of Contrastive Hard Negatives；Kalantidis et al. 2020）：给定查询 $\mathbf{q}$，MoCHi 维护一个包含 $K$ 个负样本特征 $Q=\{\mathbf{n}_1, \dots, \mathbf{n}_K \}$ 的队列，并按与查询的相似度 $\mathbf{q}^\top \mathbf{n}$ 将这些负样本特征降序排列。队列中前 $N$ 项被视为最困难的负样本 $Q^N$。然后可以通过 $\mathbf{h} = \tilde{\mathbf{h}} / |\tilde{\mathbf{h}}|$ 生成合成的困难样本，其中 $\tilde{\mathbf{h}} = \alpha\mathbf{n}_i + (1-\alpha) \mathbf{n}_j$，$\alpha \in (0, 1)$。与查询特征混合还能生成更困难的样本：$\mathbf{h}’ = \tilde{\mathbf{h}’} / |\tilde{\mathbf{h}’}|_2$，其中 $\tilde{\mathbf{h}’} = \beta\mathbf{q} + (1-\beta) \mathbf{n}_j$，$\beta \in (0, 0.5)$。
+
+## 并行增强
+
+这类方法对一张锚点图像生成两个带噪版本，目标是学到让这两个增强样本共享同一嵌入的表示。
+
+### SimCLR
+
+**SimCLR**（Chen et al, 2020）提出了一个用于视觉表示对比学习的简单框架。它通过潜在空间中的对比损失，最大化同一样本不同增强视图之间的一致性，从而为视觉输入学习表示。
+
+图示：视觉表示对比学习的简单框架。（图片来源：Chen et al, 2020）
+
+1. 随机采样一个包含 $N$ 个样本的小批次，对每个样本施加两种不同的数据增强操作，总共得到 $2N$ 个增强样本。
+
+$$
+\tilde{\mathbf{x}}_i = t(\mathbf{x}),\quad\tilde{\mathbf{x}}_j = t'(\mathbf{x}),\quad t, t' \sim \mathcal{T}
+$$
+
+其中两个独立的数据增强算子 $t$ 和 $t’$ 采样自同一个增强族 $\mathcal{T}$。数据增强包括随机裁剪、带随机翻转的缩放、颜色失真和高斯模糊。
+
+2. 给定一个正样本对，其余 $2(N-1)$ 个数据点被视为负样本。表示由基础编码器 $f(.)$ 产生：
+
+$$
+\mathbf{h}_i = f(\tilde{\mathbf{x}}_i),\quad \mathbf{h}_j = f(\tilde{\mathbf{x}}_j)
+$$
+
+3. 对比学习损失用余弦相似度 $\text{sim}(.,.)$ 定义。注意，损失作用于表示之上额外的投影层 $g(.)$，而不是直接作用于表示空间。但下游任务只使用表示 $\mathbf{h}$。
+
+$$
+\begin{aligned}
+\mathbf{z}_i &= g(\mathbf{h}_i),\quad
+\mathbf{z}_j = g(\mathbf{h}_j) \\
+\mathcal{L}_\text{SimCLR}^{(i,j)} &= - \log\frac{\exp(\text{sim}(\mathbf{z}_i, \mathbf{z}_j) / \tau)}{\sum_{k=1}^{2N} \mathbb{1}_{[k \neq i]} \exp(\text{sim}(\mathbf{z}_i, \mathbf{z}_k) / \tau)}
+\end{aligned}
+$$
+
+其中 $\mathbb{1}_{[k \neq i]}$ 是指示函数：若 $k\neq i$ 则为 1，否则为 0。
+
+SimCLR 需要大批次来纳入足够多的负样本，以获得良好性能。
+
+图示：SimCLR 算法。（图片来源：Chen et al, 2020）
+
+### Barlow Twins
+
+**Barlow Twins**（Zbontar et al. 2021）把样本的两个失真版本送入同一个网络提取特征，并学习让这两组输出特征之间的*互相关矩阵*接近单位矩阵。其目标是让同一样本不同失真版本的表示向量保持相似，同时最小化这些向量之间的冗余。
+
+图示：Barlow Twins 的学习流程。（图片来源：Zbontar et al. 2021）
+
+令 $\mathcal{C}$ 为沿批次维度、在两个相同网络的输出之间计算出的互相关矩阵。$\mathcal{C}$ 是一个方阵，尺寸与特征网络的输出维度相同。矩阵中的每个元素 $\mathcal{C}_{ij}$ 是网络输出向量在维度索引 $i, j$ 与批次索引 $b$ 上 $\mathbf{z}_{b,i}^A$ 与 $\mathbf{z}_{b,j}^B$ 之间的余弦相似度，取值介于 -1（完全负相关）与 1（完全正相关）之间。
+
+$$
+\begin{aligned}
+\mathcal{L}_\text{BT} &= \underbrace{\sum_i (1-\mathcal{C}_{ii})^2}_\text{invariance term} + \lambda \underbrace{\sum_i\sum_{i\neq j} \mathcal{C}_{ij}^2}_\text{redundancy reduction term} \\ \text{where } \mathcal{C}_{ij} &= \frac{\sum_b \mathbf{z}^A_{b,i} \mathbf{z}^B_{b,j}}{\sqrt{\sum_b (\mathbf{z}^A_{b,i})^2}\sqrt{\sum_b (\mathbf{z}^B_{b,j})^2}}
+\end{aligned}
+$$
+
+Barlow Twins 在自监督学习上可与 SOTA 方法相媲美。它天然地避免了平凡常数解（即表示坍缩），并且对不同的训练批次大小都很稳健。
+
+图示：Barlow Twins 算法的 PyTorch 风格伪代码。（图片来源：Zbontar et al. 2021）
+
+### BYOL
+
+与上述方法不同，有意思的是，**BYOL**（Bootstrap Your Own Latent；Grill, et al 2020）声称在*不使用负样本*的情况下取得了新的最先进结果。它依赖两个神经网络，分别称为*在线*（online）网络和*目标*（target）网络，二者相互作用、相互学习。目标网络（参数为 $\xi$）与在线网络（参数为 $\theta$）结构相同，但权重是 Polyak 平均的结果：$\xi \leftarrow \tau \xi + (1-\tau) \theta$。
+
+目标是学到一个可用于下游任务的表示 $y$。参数为 $\theta$ 的在线网络包含：
+
+* 一个编码器 $f_\theta$；
+* 一个投影器 $g_\theta$；
+* 一个预测器 $q_\theta$。
+
+目标网络的网络结构相同，但参数 $\xi$ 不同，通过 Polyak 平均 $\theta$ 更新：$\xi \leftarrow \tau \xi + (1-\tau) \theta$。
+
+图示：BYOL 的模型结构。训练完成后，我们只关心用于产生表示的 $f\_\theta$，即 $y=f\_\theta(x)$，其余部分全部丢弃。$\text{sg}$ 表示停止梯度。（图片来源：Grill, et al 2020）
+
+给定一张图像 $\mathbf{x}$，BYOL 损失的构造如下：
+
+* 生成两个增强视图：$\mathbf{v}=t(\mathbf{x}); \mathbf{v}’=t’(\mathbf{x})$，增强采样自 $t \sim \mathcal{T}, t’ \sim \mathcal{T}’$；
+* 然后把它们编码成表示：$\mathbf{y}_\theta=f_\theta(\mathbf{v}), \mathbf{y}’=f_\xi(\mathbf{v}’)$；
+* 再投影成潜变量：$\mathbf{z}_\theta=g_\theta(\mathbf{y}_\theta), \mathbf{z}’=g_\xi(\mathbf{y}’)$；
+* 在线网络输出一个预测 $q_\theta(\mathbf{z}_\theta)$；
+* 对 $q_\theta(\mathbf{z}_\theta)$ 和 $\mathbf{z}’$ 做 L2 归一化，得到 $\bar{q}_\theta(\mathbf{z}_\theta) = q_\theta(\mathbf{z}_\theta) / | q_\theta(\mathbf{z}_\theta) |$ 和 $\bar{\mathbf{z}’} = \mathbf{z}’ / |\mathbf{z}’|$；
+* 损失 $\mathcal{L}^\text{BYOL}_\theta$ 是 L2 归一化后的预测 $\bar{q}_\theta(\mathbf{z})$ 与 $\bar{\mathbf{z}’}$ 之间的均方误差；
+* 交换 $\mathbf{v}’$ 和 $\mathbf{v}$ 可以得到另一个对称损失 $\tilde{\mathcal{L}}^\text{BYOL}_\theta$，也就是把 $\mathbf{v}’$ 输入在线网络、把 $\mathbf{v}$ 输入目标网络。
+* 最终损失为 $\mathcal{L}^\text{BYOL}_\theta + \tilde{\mathcal{L}}^\text{BYOL}_\theta$，且只优化参数 $\theta$。
+
+与大多数流行的基于对比学习的方法不同，BYOL 不使用负样本对。大多数自举（bootstrapping）方法依赖伪标签或聚类索引，而 BYOL 直接对潜在表示进行自举。
+
+非常有意思也令人惊讶的是，*没有*负样本，BYOL 依然效果很好。后来我看到 Abe Fetterman 和 Josh Albrecht 的这篇文章，他们在尝试复现 BYOL 时着重指出了两个令人惊讶的发现：
+
+1. *去掉批归一化*（batch normalization）后，BYOL 的表现一般不比随机好。
+2. 批归一化的存在隐式地造成了某种形式的对比学习。
+   他们认为，使用负样本对避免模型坍缩很重要（想想看，如果对每个数据点都用全零表示会怎样？）。批归一化*隐式地*引入了对负样本的依赖，因为无论一批输入多么相似，其数值都会被重新分布（散开 $\sim \mathcal{N}(0, 1$），因此批归一化阻止了模型坍缩。如果你在这个领域工作，强烈建议阅读全文。
+
+## 记忆库（Memory Bank）
+
+在每个批次中为大量负样本计算嵌入极其昂贵。一种常见做法是把表示存储在内存中，以数据陈旧为代价换取更低的计算开销。
+
+### 基于记忆库的实例判别
+
+**实例对比学习**（Wu et al, 2018）把类别级监督推向极致：把每个实例都视为*一个独立的类别*。这意味着"类别"的数量与训练数据集中的样本数量相同。因此，训练一个有这么多输出头的 softmax 层是不可行的，但可以用 NCE 来近似。
+
+图示：实例级对比学习的训练流程。学到的嵌入经过 L2 归一化。（图片来源：Wu et al, 2018）
+
+令 $\mathbf{v} = f_\theta(x)$ 为待学习的嵌入函数，并将向量归一化使 $|\mathbf{v}|=1$。一个非参数分类器以温度参数 $\tau$ 预测样本 $\mathbf{v}$ 属于类别 $i$ 的概率：
+
+$$
+P(C=i\vert \mathbf{v}) = \frac{\exp(\mathbf{v}_i^\top \mathbf{v} / \tau)}{\sum_{j=1}^n \exp(\mathbf{v}_j^\top \mathbf{v} / \tau)}
+$$
+
+他们没有每次都为所有样本计算表示，而是实现了一个**记忆库**，把过去迭代中的样本表示存入数据库。令 $V=\{ \mathbf{v}_i \}$ 为记忆库，$\mathbf{f}_i = f_\theta(\mathbf{x}_i)$ 为网络前向传播生成的特征。在比较成对相似度时，可以用记忆库中的表示 $\mathbf{v}_i$ 代替网络前向得到的特征 $\mathbf{f}_i$。
+
+分母在理论上需要访问所有样本的表示，但这在实践中代价太高。我们可以改用 $M$ 个随机索引子集 $\{j_k\}_{k=1}^M$，通过蒙特卡洛近似来估计它。
+
+$$
+P(i\vert \mathbf{v}) 
+= \frac{\exp(\mathbf{v}^\top \mathbf{f}_i / \tau)}{\sum_{j=1}^N \exp(\mathbf{v}_j^\top \mathbf{f}_i / \tau)}
+\simeq \frac{\exp(\mathbf{v}^\top \mathbf{f}_i / \tau)}{\frac{N}{M} \sum_{k=1}^M \exp(\mathbf{v}_{j_k}^\top \mathbf{f}_i / \tau)}
+$$
+
+由于每个类别只有一个实例，训练很不稳定、波动很大。为了让训练更平滑，他们基于近端优化方法，在损失函数中为正样本引入了一个额外项。最终的 NCE 损失目标如下：
+
+$$
+\begin{aligned}
+\mathcal{L}_\text{instance} &= - \mathbb{E}_{P_d}\big[\log h(i, \mathbf{v}^{(t-1)}_i) - \lambda \|\mathbf{v}^{(t)}_i - \mathbf{v}^{(t-1)}_i\|^2_2\big] - M\mathbb{E}_{P_n}\big[\log(1 - h(i, \mathbf{v}'^{(t-1)})\big] \\
+h(i, \mathbf{v}) &= \frac{P(i\vert\mathbf{v})}{P(i\vert\mathbf{v}) + MP_n(i)} \text{ where the noise distribution is uniform }P_n = 1/N
+\end{aligned}
+$$
+
+其中 $\{ \mathbf{v}^{(t-1)} \}$ 是上一次迭代存储在记忆库中的嵌入。随着学到的嵌入收敛，迭代之间的差异 $|\mathbf{v}^{(t)}_i - \mathbf{v}^{(t-1)}_i|^2_2$ 会逐渐消失。
+
+### MoCo 与 MoCo-V2
+
+**动量对比**（**Momentum Contrast**，**MoCo**；He et al, 2019）提供了一个把无监督视觉表示学习视为*动态字典查找*的框架。该字典被组织成一个由数据样本编码表示构成的大型 FIFO 队列。
+
+给定查询样本 $\mathbf{x}_q$，通过编码器 $\mathbf{q} = f_q(\mathbf{x}_q)$ 得到查询表示。字典中的一组键表示 $\{\mathbf{k}_1, \mathbf{k}_2, \dots \}$ 由动量编码器 $\mathbf{k}_i = f_k (\mathbf{x}^k_i)$ 编码。假设其中字典里只有一个与 $\mathbf{q}$ 匹配的*正*键 $\mathbf{k}^+$。在论文中，他们用 $\mathbf{x}_q$ 经不同增强得到的带噪副本来生成 $\mathbf{k}^+$。然后在一个正样本和 $N-1$ 个负样本上使用温度为 $\tau$ 的 InfoNCE 对比损失：
+
+$$
+\mathcal{L}_\text{MoCo} = - \log \frac{\exp(\mathbf{q} \cdot \mathbf{k}^+ / \tau)}{\sum_{i=1}^N \exp(\mathbf{q} \cdot \mathbf{k}_i / \tau)}
+$$
+
+与记忆库相比，MoCo 中基于队列的字典使我们能够复用紧邻的前几个小批次数据的表示。
+
+作为队列的 MoCo 字典不可微，因此不能依赖反向传播来更新键编码器 $f_k$。一种朴素的做法是对 $f_q$ 和 $f_k$ 使用同一个编码器。MoCo 则不同，它提出使用带动量系数 $m \in 0, 1)$ 的基于动量的更新。设 $f_q$ 和 $f_k$ 的参数分别记为 $\theta_q$ 和 $\theta_k$。
+
+$$
+\theta_k \leftarrow m \theta_k + (1-m) \theta_q
+$$
+
+图示：动量对比（MoCo）如何学习视觉表示。（图片来源：He et al, 2019）
+
+与 SimCLR 相比，MoCo 的优势在于它把批次大小与负样本数量解耦了；而 SimCLR 需要大批次才能有足够的负样本，批次缩小时性能会下降。
+
+SimCLR 中的两个设计，即（1）MLP 投影头和（2）更强的数据增强，被证明非常有效。**MoCo V2**（Chen et al, 2020）结合了这两个设计，在不依赖超大批次的情况下取得了更好的迁移性能。
+
+### CURL
+
+**CURL**（Srinivas, et al. 2020）把上述思想应用到强化学习中。它通过对比损失匹配原始观测 $o$ 的两个数据增强版本 $o_q$ 和 $o_k$ 的嵌入，为强化学习任务学习视觉表示。CURL 主要依赖随机裁剪数据增强。与 MoCo 一样，键编码器实现为动量编码器，其权重是查询编码器权重的指数移动平均（EMA）。
+
+强化学习与有监督视觉任务的一个显著区别是，强化学习依赖连续帧之间的*时间一致性*。因此，CURL 对每一组堆叠帧一致地施加增强，以保留观测时间结构的信息。
+
+图示：CURL 的结构。（图片来源：Srinivas, et al. 2020）
+
+## 特征聚类
+
+### DeepCluster
+
+**DeepCluster**（Caron et al. 2018）通过 k-means 迭代地对特征进行聚类，并把聚类分配作为伪标签来提供监督信号。
+
+图示：DeepCluster 方法迭代地对深度特征聚类，并把聚类分配用作伪标签。（图片来源：Caron et al. 2018）
+
+每次迭代中，DeepCluster 用之前的表示对数据点聚类，再产生新的聚类分配，作为新表示的分类目标。然而这种迭代过程容易陷入平凡解。虽然它避免了使用负样本对，但需要代价高昂的聚类阶段，以及特定的预防措施来避免坍缩到平凡解。
+
+### SwAV
+
+**SwAV**（*多视图间交换分配*，Swapping Assignments between multiple Views；Caron et al. 2020）是一种在线对比学习算法。它从图像的一个增强版本计算出一个编码（code），并尝试用同一图像的另一个增强版本来预测这个编码。
+
+图示：SwAV 与对比实例学习的比较。（图片来源：Caron et al. 2020）
+
+给定图像在两种不同增强下的特征 $\mathbf{z}_t$ 和 $\mathbf{z}_s$，SwAV 计算出对应的编码 $\mathbf{q}_t$ 和 $\mathbf{q}_s$，损失通过交换两个编码来量化拟合程度，并用 $\ell(.)$ 衡量特征与编码之间的拟合。
+
+$$
+\mathcal{L}_\text{SwAV}(\mathbf{z}_t, \mathbf{z}_s) = \ell(\mathbf{z}_t, \mathbf{q}_s) + \ell(\mathbf{z}_s, \mathbf{q}_t)
+$$
+
+交换后的拟合预测取决于预测编码与一组 $K$ 个可训练原型向量 $\mathbf{C} = \{\mathbf{c}_1, \dots, \mathbf{c}_K\}$ 之间的交叉熵。原型向量矩阵在不同批次间共享，代表每个实例应被聚到的*锚点簇*。
+
+$$
+\ell(\mathbf{z}_t, \mathbf{q}_s) = - \sum_k \mathbf{q}^{(k)}_s\log\mathbf{p}^{(k)}_t \text{ where } \mathbf{p}^{(k)}_t = \frac{\exp(\mathbf{z}_t^\top\mathbf{c}_k  / \tau)}{\sum_{k'}\exp(\mathbf{z}_t^\top \mathbf{c}_{k'} / \tau)}
+$$
+
+在一个包含 $B$ 个特征向量 $\mathbf{Z} = [\mathbf{z}_1, \dots, \mathbf{z}_B]$ 的小批次中，特征与原型向量之间的映射矩阵定义为 $\mathbf{Q} = [\mathbf{q}_1, \dots, \mathbf{q}_B] \in \mathbb{R}_+^{K\times B}$。我们希望最大化特征与原型之间的相似度：
+
+$$
+\begin{aligned}
+\max_{\mathbf{Q}\in\mathcal{Q}} &\text{Tr}(\mathbf{Q}^\top \mathbf{C}^\top \mathbf{Z}) + \varepsilon \mathcal{H}(\mathbf{Q}) \\
+\text{where }\mathcal{Q} &= \big\{ \mathbf{Q} \in \mathbb{R}_{+}^{K \times B} \mid \mathbf{Q}\mathbf{1}_B = \frac{1}{K}\mathbf{1}_K, \mathbf{Q}^\top\mathbf{1}_K = \frac{1}{B}\mathbf{1}_B \big\}
+\end{aligned}
+$$
+
+其中 $\mathcal{H}$ 是熵，$\mathcal{H}(\mathbf{Q}) = - \sum_{ij} \mathbf{Q}_{ij} \log \mathbf{Q}_{ij}$，控制编码的平滑程度。系数 $\epsilon$ 不应太大，否则所有样本都会被均匀地分配到所有簇。$\mathbf{Q}$ 的候选解集要求每个映射矩阵每行之和为 $1/K$、每列之和为 $1/B$，以强制每个原型平均至少被选中 $B/K$ 次。
+
+SwAV 依赖迭代的 Sinkhorn-Knopp 算法（Cuturi 2013）来求 $\mathbf{Q}$ 的解。
+
+## 利用有监督数据集
+
+### CLIP
+
+**CLIP**（*对比语言-图像预训练*，Contrastive Language-Image Pre-training；Radford et al. 2021）在"预测哪条说明文字对应哪张图像"这一预训练任务上，联合训练文本编码器和图像特征提取器。
+
+图示：CLIP 在文本-图像对上的对比预训练。（图片来源：Radford et al. 2021）
+
+给定一批 $N$ 个（图像，文本）对，CLIP 计算该批次内所有 $N\times N$ 个可能（图像，文本）候选之间的稠密余弦相似度矩阵。文本编码器和图像编码器通过稠密矩阵上的对称交叉熵损失联合训练，最大化 $N$ 个正确（图像，文本）对的相似度，同时最小化 $N(N-1)$ 个错误配对的相似度。
+
+CLIP 的类 NumPy 伪代码见下图。
+
+图示：CLIP 算法的 NumPy 风格伪代码。（图片来源：Radford et al. 2021）
+
+与上面其他学习良好视觉表示的方法相比，CLIP 真正特别之处在于*"认识到用自然语言作为训练信号的价值"*。它确实需要一个有监督数据集，知道哪段文本对应哪张图像。它在从互联网收集的 4 亿个（文本，图像）对上训练。查询列表包含英文维基百科中出现至少 100 次的所有词。有意思的是，他们发现在零样本 ImageNet 分类上，基于 Transformer 的语言模型比词袋（BoW）文本编码器慢 3 倍。使用对比目标，而不是尝试预测与图像关联的确切词语（即图像描述预测任务通常采用的方法），还能把数据效率再提高 4 倍。
+
+图示：使用词袋文本编码和对比训练目标可以带来数倍的数据效率提升。（图片来源：Radford et al. 2021）
+
+CLIP 产生的视觉表示质量很好，能够非平凡地迁移到许多计算机视觉基准数据集上，取得与有监督基线相当的结果。在测试的迁移任务中，CLIP 在非常细粒度的分类，以及计数物体数量这类抽象或系统性任务上表现吃力。CLIP 模型的迁移性能与模型计算量呈平滑的相关关系。
+
+### 有监督对比学习
+
+交叉熵损失有几个已知问题，比如对噪声标签缺乏鲁棒性，以及可能出现较差的间隔（margin）。现有对交叉熵损失的改进涉及构造更好的训练数据，如标签平滑和数据增强。**有监督对比损失**（Supervised Contrastive Loss；Khosla et al. 2021）旨在比交叉熵更有效地利用标签信息，要求同类的归一化嵌入比不同类的嵌入彼此更接近。
+
+图示：有监督与自监督对比损失。有监督对比学习除了增强版本外，还把同一类别的不同样本当作正样本。（图片来源：Khosla et al. 2021）
+
+给定一组随机采样的 $n$ 个（图像，标签）对 $\{\mathbf{x}_i, y_i\}_{i=1}^n$，对每个样本施加两次随机增强，可以生成 $2n$ 个训练对：$\{\tilde{\mathbf{x}}_i, \tilde{y}_i\}_{i=1}^{2n}$。
+
+有监督对比损失 $\mathcal{L}_\text{supcon}$ 利用多个正样本和负样本，与软最近邻损失非常相似：
+
+$$
+\mathcal{L}_\text{supcon} = - \sum_{i=1}^{2n} \frac{1}{2 \vert N_i \vert - 1} \sum_{j \in N(y_i), j \neq i} \log \frac{\exp(\mathbf{z}_i \cdot \mathbf{z}_j / \tau)}{\sum_{k \in I, k \neq i}\exp({\mathbf{z}_i \cdot \mathbf{z}_k / \tau})}
+$$
+
+其中 $\mathbf{z}_k=P(E(\tilde{\mathbf{x}_k}))$，这里 $E(.)$ 是编码器网络（把增强后的图像映射为向量），$P(.)$ 是投影网络（把一个向量映射为另一个向量）。$N_i= \{j \in I: \tilde{y}_j = \tilde{y}_i \}$ 包含标签为 $y_i$ 的样本索引集合。向集合 $N_i$ 纳入更多正样本能改善结果。
+
+根据他们的实验，有监督对比损失：
+
+* 确实优于基础的交叉熵，但优势很小。
+* 在鲁棒性基准（ImageNet-C，对 ImageNet 数据集施加噪声、模糊、对比度变化等常见的自然扰动）上优于交叉熵。
+* 对超参数变化不那么敏感。
+
+# 语言：句子嵌入
+
+本节关注如何学习句子嵌入。
+
+## 文本增强
+
+视觉应用中的大多数对比方法依赖为每张图像生成增强版本。然而，构造不改变句子语义的文本增强更具挑战性。本节考察三种增强文本序列的方法，包括词汇编辑、回译，以及应用 cutoff 或 dropout。
+
+### 词汇编辑
+
+**EDA**（*简易数据增强*，Easy Data Augmentation；Wei & Zou 2019）定义了一组简单但有力的文本增强操作。给定一个句子，EDA 随机选择并应用以下四种简单操作之一：
+
+1. 同义词替换（SR）：把 $n$ 个随机的非停用词替换为其同义词。
+2. 随机插入（RI）：随机选取一个非停用词，把它的一个随机同义词放到句子中的随机位置。
+3. 随机交换（RS）：随机交换两个词，重复 $n$ 次。
+4. 随机删除（RD）：以概率 $p$ 随机删除句中的每个词。
+
+其中 $p=\alpha$，$n=\alpha \times \text{sentence_length}$，直觉是较长的句子在保持原标签的同时能吸收更多噪声。超参数 $\alpha$ 大致表示一次增强可能改变的句中词语的百分比。
+
+实验表明，与不使用 EDA 的基线相比，EDA 在多个分类基准数据集上提升了分类准确率。训练集越小，性能提升越显著。EDA 的四种操作都有助于提高分类准确率，但在不同的 $\alpha$ 下达到最优。
+
+图示：EDA 在多个分类基准上带来性能提升。（图片来源：Wei & Zou 2019）
+
+在**上下文增强**（Contextual Augmentation；Sosuke Kobayashi, 2018）中，位置 $i$ 处词语 $w_i$ 的新替代词可以从给定的概率分布 $p(.\mid S\setminus\{w_i\})$ 中平滑地采样，该分布由 BERT 这样的双向语言模型预测。
+
+### 回译
+
+**CERT**（*基于 Transformer 的对比自监督编码器表示*，Contrastive self-supervised Encoder Representations from Transformers；Fang et al. (2020)；有代码）通过**回译**生成增强句子。可以使用面向不同语言的各种翻译模型来生成不同版本的增强。一旦有了文本样本的带噪版本，就可以用上面介绍的许多对比学习框架（例如 MoCo）来学习句子嵌入。
+
+### Dropout 与 Cutoff
+
+Shen et al.（2020）受跨视图训练（cross-view training）启发，提出把 **Cutoff** 应用于文本增强。他们提出了三种 cutoff 增强策略：
+
+1. *Token cutoff* 移除若干选定 token 的信息。为确保没有数据泄漏，输入、位置及其他相关嵌入矩阵中对应的 token 都应置零。
+2. *Feature cutoff* 移除若干特征列。
+3. *Span cutoff* 移除一段连续的文本。
+
+图示：token、feature 和 span 三种 cutoff 增强策略的示意。（图片来源：Shen et al. 2020）
+
+可以为一个样本生成多个增强版本。训练时，Shen et al.（2020）额外加入了一个 KL 散度项，用来衡量不同增强样本预测之间的一致性。
+
+**SimCSE**（Gao et al. 2021；有代码）在无标注数据上学习的方式是：仅借助 **dropout** 噪声，用句子预测其自身。换言之，他们把 dropout 当作文本序列的数据增强。一个样本以不同的 dropout 掩码被送入编码器两次，这两个版本构成正样本对，批内其他样本被视为负样本对。这感觉与 cutoff 增强颇为相似，但 dropout 更灵活，对于哪些内容可以被遮掉，其语义含义没那么明确。
+
+图示：SimCSE 通过施加不同的 dropout 掩码生成增强样本。有监督版本利用 NLI 数据集，给定一对句子预测正（蕴含）或负（矛盾）。（图片来源：Gao et al. 2021）
+
+他们在 7 个 STS（语义文本相似度）数据集上做了实验，计算句子嵌入之间的余弦相似度。他们还尝试了一个可选的 MLM 辅助目标损失，以帮助避免灾难性遗忘 token 级知识。结果发现这个辅助损失有助于提升迁移任务上的表现，但在主要的 STS 任务上会持续下降。
+
+图示：SimCSE 在一系列 STS 基准上的实验数据。（图片来源：Gao et al. 2021）
+
+## 来自 NLI 的监督
+
+人们发现，未经任何微调的预训练 BERT 句子嵌入在语义相似度任务上表现很差。我们不能直接使用原始嵌入，而需要通过进一步微调来改进嵌入。
+
+**自然语言推理（Natural Language Inference，NLI）**任务是为学习句子嵌入提供监督信号的主要数据来源，例如 SNLI、MNLI 和 QQP。
+
+### Sentence-BERT
+
+**SBERT（Sentence-BERT）**（Reimers & Gurevych, 2019）依靠孪生（siamese）和三元组网络结构来学习句子嵌入，使句子相似度可以用嵌入对之间的余弦相似度来估计。注意，SBERT 的学习依赖有监督数据，因为它是在多个 NLI 数据集上微调的。
+
+他们在 BERT 模型之上试验了几种不同的预测头：
+
+* Softmax 分类目标：孪生网络的分类头建立在两个嵌入 $f(\mathbf{x}), f(\mathbf{x}’)$ 与 $\vert f(\mathbf{x}) - f(\mathbf{x}’) \vert$ 的拼接之上。预测输出为 $\hat{y}=\text{softmax}(\mathbf{W}_t [f(\mathbf{x}); f(\mathbf{x}’); \vert f(\mathbf{x}) - f(\mathbf{x}’) \vert])$。他们表明，最重要的组成部分是逐元素差 $\vert f(\mathbf{x}) - f(\mathbf{x}’) \vert$。
+* 回归目标：这是在 $\cos(f(\mathbf{x}), f(\mathbf{x}’))$ 上的回归损失，其中池化策略影响很大。实验中他们观察到，`max` 的表现远不如 `mean` 和 `CLS`-token。
+* 三元组目标：$\max(0, |f(\mathbf{x}) - f(\mathbf{x}^+)|- |f(\mathbf{x}) - f(\mathbf{x}^-)| + \epsilon)$，其中 $\mathbf{x}, \mathbf{x}^+, \mathbf{x}^-$ 分别是锚点句、正例句和负例句的嵌入。
+
+实验中，哪个目标函数效果最好取决于数据集，因此没有通用的赢家。
+
+图示：带 softmax 分类头和回归头的 Sentence-BERT 训练框架。（图片来源：Reimers & Gurevych, 2019）
+
+SentEval 库（Conneau and Kiela, 2018）常用于评估所学句子嵌入的质量。当时（2019 年 8 月）SBERT 在 7 个任务中的 5 个上超过了其他基线。
+
+图示：Sentence-BERT 在 SentEval 基准上的表现。（图片来源：Reimers & Gurevych, 2019）
+
+### BERT-flow
+
+如果嵌入在每个维度上均匀分布，嵌入表示空间就被认为是*各向同性*的；否则就是*各向异性*的。Li et al,（2020）表明，预训练 BERT 学到的是一个不光滑的、*各向异性*的句子嵌入语义空间，因此在不微调的情况下文本相似度任务表现不佳。他们在经验上观察到 BERT 句子嵌入的两个问题：
+词频使嵌入空间产生偏差。高频词靠近原点，低频词则远离原点。
+低频词分布稀疏。低频词的嵌入往往离其 $k$-NN 近邻更远，而高频词的嵌入则更密集地聚集。
+
+**BERT-flow**（Li et al, 2020；有代码）被提出，用标准化流（normalizing flows）把嵌入变换为一个光滑且各向同性的高斯分布。
+
+图示：BERT-flow 对原始句子嵌入空间进行基于流的校准。（图片来源：Li et al, 2020）
+
+令 $\mathcal{U}$ 为观测到的 BERT 句子嵌入空间，$\mathcal{Z}$ 为期望的潜在空间，即标准高斯。于是 $p_\mathcal{Z}$ 是高斯密度函数，$f_\phi: \mathcal{Z}\to\mathcal{U}$ 是一个可逆变换：
+
+$$
+\mathbf{z}\sim p_\mathcal{Z}(\mathbf{z}) \quad 
+\mathbf{u}=f_\phi(\mathbf{z}) \quad
+\mathbf{z}=f^{-1}_\phi(\mathbf{u}) 
+$$
+
+基于流的生成模型通过最大化 $\mathcal{U}$ 边缘分布的似然来学习可逆映射函数：
+
+$$
+\max_\phi\mathbb{E}_{\mathbf{u}=\text{BERT}(s), s\sim\mathcal{D}} \Big[ \log p_\mathcal{Z}(f^{-1}_\phi(\mathbf{u})) + \log\big\vert\det\frac{\partial f^{-1}_\phi(\mathbf{u})}{\partial\mathbf{u}}\big\vert \Big]
+$$
+
+其中 $s$ 是从文本语料 $\mathcal{D}$ 中采样的句子。只优化流的参数 $\phi$，预训练 BERT 的参数保持不变。
+
+结果表明，无论是否有来自 NLI 数据集的监督，BERT-flow 都能在大多数 STS 任务上提升表现。由于学习用于校准的标准化流不需要标签，它可以利用包括验证集和测试集在内的整个数据集。
+
+### 白化操作
+
+Su et al.（2021）应用**白化**（whitening）操作来提高所学表示的各向同性，同时降低句子嵌入的维度。
+
+他们把句向量的均值变换为 0，把协方差矩阵变换为单位矩阵。给定一组样本 $\{\mathbf{x}_i\}_{i=1}^N$，令 $\tilde{\mathbf{x}}_i$ 和 $\tilde{\Sigma}$ 分别为变换后的样本及其协方差矩阵：
+
+$$
+\begin{aligned}
+\mu &= \frac{1}{N}\sum_{i=1}^N \mathbf{x}_i \quad \Sigma = \frac{1}{N}\sum_{i=1}^N (\mathbf{x}_i - \mu)^\top (\mathbf{x}_i - \mu) \\
+\tilde{\mathbf{x}}_i &= (\mathbf{x}_i - \mu)W \quad \tilde{\Sigma} = W^\top\Sigma W = I \text{ thus } \Sigma = (W^{-1})^\top W^{-1}
+\end{aligned}
+$$
+
+对 $\Sigma = U\Lambda U^\top$ 做 SVD 分解，可得 $W^{-1}=\sqrt{\Lambda} U^\top$ 和 $W=U\sqrt{\Lambda^{-1}}$。注意在 SVD 中，$U$ 是以特征向量为列向量的正交矩阵，$\Lambda$ 是对角矩阵，其元素全为正，是排好序的特征值。
+
+可以只取 $W$ 的前 $k$ 列来实施降维策略，称为 `Whitening`-$k$。
+
+图示：whitening-$k$ 操作的伪代码。（图片来源：Su et al. 2021）
+
+结果表明，无论有无 NLI 监督，白化操作都优于 BERT-flow，并在许多 STS 基准上以 256 维句子维度达到 SOTA。
+
+## 无监督句子嵌入学习
+
+### 上下文预测
+
+**Quick-Thought（QT）向量**（Logeswaran & Lee, 2018）把句子表示学习表述为一个*分类*问题：给定一个句子及其上下文，分类器基于向量表示把上下文句子与其他对比句子区分开（"完形填空测试"）。这种表述去掉了会拖慢训练的 softmax 输出层。
+
+图示：Quick-Thought 句子嵌入向量的学习方式。（图片来源：Logeswaran & Lee, 2018）
+
+令 $f(.)$ 和 $g(.)$ 为把句子 $s$ 编码成定长向量的两个函数。令 $C(s)$ 为 $s$ 上下文中的句子集合，$S(s)$ 为候选句子集合，其中只包含一个句子 $s_c \in C(s)$ 以及许多其他非上下文的负例句子。Quick Thoughts 模型学习优化预测唯一真实上下文句子 $s_c \in S(s)$ 的概率。若把句子 $(s, s_c)$ 视为正样本对、把其他 $s’ \in S(s), s’\neq s_c$ 的样本对 $(s, s’)$ 视为负样本，它本质上就是 NCE 损失。
+
+$$
+\mathcal{L}_\text{QT} 
+= - \sum_{s \in \mathcal{D}} \sum_{s_c \in C(s)} \log p(s_c \vert s, S(s)) 
+= - \sum_{s \in \mathcal{D}} \sum_{s_c \in C(s)}\frac{\exp(f(s)^\top g(s_c))}{\sum_{s'\in S(s)} \exp(f(s)^\top g(s'))}
+$$
+
+### 互信息最大化
+
+**IS-BERT（Info-Sentence BERT）**（Zhang et al. 2020；有代码）采用基于*互信息最大化*的自监督学习目标，以*无监督*方式学习良好的句子嵌入。
+
+图示：Info-Sentence BERT。（图片来源：Zhang et al. 2020）
+
+IS-BERT 的工作方式如下：
+
+1. 用 BERT 把输入句子 $s$ 编码为长度为 $l$ 的 token 嵌入 $\mathbf{h}_{1:l}$。
+2. 然后用不同卷积核大小（如 1、3、5）的一维卷积网络处理 token 嵌入序列，以捕捉 n-gram 局部上下文依赖：$\mathbf{c}_i = \text{ReLU}(\mathbf{w} \cdot \mathbf{h}_{i:i+k-1} + \mathbf{b})$。输出序列经过填充，与输入保持相同尺寸。
+3. 第 $i$ 个 token 的最终局部表示 $\mathcal{F}_\theta^{(i)} (\mathbf{x})$ 是不同卷积核大小所得表示的拼接。
+4. 全局句子表示 $\mathcal{E}_\theta(\mathbf{x})$ 通过在 token 表示 $\mathcal{F}_\theta(\mathbf{x}) = \{\mathcal{F}_\theta^{(i)} (\mathbf{x}) \in \mathbb{R}^d\}_{i=1}^l$ 上应用时间维平均池化层计算得到。
+
+由于对连续的高维随机变量而言，互信息估计通常是不可解的，IS-BERT 依靠 Jensen-Shannon 估计器（Nowozin et al., 2016，Hjelm et al., 2019）来最大化 $\mathcal{E}_\theta(\mathbf{x})$ 与 $\mathcal{F}_\theta^{(i)} (\mathbf{x})$ 之间的互信息。
+
+$$
+I^\text{JSD}_\omega(\mathcal{F}_\theta^{(i)} (\mathbf{x}); \mathcal{E}_\theta(\mathbf{x})) = \mathbb{E}_{\mathbf{x}\sim P} [-\text{sp}(-T_\omega(\mathcal{F}_\theta^{(i)} (\mathbf{x}); \mathcal{E}_\theta(\mathbf{x})))] \\ - \mathbb{E}_{\mathbf{x}\sim P, \mathbf{x}' \sim\tilde{P}} [\text{sp}(T_\omega(\mathcal{F}_\theta^{(i)} (\mathbf{x}'); \mathcal{E}_\theta(\mathbf{x})))]
+$$
+
+其中 $T_\omega: \mathcal{F}\times\mathcal{E} \to \mathbb{R}$ 是参数为 $\omega$ 的可学习网络，用于生成判别器分数。负样本 $\mathbf{x}’$ 采样自分布 $\tilde{P}=P$。$\text{sp}(x)=\log(1+e^x)$ 是 softplus 激活函数。
+
+IS-BERT 在 SentEval 上的无监督结果优于大多数无监督基线（2020 年 9 月），但不出所料地弱于有监督的结果。使用有标注的 NLI 数据集时，IS-BERT 的结果与 SBERT 相当（见图 25 和图 30）。
+
+图示：IS-BERT 在 SentEval 基准上的表现。（图片来源：Zhang et al. 2020）
+
+# 参考文献
+
+[1] Sumit Chopra, Raia Hadsell and Yann LeCun. “Learning a similarity metric discriminatively, with application to face verification.” CVPR 2005.
+
+[2] Florian Schroff, Dmitry Kalenichenko and James Philbin. “FaceNet: A Unified Embedding for Face Recognition and Clustering.” CVPR 2015.
+
+[3] Hyun Oh Song et al. “Deep Metric Learning via Lifted Structured Feature Embedding.” CVPR 2016. [code]
+
+[4] Ruslan Salakhutdinov and Geoff Hinton. “Learning a Nonlinear Embedding by Preserving Class Neighbourhood Structure” AISTATS 2007.
+
+[5] Michael Gutmann and Aapo Hyvärinen. “Noise-contrastive estimation: A new estimation principle for unnormalized statistical models.” AISTATS 2010.
+
+[6] Kihyuk Sohn et al. “Improved Deep Metric Learning with Multi-class N-pair Loss Objective” NIPS 2016.
+
+[7] Nicholas Frosst, Nicolas Papernot and Geoffrey Hinton. “Analyzing and Improving Representations with the Soft Nearest Neighbor Loss.” ICML 2019
+
+[8] Tongzhou Wang and Phillip Isola. “Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere.” ICML 2020. [code]
+
+[9] Zhirong Wu et al. “Unsupervised feature learning via non-parametric instance-level discrimination.” CVPR 2018.
+
+[10] Ekin D. Cubuk et al. “AutoAugment: Learning augmentation policies from data.” arXiv preprint arXiv:1805.09501 (2018).
+
+[11] Daniel Ho et al. “Population Based Augmentation: Efficient Learning of Augmentation Policy Schedules.” ICML 2019.
+
+[12] Ekin D. Cubuk & Barret Zoph et al. “RandAugment: Practical automated data augmentation with a reduced search space.” arXiv preprint arXiv:1909.13719 (2019).
+
+[13] Hongyi Zhang et al. “mixup: Beyond Empirical Risk Minimization.” ICLR 2017.
+
+[14] Sangdoo Yun et al. “CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features.” ICCV 2019.
+
+[15] Yannis Kalantidis et al. “Mixing of Contrastive Hard Negatives” NeuriPS 2020.
+
+[16] Ashish Jaiswal et al. “A Survey on Contrastive Self-Supervised Learning.” arXiv preprint arXiv:2011.00362 (2021)
+
+[17] Jure Zbontar et al. “Barlow Twins: Self-Supervised Learning via Redundancy Reduction.” arXiv preprint arXiv:2103.03230 (2021) [code]
+
+[18] Alec Radford, et al. “Learning Transferable Visual Models From Natural Language Supervision” arXiv preprint arXiv:2103.00020 (2021)
+
+[19] Mathilde Caron et al. “Unsupervised Learning of Visual Features by Contrasting Cluster Assignments (SwAV).” NeuriPS 2020.
+
+[20] Mathilde Caron et al. “Deep Clustering for Unsupervised Learning of Visual Features.” ECCV 2018.
+
+[21] Prannay Khosla et al. “Supervised Contrastive Learning.” NeurIPS 2020.
+
+[22] Aaron van den Oord, Yazhe Li & Oriol Vinyals. “Representation Learning with Contrastive Predictive Coding” arXiv preprint arXiv:1807.03748 (2018).
+
+[23] Jason Wei and Kai Zou. “EDA: Easy data augmentation techniques for boosting performance on text classification tasks.” EMNLP-IJCNLP 2019.
+
+[24] Sosuke Kobayashi. “Contextual Augmentation: Data Augmentation by Words with Paradigmatic Relations.” NAACL 2018
+
+[25] Hongchao Fang et al. “CERT: Contrastive self-supervised learning for language understanding.” arXiv preprint arXiv:2005.12766 (2020).
+
+[26] Dinghan Shen et al. “A Simple but Tough-to-Beat Data Augmentation Approach for Natural Language Understanding and Generation.” arXiv preprint arXiv:2009.13818 (2020) [code]
+
+[27] Tianyu Gao et al. “SimCSE: Simple Contrastive Learning of Sentence Embeddings.” arXiv preprint arXiv:2104.08821 (2020). [code]
+
+[28] Nils Reimers and Iryna Gurevych. “Sentence-BERT: Sentence embeddings using Siamese BERT-networks.” EMNLP 2019.
+
+[29] Jianlin Su et al. “Whitening sentence representations for better semantics and faster retrieval.” arXiv preprint arXiv:2103.15316 (2021). [code]
+
+[30] Yan Zhang et al. “An unsupervised sentence embedding method by mutual information maximization.” EMNLP 2020. [code]
+
+[31] Bohan Li et al. “On the sentence embeddings from pre-trained language models.” EMNLP 2020.
+
+[32] Lajanugen Logeswaran and Honglak Lee. “An efficient framework for learning sentence representations.” ICLR 2018.
+
+[33] Joshua Robinson, et al. “Contrastive Learning with Hard Negative Samples.” ICLR 2021.
+
+[34] Ching-Yao Chuang et al. “Debiased Contrastive Learning.” NeuriPS 2020.

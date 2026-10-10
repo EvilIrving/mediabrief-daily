@@ -1,0 +1,2429 @@
+https://overreacted.io/jsx-over-the-wire/
+
+通过网络传输的 JSX（JSX Over The Wire）
+
+Dan Abramov，Overreacted，2025 年 4 月 16 日
+
+假设你有一个 API 路由，它以 JSON 的形式返回一些数据：
+
+```
+app.get('/api/likes/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  const json = {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes,
+  };
+  res.json(json);
+});
+```
+
+你还有一个需要这些数据的 React 组件：
+
+```
+function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  let buttonText = 'Like';
+  if (totalLikeCount > 0) {
+    // 例如 "Liked by You, Alice, and 13 others"
+    buttonText = formatLikeText(totalLikeCount, isLikedByUser, friendLikes);
+  }
+  return (
+    <button className={isLikedByUser ? 'liked' : ''}>
+      {buttonText}
+    </button>
+  );
+}
+```
+
+你要怎样把这些数据送进这个组件？
+
+你可以借助某个数据获取库，从父组件把它传下来：
+
+```
+function PostLikeButton({ postId }) {
+  const [json, isLoading] = useData(`/api/likes/${postId}`);
+  // ...
+  return (
+    <LikeButton
+      totalLikeCount={json.totalLikeCount}
+      isLikedByUser={json.isLikedByUser}
+      friendLikes={json.friendLikes}
+    />
+  );
+}
+```
+
+这是一种思考方式。
+
+但再看一眼你的 API：
+
+```
+app.get('/api/likes/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  const json = {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes,
+  };
+  res.json(json);
+});
+```
+
+这几行让你想起什么了吗？
+
+Props。_你在传递 props。_只是你没有指明要传_到哪里_。
+
+但你其实已经知道它们的最终目的地——`LikeButton`。
+
+为什么不直接把它填上呢？
+
+```
+app.get('/api/likes/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  const json = (
+    <LikeButton
+      totalLikeCount={post.totalLikeCount}
+      isLikedByUser={post.isLikedByUser}
+      friendLikes={friendLikes}
+    />
+  );
+  res.json(json);
+});
+```
+
+现在，`LikeButton` 的“父组件”就是 _API 本身_。
+
+等等，什么？
+
+我知道这很怪。至于这是不是个好主意，我们稍后再操心。但现在先注意，这把组件与 API 之间的关系颠倒了过来。这有时被称为好莱坞原则：“别打电话给我，我会打给你。”
+
+你的组件不调用你的 API。
+
+相反，你的 API _返回_你的组件。
+
+你为什么会想这样做呢？
+
+* * *
+
+*   [第一部分：作为组件的 JSON](https://overreacted.io/jsx-over-the-wire/#part-1-json-as-components)
+*   [第二部分：作为 JSON 的组件](https://overreacted.io/jsx-over-the-wire/#part-2-components-as-json)
+*   [第三部分：通过网络传输的 JSX](https://overreacted.io/jsx-over-the-wire/#part-3-jsx-over-the-wire)
+
+* * *
+
+## [第一部分：作为组件的 JSON](https://overreacted.io/jsx-over-the-wire/#part-1-json-as-components)
+
+### [Model、View、ViewModel](https://overreacted.io/jsx-over-the-wire/#model-view-viewmodel)
+
+我们想如何_存储_信息与想如何_展示_信息之间，存在一种根本性的张力。通常我们想存储的东西比要展示的多。
+
+例如，考虑一篇帖子（Post）上的点赞按钮。当我们为某篇帖子存储点赞时，可能想把它们表示为一张由 `Like` 行组成的表，像这样：
+
+```
+type Like = {
+  createdAt: string, // 时间戳
+  likedById: number, // 用户 ID
+  postId: number     // 文章 ID
+};
+```
+
+我们把这类数据称为“Model”（模型）。它代表数据的原始形态。
+
+`type Model = Like;`
+于是我们的点赞数据库表可能包含这种形态的数据：
+
+```
+[{
+  createdAt: '2025-04-13T02:04:41.668Z',
+  likedById: 123,
+  postId: 1001
+}, {
+  createdAt: '2025-04-13T02:04:42.668Z',
+  likedById: 456,
+  postId: 1001
+}, {
+  createdAt: '2025-04-13T02:04:43.668Z',
+  likedById: 789,
+  postId: 1002
+}, /* ... */]
+```
+
+然而，我们想要_展示_给用户的东西是不同的。
+
+我们想展示的是这篇帖子的_点赞数_、_用户是否已经点过赞_，以及_同样点了赞的好友的名字_。例如，点赞按钮可以显示为按下状态（表示你已经赞过这篇帖子），并写着“你、Alice 和另外 13 人赞了这篇帖子。”或者“Alice、Bob 和另外 12 人赞了这篇帖子。”
+
+```
+type LikeButtonProps = {
+  totalLikeCount: number,
+  isLikedByUser: boolean,
+  friendLikes: string[]
+}
+```
+
+我们把这类数据称为“ViewModel”（视图模型）。
+
+`type ViewModel = LikeButtonProps;`
+ViewModel 以一种能被 UI（即_视图_）直接使用的方式来表示数据。它往往与原始 Model 有很大差别。在我们的例子中：
+
+*   ViewModel 的 `totalLikeCount` 是由单个的 `Like` model 聚合而来的。
+*   ViewModel 的 `isLikedByUser` 是个性化的，取决于用户。
+*   ViewModel 的 `friendLikes` 既是聚合的，又是个性化的。要计算它，你得取出这篇帖子的点赞，筛选出来自好友的点赞，再获取前几位好友的名字（它们很可能存储在另一张表里）。
+
+显然，Model 迟早需要转换成 ViewModel。问题在于，这在代码中_何处_、_何时_发生，以及这些代码随着时间如何演进。
+
+* * *
+
+### [REST 与 JSON API](https://overreacted.io/jsx-over-the-wire/#rest-and-json-api)
+
+解决这个问题最常见的方式，是暴露某种 JSON API，让客户端请求它来组装 ViewModel。设计这样的 API 有不同的方式，但最常见的就是通常所说的 REST。
+
+处理 REST 的典型方式（[假设我们从没读过这篇文章](https://htmx.org/essays/how-did-rest-come-to-mean-the-opposite-of-rest/)）是挑选一些“资源”（Resource）——比如帖子（Post）或点赞（Like）——并提供对这些资源进行列出、创建、更新和删除的 JSON API 端点。自然，REST 并没有规定你应该如何_塑造_这些资源的形态，所以有很大的灵活性。
+
+通常，你可能会从返回 Model 的形态开始：
+
+```
+// GET /api/post/123
+{
+  title: 'My Post',
+  content: 'Hello world...',
+  authorId: 123,
+  createdAt: '2025-04-13T02:04:40.668Z'
+}
+```
+
+到目前为止还不错。但怎么把点赞纳入进来呢？也许 `totalLikeCount` 和 `isLikedByUser` 可以成为 Post 资源的一部分：
+
+```
+// GET /api/post/123
+{
+  title: 'My Post',
+  content: 'Hello world...',
+  authorId: 123,
+  createdAt: '2025-04-13T02:04:40.668Z',
+  totalLikeCount: 13,
+  isLikedByUser: true
+}
+```
+
+那么，`friendLikes` 也应该放进去吗？客户端需要这些信息。
+
+```
+// GET /api/post/123
+{
+  title: 'My Post',
+  authorId: 123,
+  content: 'Hello world...',
+  createdAt: '2025-04-13T02:04:40.668Z',
+  totalLikeCount: 13,
+  isLikedByUser: true,
+  friendLikes: ['Alice', 'Bob']
+}
+```
+
+还是说，往 Post 里塞太多东西，已经开始滥用“帖子”这个概念了？好吧，这样如何：也许我们可以为一篇帖子的点赞提供一个单独的端点：
+
+```
+// GET /api/post/123/likes
+{
+  totalCount: 13,
+  likes: [{
+    createdAt: '2025-04-13T02:04:41.668Z',
+    likedById: 123,
+  }, {
+    createdAt: '2025-04-13T02:04:42.668Z',
+    likedById: 768,
+  }, /* ... */]
+}
+```
+
+于是帖子的点赞成了它自己的“资源”。
+
+理论上这很好，但我们需要知道点赞者的名字，又不想为每个点赞都发一次请求。所以我们需要在这里“展开”（expand）用户：
+
+```
+// GET /api/post/123/likes
+{
+  totalCount: 13,
+  likes: [{
+    createdAt: '2025-04-13T02:04:41.668Z',
+    likedBy: {
+      id: 123,
+      firstName: 'Alice',
+      lastName: 'Lovelace'
+    }
+  }, {
+    createdAt: '2025-04-13T02:04:42.668Z',
+    likedBy: {
+      id: 768,
+      firstName: 'Bob',
+      lastName: 'Babbage'
+    }
+  }]
+}
+```
+
+我们还“忘了”这些点赞中哪些来自好友。是应该通过单独的 `/api/post/123/friend-likes` 端点来解决？还是应该先按好友排序，并在 `likes` 数组的元素中加入 `isFriend`，以便区分好友的点赞和其他点赞？还是应该加一个 `?filter=friends`？
+
+还是应该把好友点赞直接放进 Post 里，以免调用两次 API？
+
+```
+// GET /api/post/123
+{
+  title: 'My Post',
+  authorId: 123,
+  content: 'Hello world...',
+  createdAt: '2025-04-13T02:04:40.668Z',
+  totalLikeCount: 13,
+  isLikedByUser: true,
+  friendLikes: [{
+    createdAt: '2025-04-13T02:04:41.668Z',
+    likedBy: {
+      id: 123,
+      firstName: 'Alice',
+      lastName: 'Lovelace'
+    }
+  }, {
+    createdAt: '2025-04-13T02:04:42.668Z',
+    likedBy: {
+      id: 768,
+      firstName: 'Bob',
+      lastName: 'Babbage'
+    }
+  }]
+}
+```
+
+这看起来很有用，但如果 `/api/post/123` 也被其他不需要这些信息的页面调用——而你不想拖慢它们呢？也许可以提供一个按需选用的方式，比如 `/api/post/123?expand=friendLikes`？
+
+总之，我想说的并不是设计一个好的 REST API 是_不可能的_。我见过的绝大多数应用都是这样工作的，所以它至少是可行的。但任何设计过一个 REST API、然后又维护了几个月以上的人都知道这套流程。_演进 REST 端点是件让人头疼的事。_
+
+通常是这样的：
+
+1.   一开始，你得决定如何组织 JSON 输出。没有哪种方案_明显优于_其他方案；你大多只是在猜测应用会如何演进。
+2.   经过几轮来回迭代后，最初的决定往往会稳定下来……直到下一次 UI 改版让 ViewModel 的形态略有不同。已有的 REST 端点无法完全满足新的需求。
+3.   可以添加新的 REST API 端点，但到了某个时候，你就不太“应该”再加了，因为你已经定义了所有可能的资源。例如，如果 `/posts/123` 已经存在，你很可能不会再加一个“获取帖子”的 API。
+4.   现在你开始遇到计算和发送的数据要么_不够_、要么_太多_的问题。你要么激进地“展开”已有资源中的字段，要么想出一套复杂的约定来按需展开。
+5.   有些 ViewModel 只有一部分页面需要，但它们总是被包含在响应里，因为这比把它们做成可配置的要容易。
+6.   有些页面只好从多次 API 调用中东拼西凑出自己的 ViewModel，因为已经没有哪个单一响应包含所有必要的信息了。
+7.   然后你的产品设计和功能又变了。_重复以上步骤。_
+
+这里显然存在某种根本性的张力，但它是由什么引起的呢？
+
+首先，注意 ViewModel 的形态是由 UI 决定的。它并不是某种柏拉图式的“点赞”理念的反映；而是由设计决定的。我们想显示“你、Ann 和另外 13 人赞了这篇帖子”，_因此_我们需要这些字段：
+
+```
+type LikeButtonProps = {
+  totalLikeCount: number,
+  isLikedByUser: boolean,
+  friendLikes: string[]
+}
+```
+
+如果这个页面的设计或功能改变了（例如，你想显示赞了这篇帖子的好友的头像），ViewModel 也会随之改变：
+
+```
+type LikeButtonProps = {
+  totalLikeCount: number,
+  isLikedByUser: boolean,
+  friendLikes: {
+    firstName: string
+    avatar: string
+  }[]
+}
+```
+
+但问题就在这里。
+
+REST（或者说，REST 被广泛使用的方式）鼓励你以资源来思考，而不是以 Model _或_ ViewModel 来思考。起初，你的资源是 Model 的镜像。但单个 Model 很少能包含一个页面所需的全部数据，于是你会形成一些临时的约定，把 Model 嵌套进资源里。然而，把_所有_相关的 Model（例如一篇帖子的所有点赞）都包含进来往往是不可能或不切实际的，于是你开始往资源里添加 `friendLikes` 这类带有 ViewModel 味道的字段。
+
+但把 ViewModel 放进资源也不太行得通。ViewModel 不是像“帖子”这样的抽象概念；每个 ViewModel 描述的是_一块具体的 UI_。结果，你的“Post”资源的形态会不断膨胀，以涵盖每个展示帖子的页面的需求。但这些需求也会_随时间变化_，所以“Post”资源的形态往好了说是各个页面当前需求之间的折中，往坏了说就是一份记录了它们过去所有需求的化石。
+
+我说得更直白一点：
+
+**REST 资源在现实中没有坚实的根基。**它们的形态没有受到足够的约束——我们基本上是在凭空编造概念。与 Model 不同，它们不植根于数据如何存储的现实。与 ViewModel 不同，它们也不植根于数据如何展示的现实。不幸的是，把它们往任何一个方向推，都只会让事情更糟。
+
+如果你让 REST 资源贴近 Model，就会损害用户体验。原本一次请求就能获取的东西，现在需要好几次，甚至（老天保佑别这样）N 次调用。在那些后端团队把 REST API “交付”给前端团队、却不接受任何反馈的公司的产品中，这一点尤其明显。API 可能看起来简单优雅，但用起来完全不切实际。
+
+另一方面，如果你让 REST 资源贴近 ViewModel，就会损害可维护性。ViewModel 是善变的！大多数 ViewModel 都会在对应的那块 UI 下次改版时改变。但改变 REST 资源的形态很难——同样的资源被许多页面获取。结果，它们的形态会逐渐偏离当前 ViewModel 的需求，并且变得难以演进。后端团队常常抵制在响应中加入特定于 UI 的字段，这是有原因的：这些字段很可能会过时！
+
+这并不一定意味着人们所广泛理解的 REST 本身是有问题的。当资源定义良好、字段选择得当时，它用起来可以非常舒服。但这常常与客户端的需求相悖，客户端需要的是获取_某个特定页面_的所有数据。中间缺了点什么。
+
+我们需要一个转换层。
+
+* * *
+
+### [面向 ViewModel 的 API](https://overreacted.io/jsx-over-the-wire/#api-for-viewmodels)
+
+有一种方法可以化解这种张力。
+
+具体怎么做，你有一定的自由度，但核心思想是：你的客户端应该能够_一次性请求某个特定页面的所有数据_。
+
+这是如此简单的一个想法！
+
+与其从客户端请求“规范的” REST 资源，比如：
+
+```
+GET /data/post/123       # Get Post Resource
+GET /data/post/123/likes # Get Post Likes Resource
+```
+
+不如请求_某个特定页面_（即某个路由）的 ViewModel：
+
+`GET /screens/post-details/123 # Get ViewModel for the PostDetails screen`
+这份数据将包含那个页面所需的_一切_。
+
+区别很微妙，但意义深远。你不再试图定义一个通用的、规范的_帖子_形态。相反，你发送的是 _PostDetails 页面_为了_今天_展示它的组件所需的任何数据。如果 PostDetails 页面被删除了，这个端点也随之删除。如果另一个页面想展示一些相关信息（例如一个 PostLikedBy 弹窗），它会有自己的路由：
+
+```
+GET /screens/post-details/123 # Get ViewModel for the PostDetails screen
+GET /screens/post-liked-by/123 # Get ViewModel for the PostLikedBy screen
+```
+
+好吧，但这有什么帮助呢？
+
+这避开了“没有根基”的抽象这个陷阱。每个页面的 ViewModel 接口都精确地规定了服务器响应的形态。如果你需要修改或微调它，可以在不影响任何其他页面的情况下进行。
+
+例如，`PostDetails` 页面的 ViewModel 可能是这样的：
+
+```
+type PostDetailsViewModel = {
+  postTitle: string,
+  postContent: string,
+  postAuthor: {
+    name: string,
+    avatar: string,
+    id: number
+  },
+  friendLikes: {
+    totalLikeCount: number,
+    isLikedByUser: boolean,
+    friendLikes: string[]
+  }
+};
+```
+
+这就是服务器为 `/screens/post-details/123` 返回的内容。之后，如果你想显示点赞好友的头像，只需把它加到_那个_ ViewModel 里：
+
+```
+type PostDetailsViewModel = {
+  postTitle: string,
+  postContent: string,
+  postAuthor: {
+    name: string,
+    avatar: string,
+    id: number
+  },
+  friendLikes: {
+    totalLikeCount: number,
+    isLikedByUser: boolean,
+    friendLikes: {
+      firstName: string
+      avatar: string
+    }[]
+  }
+}
+```
+
+注意，你只需要更新_那个页面的端点_。你不再被迫在一个页面的需求和另一个页面的需求之间权衡。不再有“这个字段属于哪个资源？”或者它是否应该被“展开”之类的问题。如果某个页面比其他页面需要更多数据，你只需在_那个_页面的响应中包含更多数据——它不必是通用的或可配置的。**服务器响应的形态完全由每个页面的需求决定。**
+
+这_确实_解决了前面提到的 REST 的问题。
+
+它也带来了几个新问题：
+
+1.   端点会比 REST 资源_多得多_——每个页面一个端点。这些端点该如何组织并保持可维护？
+2.   如何在端点之间复用代码？这些端点之间大概会有大量重复的数据访问和其他业务逻辑。
+3.   如何说服后端团队从他们的 REST API 转向这种方式？
+
+最后一个问题可能是我们需要首先解决的。后端团队对这种方式很可能会有非常合理的保留意见。至少，如果这种方式被证明很糟糕，最好有办法迁移回去。
+
+幸运的是，没有必要扔掉任何东西。
+
+* * *
+
+
+### [面向前端的后端（Backend For Frontend）](https://overreacted.io/jsx-over-the-wire/#backend-for-frontend)
+
+与其_替换_你现有的 REST API，你可以在它前面加一个新的_层_：
+
+```
+// 你在添加新的、针对特定屏幕的端点……
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const [post, friendLikes] = await Promise.all([
+    // ……它们在这里调用你现有的 REST API
+    fetch(`/api/post/${postId}`).then(r => r.json()),
+    fetch(`/api/post/${postId}/friend-likes`).then(r => r.json()),
+  ]);
+  const viewModel = {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes: {
+      totalLikeCount: post.totalLikeCount,
+      isLikedByUser: post.isLikedByUser,
+      friendLikes: friendLikes.likes.map(l => l.firstName)
+    }
+  };
+  res.json(viewModel);
+});
+```
+
+这不是什么新想法。这样的层通常被称为 BFF，即 _Backend for Frontend_（面向前端的后端）。在这里，BFF 的工作是把你的 REST API 适配成返回 ViewModel。
+
+**如果某个页面需要更多数据，BFF 让你可以给它提供更多数据，而无需改动整个数据模型。它让特定于页面的改动限定在局部范围内。关键在于，它让你能在一次往返中交付任何页面所需的全部数据。**
+
+BFF 不必和你的 REST API 用同一种语言编写。出于我们稍后会谈到的原因，用与前端代码相同的语言编写 BFF 是有好处的。你可以把它看作_恰好运行在服务器上的一块前端_。它就像前端派驻服务器的“大使”。它把 REST 响应“适配”成前端 UI 每个页面真正想要的形态。
+
+虽然你可以通过仅在客户端运行的按路由加载器（比如 [React Router 中的 `clientLoader`](https://reactrouter.com/start/framework/data-loading#client-data-loading)）获得 BFF 的部分好处，但真正把这一层部署在服务器上、靠近 REST 端点所在的位置，能解锁更多东西。
+
+例如，即使你_确实_需要一个接一个地串行发起多个 REST API 请求，才能加载一个页面所需的全部数据，BFF 与 REST API 之间的延迟也会比从客户端串行发起多个请求低得多。如果你的 REST API 在内网中响应很快，你就能把原本客户端/服务器之间的瀑布式请求砍掉实打实的好几秒，而无需真的把那些（有时不可避免的）串行调用并行化。
+
+BFF 还让你能在把数据发送给客户端_之前_进行数据转换，这能显著提升低端客户端设备上的性能。你甚至可以把一些计算缓存或持久化到磁盘上，甚至在_不同_用户之间共享，因为你能访问磁盘——以及 Redis 这样的服务器缓存。从这个意义上说，BFF 让前端团队拥有了_属于他们自己的一小块服务器_。
+
+重要的是，BFF 让你可以在不影响客户端应用的情况下，尝试 REST API 的替代方案。例如，如果你的 REST API 没有其他使用者，你可以把它变成一个内部微服务，避免把它暴露给外界。此外，你还可以把它变成一个_数据访问层_而不是 HTTP 服务，然后在 BFF 中直接在进程内_导入_这个数据访问层：
+
+```
+import { getPost, getFriendLikes } from '@your-company/data-layer';
+ 
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const [post, friendLikes] = await Promise.all([
+    // 从 ORM 读取数据并应用业务逻辑。
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  const viewModel = {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes: {
+      totalLikeCount: post.totalLikeCount,
+      isLikedByUser: post.isLikedByUser,
+      friendLikes: friendLikes.likes.map(l => l.firstName)
+    }
+  };
+  res.json(viewModel);
+});
+```
+
+（当然，这部分只有在你能用 JS 编写更底层的后端逻辑时才行得通。）
+
+这可以帮你避免诸如多次从数据库加载同样信息之类的问题（没有 `fetch` 调用意味着数据库读取可以被批量处理）。它还让你能在需要时“下沉”抽象层级——例如，运行一个经过精细调优、没有被整齐地暴露在 REST API 上的数据库存储过程。
+
+BFF 模式有很多讨人喜欢的地方。它解决了不少问题，但也带来了新问题。例如，它的代码该如何组织？如果每个页面本质上都是它自己的 API 方法，如何避免代码重复？又如何让 BFF 与前端的数据需求保持同步？
+
+我们来试着在回答这些问题上取得一些进展。
+
+* * *
+
+### [可组合的 BFF](https://overreacted.io/jsx-over-the-wire/#composable-bff)
+
+假设你要新增一个 `PostList` 页面。它会渲染一个由 `<PostDetails>` 组件组成的_数组_，每个组件需要的数据和之前一样：
+
+```
+type PostDetailsViewModel = {
+  postTitle: string,
+  postContent: string,
+  postAuthor: {
+    name: string,
+    avatar: string,
+    id: number
+  },
+  friendLikes: {
+    totalLikeCount: number,
+    isLikedByUser: boolean,
+    friendLikes: string[]
+  }
+};
+```
+
+所以 `PostList` 的 ViewModel 包含一个 `PostDetailsViewModel` 数组：
+
+```
+type PostListViewModel = {
+  posts: PostDetailsViewModel[]
+};
+```
+
+你要如何为 `PostList` 加载数据？
+
+你的第一反应可能是从客户端向已有的 `/screen/post-details/:postId` 端点发一系列请求，这个端点已经知道如何为单篇帖子准备 ViewModel。我们只需对每篇帖子调用它。
+
+但等等，这违背了 BFF 的全部初衷！为一个页面发起很多请求是低效的，而这恰恰是我们一直在努力避免的那种妥协。**相反，我们要为新页面添加一个新的 BFF 端点。**
+
+新端点一开始可能是这样的：
+
+```
+import { getPost, getFriendLikes, getRecentPostIds } from '@your-company/data-layer';
+ 
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  const viewModel = {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes: {
+      totalLikeCount: post.totalLikeCount,
+      isLikedByUser: post.isLikedByUser,
+      friendLikes: friendLikes.likes.map(l => l.firstName)
+    }
+  };
+  res.json(viewModel);
+});
+ 
+app.get('/screen/post-list', async (req, res) => {
+  // 获取最近的文章 ID
+  const postIds = await getRecentPostIds();
+  const viewModel = {
+    // 对每个文章 ID 并行加载数据
+    posts: await Promise.all(postIds.map(async postId => {
+      const [post, friendLikes] = await Promise.all([
+        getPost(postId),
+        getFriendLikes(postId, { limit: 2 }),
+      ]);
+      const postDetailsViewModel = {
+        postTitle: post.title,
+        postContent: parseMarkdown(post.content),
+        postAuthor: post.author,
+        postLikes: {
+          totalLikeCount: post.totalLikeCount,
+          isLikedByUser: post.isLikedByUser,
+          friendLikes: friendLikes.likes.map(l => l.firstName)
+        }
+      };
+      return postDetailsViewModel;
+    }))
+  };
+  res.json(viewModel);
+});
+```
+
+然而，注意这两个端点之间存在大量重复代码：
+
+```
+import { getPost, getFriendLikes, getRecentPostIds } from '@your-company/data-layer';
+ 
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  const viewModel = {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes: {
+      totalLikeCount: post.totalLikeCount,
+      isLikedByUser: post.isLikedByUser,
+      friendLikes: friendLikes.likes.map(l => l.firstName)
+    }
+  };
+  res.json(viewModel);
+});
+ 
+app.get('/screen/post-list', async (req, res) => {
+  const postIds = await getRecentPostIds();
+  const viewModel = {
+    posts: await Promise.all(postIds.map(async postId => {
+      const [post, friendLikes] = await Promise.all([
+        getPost(postId),
+        getFriendLikes(postId, { limit: 2 }),
+      ]);
+      const postDetailsViewModel = {
+        postTitle: post.title,
+        postAuthor: post.author,
+        postContent: parseMarkdown(post.content),
+        postLikes: {
+          totalLikeCount: post.totalLikeCount,
+          isLikedByUser: post.isLikedByUser,
+          friendLikes: friendLikes.likes.map(l => l.firstName)
+        }
+      };
+      return postDetailsViewModel;
+    }))
+  };
+  res.json(viewModel);
+});
+```
+
+这几乎就像有一个“`PostDetails` ViewModel”的概念在呼唤着被抽取出来。这并不奇怪——两个页面都渲染同一个 `<PostDetails>` 组件，所以它们需要类似的代码来为它加载数据。
+
+* * *
+
+我们来抽取一个 `PostDetailsViewModel` 函数：
+
+```
+import { getPost, getFriendLikes, getRecentPostIds } from '@your-company/data-layer';
+ 
+async function PostDetailsViewModel({ postId }) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  return {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes: {
+      totalLikeCount: post.totalLikeCount,
+      isLikedByUser: post.isLikedByUser,
+      friendLikes: friendLikes.likes.map(l => l.firstName)
+    }
+  };
+}
+ 
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const viewModel = await PostDetailsViewModel({ postId });
+  res.json(viewModel);
+});
+ 
+app.get('/screen/post-list', async (req, res) => {
+  const postIds = await getRecentPostIds();
+  const viewModel = {
+    posts: await Promise.all(postIds.map(postId =>
+      PostDetailsViewModel({ postId })
+    ))
+  };
+  res.json(viewModel);
+});
+```
+
+这让我们的 BFF 端点简单了许多。
+
+实际上，我们还可以更进一步。看看 `PostDetailsViewModel` 的这一部分：
+
+```
+async function PostDetailsViewModel({ postId }) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  return {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes: {
+      totalLikeCount: post.totalLikeCount,
+      isLikedByUser: post.isLikedByUser,
+      friendLikes: friendLikes.likes.map(l => l.firstName)
+    }
+  };
+}
+```
+
+我们知道 `postLikes` 字段的用途是最终成为 `LikeButton` 组件的 props——也就是说，这个字段就是 `LikeButton` 的 ViewModel：
+
+```
+function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  // ...
+}
+```
+
+所以我们把准备这些 props 的逻辑抽取到 `LikeButtonViewModel` 中：
+
+```
+import { getPost, getFriendLikes, getRecentPostIds } from '@your-company/data-layer';
+ 
+async function LikeButtonViewModel({ postId }) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  return {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes.likes.map(l => l.firstName)
+  };
+}
+ 
+async function PostDetailsViewModel({ postId }) {
+  const [post, postLikes] = await Promise.all([
+    getPost(postId), // 在这里再次调用 getPost() 没问题。我们的数据层会通过内存缓存对调用去重。
+    LikeButtonViewModel({ postId }),
+  ]);
+  return {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content),
+    postAuthor: post.author,
+    postLikes
+  };
+}
+```
+
+现在我们有了一棵以 JSON 形式加载数据的函数树——也就是我们的 ViewModel。
+
+取决于你的背景，这可能会让你想起其他一些东西。它可能让你想起用更小的 reducer 组合出 Redux reducer。它也可能让你想起用更小的片段组合出 GraphQL 片段（fragment）。或者，它可能让你想起用其他 React 组件组合出 React 组件。
+
+虽然现在的代码风格有点啰嗦，但把一个页面的 ViewModel 拆分成更小的 ViewModel，有一种奇妙的满足感。这感觉类似于编写一棵 React 组件树，只不过我们分解的是一个后端 API。就好像_数据有它自己的形态，但大致与你的 React 组件树对齐_。
+
+我们来看看当 UI 需要演进时会发生什么。
+
+* * *
+
+### [演进一个 ViewModel](https://overreacted.io/jsx-over-the-wire/#evolving-a-viewmodel)
+
+假设 UI 设计改了，我们还想显示好友的头像：
+
+```
+type LikeButtonProps = {
+  totalLikeCount: number,
+  isLikedByUser: boolean,
+  friendLikes: {
+    firstName: string
+    avatar: string
+  }[]
+}
+```
+
+假设我们用的是 TypeScript，我们会立刻在 ViewModel 中得到一个类型错误：
+
+```
+async function LikeButtonViewModel(
+  { postId } : { postId: number }
+) : LikeButtonProps {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  return {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    // 🔴 类型“string[]”不能赋值给类型“{ firstName: string; avatar: string; }[]”。
+    friendLikes: friendLikes.likes.map(l => l.firstName)
+  };
+}
+```
+
+我们来修复它：
+
+```
+async function LikeButtonViewModel(
+  { postId } : { postId: number }
+) : LikeButtonProps {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  return {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: l.avatar,
+    }))
+  };
+}
+```
+
+现在，每个包含 `LikeButton` ViewModel 的页面的 BFF 响应，都会使用新的 `friendLikes` 格式，这正是 `LikeButton` React 组件想要的。不需要再做任何改动——_它就是能用_。我们_知道_它能用，因为无论我们从 BFF 请求哪个页面，`LikeButtonViewModel` 都是唯一为 `LikeButton` 生成 props 的地方。（暂且假设这是真的；我们还没决定究竟如何把它们绑定在一起。）
+
+我想提请大家注意前面这个事实，因为它意义相当深远。
+
+你上一次能清晰地追踪到一段深层嵌套、生成某个数据片段的服务器代码，与一段深层嵌套、使用这份数据的客户端代码之间的对应关系，是什么时候？我们显然发现了_某种东西_。
+
+* * *
+
+### [ViewModel 参数](https://overreacted.io/jsx-over-the-wire/#viewmodel-parameters)
+
+你可能已经注意到，ViewModel 函数可以接受参数。重要的是，这些参数可以由“父” ViewModel 函数指定并向下传递——所以客户端不需要知道它们。
+
+例如，假设你想让帖子列表页只显示每篇帖子内容的第一段。我们给它的 ViewModel 加一个参数：
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent
+}) {
+  const [post, postLikes] = await Promise.all([
+    getPost(postId),
+    LikeButtonViewModel({ postId }),
+  ]);
+  return {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content, {
+      maxParagraphs: truncateContent ? 1 : undefined
+    }),
+    postAuthor: post.author,
+    postLikes
+  };
+}
+ 
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const viewModel = await PostDetailsViewModel({
+    postId,
+    truncateContent: false
+  });
+  res.json(viewModel);
+});
+ 
+app.get('/screen/post-list', async (req, res) => {
+  const postIds = await getRecentPostIds();
+  const viewModel = {
+    posts: await Promise.all(postIds.map(postId =>
+      PostDetailsViewModel({
+        postId,
+        truncateContent: true
+      })
+    ))
+  };
+  res.json(viewModel);
+});
+```
+
+`post-details` 端点的 JSON 响应仍然包含完整的帖子，但 `post-list` JSON 端点现在只会提供它们的节选摘要。这是一个_视图模型_层面的关注点，而现在我们在代码中有了一个表达它的自然位置。
+
+* * *
+
+### [向下传递 ViewModel 参数](https://overreacted.io/jsx-over-the-wire/#plumbing-viewmodel-parameters)
+
+接下来，假设你只想在详情页显示头像。我们修改 `LikeButtonViewModel`，让它接受并遵循一个 `includeAvatars` 参数：
+
+```
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: 2 }),
+  ]);
+  return {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: includeAvatars ? l.avatar : null,
+    }))
+  };
+}
+```
+
+现在你可以从 BFF 端点一路把它传下去：
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const [post, postLikes] = await Promise.all([
+    getPost(postId),
+    LikeButtonViewModel({ postId, includeAvatars }),
+  ]);
+  return {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content, {
+      maxParagraphs: truncateContent ? 1 : undefined
+    }),
+    postAuthor: post.author,
+    postLikes
+  };
+}
+ 
+app.get('/screen/post-details/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const viewModel = await PostDetailsViewModel({
+    postId,
+    truncateContent: false,
+    includeAvatars: true
+  });
+  res.json(viewModel);
+});
+ 
+app.get('/screen/post-list', async (req, res) => {
+  const postIds = await getRecentPostIds();
+  const viewModel = {
+    posts: await Promise.all(postIds.map(postId =>
+      PostDetailsViewModel({
+        postId,
+        truncateContent: true,
+        includeAvatars: false
+      })
+    ))
+  };
+  res.json(viewModel);
+});
+```
+
+同样，客户端不会向服务器传递像 `?includeAvatars=true` 这样的临时参数来确保 JSON 响应中包含头像。相反，`post-list` BFF 端点自己_知道_帖子列表不应该包含头像，所以它可以把 `includeAvatars: false` 传给 `PostDetailsViewModel`，后者再把它传给 `LikeButtonViewModel`。客户端代码完全不需要知道服务器逻辑——它只关心自己拿到了想要的 props。
+
+对于我们_确实_要显示好友头像的情况，我们可能想显示五个而不是两个。我们可以直接在 `LikeButtonViewModel` 中做这个改动：
+
+```
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+  ]);
+  return {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: includeAvatars ? l.avatar : null,
+    }))
+  };
+}
+```
+
+由于 `LikeButtonViewModel` 函数存在的唯一目的就是生成 `LikeButton` 的 props，在这里加入更多展示逻辑感觉很自然。毕竟它是_视图_模型，对吧？如果另一个视图_想_显示不同数量的头像，它也可以这样做。与 REST 不同，这里没有规范的“帖子”概念——所以任何 UI 都可以_精确地_指定它需要的数据，从一个页面一直到一个按钮。
+
+我们的 ViewModel 与客户端的需求完全同步演进。
+
+* * *
+
+### [组合 ViewModel](https://overreacted.io/jsx-over-the-wire/#composing-viewmodels)
+
+有些有趣的东西正在成形。我们开始把 BFF 端点拆分成可复用的逻辑单元，并且发现这些单元让我们能以类似于封装_用户界面_的方式来封装_数据加载_。如果你眯起眼睛看 ViewModel，甚至可能会看到它与组件之间的一些相似之处。
+
+然而 ViewModel 树的最终结果并不是一棵 UI 树——它只是 JSON。
+
+```
+// GET /screen/post-list
+{
+  /* Begin screen/post-list ViewModel */
+  posts: [{
+    /* Begin PostDetailsViewModel */
+    postTitle: "JSX Over The Wire",
+    postAuthor: "Dan",
+    postContent: "Suppose you have an API route that returns some data as JSON.",
+    postLikes: {
+      /* Begin LikeButtonViewModel */
+      totalLikeCount: 8,
+      isLikedByUser: false,
+      friendLikes: [{
+        firstName: "Alice"
+      }, {
+        firstName: "Bob"
+      }]
+      /* End LikeButtonViewModel */
+    }
+    /* End PostDetailsViewModel */
+  }, {
+    /* Begin PostDetailsViewModel */
+    postTitle: "React for Two Computers",
+    postAuthor: "Dan",
+    postContent: "I’ve been trying to write this post at least a dozen times.",
+    postLikes: {
+      /* Begin LikeButtonViewModel */
+      totalLikeCount: 13,
+      isLikedByUser: true,
+      friendLikes: [{
+        firstName: "Bob"
+      }]
+      /* End LikeButtonViewModel */
+    }
+    /* End PostDetailsViewModel */
+  }]
+}
+```
+
+但我们该拿这份 JSON _做_什么呢？
+
+最终，我们希望 `LikeButtonViewModel` 生成的 props _以某种方式_到达 `LikeButton` 组件。同样，我们希望 `PostDetailsViewModel` 生成的 props _以某种方式_到达 `PostDetails` 组件。我们不想生成一棵巨大的 JSON ViewModel 树，然后手动把它的每一部分精确地传递到需要该 ViewModel 数据的组件。
+
+我们正在两个世界中构建两套平行的层级结构。
+
+但这两个世界还没有连接起来。
+
+还缺了点什么。
+
+* * *
+
+### [回顾：作为组件的 JSON](https://overreacted.io/jsx-over-the-wire/#recap-json-as-components)
+
+*   对任何 UI 来说，数据的生命都始于 Model，终于 ViewModel。Model 到 ViewModel 的转换必须在某处发生。
+*   ViewModel 的形态完全由我们用户界面的设计决定。这意味着它们会随着设计一起演进。此外，不同的页面需要从相同的底层 Model 聚合出不同的 ViewModel。
+*   把来自服务器的数据建模为 REST 资源会产生一种张力。如果 REST 资源贴近原始 Model，可能需要多次往返和复杂的临时约定，才能获得一个页面所需的 ViewModel。如果 REST 资源贴近 ViewModel，它们就会与最初为之设计的页面耦合得太紧，无法随客户端的需求一起演进。
+*   我们可以通过创建另一层——_面向前端的后端_（BFF）——来化解这种张力。BFF 的工作是把客户端的需求（“给我这个页面的数据”）翻译成对后端的 REST 调用。BFF 还可以超越作为 REST 门面的角色，转而使用进程内的数据层直接加载数据。
+*   由于 BFF 的工作是以一份 JSON 的形式返回每个页面所需的全部数据，把数据加载逻辑拆分成可复用的单元是很自然的。一个页面的 ViewModel 可以分解为一棵 ViewModel 树，对应于不同组件想要在客户端接收的各块服务器数据。这些单独的 ViewModel 随后可以被重新组合在一起。
+*   这些 ViewModel 函数可以相互传递信息。这让我们可以根据页面定制要发送的 JSON。与 REST 不同，我们不再试图设计在所有响应中通用的规范形态，比如“一个帖子对象”。在任何时候，我们都可以分道扬镳，为同样的信息向不同页面提供不同的 ViewModel——_它们_想要什么就给什么。这些 ViewModel 是_视图_模型。它们可以——应该？——包含展示逻辑。
+*   我们开始意识到，ViewModel 构成的结构与 React 组件非常相似。_ViewModel 就像组件，只不过是用来生成 JSON 的_。然而，我们还没想清楚如何真正把它们在服务器上生成的 JSON _传递_给客户端上需要它的组件。同时处理两套平行的层级结构也很烦人。我们发现了一些东西，但还缺了点什么。
+
+我们缺的是什么？
+
+* * *
+
+## 第二部分：作为 JSON 的组件
+
+### HTML、SSI 与 CGI
+
+JSON、MVVM、BFF，这都是什么鬼？！
+
+做个网站居然要搞得这么过度工程化。这些兜售 React 复杂性的人真是**太**脱离实际了。他们要是懂点**历史**就好了。
+
+在**我那个年代**，我们写点 HTML 就收工了。
+
+我的 `index.html` 首页会是这样：
+
+```
+<html>
+  <body>
+    <h1>Welcome to my blog!</h1>
+    <h2>Latest posts</h2>
+    <h3>
+      <a href="/jsx-over-the-wire.html">
+        JSX Over The Wire
+      </a>
+    </h3>
+    <p>
+      Suppose you have an API route that returns some data as JSON. [...]
+    </p>
+    <h3>
+      <a href="/react-for-two-computers.html">
+        React for Two Computers
+      </a>
+    </h3>
+    <p>
+      I’ve been trying to write this post at least a dozen times. [...]
+    </p>
+    ...
+  </body>
+</html>
+```
+
+然后我的文章详情页 `jsx-over-the-wire.html` 会是这样：
+
+```
+<html>
+  <body>
+    <h1>JSX Over The Wire</h1>
+    <p>
+      Suppose you have an API route that returns some data as JSON.
+    </p>
+    ...
+  </body>
+</html>
+```
+
+我把这些文件放到一台装了 Apache 的机器上，就完事了！
+
+现在假设我想给所有页面加一个页脚。这再简单不过了。首先，我建一个叫 `includes/footer.html` 的文件，写上页脚：
+
+```
+<marquee>
+  <a href="/">overreacted</a>
+</marquee>
+```
+
+现在我就可以用[服务器端包含（SSI）](https://en.wikipedia.org/wiki/Server_Side_Includes)在任何页面里引入页脚：
+
+```
+<html>
+  <body>
+    <h1>Welcome to my blog!</h1>
+    <h2>Latest posts</h2>
+    ...
+    <!--#include virtual="/includes/footer.html" -->
+  </body>
+</html>
+```
+
+其实，我也不想把每篇博文的第一段复制粘贴到 `index.html` 里，所以我可以把 SSI 和 [CGI](https://en.wikipedia.org/wiki/Common_Gateway_Interface) 结合起来，**生成**我的首页：
+
+```
+<html>
+  <body>
+    <h1>Welcome to my blog!</h1>
+    <h2>Latest posts</h2>
+    <!--#include virtual="/cgi-bin/post-details.cgi?jsx-over-the-wire&truncateContent=true" -->
+    <!--#include virtual="/cgi-bin/post-details.cgi?react-for-two-computers&truncateContent=true" -->
+    <!--#include virtual="/includes/footer.html" -->
+  </body>
+</html>
+```
+
+同样，详情页也会委托给同一个 `post-details.cgi` 脚本：
+
+```
+<html>
+  <body>
+    <!--#include virtual="/cgi-bin/post-details.cgi?jsx-over-the-wire&truncateContent=false" -->
+    <!--#include virtual="/includes/footer.html" -->
+  </body>
+</html>
+```
+
+最后，`post-details.cgi` 脚本可能会去访问数据库：
+
+```
+#!/bin/sh
+echo "Content-type: text/html"
+echo ""
+ 
+POST_ID="$(echo "$QUERY_STRING" | cut -d'&' -f1 | tr -cd '[:alnum:]._-')"
+TRUNCATE="$(echo "$QUERY_STRING" | grep -c "truncateContent=true")"
+ 
+TITLE=$(mysql -u admin -p'password' -D blog --skip-column-names -e \
+  "SELECT title FROM posts WHERE url='$POST_ID'")
+CONTENT=$(mysql -u admin -p'password' -D blog --skip-column-names -e \
+  "SELECT content FROM posts WHERE url='$POST_ID'")
+ 
+if [ "$TRUNCATE" = "1" ]; then
+  FIRST_PARAGRAPH="$(printf "%s" "$CONTENT" | sed '/^$/q')"
+  echo "<h3><a href=\"/$POST_ID.html\">$TITLE</a></h3>"
+  echo "<p>$FIRST_PARAGRAPH [...]</p>"
+else
+  echo "<h1>$TITLE</h1>"
+  echo "<p>"
+  echo "$CONTENT"
+  echo "</p>"
+fi
+```
+
+我们现在是在**九十年代**，好吗？
+
+到目前为止一切都很简单，尽管写起来有点繁琐。我们这里有的是一个服务器，它**在一次往返中返回任意一个屏幕所需的全部数据**。
+
+**（嗯……）**
+
+当然，不同的屏幕可能需要相同的数据，而我们不想重复逻辑。幸运的是，我们可以**复用动态包含**，比如 `post-details.cgi`。我们**甚至可以给它们传参数**，比如 `truncateContent`。
+
+这段代码最烦人的地方在于，用 Bash 干活实在不适合胆小的人（也就是不适合我）。我们来看看能不能改进这一点。
+
+* * *
+
+### PHP 与 XHP
+
+我们可以把整个例子翻译成老派的 PHP，这样能获得更好的控制流、函数调用、变量等等。不过，我想跳过这一步。
+
+不，不是跳到现代的 PHP MVC 框架。
+
+我想跳到 [XHP](https://codebeforethehorse.tumblr.com/post/3096387855/an-introduction-to-xhp)。
+
+你看，早期 PHP 程序的问题在于它们依赖对 HTML 进行字符串操作。从这个意义上说，PHP 版本并没有改进多少：
+
+```
+if ($truncate) {
+  $splitContent = explode("\n\n", $content);
+  $firstParagraph = $splitContent[0];
+  echo "<h3><a href=\"/$postId.php\">$title</a></h3>";
+  echo "<p>$firstParagraph [...]</p>";
+} else {
+  echo "<h1>$title</h1>";
+  echo "<p>$content</p>";
+}
+```
+
+把 HTML 当字符串来操作，会导致代码纠缠不清、不安全且难以维护。Web 开发社区的大多数人把这当作一个信号，转而拥抱 [Rails 风格的 MVC](https://guides.rubyonrails.org/layouts_and_rendering.html)：所有 HTML 都被安全地从代码中移到叫作**模板**的独立文件里（而所有数据获取都移到了**控制器**里）。
+
+然而，Facebook 并不是这样发展的。
+
+Facebook 有一个不同的想法。
+
+Facebook 的工程师说，PHP 的问题不在于操作标记**本身**。糟糕的是**无原则地**操作标记，也就是把标记当作普通字符串。标记有它特定的**形状**——东西套着东西。我们需要的是一种构建和操作标记的方式，既不会意外破坏它的内容，也不会把不安全的内容插值进去：
+
+```
+if ($truncate) {
+  $splitContent = explode("\n\n", $content);
+  $firstParagraph = $splitContent[0];
+  echo
+    <x:frag>
+      <h3><a href={"/{$postId}.php"}>{$title}</a></h3>
+      <p>{$firstParagraph} [...]</p>
+    </x:frag>;
+} else {
+  echo
+    <x:frag>
+      <h1>{$title}</h1>
+      <p>{$content}</p>
+    </x:frag>;
+}
+```
+
+这些标签不是 HTML 字符串！它们是可以**被转换**成 HTML 的**对象**。
+
+既然我们已经以可维护的方式把标记**移进了**代码里，就可以创建自己的抽象。例如，我们可以定义自己的 `<ui:post-details>`：
+
+```
+class :ui:post-details extends :x:element {
+  protected function render(): XHPRoot {
+    if ($this->:truncateContent) {
+      $splitContent = explode("\n\n", $this->:content);
+      $firstParagraph = $splitContent[0];
+      return
+        <x:frag>
+          <h3><a href={"/{$postId}.php"}>{$this->:title}</a></h3>
+          <p>{$firstParagraph} [...]</p>
+        </x:frag>;
+    } else {
+      return
+        <x:frag>
+          <h1>{$this->:title}</h1>
+          <p>{$this->:content}</p>
+        </x:frag>;
+    }
+  }
+}
+```
+
+然后就可以把它渲染到页面上：
+
+```
+echo
+  <ui:post-details
+    postId="jsx-over-the-wire"
+    truncateContent={true}
+    title="JSX Over The Wire"
+    content="Suppose you have an API route that returns some data..."
+  />;
+```
+
+事实上，我们可以用这种方式构建整个 Web 应用。标签渲染其他标签，其他标签又渲染别的标签，依此类推。通过摒弃 Rails 风格的 MVC 模型，我们意外地重新发现了一个古老得多的原则：函数组合。
+
+XHP 的一个缺点是它不太适合客户端交互。由于 XHP 在输出 HTML 的服务器上执行，你能相对无缝地做到的最多也就是：通过更新某个 DOM 节点的 `innerHTML`，用服务器新生成的 HTML 标记替换现有标记的**一部分**。
+
+替换 `innerHTML` 的效果并不太好——尤其是对于交互性极强的广告产品——这让一位工程师（顺便说一句，不是我）开始思考：能不能在客户端电脑上直接运行 XHP 风格的“标签渲染其他标签”范式，同时在重新渲染之间不丢失状态？你大概已经猜到了，这就引出了 [JSX 和 React 的发明](https://legacy.reactjs.org/blog/2016/09/28/our-first-50000-stars.html#archeology)。
+
+不过谁在乎 React 呢？
+
+我们是来给 XHP 打广告的。
+
+* * *
+
+### 异步 XHP
+
+之前，`<ui:post-details>` 是从调用方代码那里拿到 `title` 和 `content` 的：
+
+```
+echo
+  <ui:post-details
+    postId="jsx-over-the-wire"
+    truncateContent={true}
+    title="JSX Over The Wire"
+    content="Suppose you have an API route that returns some data..."
+  />;
+```
+
+它不会自己去读取 `title` 或 `content`——毕竟从数据库读取它们（理想情况下）是一个**异步**操作，而 XHP 标签是同步的。
+
+**曾经是。**
+
+某个时候，Facebook 的工程师意识到，如果 XHP 标签能自己加载数据，它会强大得多。于是[异步 XHP 标签](https://hhvm.github.io/xhp-lib/2015/06/01/new-features-in-depth.html#asynchronous-xhp-rendering)诞生了：
+
+```
+class :ui:post-details extends :x:element {
+  use XHPAsync;
+ 
+  protected async function asyncRender(): Awaitable<XHPRoot> {
+    $post = await loadPost($this->:postId);
+    $title = $post->title;
+    $content = $post->content;
+    // ...
+  }
+}
+```
+
+现在 `<ui:post-details>` 仅凭 `postId` 就能**自己加载数据**：
+
+```
+class :ui:post-list extends :x:element {
+  protected function render(): XHPRoot {
+    return
+      <x:frag>
+        <ui:post-details
+          postId="jsx-over-the-wire"
+          truncateContent={true}
+        />
+        <ui:post-details
+          postId="react-for-two-computers"
+          truncateContent={true}
+        />
+        ...
+      </x:frag>;
+  }
+}
+```
+
+这种方式让你可以把整个 UI 写成**异步**标签渲染其他**异步**标签——直到生成最终的 HTML。这是一种思考 UI 和数据的强大方式。它让你可以编写自包含、自己加载数据的组件，然后用一行代码把这些组件插到树中的任何位置。而且由于 XHP 标签在服务器上运行，整个屏幕**在一次往返中**就能解析完成。
+
+`<ui:post-list /> // 一整页 HTML`
+**我需要再强调一次。异步 XHP 允许**自包含、自己加载数据的组件**——但是！——**显示一个屏幕只需要一次客户端/服务器往返。**能同时满足这两点的 UI 框架并不多。**
+
+如果你在做一个类似的框架，有几个细节需要考虑：
+
+1.   你希望兄弟节点并行解析。例如，上面两个 `<ui:post-details>` 应该差不多同时执行 `loadPost`。异步 XHP 做到了这一点。
+2.   你还需要某种方式，在树的某个分支耗时太长时**不阻塞**页面的其余部分。Facebook 有一个 [BigPipe “pagelet”](https://engineering.fb.com/2010/06/04/web/bigpipe-pipelining-web-pages-for-high-performance/) 系统，它“分块”刷新输出这棵树，并以专门设计的加载状态作为接缝。
+3.   理想情况下，你需要一个数据访问层，能够批量读取，并在请求的不同部分之间共享内存缓存。这样即使树中更深的标签比它们的父级更晚开始“获取数据”，你也能充分利用 CPU 和 IO——在等待数据库时总有一些标签可以渲染。
+
+总的来说，异步 XHP 是一种生产力极高的心智模型——只要你的应用交互性不太强。不幸的是，对于交互性很强的应用，仅仅输出 HTML 是不够的。你**需要**能够导航、处理数据变更、刷新内容，同时不丢失客户端状态。由于 XHP 以 HTML 为目标，它不太适合富交互界面，React 逐渐取而代之。
+
+**尽管如此，在界面被逐步迁移到 React 的过程中，概念上的简洁性明显丧失了。UI 和**它所需要的数据**——这两样本来最自然地放在一起描述的东西——被拆分到了不同的代码库里。**
+
+GraphQL 加上 [Relay](https://relay.dev/) 在一定程度上弥合了这个鸿沟，也贡献了一些非常重要的创新，但用起来从来没有像写异步 XHP 那样**直接**。
+
+* * *
+
+### 原生模板
+
+XHP 在 Facebook 出人意料地卷土重来。
+
+它提供的心智模型生产力如此之高，以至于人们不只想用它写 Web 界面，还想用它做**原生应用**。
+
+想一想。
+
+这段 XHP 是一个**对象：**
+
+```
+<x:frag>
+  <h1>{$this->:title}</h1>
+  <p>{$this->:content}</p>
+</x:frag>
+```
+
+没错，它**可以**被转换成一段 HTML：
+
+```
+<h1>JSX Over The Wire</h1>
+<p>Suppose you have an API route that returns some data as JSON</p>
+```
+
+但它也可以被转换成另一种表示形式，比如 JSON：
+
+```
+{
+  type: 'x:frag',
+  props: {
+    children: [{
+      type: 'h1',
+      props: {
+        children: 'JSX Over The Wire'
+      }
+    },
+    {
+      type: 'p',
+      props: {
+        children: 'Suppose you have an API route that returns some data as JSON'
+      }
+    }]
+  }
+}
+```
+
+并没有什么**真正**限制你只能使用 HTML 中可用的原语。例如，`<ui:post-details>` 本可以输出 [iOS 视图](https://developer.apple.com/documentation/uikit/uitextview)：
+
+```
+<x:frag>
+  <ios:UITextView>{$this->:title}</ios:UITextView>
+  <ios:UITextView>{$this->:content}</ios:UITextView>
+</x:frag>
+```
+
+这些标签可以以 JSON 形式通过网络传输给原生 iOS 应用，应用读取 JSON 并根据这些标签构建原生 iOS 视图层级。
+
+```
+{
+  type: 'x:frag',
+  props: {
+    children: [{
+      type: 'ios:UITextView',
+      props: {
+        children: 'JSX Over The Wire'
+      }
+    },
+    {
+      type: 'ios:UITextView',
+      props: {
+        children: 'Suppose you have an API route that returns some data as JSON'
+      }
+    }]
+  }
+}
+```
+
+与此同时，在服务器上，你可以定义自己的标签来渲染这些标签：
+
+```
+class :ui:post-list extends :x:element {
+  protected function render(): XHPRoot {
+    return
+      <x:frag>
+        <ui:post-details
+          postId="jsx-over-the-wire"
+          truncateContent={true}
+        />
+        <ui:post-details
+          postId="react-for-two-computers"
+          truncateContent={true}
+        />
+        ...
+      </x:frag>
+  }
+}
+```
+
+换句话说，你会有一个服务器端点，它**在一次往返中返回任意一个屏幕所需的全部数据**。只不过这里的“数据”就是原生 UI。
+
+`<ui:post-list /> // 一屏 iOS 组件`
+你可能觉得这行不通，因为原生应用不能在关键路径上依赖后端。但这是对这种做法的误解。你只需要确保：在**原本会发起 API 调用的**相同情况下才**请求更多 UI**，而不是更频繁。你还会希望有一个能立即显示的回退 UI（比如加载转圈），**就像发起 API 调用时那样**。事实上，你甚至可以把一些初始屏幕的 JSON 直接打包进应用的二进制文件里。
+
+在实践中，像 `ios:UITextView` 这样的系统组件有点太底层，不适合作为这类格式的原语。你真正需要的是一套好的高交互原语“调色板”，因为你希望**某些**交互能“跳过服务器”、完全在本地完成。例如，你可以在原生代码中实现一个 `ios:ColorPicker` 原语，让它跟随手指移动，但通过调用 API 来**持久化**所选颜色，而这个 API 会以 JSON 形式返回下一个屏幕。
+
+另外，如果你把原语做成平台无关的（Facebook 就是这么做的），就可以用同一套服务器代码库为 iOS 和 Android 组装屏幕：
+
+```
+<nt:flexbox flex-direction="column">
+  <nt:text font-size={24} font-weight={FontWeight::BOLD}>
+    {$this->:title}
+  </nt:text>
+  <nt:text font-size={18}>
+    {$this->:content}
+  </nt:text>
+</nt:flexbox>
+```
+
+好吧，把整个屏幕作为 JSON 返回，以前有人这么做过吗？
+
+* * *
+
+### SDUI
+
+这不是什么新奇的想法。
+
+这甚至不是一个有争议的想法。
+
+你听说过 HTML 吧？这就像 HTML，只不过用的是**你自己的**设计系统。想象一个以 JSON 形式返回一些 UI 的 API 端点。我们用 JSX 语法来写：
+
+```
+app.get('/app/profile/:personId', async (req, res) => {
+  const [person, featureFlags] = await Promise.all([
+    findPerson(req.params.personId),
+    getFeatureFlags(req.user.id)
+  ]);
+ 
+  const json = (
+    <Page title={`${person.firstName}'s Profile`}>
+      <Header>
+        <Avatar src={person.avatarUrl} />
+        {person.isPremium && <PremiumBadge />}
+      </Header>
+ 
+      <Layout columns={featureFlags.includes('TWO_COL_LAYOUT') ? 2 : 1}>
+        <Panel title="User Info">
+          <UserDetails user={person} />
+          {req.user.id === person.id && <EditButton />}
+        </Panel>
+ 
+        <Panel title="Activity">
+          <ActivityFeed userId={person.id} limit={3} />
+        </Panel>
+      </Layout>
+    </Page>
+  );
+ 
+  res.json(json);
+}
+```
+
+但由于你本质上是在写一个 API 端点，你可以做**你的 API** 能做的任何事——检查功能开关、运行仅限服务器的逻辑、从数据层读取。
+
+再说一遍，这不是一个新想法。
+
+事实上，许多顶级原生应用就是这样构建的。[Instagram 这么做](https://github.com/novitae/igbloks/tree/main/KNOWLEDGES)，[Airbnb 这么做](https://medium.com/airbnb-engineering/a-deep-dive-into-airbnbs-server-driven-ui-system-842244c5f5)，[Uber 这么做](https://www.reddit.com/r/androiddev/comments/1046xel/comment/j35yr8c/)，[Reddit 这么做](https://www.infoq.com/news/2023/09/reddit-feed-server-driven-ui/)，等等。这些公司使用实现了这一模式的内部框架。许多 Web 开发者完全不知道这个模式，这很讽刺，因为这个模式非常“Web 化”。
+
+在原生领域，这个模式被称为“SDUI”——**“服务器驱动 UI”（server driven UI）**。听起来很高级，但本质上它就是返回 UI 树的 JSON 端点：
+
+```
+// /app/profile/123
+{
+  type: "Page",
+  props: {
+    title: "Jae's Profile",
+    children: [{
+      type: "Header",
+      props: {
+        children: [{
+          type: "Avatar",
+          props: {
+            src: "https://example.com/avatar.jpg"
+          }
+        }, {
+          type: "PremiumBadge",
+          props: {},
+        }]
+      }
+    }, {
+      type: "Layout",
+      props: {
+        columns: 2,
+        children: [
+          // ...
+        ]
+      }
+    }]
+  }
+}
+```
+
+然后在原生端，你有这些原语的具体实现——`Page`、`Header`、`Avatar`、`PremiumBadge`、`Layout` 等等。
+
+归根结底，这感觉就像是从服务器向客户端**传递 props**。
+
+所以，如果我们哪天发现自己处在这样的情况：服务器上准备好了一堆数据，需要找个好办法把这些数据的各个部分传给客户端上声明的一堆函数，那么这样的格式可能会派上用场。
+
+我们先记住这一点。
+
+* * *
+
+### 回顾：作为 JSON 的组件
+
+*   从一开始，做 Web 应用就意味着：针对某个特定屏幕的请求，响应该屏幕所需的全部数据。（HTML 也是数据。）
+*   从一开始，人们就在寻找办法让这些“数据”的生成变得动态，把它拆分成可复用的逻辑，并给这些逻辑传递参数。
+*   在 Web 早期，通过字符串操作来拼接 HTML 很常见。不幸的是，这很容易出错，并导致了许多问题。
+*   这让 Web 社区的许多人把标记放逐到了模板里。但在 Facebook，XHP 提出了另一种做法：产生对象的标记。
+*   事实证明，把标记变成一等的编程原语，自然会导致标签“返回”其他标签——我们得到的不是 MVC，而是函数式组合。
+*   XHP 演化成了异步 XHP，它让渲染某块 UI 的逻辑可以紧挨着加载其所需数据的逻辑。这极其强大。
+*   不幸的是，以 HTML 作为主要输出格式，对交互式应用来说是一条死胡同。你无法在不抹掉状态的情况下就地“刷新”HTML，而状态很重要。
+*   然而，并没有什么真正把我们限制在 HTML 上。如果标签是对象，它们就可以作为 JSON 发送。许多最成功的**原生**应用正是用这种范式构建的。（如果你需要 HTML，总可以之后再把 JSON **转换成** HTML。）
+*   把由客户端原语组成的标签作为 JSON 树返回，是表示向客户端“传递 props”的一种好方式。
+
+* * *
+
+## 第三部分：通过网络传输的 JSX
+
+### 我们要构建什么
+
+到目前为止，我们探索了两条独立的思路：
+
+*   从客户端层直接调用 REST API，[忽视了](https://overreacted.io/jsx-over-the-wire/#rest-and-json-api)用户界面演进的现实。我们可以通过[增加一个新的后端层](https://overreacted.io/jsx-over-the-wire/#api-for-viewmodels)来解决这个问题，这个层按每个屏幕的**需要**在服务器上组装数据。这一层[可以拆分成多个函数](https://overreacted.io/jsx-over-the-wire/#extracting-a-viewmodel)，每个函数指定如何为屏幕的某个**部分**加载数据。然后这些函数可以[组合在一起](https://overreacted.io/jsx-over-the-wire/#composing-viewmodels)。但是，我们还不确定如何真正把这些函数和它们所准备 props 的组件**绑定**起来。
+*   我们也可以[从纯 HTML](https://overreacted.io/jsx-over-the-wire/#html-ssi-and-cgi) 和“服务器包含”出发。如果我们避免过早地 MVC 化，转而探索把标记当作对象，我们[最终会发明](https://overreacted.io/jsx-over-the-wire/#php-and-xhp)出[异步标签](https://overreacted.io/jsx-over-the-wire/#async-xhp)的概念：它们加载自己的数据并返回更多标签。这种方式非常强大，因为它让我们可以构建自包含的组件，而不会为获取单个屏幕造成多次客户端/服务器往返。把 HTML **作为唯一的目标格式**输出是一条死胡同，但正如许多采用这种方式的顶级原生应用所证明的，[输出 JSON](https://overreacted.io/jsx-over-the-wire/#native-templates) 保留了所有好处。你只需要一套可以从服务器端组合的[客户端原语](https://overreacted.io/jsx-over-the-wire/#sdui)。
+
+事实证明，这是谈论同一件事的两种不同方式。归根结底，我们想要的只是一个具备以下五个特性的系统：
+
+#### Dan 的异步 UI 框架检查清单
+
+1.   我们的系统让我们可以把用户界面拆分成丰富的、可交互的组件。
+2.   组件应当与指定**其**服务器数据如何计算的逻辑有**直接联系**。如果一个组件从服务器接收了某些信息，你应该只需一次 Ctrl+点击或“查找所有引用”，就能找到服务器上计算**这个特定组件** props 的每一处。更改哪个组件接收哪些数据应该很直接。
+3.   应当有办法让 UI 片段真正自包含——包括它们的服务器数据依赖和相应的服务器逻辑。你应该能把一块 UI 嵌套到另一块 UI 里，而不必操心它需要什么数据。
+4.   导航到一个新屏幕应该能在一次客户端/服务器往返内完成。即使你有成百上千个组件各自想加载数据，从客户端的角度看，一个屏幕也应该作为单个响应到达。事实上，我们希望我们的系统能**阻止**客户端/服务器瀑布式请求的产生。
+5.   我们希望系统完全支持丰富的交互。这意味着，即使它的某些部分运行在服务器上，在导航时或数据变更后要求整页刷新也是**不可接受的**。事实上，系统应当支持在可交互的树中直接就地刷新服务器数据。组件应当能从服务器“接收新的 props”，而不丢失任何客户端状态。
+
+你知道有这样的系统吗？（试着给你知道的框架打打分。）
+
+如果不知道，那我们现在就来发明一个。
+
+* * *
+
+### 重访 ViewModel
+
+让我们回到之前 `LikeButtonViewModel` 的[最后一个版本](https://overreacted.io/jsx-over-the-wire/#plumbing-viewmodel-parameters)：
+
+```
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+  ]);
+  return {
+    totalLikeCount: post.totalLikeCount,
+    isLikedByUser: post.isLikedByUser,
+    friendLikes: friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: includeAvatars ? l.avatar : null,
+    }))
+  };
+}
+```
+
+这个函数是一块为 `LikeButton` 准备 props 的**后端切片**：
+
+```
+{
+  totalLikeCount: 8,
+  isLikedByUser: false,
+  friendLikes: [{
+    firstName: 'Alice',
+    avatar: 'https://example.com/alice.jpg'
+  }, {
+    firstName: 'Bob',
+    avatar: 'https://example.com/bob.jpg'
+  }]
+}
+```
+
+我们最终希望 `LikeButton` 接收到这些 props：
+
+```
+function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  // ...
+}
+```
+
+然而，我们还没有想出任何机制把两边连接起来。谁来把 `LikeButtonViewModel` 返回的 JSON 传给 `LikeButton` 组件？我们怎么把 ViewModel 和它们的组件绑定在一起？
+
+如果我们借鉴 [SDUI](https://overreacted.io/jsx-over-the-wire/#sdui) 的做法，通过返回一个**标签**来表达这一点呢：
+
+```
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+  ]);
+  return (
+    <LikeButton
+      totalLikeCount={post.totalLikeCount}
+      isLikedByUser={post.isLikedByUser}
+      friendLikes={friendLikes.likes.map(l => ({
+        firstName: l.firstName,
+        avatar: includeAvatars ? l.avatar : null,
+      }))}
+    />
+  );
+}
+```
+
+正如我们之前[已经知道的](https://overreacted.io/jsx-over-the-wire/#sdui)，我们可以把这段 JSX 表示为一棵 JSON 树。事实上，它几乎和原来的 JSON 一样，只不过现在它指定了接收的组件：
+
+```
+{
+  type: "LikeButton",
+  props: {
+    totalLikeCount: 8,
+    isLikedByUser: false,
+    friendLikes: [{
+      firstName: 'Alice',
+      avatar: 'https://example.com/alice.jpg'
+    }, {
+      firstName: 'Bob',
+      avatar: 'https://example.com/bob.jpg'
+    }]
+  }
+}
+```
+
+这样客户端上的 React 就会**知道**要把这些 props 传给 `LikeButton`：
+
+```
+function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  // ...
+}
+```
+
+于是我们终于把 ViewModel 和它的组件缝合在了一起！
+
+我们把**生成** props 的代码和**消费**这些 props 的代码绑定在了一起。现在我们的 ViewModel 和组件之间只隔着一次 Ctrl+点击。由于 JSX 表达式会经过类型检查，我们还免费获得了完整的类型检查。
+
+看看完整的图景：
+
+```
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+  const [post, friendLikes] = await Promise.all([
+    getPost(postId),
+    getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+  ]);
+  return (
+    <LikeButton
+      totalLikeCount={post.totalLikeCount}
+      isLikedByUser={post.isLikedByUser}
+      friendLikes={friendLikes.likes.map(l => ({
+        firstName: l.firstName,
+        avatar: includeAvatars ? l.avatar : null,
+      }))}
+    />
+  );
+}
+```
+
+```
+function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  let buttonText = 'Like';
+  if (totalLikeCount > 0) {
+    // 例如 "Liked by You, Alice, and 13 others"
+    buttonText = formatLikeText(totalLikeCount, isLikedByUser, friendLikes);
+  }
+  return (
+    <button className={isLikedByUser ? 'liked' : ''}>
+      {buttonText}
+    </button>
+  );
+}
+```
+
+我们的 ViewModel 就像一个[异步 XHP](https://overreacted.io/jsx-over-the-wire/#async-xhp) 标签，把一些信息传给我们自己的、位于客户端的 `<LikeButton>` 原语（就像 [SDUI](https://overreacted.io/jsx-over-the-wire/#sdui) 中那样）。两者一起构成了一块自包含的 UI，它知道如何加载自己的数据。
+
+我们再用另一个 ViewModel 做一遍。
+
+* * *
+
+### 再来一遍
+
+现在让我们重访[这一节](https://overreacted.io/jsx-over-the-wire/#composing-viewmodels)中的 `PostDetailsViewModel`：
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const [post, postLikes] = await Promise.all([
+    getPost(postId),
+    LikeButtonViewModel({ postId, includeAvatars }),
+  ]);
+  return {
+    postTitle: post.title,
+    postContent: parseMarkdown(post.content, {
+      maxParagraphs: truncateContent ? 1 : undefined
+    }),
+    postAuthor: post.author,
+    postLikes
+  };
+}
+```
+
+我们从未明确写出来，但假设有一个对应的 `PostDetails` 组件，它可以接收这个 JSON 并真正渲染出文章：
+
+```
+function PostDetails({
+  postTitle,
+  postContent,
+  postAuthor,
+  postLikes,
+}) {
+  // ...
+}
+```
+
+我们把它们连接起来。
+
+首先，把 `PostDetailsViewModel` 改为返回一个 `PostDetails` **标签：**
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const [post, postLikes] = await Promise.all([
+    getPost(postId),
+    LikeButtonViewModel({ postId, includeAvatars }),
+  ]);
+  return (
+    <PostDetails
+      postTitle={post.title}
+      postContent={parseMarkdown(post.content, {
+        maxParagraphs: truncateContent ? 1 : undefined
+      })}
+      postAuthor={post.author}
+      postLikes={postLikes}
+    />
+  );
+}
+```
+
+现在它返回的 JSON 会被包裹进一个 `PostDetails` JSX 元素中：
+
+```
+{
+  type: "PostDetails",
+  props: {
+    postTitle: "JSX Over The Wire",
+    postAuthor: "Dan",
+    postContent: "Suppose you have an API route that returns some data as JSON.",
+    postLikes: {
+      type: "LikeButton",
+      props: {
+        totalLikeCount: 8,
+        isLikedByUser: false,
+        friendLikes: [{
+          firstName: "Alice"
+        }, {
+          firstName: "Bob"
+        }]
+      }
+    }
+  }
+}
+```
+
+在客户端，React 会接收这些 props 并传给 `PostDetails`：
+
+```
+function PostDetails({
+  postTitle,
+  postContent,
+  postAuthor,
+  postLikes,
+}) {
+  return (
+    <article>
+      <h1>{postTitle}</h1>
+      <div dangerouslySetInnerHTML={{ __html: postContent }} />
+      <p>by {postAuthor.name}</p>
+      <section>
+        {postLikes}
+      </section>
+    </article>
+  );
+}
+```
+
+这样就把 ViewModel 和它的组件连接起来了！
+
+* * *
+
+### 重访 ViewModel 的组合
+
+注意，上一个例子中的 `postLikes` 是直接渲染到 UI 里的：
+
+```
+<section>
+  {postLikes}
+</section>
+```
+
+我们之所以能这么做，是因为它就是 `<LikeButton>`，其 props 已经由 `LikeButtonViewModel` 预先配置好。它就在 JSON 里：
+
+```
+{
+  type: "PostDetails",
+  props: {
+    // ...
+    postLikes: {
+      type: "LikeButton",
+      props: {
+        totalLikeCount: 8,
+        // ...
+      }
+    }
+  }
+}
+```
+
+你可能还记得，我们是通过调用 `LikeButtonViewModel` 得到它的：
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const [post, postLikes] = await Promise.all([
+    getPost(postId),
+    LikeButtonViewModel({ postId, includeAvatars }),
+  ]);
+  // ...
+```
+
+然而，让 ViewModel 在 `Promise.all` 里手动调用其他 ViewModel，很快就会变得非常繁琐。所以我们采用一个新约定：假设一个 ViewModel 可以通过返回 JSX 标签来嵌入**另一个** ViewModel。
+
+这能让代码清爽不少：
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const post = await getPost(postId);
+  return (
+    <PostDetails
+      postTitle={post.title}
+      postContent={parseMarkdown(post.content, {
+        maxParagraphs: truncateContent ? 1 : undefined
+      })}
+      postAuthor={post.author}
+      postLikes={
+        <LikeButtonViewModel
+          postId={postId}
+          includeAvatars={includeAvatars}
+        />
+      }}
+    />
+  );
+}
+```
+
+改完之后，调用 `PostDetailsViewModel` 会返回“未完成”的 JSON：
+
+```
+{
+  type: "PostDetails", // ✅ 这是客户端上的组件
+  props: {
+    postTitle: "JSX Over The Wire",
+    // ...
+    postLikes: {
+      type: LikeButtonViewModel, // 🟡 我们还没有运行这个 ViewModel
+      props: {
+        postId: "jsx-over-the-wire",
+        includeAvatars: false,
+      }
+    }
+  }
+}
+```
+
+负责把 JSON 发送给客户端的代码会发现这是一个 ViewModel（所以它还需要运行！），于是调用 `LikeButtonViewModel` 来获取更多 JSON：
+
+```
+{
+  type: "PostDetails", // ✅ 这是客户端上的组件
+  props: {
+    postTitle: "JSX Over The Wire",
+    // ...
+    postLikes: {
+      type: "LikeButton", // ✅ 这是客户端上的组件
+      props: {
+        totalLikeCount: 8,
+        // ...
+      }
+    }
+  }
+}
+```
+
+ViewModel 会被递归展开，每个都贡献自己那部分 JSON。这可能会让你想起 [XHP 标签可以递归渲染其他 XHP 标签](https://overreacted.io/jsx-over-the-wire/#php-and-xhp)。最终的 JSON 会在客户端变成一棵 React 组件树。
+
+```
+<PostDetails
+  postTitle="JSX Over The Wire"
+  // ...
+  postLikes={
+    <LikeButton
+      totalLikeCount={8}
+      // ...
+    />
+  }
+/>
+```
+
+* * *
+
+### 数据总是向下流动
+
+为了让 JSX 看起来更顺眼一点，我们还可以把 `postLikes` 重命名为 `children`。这样就可以把 `LikeButtonViewModel` 作为 `PostDetails` 的 JSX 子元素嵌套进去。
+
+下面是到目前为止的全部代码。注意数据是如何向下流动的：
+
+```
+async function PostDetailsViewModel({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const post = await getPost(postId);
+  return (
+    <PostDetails
+      postTitle={post.title}
+      postContent={parseMarkdown(post.content, {
+        maxParagraphs: truncateContent ? 1 : undefined
+      })}
+      postAuthor={post.author}
+    >
+      <LikeButtonViewModel
+        postId={postId}
+        includeAvatars={includeAvatars}
+      />
+    </PostDetails>
+  );
+}
+ 
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+const [post, friendLikes] = await Promise.all([
+  getPost(postId),
+  getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+]);
+return (
+  <LikeButton
+    totalLikeCount={post.totalLikeCount}
+    isLikedByUser={post.isLikedByUser}
+    friendLikes={friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: includeAvatars ? l.avatar : null,
+    }))}
+  />
+);
+```
+
+上面所有的服务器逻辑都会在生成 JSON 时执行，包括 `getPost`、`parseMarkdown` 和 `getFriendLikes`。响应会包含**整个屏幕**的数据，满足了我们的一个[关键要求](https://overreacted.io/jsx-over-the-wire/#dans-async-ui-framework-checklist)：
+
+```
+{
+  type: "PostDetails", // ✅ 这是客户端上的组件
+  props: {
+    postTitle: "JSX Over The Wire",
+    // ...
+    children: {
+      type: "LikeButton", // ✅ 这是客户端上的组件
+      props: {
+        totalLikeCount: 8,
+        // ...
+      }
+    }
+  }
+}
+```
+
+从客户端的角度看，一切都像是预先计算好的：
+
+```
+function PostDetails({
+  postTitle,
+  postContent,
+  postAuthor,
+  children,
+}) {
+  return (
+    <article>
+      <h1>{postTitle}</h1>
+      <div dangerouslySetInnerHTML={{ __html: postContent }} />
+      <p>by {postAuthor.name}</p>
+      <section>
+        {children}
+      </section>
+    </article>
+  );
+}
+ 
+function LikeButton({ totalLikeCount, isLikedByUser, friendLikes }) {
+  // ...
+}
+```
+
+特别是，当 `PostDetails` 运行时，它接收到的 `children` 就是带有预定义 props 的 `<LikeButton>` 标签本身。ViewModel 为客户端配置好了 props。**这就是为什么在客户端上，所有 props 都“已经在那儿了”。**
+
+花点时间琢磨上面的代码，确保真正理解它。
+
+没错，这**确实**很怪。
+
+但它也很美妙。
+
+我们找到了一种跨越客户端-服务器边界组合标签的方式：服务器部分可以自由地被客户端部分包裹，客户端部分也可以自由地被服务器部分包裹，而且它们不仅**直接就能工作**——我们还在**一次往返**中完成了所有服务器部分的数据加载。
+
+事实上，这种方式满足了[我的检查清单](https://overreacted.io/jsx-over-the-wire/#dans-async-ui-framework-checklist)上的每一点。
+
+现在我们来整理一下，收拾收拾剩下的细节。
+
+* * *
+
+### 路由 ViewModel
+
+当我们把 ViewModel 重构为使用 JSX 时（给对 JSX 持怀疑态度的读者：这里的重点不只是语法，尽管语法也不错——而是[惰性求值](https://overreacted.io/react-as-a-ui-runtime/#lazy-evaluation)），我们可能会意识到，其实并不需要为每个屏幕单独设一个 Express 路由。
+
+相反，我们可能想这样做：
+
+```
+app.get('/*', async (req, res) => {
+  const url = req.url;
+  const json = await toJSON(<RouterViewModel url={url} />); // 求值 JSX
+  res.json(json);
+});
+```
+
+然后我们会有一个把屏幕匹配到路由的路由 ViewModel：
+
+```
+function RouterViewModel({ url }) {
+  let route;
+  if (matchRoute(url, '/screen/post-details/:postId')) {
+    const { postId } = parseRoute(url, '/screen/post-details/:postId');
+    route = <PostDetailsRouteViewModel postId={postId} />;
+  } else if (matchRoute(url, '/screen/post-list')) {
+    route = <PostListRouteViewModel />;
+  }
+  return route;
+}
+```
+
+然后每个路由本身也是一个 ViewModel：
+
+```
+function PostDetailsRouteViewModel({ postId }) {
+  return <PostDetailsViewModel postId={postId} />
+}
+ 
+async function PostListRouteViewModel() {
+  const postIds = await getRecentPostIds();
+  return (
+    <>
+      {postIds.map(postId =>
+        <PostDetailsViewModel key={postId} postId={postId} />
+      )}
+    </>
+  );
+}
+```
+
+在服务器上，从上到下全是 ViewModel。
+
+此时这看起来可能有点多余。但把路由逻辑**移进** ViewModel 的世界，就能让 `RouterViewModel` 把它的输出包裹进一个客户端的 `<Router>` 里，当你导航到另一个屏幕时，它可以重新请求 JSON。
+
+```
+function RouterViewModel({ url }) {
+  let route;
+  if (matchRoute(url, '/screen/post-details/:postId')) {
+    const { postId } = parseRoute(url, '/screen/post-details/:postId');
+    route = <PostDetailsRouteViewModel postId={postId} />;
+  } else if (matchRoute(url, '/screen/post-list')) {
+    route = <PostListRouteViewModel />;
+  }
+  return (
+    <Router>
+      {route}
+    </Router>
+  );
+}
+```
+
+```
+function Router({ children }) {
+  const [tree, setTree] = useState(children);
+  // ……以后也许会在这里加些逻辑……
+  return tree;
+}
+```
+
+这还能让我们——如果愿意的话——实现一个更细粒度的路由器：它能把路径拆分成段，在收到请求时并行地为每一段准备 ViewModel，甚至在导航时只重新请求单个段。这样，每次需要去另一个屏幕时，我们就不必重新请求整个页面了。当然，我们不会想在应用**内部**实现这类逻辑。理想情况下，应该由框架来做。
+
+* * *
+
+### 服务器组件与客户端组件
+
+现在可以不再装模作样了——我们描述的正是 React 服务器组件（React Server Components）：
+
+*   我们的“ViewModel”就是服务器组件。
+*   我们的“Component”就是客户端组件。
+
+把两者都称为组件是有充分理由的。虽然在本文第一部分，服务器组件[以 ViewModel 的身份开始了旅程](https://overreacted.io/jsx-over-the-wire/#composable-bff)，但它们的血统同样可以令人信服地追溯到[异步 XHP 标签](https://overreacted.io/jsx-over-the-wire/#async-xhp)。由于它们不再需要返回 JSON 对象，而且在实践中你经常会从“两边”导入相同的组件，所以称之为组件是合理的。（事实上，在我这个不完整的例子里，所有客户端组件都可以移到服务器上。）
+
+本文没有讨论真正“连接”服务器与客户端两个世界模块系统的机制。这会是另一篇文章的主题，简而言之：当你从一个带有 `'use client'` 的模块中 `import` 某个东西时，你得到的不是真正的东西——你只会得到一个描述**如何加载**它的**引用**。
+
+```
+import { LikeButton } from './LikeButton';
+ 
+console.log(LikeButton);
+// "src/LikeButton.js#LikeButton"
+ 
+async function LikeButtonViewModel({
+  postId,
+  includeAvatars
+}) {
+const [post, friendLikes] = await Promise.all([
+  getPost(postId),
+  getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+]);
+return (
+  <LikeButton
+    totalLikeCount={post.totalLikeCount}
+    isLikedByUser={post.isLikedByUser}
+    friendLikes={friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: includeAvatars ? l.avatar : null,
+    }))}
+  />
+);
+```
+
+```
+'use client';
+ 
+export function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  let buttonText = 'Like';
+  if (totalLikeCount > 0) {
+    // 例如 "Liked by You, Alice, and 13 others"
+    buttonText = formatLikeText(totalLikeCount, isLikedByUser, friendLikes);
+  }
+  return (
+    <button className={isLikedByUser ? 'liked' : ''}>
+      {buttonText}
+    </button>
+  );
+}
+```
+
+所以生成的 JSON 会包含一条加载 `LikeButton` 的指令：
+
+```
+{
+  type: "src/LikeButton.js#LikeButton", // ✅ 这是一个客户端组件
+  props: {
+    totalLikeCount: 8,
+    // ...
+  }
+}
+```
+
+React 会读取这条指令，并以 `<script>` 标签的形式加载它（或者从打包器缓存中读取）。这个格式是打包器特定的，这也解释了为什么 React 服务器组件需要与打包器集成。（[Parcel 刚刚发布了他们的集成](https://parceljs.org/recipes/rsc/)，它不绑定任何框架，所以如果你想摸索 RSC 是怎么工作的，它再合适不过了。）
+
+React 服务器组件输出 JSON 而不是 HTML，这一点很重要：
+
+*   服务器树可以就地重新获取而不丢失状态。（React 只会做它的“虚拟 DOM”那一套，也就是把新的 props 应用到已经存在的组件上。）
+*   你可以面向 Web 以外的平台。（这里有一个[很酷的演示](https://www.youtube.com/watch?v=djhEgxQf3Kw)。）
+*   你仍然可以通过执行其中所有的客户端组件，把那个 JSON 转换成 HTML！这不是 RSC **要求**的，但绝对可以做到。这就是为什么“客户端”组件可能会在“服务器”上运行——要输出 HTML，你就得把“两边”都运行一遍。
+
+在本文结尾，我想说的是：我知道 React 服务器组件并不合所有人的口味。它会让你的大脑拧巴，但我认为是以一种好的方式拧巴。我会继续发文讲讲我为什么对 RSC 感到兴奋，并尝试把其中一些解释提炼成更短的文章。但与此同时，我希望这篇文章提供了一些关于 RSC 背后**动机**的历史背景、[它能做什么](https://overreacted.io/jsx-over-the-wire/#dans-async-ui-framework-checklist)，以及你如何能通过自己的思考得出 RSC。
+
+（顺便说一句，如果你喜欢更有哲学意味、更天马行空的长文，可以看看我的[上一篇文章](https://overreacted.io/react-for-two-computers/)，它不讲任何历史，从第一性原理出发推导出 RSC。）
+
+* * *
+
+### 回顾：通过网络传输的 JSX
+
+*   React 服务器组件通过[第二部分概述的技术](https://overreacted.io/jsx-over-the-wire/#recap-components-as-json)，解决了[第一部分概述的问题](https://overreacted.io/jsx-over-the-wire/#recap-json-as-components)。特别是，它们让你可以把 API 中与 UI 相关的部分“组件化”，并确保它们与 UI 一同演进。
+*   这意味着你的组件与为其准备 props 的服务器代码之间有直接联系。你总能通过“查找所有引用”找到数据从服务器的哪里流入你的每个组件。
+*   由于 React 服务器组件输出 JSON，重新获取时不会“抹掉”页面状态。你的组件可以从服务器接收新的 props。
+*   React 服务器组件输出 JSON，但这个 JSON **也**可以（可选地）在首次渲染时转换成 HTML。从 JSON 生成 HTML 很容易，反过来则不行。
+*   React 服务器组件让你可以创建自包含的 UI 片段，由它们自己负责准备服务器数据。然而，所有这些准备工作都发生在一次往返之内。虽然代码是模块化的，执行却是合并在一起的。
+*   不骗你，RSC 很烧脑。有时你得由内而外地思考。但我个人认为 RSC 很棒。工具链还在演进，但我对它的未来感到兴奋。我希望看到更多技术深思熟虑地融合这些边界。
+
+* * *
+
+### 最终代码（略作修改）
+
+虽然这不是一个**可运行**的应用（我打赌**你**可以用 [Next](https://nextjs.org/) 或 [Parcel](https://parceljs.org/recipes/rsc/) 把它跑起来），也可能有错误，但下面是完整的代码示例。我做了一些重命名，去掉了“ViewModel”这个术语，让它看起来更地道。
+
+```
+import { PostDetails, LikeButton } from './client';
+ 
+export function PostDetailsRoute({ postId }) {
+  return <Post postId={postId} />
+}
+ 
+export async function PostListRoute() {
+  const postIds = await getRecentPostIds();
+  return (
+    <>
+      {postIds.map(postId =>
+        <Post key={postId} postId={postId} />
+      )}
+    </>
+  );
+}
+ 
+async function Post({
+  postId,
+  truncateContent,
+  includeAvatars
+}) {
+  const post = await getPost(postId);
+  return (
+    <PostLayout
+      postTitle={post.title}
+      postContent={parseMarkdown(post.content, {
+        maxParagraphs: truncateContent ? 1 : undefined
+      })}
+      postAuthor={post.author}
+    >
+      <PostLikeButton
+        postId={postId}
+        includeAvatars={includeAvatars}
+      />
+    </PostLayout>
+  );
+}
+ 
+async function PostLikeButton({
+  postId,
+  includeAvatars
+}) {
+const [post, friendLikes] = await Promise.all([
+  getPost(postId),
+  getFriendLikes(postId, { limit: includeAvatars ? 5 : 2 }),
+]);
+return (
+  <LikeButton
+    totalLikeCount={post.totalLikeCount}
+    isLikedByUser={post.isLikedByUser}
+    friendLikes={friendLikes.likes.map(l => ({
+      firstName: l.firstName,
+      avatar: includeAvatars ? l.avatar : null,
+    }))}
+  />
+);
+```
+
+```
+'use client';
+ 
+export function PostLayout({
+  postTitle,
+  postContent,
+  postAuthor,
+  children,
+}) {
+  return (
+    <article>
+      <h1>{postTitle}</h1>
+      <div dangerouslySetInnerHTML={{ __html: postContent }} />
+      <p>by {postAuthor.name}</p>
+      <section>
+        {children}
+      </section>
+    </article>
+  );
+}
+ 
+export function LikeButton({
+  totalLikeCount,
+  isLikedByUser,
+  friendLikes
+}) {
+  let buttonText = 'Like';
+  if (totalLikeCount > 0) {
+    buttonText = formatLikeText(totalLikeCount, isLikedByUser, friendLikes);
+  }
+  return (
+    <button className={isLikedByUser ? 'liked' : ''}>
+      {buttonText}
+    </button>
+  );
+}
+```
+
+祝缝合愉快！

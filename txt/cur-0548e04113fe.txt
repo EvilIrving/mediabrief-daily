@@ -1,0 +1,13 @@
+https://share.transistor.fm/s/d7a0d796
+
+这是 Practical AI 一期没有嘉宾的“全连接”节目，Prediction Guard CEO Daniel Whitenack 与洛克希德·马丁首席 AI 研究工程师 Chris Benson 专门拆解 Anthropic 于 2024 年 11 月 25 日推出的模型上下文协议（MCP）。
+
+Daniel 先从客户身上的一个规律切入：企业做完 RAG 知识库问答、text-to-SQL 和各种自动化之后，会想在这些独立助手之上加一层“智能体层”，把它们串成工作流。过去这靠工具调用：把 API schema 塞给 LLM，让它生成 JSON 请求体，再由普通代码去真正调用外部 API。LLM 不擅长时间序列预测之类的任务，交给外部工具更好，但问题是每家的工具、数据库、API 和胶水代码都不一样，你的智能体想用我的工具，总得有一方改代码。他把 MCP 比作 Web 早期出现的 HTTP：有了统一协议，任何客户端都知道服务器会返回什么。Chris 则把它看作 AI 走向成熟的标志，是一种新的“中间件”。
+
+接着两人借 Philipp Schmid 的概览文章讲架构。宿主是面向用户的应用，比如代码编辑器；MCP 客户端是嵌在宿主里的库，类似 Python 的 requests；MCP 服务器对外暴露三类东西：工具（可执行的函数，由模型控制）、资源（数据源，由应用控制）、提示词模板（由用户控制）。连接可以走本地标准输入输出，也可以走远程的服务器发送事件（SSE），还有一个类似微服务服务发现的机制，让客户端列出服务器提供了哪些能力。
+
+生态方面，已经有官方 Rust SDK 和多种语言实现，也有 Blender、Ableton Live、GitHub、Unity、浏览器控制、Zapier 等现成服务器。Daniel 分享了自己的实践：他们用 FastAPI 写的内部 text-to-SQL 服务（他戏称为“仪表盘杀手”），套上 FastAPI-MCP 框架、加三行代码，就能作为 MCP 服务器被发现；调试可以用 MCP Inspector，它的作用类似 FastAPI 自带的 Swagger 文档。
+
+安全上，MCP 不等于必须暴露在公网，它可以嵌入式地跑在单机或桌面应用里。但要分两层看：一是到服务器的连接要有认证，二是工具本身可能有漏洞或权限过大。使用别人的服务器时，要像对待任何 Web 服务一样，问清它能访问哪些数据、怎么记日志和缓存、是单租户还是多租户。
+
+关于非 Anthropic 模型能不能用，Daniel 的回答是“既是也不是”。OpenAI 已经支持 MCP；Llama 3.1、Qwen 2.5 这类开放模型也能生成符合协议的输出，但目前要在提示词里塞大量示例。这会重演指令遵循（Alpaca、ChatML）和工具调用（Hermes 等数据集）走过的路，等 MCP 示例进入训练数据，开放模型自然就会支持得更好。Chris 预计会有竞争性的方案出现，最终会洗牌，但 Anthropic 一开始就拿出高质量的协议、示例和 SDK，抢得了先机。最后 Chris 推荐了 Hugging Face 的 Rust 极简机器学习框架 Candle，认为它适合做边缘推理。

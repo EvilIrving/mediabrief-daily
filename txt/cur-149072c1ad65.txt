@@ -1,0 +1,19 @@
+https://changelog.com/jsparty/304
+
+这期 JS Party 是听众 Daniel Buckmaster 点播的，原本想聊 WebGL。Jerod Santo 和 Amal Hussein 邀请了 WebGLFundamentals.org 的作者、Google 工程师 Gregg Tavares，他建议改聊 WebGPU。理由是 WebGL 2011 年上线，已经"做完了"，不会再有大的改动；WebGPU 今年 5 月在 Chrome 上线，Firefox 和 Safari 还要打开开关才能用，Unity 等公司已经宣布支持，前进方向就在这里。
+
+Gregg 自称游戏开发者，但最后一款游戏停在 2007 年。2008 年他进 Google 写游戏引擎 O3D，项目发布后被砍，他转去做 WebGL，觉得让大家自己写引擎才是对的。他在 Stack Overflow 上答问题时发现，这类 GPU API 准备工作极多：用 canvas 画个圆只要四行，用 WebGL 要七八十到上百行，Stack Overflow 那种短小的回答根本讲不清，于是他写起了教程，后来就有了 WebGL Fundamentals。
+
+Amal 问 WebGL 为什么这么难用。Gregg 解释说，WebGL 是把已有的 OpenGL 搬上 Web，没有机会重新设计，只能做到安全、尽量"Web 化"。他把它比作 WebAssembly：大多数人不会直接写 WASM，而是用 Emscripten 编译 C++；同样，大多数人不直接写 WebGL 或 WebGPU，而是用 Three.js、Babylon.js，或者干脆通过 Google 地图这样的产品间接用上。至于为什么非要这么底层，他说速度就来自底层：机器学习、浏览器自己的界面合成，以及 Vello 那种用计算着色器自己算像素的 2D 渲染、Unreal 的 Nanite 这类新技术，都需要底层的控制权；如果只给 SVG 这样的高层接口，这些都做不出来。
+
+谈到迁移，Gregg 拿 Google 地图从预渲染切片转向 WebGL 动态渲染举例：转了之后才能随时改变道路的标注和高亮，缩放也变得流畅。他认为 OpenGL、Vulkan、Metal、DirectX 12 在某个层面上大同小异，所以从 WebGL 移植到 WebGPU 某种程度上只是换个函数名，当然实际没那么简单。WebGPU 并没有更简单，"它们都很复杂"，好处在于新特性，尤其是计算着色器，这是在浏览器里跑机器学习和大模型的基础。旧硬件跑不了新特性，所以面向老设备的用户仍然需要 WebGL，也可以像地图那样做降级。但浏览器团队人手有限，新功能大概只会加到 WebGPU 上。Jerod 的看法是，新项目应该先问"为什么不用 WebGPU"。对普通开发者来说，Three.js 基本可以直接切换到 WebGPU 模式。
+
+Gregg 用"把函数传到另一台机器上运行"来比喻着色器：顶点着色器算出三角形的位置，片元着色器决定每个像素的颜色，计算着色器只是"把这个函数调用 N 次"。麻烦在于这些函数要用另一种语言写，数据也要传到 GPU 上，再按编号把数组和绑定位置一一连起来，所以代码量远比高层 API 多。他把 WebGPU 和 HTML 的关系类比为 canvas 和 SVG，也就是命令式和声明式的区别，而有了计算着色器之后，它甚至不必和绘图有关。
+
+Jerod 担心网页偷偷在手机上跑推理、耗电发烫。Gregg 说视频会议里的换背景、加帽子早就在用 GPU 了，用 CPU 开一堆 worker 也能滥用资源，这和原生应用、每周自动更新的广告 SDK 没有本质区别。他支持用户可以屏蔽任何能力。Amal 提议浏览器可以像 macOS 上的 Safari 那样，提示某个标签页耗电异常。
+
+入门建议方面，Gregg 推荐读 Three.js 手册的第一页，加载一个 glTF 模型。做游戏可以试 PlayCanvas，或者用 Unity 导出到 Web，但一定要从一开始就按 Web 来设计，别让玩家先下好几个 GB。原型可以先用 Canvas 2D，或者 PICO-8 这种"幻想主机"，限制反而让人能把东西做完。他说 AI 生成游戏早在 GPT-2、GPT-3 时代就有人做过小样，还提到有人在 GDC 上讲过用生成器批量上架了 1,500 个老虎机应用，最后被下架。Amal 由此谈到开放 Web 的价值，以及未来内容爆炸之后策展的难题。
+
+问到为什么不再做游戏，Gregg 坦言一是大厂的"金手铐"，二是行业变了：当年 Unreal 授权要上百万美元，所以他才来 Google 做开源引擎，如今 Unreal、Unity、Godot 都能免费起步，可每天又有几千款新游戏上架，朋友花两年做出的精美游戏只卖了 80 份。他想做真正独特的东西。读到《明天，明天，还有明天》时，他羡慕书里两人大学时就一起开了游戏公司。Amal 安慰他，他是在上游让别人能做游戏；他自嘲是"造铅笔的"，还说写教程最后可能只是在训练 ChatGPT，"在教导我们未来的霸主"。
+
+WebGPUFundamentals.org 已经上线，但离搬完 WebGL 版的全部课程还差约两个月的全职工作量。网站是开源的，欢迎提交 PR 和翻译，已经有六七篇被译成中文，两篇译成日文。

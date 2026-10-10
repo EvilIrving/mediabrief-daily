@@ -1,0 +1,358 @@
+https://magazine.sebastianraschka.com/p/coding-the-kv-cache-in-llms
+
+# 从零理解并编写 LLM 中的 KV 缓存（Understanding and Coding the KV Cache in LLMs from Scratch）
+
+作者：Sebastian Raschka，2025-06-17
+
+KV 缓存是生产环境中实现大语言模型高效推理的最关键技术之一。KV 缓存是生产环境中计算高效的 LLM 推理的重要组成部分。本文通过一个从零开始、通俗易读的实现，从概念和代码两个层面解释它是如何工作的。
+
+> 我已经有一阵子没有分享讲解 LLM 基础概念的技术教程了。由于我目前正在养伤，同时在写一篇更大的、以 LLM 研究为主题的文章，我想不妨就几位读者问过我的一个话题分享一篇教程文章（这个话题**没有**收录在我的《从零构建大语言模型》（_Building a Large Language Model From Scratch_）一书中）。
+
+祝阅读愉快！
+
+简而言之，KV 缓存会存储中间的键（K）和值（V）计算结果，以便在推理阶段（训练之后）复用，这会让文本生成显著提速。KV 缓存的缺点是它会让代码更复杂、增加内存需求（这是我最初没有把它放进书里的主要原因），并且不能在训练时使用。不过，在生产环境中使用 LLM 时，推理速度的提升通常非常值得在代码复杂度和内存上做出的取舍。
+
+想象 LLM 正在生成一些文本。具体来说，假设给 LLM 的提示是：“Time”。你可能已经知道，LLM 一次生成一个词（或 token），接下来两个文本生成步骤可能如下图所示：
+
+[![Image 1](https://substackcdn.com/image/fetch/$s_!xNU1!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F47afb112-1e46-42bf-80b3-b7b11d0a55eb_1804x1820.png)](https://substackcdn.com/image/fetch/$s_!xNU1!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F47afb112-1e46-42bf-80b3-b7b11d0a55eb_1804x1820.png)
+
+图 1：该图展示了 LLM 如何一次生成一个 token。从提示“Time”开始，模型生成下一个 token“flies”。在下一步中，整个序列“Time flies”被重新处理，以生成 token“fast”。
+
+注意，LLM 生成的文本输出中存在一些冗余，如下图中高亮所示：
+
+[![Image 2](https://substackcdn.com/image/fetch/$s_!As0Z!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fda5df468-5b21-4b1f-9ccb-b144dfb2a293_617x618.png)](https://substackcdn.com/image/fetch/$s_!As0Z!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fda5df468-5b21-4b1f-9ccb-b144dfb2a293_617x618.png)
+
+图 2：该图高亮显示了 LLM 在每个生成步骤中都必须重新处理的重复上下文（“Time flies”）。由于 LLM 没有缓存中间的键/值状态，每生成一个新 token（例如“fast”），它都要重新编码整个序列。
+
+在实现 LLM 文本生成函数时，我们通常只使用每一步最后生成的那个 token。然而，上面的可视化在概念层面上揭示了主要的低效之处之一。如果我们放大看注意力机制本身，这种低效（或者说冗余）会变得更加清楚。（如果你对注意力机制感兴趣，可以阅读我的书[《从零构建大语言模型》（Build a Large Language Model (From Scratch)）](https://amzn.to/4fqvn0D)第 3 章，或者我的文章[《理解并编写 LLM 中的自注意力、多头注意力、因果注意力和交叉注意力》](https://magazine.sebastianraschka.com/p/understanding-and-coding-self-attention)。）
+
+下图展示了 LLM 核心的注意力机制计算的一个片段。这里，输入 token（“Time”和“flies”）被编码为 3 维向量（实际上这些向量要大得多，但那样就很难把它们放进一张小图里）。矩阵 _W_ 是注意力机制的权重矩阵，用于把这些输入转换为键、值和查询向量。
+
+下图展示了底层注意力分数计算的一个片段，其中键向量和值向量被高亮显示：
+
+[![Image 3](https://substackcdn.com/image/fetch/$s_!8eFC!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8b7f30c1-ebb2-4bb0-8cf9-fd89f33825b2_1984x1226.png)](https://substackcdn.com/image/fetch/$s_!8eFC!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8b7f30c1-ebb2-4bb0-8cf9-fd89f33825b2_1984x1226.png)
+
+图 3：该图展示了在注意力计算过程中，LLM 如何从 token 嵌入中得到键（k）向量和值（v）向量。每个输入 token（例如“Time”和“flies”）都通过学习得到的矩阵 W_k 和 W_v 进行投影，以获得对应的键向量和值向量。
+
+如前所述，LLM 一次生成一个词（或 token）。假设 LLM 生成了词“fast”，于是下一轮的提示变成了“Time flies fast”。如下图所示：
+
+[![Image 4](https://substackcdn.com/image/fetch/$s_!Ewqz!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0cd206dd-5685-459a-bdc6-45858e0f18f7_2706x2580.png)](https://substackcdn.com/image/fetch/$s_!Ewqz!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0cd206dd-5685-459a-bdc6-45858e0f18f7_2706x2580.png)
+
+图 4：该图展示了 LLM 如何在每个生成步骤中，为之前已经见过的 token（“Time”和“flies”）重新计算键向量和值向量。在生成第三个 token（“fast”）时，模型再次重新计算了同样的 k(1)/v(1) 和 k(2)/v(2) 向量，而不是复用它们。这种重复计算凸显了在自回归解码中不使用 KV 缓存的低效。
+
+通过比较前两张图可以看到，前两个 token 的键向量和值向量完全相同，在每一轮生成下一个 token 时都重新计算它们是一种浪费。
+
+KV 缓存的思路，就是实现一种缓存机制，把之前生成的键向量和值向量存储起来以供复用，从而帮助我们避免这些不必要的重复计算。
+
+在上一节讲完基本概念之后，在看具体的代码实现之前，我们再深入一些细节。如果我们对“Time flies fast”进行一次*不使用* KV 缓存的文本生成，可以这样理解：
+
+![Image 5](https://substackcdn.com/image/fetch/$s_!z-sX!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F5fdd4b41-96e6-40c2-baf3-aedfeee8d1de_741x194.png)
+
+注意其中的冗余：token“Time”和“flies”在每个新的生成步骤中都被重新计算。KV 缓存通过存储并复用之前计算出的键向量和值向量，解决了这种低效：
+
+1.   最初，模型为输入 token 计算并缓存键向量和值向量。
+
+2.   对于每个新生成的 token，模型只计算该 token 的键向量和值向量。
+
+3.   之前计算出的向量从缓存中取出，以避免重复计算。
+
+下表总结了各个计算和缓存步骤及其状态：
+
+![Image 6](https://substackcdn.com/image/fetch/$s_!qQBU!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8f20643e-0942-4b5f-98ec-051d030d127a_736x202.png)
+
+这样做的好处是，`"Time"` 只计算一次、复用两次，`"flies"` 只计算一次、复用一次。（为了简单起见，这是一个很短的文本示例，但应该可以直观地看出，文本越长，我们能复用的已计算键和值就越多，生成速度也就提升得越多。）
+
+下图并排展示了使用和不使用 KV 缓存时的第 3 个生成步骤。
+
+[![Image 7](https://substackcdn.com/image/fetch/$s_!f5RK!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fea5b59d9-6c1b-4aee-8f65-0a85523e9807_3659x1677.png)](https://substackcdn.com/image/fetch/$s_!f5RK!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fea5b59d9-6c1b-4aee-8f65-0a85523e9807_3659x1677.png)
+
+图 5：比较使用和不使用 KV 缓存的文本生成（第 1/2 部分）。不使用缓存。每个 token 步骤都要重新计算键向量和值向量，导致冗余运算。
+
+[![Image 8](https://substackcdn.com/image/fetch/$s_!a_ei!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F711178d4-cb9c-45dc-bd0c-b8d9f476329c_3659x2622.png)](https://substackcdn.com/image/fetch/$s_!a_ei!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F711178d4-cb9c-45dc-bd0c-b8d9f476329c_3659x2622.png)
+
+图 6：比较使用和不使用 KV 缓存的文本生成（第 2/2 部分）。使用 KV 缓存。之前计算出的键和值从 KV 缓存中取出，避免重复计算，从而加快生成速度。
+
+所以，如果我们想在代码中实现 KV 缓存，要做的就是照常计算键和值，然后把它们存起来，以便在下一轮取用。下一节用一个具体的代码示例来说明这一点。
+
+实现 KV 缓存的方法有很多，其主要思路是：在每个生成步骤中，我们只为新生成的 token 计算键张量和值张量。
+
+我选择了一种强调代码可读性的简单实现。我认为最简单的方式就是直接浏览代码改动，看看它是怎么实现的。
+
+我在 GitHub 上分享了两个文件，它们都是自包含的 Python 脚本，从零实现了带 KV 缓存和不带 KV 缓存的 LLM：
+
+1.   [gpt_ch04.py](https://github.com/rasbt/LLMs-from-scratch/blob/main/ch04/03_kv-cache/gpt_ch04.py)：取自我的《从零构建大语言模型》一书第 3 章和第 4 章的自包含代码，用于实现 LLM 并运行简单的文本生成函数
+
+2.   [gpt_with_kv_cache.py](https://github.com/rasbt/LLMs-from-scratch/blob/main/ch04/03_kv-cache/gpt_with_kv_cache.py)：与上面相同，但做了实现 KV 缓存所需的改动。
+
+要阅读与 KV 缓存相关的代码修改，你可以：
+
+a. 打开 `gpt_with_kv_cache.py` 文件，留意标记新改动的 `# NEW` 部分：
+
+[![Image 9](https://substackcdn.com/image/fetch/$s_!KVf4!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3338a3b0-c3ad-4d37-9d3f-15db18db51ff_982x881.png)](https://substackcdn.com/image/fetch/$s_!KVf4!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3338a3b0-c3ad-4d37-9d3f-15db18db51ff_982x881.png)
+
+b. 用你喜欢的文件比对工具查看这两个代码文件，比较其中的改动：
+
+[![Image 10](https://substackcdn.com/image/fetch/$s_!qPKJ!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccfd3b14-df6e-4988-b986-851b4b207eae_1468x861.png)](https://substackcdn.com/image/fetch/$s_!qPKJ!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fccfd3b14-df6e-4988-b986-851b4b207eae_1468x861.png)
+
+此外，为了总结实现细节，下面几个小节有一个简短的讲解。
+
+### 1. 注册缓存缓冲区
+
+在 `MultiHeadAttention` 的构造函数中，我们添加两个缓冲区 `cache_k` 和 `cache_v`，它们将保存跨步骤拼接起来的键和值：
+
+```
+self.register_buffer("cache_k", None)
+self.register_buffer("cache_v", None)
+```
+
+（如果你想了解更多关于缓冲区的知识，我做过一个 YouTube 视频：[理解 PyTorch 缓冲区（Understanding PyTorch Buffers）](https://youtu.be/PetlIokI9Ao)。）
+
+### 2. 带 use_cache 标志的前向传播
+
+接下来，我们扩展 `MultiHeadAttention` 类的 `forward` 方法，让它接受一个 `use_cache` 参数：
+
+```
+def forward(self, x, use_cache=False):
+    b, num_tokens, d_in = x.shape
+​
+    keys_new = self.W_key(x)  # 形状：(b, num_tokens, d_out)
+    values_new = self.W_value(x)
+    queries = self.W_query(x)
+    #...
+​
+    if use_cache:
+        if self.cache_k is None:
+            self.cache_k, self.cache_v = keys_new, values_new
+        else:
+            self.cache_k = torch.cat([self.cache_k, keys_new], dim=1)
+            self.cache_v = torch.cat([self.cache_v, values_new], dim=1)
+        keys, values = self.cache_k, self.cache_v
+    else:
+        keys, values = keys_new, values_new
+```
+
+这里对键和值的存储和取用，实现了 KV 缓存的核心思想。
+
+**存储**
+
+具体来说，在通过 `if self.cache_k is None: ...` 初始化缓存之后，我们分别通过 `self.cache_k = torch.cat(...)` 和 `self.cache_v = torch.cat(...)` 把新生成的键和值加入缓存。
+
+**取用**
+
+然后，`keys, values = self.cache_k, self.cache_v` 从缓存中取出存储的值和键。
+
+基本上就是这样：这就是 KV 缓存核心的存储与取用机制。接下来的第 3 和第 4 小节只是处理一些次要的实现细节。
+
+### 3. 清空缓存
+
+在生成文本时，我们必须记得在两次独立的文本生成调用之间重置键和值两个缓冲区。否则，新提示的查询会关注到上一个序列遗留下来的过时键，导致模型依赖无关的上下文，产生不连贯的输出。为了防止这种情况，我们给 `MultiHeadAttention` 类添加一个 `reset_kv_cache` 方法，以便之后在文本生成调用之间使用：
+
+```
+def reset_cache(self):
+    self.cache_k, self.cache_v = None, None
+```
+
+### 4. 在完整模型中传播 use_cache
+
+`MultiHeadAttention` 类的改动完成后，我们现在来修改 `GPTModel` 类。首先，我们在构造函数中加入对 token 索引的位置追踪：
+
+`self.current_pos = 0`
+这是一个简单的计数器，记录模型在一次增量生成会话中已经缓存了多少个 token。
+
+然后，我们把原来一行代码的 block 调用替换为一个显式循环，把 `use_cache` 传入每个 Transformer 块：
+
+```
+def forward(self, in_idx, use_cache=False):
+    # ...
+ 
+    if use_cache:
+        pos_ids = torch.arange(
+            self.current_pos, self.current_pos + seq_len,            
+            device=in_idx.device, dtype=torch.long
+        )
+        self.current_pos += seq_len
+    else:
+        pos_ids = torch.arange(
+            0, seq_len, device=in_idx.device, dtype=torch.long
+        )
+    
+    pos_embeds = self.pos_emb(pos_ids).unsqueeze(0)
+    x = tok_embeds + pos_embeds
+    # ...
+    for blk in self.trf_blocks:
+        x = blk(x, use_cache=use_cache)
+```
+
+如果我们设置 `use_cache=True`，上面的代码会从 `self.current_pos` 开始，数出 `seq_len` 步。然后把计数器往前推，让下一次解码调用从上次停下的地方继续。
+
+追踪 `self.current_pos` 的原因是，新的查询必须紧接在已经存储的键和值之后对齐。如果不使用计数器，每个新步骤都会再次从位置 0 开始，模型就会把新 token 当作与之前的 token 重叠。（另一种做法是通过 `offset = block.att.cache_k.shape[1]` 来追踪。）
+
+上面的改动还需要对 `TransformerBlock` 类做一个小修改，让它接受 `use_cache` 参数：
+
+```
+def forward(self, x, use_cache=False):
+    # ...
+    self.att(x, use_cache=use_cache)
+```
+
+最后，为了方便，我们给 `GPTModel` 添加一个模型级别的重置方法，一次性清空所有块的缓存：
+
+```
+def reset_kv_cache(self):
+    for blk in self.trf_blocks:
+        blk.att.reset_cache()
+    self.current_pos = 0
+```
+
+### 5. 在生成中使用缓存
+
+完成对 `GPTModel`、`TransformerBlock` 和 `MultiHeadAttention` 的修改后，下面就是我们在一个简单的文本生成函数中使用 KV 缓存的方式：
+
+```
+def generate_text_simple_cached(
+        model, idx, max_new_tokens, use_cache=True
+    ):
+    model.eval()
+​
+    ctx_len = model.pos_emb.num_embeddings  # 最大支持长度，例如 1024
+    if use_cache:
+        # 用完整提示初始化缓存
+        model.reset_kv_cache()
+        with torch.no_grad():
+            logits = model(idx[:, -ctx_len:], use_cache=True)
+​
+        for _ in range(max_new_tokens):
+            # a) 选出对数概率最高的 token 
+            next_idx = logits[:, -1].argmax(dim=-1, keepdim=True)
+            # b) 把它追加到当前序列中
+            idx = torch.cat([idx, next_idx], dim=1)
+            # c) 只把新 token 输入模型
+            with torch.no_grad():
+                logits = model(next_idx, use_cache=True)
+    else:
+        for _ in range(max_new_tokens):
+            with torch.no_grad():
+                logits = model(idx[:, -ctx_len:], use_cache=False)
+            next_idx = logits[:, -1].argmax(dim=-1, keepdim=True)
+            idx = torch.cat([idx, next_idx], dim=1)
+​
+    return idx
+```
+
+注意，在 c) 中我们通过 `logits = model(next_idx, use_cache=True)` 只把新 token 输入模型。如果不使用缓存，我们就要把整个输入 `logits = model(idx[:, -ctx_len:], use_cache=False)` 输入模型，因为它没有存储下来可复用的键和值。
+
+## 简单的性能比较
+
+在概念层面讲完 KV 缓存之后，最大的问题是它在一个小例子上的实际表现如何。要试一试这个实现，我们可以把前面提到的两个代码文件作为 Python 脚本运行，它们会运行一个 1.24 亿参数的小型 LLM，生成 200 个新 token（以 4 个 token 的提示“Hello, I am”作为开头）：
+
+```
+pip install -r https://raw.githubusercontent.com/rasbt/LLMs-from-scratch/refs/heads/main/requirements.txt
+​
+python gpt_ch04.py
+​
+python gpt_with_kv_cache.py
+```
+
+在搭载 M4 芯片的 Mac Mini（CPU）上，结果如下：
+
+![Image 11](https://substackcdn.com/image/fetch/$s_!LWIV!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8d75a600-22e3-4edf-b642-44700dc7a2db_743x160.png)
+
+可以看到，即使是 1.24 亿参数的小模型和 200 个 token 的短序列，我们也已经获得了约 5 倍的提速。（注意，这个实现是为代码可读性优化的，而不是为 CUDA 或 MPS 的运行速度优化的；后者需要预先分配张量，而不是反复重建和拼接张量。）
+
+**注意：**在两种情况下，模型生成的都是“胡言乱语”，也就是像这样的文本：
+
+> Output text: Hello, I am Featureiman Byeswickattribute argue logger Normandy Compton analogous bore ITVEGIN ministriesysics Kle functional recountrictionchangingVirgin embarrassedgl ...
+
+这是因为我们还没有训练模型。下一章会训练模型，你可以在训练好的模型上使用 KV 缓存（不过，KV 缓存只用于推理阶段）来生成连贯的文本。这里我们使用未训练的模型，是为了让代码保持（更）简单。
+
+不过更重要的是，`gpt_ch04.py` 和 `gpt_with_kv_cache.py` 两个实现生成的文本完全相同。这告诉我们 KV 缓存的实现是正确的——索引上很容易犯错，从而导致结果出现分歧。
+
+## KV 缓存的优缺点
+
+随着序列长度增加，KV 缓存的优点和缺点会在以下方面变得更加明显：
+
+*   [优点] **计算效率提高**：不使用缓存时，第 _t_ 步的注意力必须把新的查询与之前的 _t_ 个键进行比较，因此累计工作量按平方增长，O(n²)。使用缓存时，每个键和值只计算一次然后复用，使每步的总复杂度降为线性，O(n)。
+
+*   [缺点] **内存使用线性增长**：每个新 token 都会追加到 KV 缓存中。对于长序列和更大的 LLM，累积的 KV 缓存会越来越大，可能消耗大量甚至难以承受的（GPU）内存。作为一种变通办法，我们可以截断 KV 缓存，但这会进一步增加复杂度（不过同样，在部署 LLM 时这很可能是值得的）。
+
+## 优化 KV 缓存实现
+
+虽然我上面这个概念性的 KV 缓存实现有助于理解，并且主要面向代码可读性和教学目的，但要在真实场景中部署它（尤其是对于更大的模型和更长的序列），还需要更仔细的优化。
+
+### 扩展缓存时的常见问题
+
+*   **内存碎片和反复分配**：如前所示，通过 `torch.cat` 不断拼接张量，会因为频繁的内存分配和重新分配而导致性能瓶颈。
+
+*   **内存使用线性增长**：如果处理不当，对于非常长的序列，KV 缓存的大小会变得不切实际。
+
+#### 技巧 1：预分配内存
+
+与其反复拼接张量，我们可以根据预期的最大序列长度预先分配一个足够大的张量。这能保证内存使用稳定，并减少开销。用伪代码表示，大致如下：
+
+```
+# 为键和值预分配内存的示例
+max_seq_len = 1024  # 预期的最大序列长度
+cache_k = torch.zeros(
+    (batch_size, num_heads, max_seq_len, head_dim), device=device
+)
+cache_v = torch.zeros(
+    (batch_size, num_heads, max_seq_len, head_dim), device=device
+)
+```
+
+在推理过程中，我们只需写入这些预分配张量的切片即可。
+
+#### 技巧 2：通过滑动窗口截断缓存
+
+为了避免撑爆 GPU 内存，我们可以实现一种带动态截断的滑动窗口方法。通过滑动窗口，我们在缓存中只保留最后 `window_size` 个 token：
+
+```
+# 滑动窗口缓存实现
+window_size = 512
+cache_k = cache_k[:, :, -window_size:, :]
+cache_v = cache_v[:, :, -window_size:, :]
+```
+
+#### 实践中的优化
+
+你可以在 [gpt_with_kv_cache_optimized.py](https://github.com/rasbt/LLMs-from-scratch/blob/main/ch04/03_kv-cache/gpt_with_kv_cache_optimized.py) 文件中找到这些优化。
+
+在搭载 M4 芯片的 Mac Mini（CPU）上，生成 200 个 token，并把窗口大小设为等于 LLM 的上下文长度（以保证结果相同，从而进行公平比较），代码运行时间对比如下：
+
+![Image 12](https://substackcdn.com/image/fetch/$s_!9fY3!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F14878ff2-28f2-496f-a5ad-03aa2865640c_742x197.png)
+
+遗憾的是，在 CUDA 设备上速度优势消失了，因为这是一个很小的模型，对这个小模型来说，设备之间的数据传输和通信开销超过了 KV 缓存带来的好处。
+
+## 结论
+
+虽然缓存引入了额外的复杂度和内存方面的考量，但显著的效率提升通常足以抵消这些代价，尤其是在生产环境中。
+
+请记住，虽然我在这里把代码的清晰和可读性放在了效率之前，但要点在于，实际的实现往往需要深思熟虑的优化，比如预分配内存，或者应用滑动窗口缓存来有效控制内存增长。从这个意义上说，我希望这篇文章能对你有所帮助。
+
+欢迎尝试这些技术，祝编码愉快！
+
+## 补充：为 Qwen3 和 Llama 3 加入 KV 缓存
+
+在为我从零实现的 Qwen3（0.6B）和 Llama 3（1B）加入 KV 缓存之后，我做了额外的实验，比较使用和不使用 KV 缓存时的模型运行时间。注意，我选择的是上面提到的 torch.cat 方法，而不是像“优化 KV 缓存实现”一节所述那样预先分配 KV 缓存张量。由于 Llama 3 和 Qwen3 支持的上下文长度非常大（分别为 131k 和 41k 个 token），预分配的张量会额外消耗约 8 GB 内存，代价相当高。
+
+此外，由于我使用的是更省内存、即时创建张量的 `torch.cat` 方法，我把 KV 缓存移到了模型外部，以便用 `torch.compile` 编译模型，提升计算效率。
+
+代码可以在这里找到：
+
+*   [qwen3.py](https://github.com/rasbt/LLMs-from-scratch/blob/main/pkg/llms_from_scratch/qwen3.py) | [README](https://github.com/rasbt/LLMs-from-scratch/tree/main/ch05/11_qwen3)
+
+*   [llama3.py](https://github.com/rasbt/LLMs-from-scratch/blob/main/pkg/llms_from_scratch/llama3.py) | [README](https://github.com/rasbt/LLMs-from-scratch/tree/main/ch05/07_gpt_to_llama)
+
+性能结果如下所示。
+
+[![Image 13](https://substackcdn.com/image/fetch/$s_!-pE8!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe5d3a0bf-4a1a-439a-a83c-9046e1a57515_931x616.png)](https://substackcdn.com/image/fetch/$s_!-pE8!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe5d3a0bf-4a1a-439a-a83c-9046e1a57515_931x616.png)
+
+[![Image 14](https://substackcdn.com/image/fetch/$s_!O7SH!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F49ce3862-820f-4337-91b7-6b4603ec8f86_876x598.png)](https://substackcdn.com/image/fetch/$s_!O7SH!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F49ce3862-820f-4337-91b7-6b4603ec8f86_876x598.png)
+
+可以看到，在 CPU 上，KV 缓存带来了最显著的提速。而编译又进一步提升了性能。然而，在 GPU 上，最佳性能是由普通的编译模型取得的，这很可能是因为我们没有在 GPU 上预分配张量，而且这些模型相对较小。
+
+_这份刊物是我个人热爱的项目。如果你想支持我这个独立研究者，请考虑购买我的书[《从零构建大语言模型》（Build a Large Language Model (From Scratch)）](https://amzn.to/4fqvn0D)，或者订阅[付费会员](https://magazine.sebastianraschka.com/subscribe)。_
+
+_如果你读过这本书并且有几分钟空闲，我会非常感激你写一篇[简短的书评](https://www.amazon.com/Build-Large-Language-Model-Scratch/dp/1633437167)。这对我们作者帮助很大！_
+
+**你的支持意义重大！谢谢！**

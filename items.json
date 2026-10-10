@@ -1,5 +1,531 @@
 [
  {
+  "id": "g_Pf6R95SiI",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "余凯口述30年史（视频）：世界不止刀光剑影，是一部人来人往的江湖故事",
+  "link": "https://www.youtube.com/watch?v=g_Pf6R95SiI",
+  "date": "2026-10-11T05:24",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/g_Pf6R95SiI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/g_Pf6R95SiI.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "RUfeYhsundg",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Let’s Dive into Papers Together 干货！开源一段论文探索之旅",
+  "link": "https://www.youtube.com/watch?v=RUfeYhsundg",
+  "date": "2026-10-11T05:19",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/RUfeYhsundg.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/RUfeYhsundg.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "91fmhAnECVc",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Kimi Founder Yang Zhilin K2, Agentic LLMs, Brains in Vats, and the Beginning of Infinity",
+  "link": "https://www.youtube.com/watch?v=91fmhAnECVc",
+  "date": "2026-10-11T05:18",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/91fmhAnECVc.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/91fmhAnECVc.transcript.txt"
+   }
+  ],
+  "title_zh": "Kimi创始人Yang Zhilin K2 ， Agentic LLM ，大桶中的大脑，以及无限的开始"
+ },
+ {
+  "id": "gWmyu3x5rXY",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Yin Qi On Chairing StepFun, the Seduction of Intelligence, and a Brutal Long-Horizon Game",
+  "link": "https://www.youtube.com/watch?v=gWmyu3x5rXY",
+  "date": "2026-10-11T05:16",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/gWmyu3x5rXY.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/gWmyu3x5rXY.transcript.txt"
+   }
+  ],
+  "title_zh": "尹启主持StepFun ，智力的诱惑，残酷的长视野游戏"
+ },
+ {
+  "id": "HvMANU1yc0U",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Li Auto Founder Li Xiang MoE, Liang Wenfeng, VLA, Energy, Memory, Intimacy & Human Intelligence",
+  "link": "https://www.youtube.com/watch?v=HvMANU1yc0U",
+  "date": "2026-10-11T05:11",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/HvMANU1yc0U.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/HvMANU1yc0U.transcript.txt"
+   }
+  ],
+  "title_zh": "Li Auto创始人Li Xiang MoE、Liang Wenfeng、VLA、Energy、Memory、Intimacy & Human Intelligence"
+ },
+ {
+  "id": "4ZWJj0D_FSA",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "【李想2024唯一深度对谈（纯享版）】张小珺对话李想",
+  "link": "https://www.youtube.com/watch?v=4ZWJj0D_FSA",
+  "date": "2026-10-11T05:11",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/4ZWJj0D_FSA.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/4ZWJj0D_FSA.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "2Qs4MfEzCO0",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "【独家对话奔驰全球CEO康林松】转型之中的139岁奔驰",
+  "link": "https://www.youtube.com/watch?v=2Qs4MfEzCO0",
+  "date": "2026-10-11T05:10",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2Qs4MfEzCO0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2Qs4MfEzCO0.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "UqMtkgQe-kI",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Manus' Final Interview Before the Acquisition Oh, the Surreal Odyssey of 2025…",
+  "link": "https://www.youtube.com/watch?v=UqMtkgQe-kI",
+  "date": "2026-10-11T05:01",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/UqMtkgQe-kI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/UqMtkgQe-kI.transcript.txt"
+   }
+  ],
+  "title_zh": "Manus在收购前的最后一次采访哦， 2025年的超现实奥德赛……"
+ },
+ {
+  "id": "-sowOoOeQz4",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Xiaohu Zhu Realism, the AI Feast and Its Bubbles, and a Fifteen-Degree Shift from Consensus",
+  "link": "https://www.youtube.com/watch?v=-sowOoOeQz4",
+  "date": "2026-10-11T05:01",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/-sowOoOeQz4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/-sowOoOeQz4.transcript.txt"
+   }
+  ],
+  "title_zh": "朱小虎现实主义，人工智能盛宴及其泡沫，与共识的十五度转变"
+ },
+ {
+  "id": "I-A_yaUXK2E",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "与SGLang聊聊DeepSeek V4",
+  "link": "https://www.youtube.com/watch?v=I-A_yaUXK2E",
+  "date": "2026-10-11T04:48",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/I-A_yaUXK2E.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/I-A_yaUXK2E.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "2nVmKcITs7k",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "social life, success, and sleep",
+  "link": "https://youtu.be/2nVmKcITs7k",
+  "date": "2026-10-11T04:42",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2nVmKcITs7k.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2nVmKcITs7k.transcript.txt"
+   }
+  ],
+  "title_zh": "社交生活、成功和睡眠"
+ },
+ {
+  "id": "QcdpeFbuy8o",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "The One Thing a Legendary PM Optimized For Felicis, Peter Deng",
+  "link": "https://www.youtube.com/watch?v=QcdpeFbuy8o",
+  "date": "2026-10-11T04:37",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/QcdpeFbuy8o.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/QcdpeFbuy8o.transcript.txt"
+   }
+  ],
+  "title_zh": "传奇PM为Felicis优化的一件事， Peter Deng"
+ },
+ {
+  "id": "rIwgZWzUKm8",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "A 7-hour marathon interview with Saining Xie World Models, AMI Labs, Yann LeCun, Fei-Fei Li, and 42",
+  "link": "https://www.youtube.com/watch?v=rIwgZWzUKm8",
+  "date": "2026-10-11T04:36",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/rIwgZWzUKm8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/rIwgZWzUKm8.transcript.txt"
+   }
+  ],
+  "title_zh": "Saining Xie World Models、AMI Labs、Yann LeCun、Fei-Fei Li和42的7小时马拉松访谈"
+ },
+ {
+  "id": "kBsqirnWTpI",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Anker Steven Yang Consumer Electronics Death & birth, The Third Category, Product Philosophy",
+  "link": "https://www.youtube.com/watch?v=kBsqirnWTpI",
+  "date": "2026-10-11T04:35",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/kBsqirnWTpI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/kBsqirnWTpI.transcript.txt"
+   }
+  ],
+  "title_zh": "Anker Steven Yang消费电子生死，第三类，产品理念"
+ },
+ {
+  "id": "chWNkwHHSYg",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "The Human Cost of Convenience Ex-VP @Yahoo Srinija Srinivasan",
+  "link": "https://youtu.be/chWNkwHHSYg",
+  "date": "2026-10-11T04:35",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/chWNkwHHSYg.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/chWNkwHHSYg.transcript.txt"
+   }
+  ],
+  "title_zh": "便利的人力成本前副总裁@ Yahoo Srinija Srinivasan"
+ },
+ {
+  "id": "E7qB_p1D0Xk",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Zeng Ming The Brutal Truth, Companies That Will Disappear, Why “Excellent” ≠ “Great”",
+  "link": "https://www.youtube.com/watch?v=E7qB_p1D0Xk",
+  "date": "2026-10-11T04:35",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/E7qB_p1D0Xk.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/E7qB_p1D0Xk.transcript.txt"
+   }
+  ],
+  "title_zh": "曾明残酷的真相，将要消失的公司，为什么“优秀” ≠ “伟大”"
+ },
+ {
+  "id": "c-ZVu-Cr1FQ",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "GALAXEA Founder Gao Jiyang Catfish Effect, Zeng Guofan, Waymo vs. Momenta, and Why Xu Huazhe Left",
+  "link": "https://www.youtube.com/watch?v=c-ZVu-Cr1FQ",
+  "date": "2026-10-11T04:34",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/c-ZVu-Cr1FQ.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/c-ZVu-Cr1FQ.transcript.txt"
+   }
+  ],
+  "title_zh": "GALAXEA创始人高继阳鲶鱼效应、曾国帆、Waymo vs. Momenta ，以及徐华哲为何离开"
+ },
+ {
+  "id": "zawGTDLtWFY",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "NVIDIA VP Ming-Yu Liu Cosmos 3, World Models, Kung Fu, What Jensen Taught Me",
+  "link": "https://www.youtube.com/watch?v=zawGTDLtWFY",
+  "date": "2026-10-11T04:33",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/zawGTDLtWFY.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/zawGTDLtWFY.transcript.txt"
+   }
+  ],
+  "title_zh": "NVIDIA副总裁Ming-Yu Liu Cosmos 3 ，世界模特，功夫， Jensen教我的东西"
+ },
+ {
+  "id": "a93FT2340c0",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Oral History of SpaceX’s Journey Space and AI, the Prelude to Human Civilization’s Expansion",
+  "link": "https://www.youtube.com/watch?v=a93FT2340c0",
+  "date": "2026-10-11T04:33",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/a93FT2340c0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/a93FT2340c0.transcript.txt"
+   }
+  ],
+  "title_zh": "SpaceX太空之旅和人工智能的口述历史，人类文明扩张的前奏"
+ },
+ {
+  "id": "V9eI-t3TApE",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Luo Fuli OpenClaw, Agent Frameworks — The AI Paradigm Has Already Changed Dramatically!",
+  "link": "https://www.youtube.com/watch?v=V9eI-t3TApE",
+  "date": "2026-10-11T04:24",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/V9eI-t3TApE.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/V9eI-t3TApE.transcript.txt"
+   }
+  ],
+  "title_zh": "Luo Fuli OpenClaw ， Agent框架— AI范式已经发生了巨大变化！"
+ },
+ {
+  "id": "4hi93cDfVls",
+  "kind": "summary",
+  "source": "十字路口",
+  "title": "【十字路口】高手怎么用 AI？——停止用 ChatGPT 吧｜Koji 对谈课代表立正（上）【视频播客】",
+  "link": "https://youtu.be/4hi93cDfVls",
+  "date": "2026-10-11T04:18",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/4hi93cDfVls.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/4hi93cDfVls.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "moXqSeVQ1Fk",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "How to Turn ADHD Into a Genius-Level Advantage",
+  "link": "https://www.youtube.com/watch?v=moXqSeVQ1Fk",
+  "date": "2026-10-11T04:16",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/moXqSeVQ1Fk.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/moXqSeVQ1Fk.transcript.txt"
+   }
+  ],
+  "title_zh": "如何将多动症转化为天才级的优势"
+ },
+ {
+  "id": "YM4If6YHN3s",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "steve jobs most innovative speech",
+  "link": "https://www.youtube.com/watch?v=YM4If6YHN3s",
+  "date": "2026-10-11T04:15",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/YM4If6YHN3s.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/YM4If6YHN3s.transcript.txt"
+   }
+  ],
+  "title_zh": "steve Jobs最具创新性的演讲"
+ },
+ {
+  "id": "Mph1H5u3yeA",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Why I’m Switching From Python to Docker Agent for AI Agents",
+  "link": "https://youtu.be/Mph1H5u3yeA",
+  "date": "2026-10-11T04:03",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/Mph1H5u3yeA.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/Mph1H5u3yeA.transcript.txt"
+   }
+  ],
+  "title_zh": "为什么要从Python切换到Docker Agent for AI Agents"
+ },
+ {
+  "id": "qjPH9njnaVU",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Pavel Durov Telegram, Freedom, Censorship, Money, Power & Human Nature Lex Fridman Podcast #482",
+  "link": "https://youtu.be/qjPH9njnaVU",
+  "date": "2026-10-11T04:01",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/qjPH9njnaVU.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/qjPH9njnaVU.transcript.txt"
+   }
+  ],
+  "title_zh": "Pavel Durov电报，自由、审查、金钱、权力和人性Lex Fridman播客# 482"
+ },
+ {
+  "id": "VAuDJ3yrhDM",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "“I’ve seen how governments suppress freedom” Telegram founder Pavel Durov at Oslo Freedom Forum",
+  "link": "https://youtu.be/VAuDJ3yrhDM",
+  "date": "2026-10-11T04:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/VAuDJ3yrhDM.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/VAuDJ3yrhDM.transcript.txt"
+   }
+  ],
+  "title_zh": "“我见过政府如何压制自由” ， Telegram创始人帕维尔·杜罗夫在奥斯陆自由论坛上"
+ },
+ {
+  "id": "sJ4VJWycX9M",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Alexandr Wang “This is a Once-in-a-Civilization Opportunity”",
+  "link": "https://youtu.be/sJ4VJWycX9M",
+  "date": "2026-10-11T03:58",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/sJ4VJWycX9M.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/sJ4VJWycX9M.transcript.txt"
+   }
+  ],
+  "title_zh": "Alexandr Wang “这是一个千载难逢的机会”"
+ },
+ {
+  "id": "ifniRXf467I",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "You Kaichao vLLM, Open-Source Infra, Model Co-Design & Journey from Community to Startup",
+  "link": "https://youtu.be/ifniRXf467I",
+  "date": "2026-10-11T03:58",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/ifniRXf467I.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/ifniRXf467I.transcript.txt"
+   }
+  ],
+  "title_zh": "You Kaichao vLLM ，开源基础设施，模型共同设计和从社区到创业的旅程"
+ },
+ {
   "id": "hS9BOev_u5U",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -950,6 +1476,10 @@
    {
     "label": "总结",
     "url": "txt/cur-dafe9a2bbb83.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-dafe9a2bbb83.transcript.txt"
    }
   ],
   "title_zh": "重构的经济效益"
@@ -1124,6 +1654,28 @@
   "title_zh": "谨慎地扩展法律"
  },
  {
+  "id": "cur-924729b6849e",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Daily",
+  "title": "Biome and the Future of JavaScript Tooling",
+  "link": "https://softwareengineeringdaily.com/podcasts/biome-and-the-future-of-javascript-tooling/",
+  "date": "2026-06-18",
+  "audio_url": "https://media.transistor.fm/609a0c3a/055770ef.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-924729b6849e.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-924729b6849e.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-924729b6849e.m4a",
+  "title_zh": "生物群落和JavaScript工具的未来"
+ },
+ {
   "id": "cur-2a8737247b26",
   "kind": "curated",
   "type": "article",
@@ -1200,6 +1752,10 @@
    {
     "label": "总结",
     "url": "txt/cur-d0c7d5449da9.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d0c7d5449da9.transcript.txt"
    }
   ],
   "title_zh": "编码代理的组成部分"
@@ -1619,6 +2175,27 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f860d82c521a.m4a"
  },
  {
+  "id": "cur-32267b4e2347",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "The Big LLM Architecture Comparison",
+  "link": "https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison",
+  "date": "2025-07-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-32267b4e2347.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-32267b4e2347.transcript.txt"
+   }
+  ],
+  "title_zh": "大型法学硕士体系结构比较"
+ },
+ {
   "id": "cur-c9d8040bdb31",
   "kind": "curated",
   "type": "article",
@@ -1631,6 +2208,10 @@
    {
     "label": "总结",
     "url": "txt/cur-c9d8040bdb31.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c9d8040bdb31.transcript.txt"
    }
   ],
   "title_zh": "从头开始理解和编码LLM中的KV缓存"
@@ -1670,6 +2251,10 @@
    {
     "label": "总结",
     "url": "txt/cur-c4fd1b473658.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c4fd1b473658.transcript.txt"
    }
   ],
   "title_zh": "我的人工智能持怀疑态度的朋友都疯了"
@@ -1715,6 +2300,28 @@
    }
   ],
   "title_zh": "代理网和原罪"
+ },
+ {
+  "id": "cur-0548e04113fe",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Practical AI",
+  "title": "Model Context Protocol Deep Dive",
+  "link": "https://share.transistor.fm/s/d7a0d796",
+  "date": "2025-05-08",
+  "audio_url": "https://pscrb.fm/rss/p/dts.podtrac.com/redirect.mp3/media.transistor.fm/d7a0d796/0e8b4946.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0548e04113fe.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0548e04113fe.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0548e04113fe.m4a",
+  "title_zh": "模型上下文协议深入探讨"
  },
  {
   "id": "cur-93eae5222109",
@@ -1780,6 +2387,28 @@
   "title_zh": "“使用客户”做什么？"
  },
  {
+  "id": "cur-3662739770cb",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Syntax",
+  "title": "895: React Server Components: Where are we at?",
+  "link": "https://syntax.fm/895",
+  "date": "2025-04-21",
+  "audio_url": "https://traffic.megaphone.fm/FSI1177945972.mp3?updated=1749757414",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3662739770cb.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3662739770cb.transcript.txt"
+   }
+  ],
+  "title_zh": "895 ： React服务器组件：我们在哪里？",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3662739770cb.m4a"
+ },
+ {
   "id": "cur-7b05b9b64a58",
   "kind": "curated",
   "type": "article",
@@ -1799,6 +2428,26 @@
    }
   ],
   "title_zh": "LLM推理的强化学习现状"
+ },
+ {
+  "id": "cur-b987b39cfe9d",
+  "kind": "curated",
+  "type": "article",
+  "source": "Overreacted, Dan Abramov",
+  "title": "JSX Over The Wire",
+  "link": "https://overreacted.io/jsx-over-the-wire/",
+  "date": "2025-04-16",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b987b39cfe9d.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b987b39cfe9d.transcript.txt"
+   }
+  ]
  },
  {
   "id": "cur-5699439df571",
@@ -1896,6 +2545,10 @@
    {
     "label": "总结",
     "url": "txt/cur-de8a882fa9b3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-de8a882fa9b3.transcript.txt"
    }
   ],
   "title_zh": "了解推理LLM"
@@ -1941,6 +2594,28 @@
    }
   ],
   "title_zh": "代理"
+ },
+ {
+  "id": "cur-3ced6251d95e",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Syntax",
+  "title": "855: Fast Websites: The New Speculation Rules API",
+  "link": "https://syntax.fm/855",
+  "date": "2024-12-02",
+  "audio_url": "https://traffic.megaphone.fm/FSI5114240785.mp3?updated=1749229374",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3ced6251d95e.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3ced6251d95e.transcript.txt"
+   }
+  ],
+  "title_zh": "855 ：快速网站：新的投机规则API",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3ced6251d95e.m4a"
  },
  {
   "id": "cur-af1a476c6de0",
@@ -2070,6 +2745,27 @@
   "title_zh": "微观基准谬误"
  },
  {
+  "id": "cur-21fea981794b",
+  "kind": "curated",
+  "type": "article",
+  "source": "Chip Huyen",
+  "title": "Building A Generative AI Platform",
+  "link": "https://huyenchip.com//2024/07/25/genai-platform.html",
+  "date": "2024-07-25",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-21fea981794b.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-21fea981794b.transcript.txt"
+   }
+  ],
+  "title_zh": "构建生成式AI平台"
+ },
+ {
   "id": "cur-56a43a86fa41",
   "kind": "curated",
   "type": "article",
@@ -2103,6 +2799,10 @@
    {
     "label": "总结",
     "url": "txt/cur-f341118d2274.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f341118d2274.transcript.txt"
    }
   ],
   "title_zh": "LLM中的外在幻觉"
@@ -2204,9 +2904,35 @@
    {
     "label": "总结",
     "url": "txt/cur-ca2626424a19.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ca2626424a19.transcript.txt"
    }
   ],
   "title_zh": "测试驱动开发的定义"
+ },
+ {
+  "id": "cur-7af6c18a0984",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "JS Party",
+  "title": "Getting a pulse on your Core Web Vitals 🩺",
+  "link": "https://changelog.com/jsparty/315",
+  "date": "2024-03-07",
+  "audio_url": "https://op3.dev/e/https://cdn.changelog.com/uploads/jsparty/315/js-party-315.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-7af6c18a0984.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-7af6c18a0984.transcript.txt"
+   }
+  ],
+  "title_zh": "检测Core Web Vitals的脉搏 🩺",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7af6c18a0984.m4a"
  },
  {
   "id": "cur-3e93bd0576c9",
@@ -2230,6 +2956,28 @@
   "title_zh": "两个反应"
  },
  {
+  "id": "cur-149072c1ad65",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "JS Party",
+  "title": "From WebGL to WebGPU",
+  "link": "https://changelog.com/jsparty/304",
+  "date": "2023-12-07",
+  "audio_url": "https://op3.dev/e/https://cdn.changelog.com/uploads/jsparty/304/js-party-304.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-149072c1ad65.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-149072c1ad65.transcript.txt"
+   }
+  ],
+  "title_zh": "从WebGL到WebGPU",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-149072c1ad65.m4a"
+ },
+ {
   "id": "cur-fa4c575e2aa9",
   "kind": "curated",
   "type": "article",
@@ -2242,6 +2990,10 @@
    {
     "label": "总结",
     "url": "txt/cur-fa4c575e2aa9.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-fa4c575e2aa9.transcript.txt"
    }
   ],
   "title_zh": "CSS网格交互式指南"
@@ -2259,6 +3011,10 @@
    {
     "label": "总结",
     "url": "txt/cur-ce68292451aa.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ce68292451aa.transcript.txt"
    }
   ],
   "title_zh": "对LLM的对抗性攻击"
@@ -2318,6 +3074,10 @@
    {
     "label": "总结",
     "url": "txt/cur-d184c9211eb8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d184c9211eb8.transcript.txt"
    }
   ],
   "title_zh": "法学硕士研究方面的公开挑战"
@@ -2365,6 +3125,28 @@
   "title_zh": "由法学硕士提供支持的自主代理"
  },
  {
+  "id": "cur-1f142b98463c",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Syntax",
+  "title": "Why Is node_modules So Big?",
+  "link": "http://sites.libsyn.com/100962/why-is-node_modules-so-big",
+  "date": "2023-05-22",
+  "audio_url": "https://traffic.megaphone.fm/FSI2596460713.mp3?updated=1749229496",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1f142b98463c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1f142b98463c.transcript.txt"
+   }
+  ],
+  "title_zh": "为什么node_modules如此之大？",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1f142b98463c.m4a"
+ },
+ {
   "id": "cur-e3fa9e6175a1",
   "kind": "curated",
   "type": "article",
@@ -2377,6 +3159,10 @@
    {
     "label": "总结",
     "url": "txt/cur-e3fa9e6175a1.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e3fa9e6175a1.transcript.txt"
    }
   ],
   "title_zh": "谷歌“我们没有护城河， OpenAI也没有”"
@@ -2445,6 +3231,27 @@
   "title_zh": "Rust到WebAssembly的难点"
  },
  {
+  "id": "cur-8b88a5ec86c5",
+  "kind": "curated",
+  "type": "article",
+  "source": "uhyo",
+  "title": "積極的な技術選定と消極的な技術選定",
+  "link": "https://blog.uhy.ooo/entry/2023-02-13/technology-selection/",
+  "date": "2023-02-13",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-8b88a5ec86c5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-8b88a5ec86c5.transcript.txt"
+   }
+  ],
+  "title_zh": "主动和被动技术选择"
+ },
+ {
   "id": "cur-84bd79354179",
   "kind": "curated",
   "type": "article",
@@ -2464,6 +3271,49 @@
    }
   ],
   "title_zh": "为什么我不是单页应用程序的最大粉丝"
+ },
+ {
+  "id": "cur-bd2a1c61491f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "The Transformer Family Version 2.0",
+  "link": "https://lilianweng.github.io/posts/2023-01-27-the-transformer-family-v2/",
+  "date": "2023-01-27",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-bd2a1c61491f.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-bd2a1c61491f.transcript.txt"
+   }
+  ],
+  "title_zh": "变压器系列2.0版"
+ },
+ {
+  "id": "cur-86c3df7f8dc0",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "JS Party",
+  "title": "The rise & fall of JS frameworks",
+  "link": "https://changelog.com/jsparty/258",
+  "date": "2023-01-13",
+  "audio_url": "https://op3.dev/e/https://cdn.changelog.com/uploads/jsparty/258/js-party-258.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-86c3df7f8dc0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-86c3df7f8dc0.transcript.txt"
+   }
+  ],
+  "title_zh": "JS框架的兴衰",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-86c3df7f8dc0.m4a"
  },
  {
   "id": "cur-4dab64a7e3ce",
@@ -2706,9 +3556,34 @@
    {
     "label": "总结",
     "url": "txt/cur-c811c8fa03ef.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c811c8fa03ef.transcript.txt"
    }
   ],
   "title_zh": "如何在多个GPU上训练真正的大型模型？"
+ },
+ {
+  "id": "cur-b50930ee63b8",
+  "kind": "curated",
+  "type": "article",
+  "source": "uhyo",
+  "title": "React ステート管理 比較考察",
+  "link": "https://blog.uhy.ooo/entry/2021-07-24/react-state-management/",
+  "date": "2021-07-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b50930ee63b8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b50930ee63b8.transcript.txt"
+   }
+  ],
+  "title_zh": "React状态管理比较讨论"
  },
  {
   "id": "cur-93e53a97f2e3",
@@ -2785,6 +3660,10 @@
    {
     "label": "总结",
     "url": "txt/cur-c8f3f2a59bb8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c8f3f2a59bb8.transcript.txt"
    }
   ],
   "title_zh": "对比表示学习"
@@ -2864,9 +3743,34 @@
    {
     "label": "总结",
     "url": "txt/cur-ffb36d12dab5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ffb36d12dab5.transcript.txt"
    }
   ],
   "title_zh": "Ditherpunk —我希望我有的关于单色图像抖动的文章"
+ },
+ {
+  "id": "cur-395878f2316c",
+  "kind": "curated",
+  "type": "article",
+  "source": "mizchi",
+  "title": "Cloudflare Workers それは Frontend / Node.js が CDN Edge Side まで拡張されるもの",
+  "link": "https://mizchi.dev/202009122126-cloudflare-workers",
+  "date": "2020-09-12",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-395878f2316c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-395878f2316c.transcript.txt"
+   }
+  ],
+  "title_zh": "Cloudflare Workers ，它将前端/Node.js扩展到CDN边缘端"
  },
  {
   "id": "cur-7ad776f566aa",
@@ -2887,8 +3791,30 @@
     "url": "txt/cur-7ad776f566aa.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7ad776f566aa.m4a",
-  "title_zh": "使用餐巾数学估算系统（面试）"
+  "title_zh": "使用餐巾数学估算系统（面试）",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7ad776f566aa.m4a"
+ },
+ {
+  "id": "cur-b64180a62e01",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Darknet Diaries",
+  "title": "73: WannaCry",
+  "link": "https://darknetdiaries.com/episode/73",
+  "date": "2020-09-01",
+  "audio_url": "https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/7057/a7e20d06-fc73-427c-b9fc-92724f8b8c0c/darknet-diaries-ep73-wannacry.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b64180a62e01.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b64180a62e01.transcript.txt"
+   }
+  ],
+  "title_zh": "73 ：想哭",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-b64180a62e01.m4a"
  },
  {
   "id": "cur-2ba17fee23cc",
@@ -2975,6 +3901,28 @@
   "title_zh": "AHA编程 💡"
  },
  {
+  "id": "cur-92a94e7953b1",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Darknet Diaries",
+  "title": "61: Samy",
+  "link": "https://darknetdiaries.com/episode/61",
+  "date": "2020-03-17",
+  "audio_url": "https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/7057/2e978047-7639-4088-a038-11e810de629c/darknet-diaries-ep61-samy.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-92a94e7953b1.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-92a94e7953b1.transcript.txt"
+   }
+  ],
+  "title_zh": "61 ：萨米",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-92a94e7953b1.m4a"
+ },
+ {
   "id": "cur-fe37d948c087",
   "kind": "curated",
   "type": "article",
@@ -3037,6 +3985,27 @@
    }
   ],
   "title_zh": "不要同步状态。派生它！"
+ },
+ {
+  "id": "cur-a7b46eb825ad",
+  "kind": "curated",
+  "type": "article",
+  "source": "Takuto Wada",
+  "title": "現在時刻が関わるユニットテストから、テスト容易性設計を学ぶ",
+  "link": "https://t-wada.hatenablog.jp/entry/design-for-testability",
+  "date": "2019-09-29",
+  "audio_url": "https://cdn.image.st-hatena.com/image/scale/f8e0cdebb1881028be02fe7442fc879b206cc844/backend=imagemagick;version=1;width=1300/https%3A%2F%2Fimages-fe.ssl-images-amazon.com%2Fimages%2FI%2F517GxwaFMvL._SL160_.jpg",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-a7b46eb825ad.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-a7b46eb825ad.transcript.txt"
+   }
+  ],
+  "title_zh": "从涉及当前时间的单元测试中了解易于测试的设计"
  },
  {
   "id": "cur-b956e17edf61",
@@ -3115,6 +4084,10 @@
    {
     "label": "总结",
     "url": "txt/cur-f2d301fc6cac.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f2d301fc6cac.transcript.txt"
    }
   ],
   "title_zh": "PostMessage速度慢吗？"
@@ -3258,6 +4231,10 @@
    {
     "label": "总结",
     "url": "txt/cur-e458fea3d0db.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e458fea3d0db.transcript.txt"
    }
   ],
   "title_zh": "React作为UI运行时"

@@ -1,0 +1,15 @@
+https://lilianweng.github.io/posts/2023-01-27-the-transformer-family-v2/
+
+Transformer 家族 2.0 版 The Transformer Family Version 2.0 ｜ Lilian Weng ｜ 文章 ｜ https://lilianweng.github.io/posts/2023-01-27-the-transformer-family-v2/
+
+这是 Lilian Weng 对 2020 年旧文《Transformer 家族》的大幅重构与扩充，篇幅约为旧版两倍，按“要解决什么问题”重新组织了近几年的 Transformer 架构改进：先讲基础，再依次讨论更长上下文、自适应计算、高效注意力，最后是强化学习中的 Transformer。
+
+基础部分回顾了缩放点积注意力、多头自注意力和编码器-解码器结构，重点放在位置编码上。由于自注意力对排列不变，必须额外注入顺序信息：原版用正弦编码，也可以学习绝对位置向量；Shaw 等人把截断后的相对位置表示加进键和值；Transformer-XL 把注意力分数拆成四项并重参数化，用相对位置编码和两个全局可训练向量替换绝对位置；RoPE 则用旋转矩阵把位置乘进查询和键，使内积只依赖相对位置，本质上等价于以旋转形式表达的正弦编码。
+
+“更长上下文”一节针对推理长度受训练长度限制、而直接加长代价是二次方的问题。一条路线是上下文记忆：Transformer-XL 缓存上一片段的隐状态，让键值跨片段延伸；Compressive Transformer 再把过旧的记忆压缩进第二层记忆，并用自编码损失和注意力重建损失训练压缩函数，实验显示网络倾向于把注意力留给压缩后的显著信息。另一条路线是不可微的外部记忆：kNN-LM 用预训练模型的嵌入建立巨大的键值库，把最近邻得到的下一词分布与语言模型分布线性插值；SPALM 把 Transformer-XL 式短期记忆和 kNN 长期记忆用门控结合；Memorizing Transformer 在顶层附近加入 kNN 检索注意力层，发现 8k 记忆的小模型可匹敌参数多 5 倍的原版模型，且普通模型也能微调成会用记忆的模型。第三条路线是按距离修正注意力分数：DA-Transformer 乘以可学习的距离函数，ALiBi 则加上与距离成正比、各头斜率固定为等比数列的线性惩罚，1024 长度训练的模型可外推到 2046。最后，Universal Transformer 把层改为循环步并用 ACT 自适应决定步数。
+
+“自适应建模”讨论按输入分配计算量。自适应注意力跨度用可学习的软掩码让每个头学出自己的回看长度，结果是低层只需短跨度、少数高层头用极长跨度，FLOPS 大减。深度自适应 Transformer 和 CALM 则让容易的词元提前退出：前者在每层挂退出分类器，探讨了序列级、词元级多项分布和类几何分布三种分类器；CALM 用 Learn then Test 框架校准退出阈值，并发现以 softmax 前两名之差作为置信度加速效果最好。
+
+“高效注意力”是全文篇幅最大的部分。稀疏模式方面：Image Transformer 只看局部块；Sparse Transformer 用跨步和固定两种分解注意力，使任意两点经过不超过 p+1 步可达，并配合梯度检查点等技巧训练数百层；Blockwise Attention 用置换定义的稀疏块矩阵把内存降到 n²/m；ETC、Longformer、Big Bird 组合局部滑窗、少数全局词元以及空洞或随机注意力，Big Bird 的随机连接借用了随机图中信息快速传播的性质。基于内容的方面：Reformer 用 LSH 哈希把相近的查询和键分进同桶，复杂度降为 L log L，并用可逆残差层避免逐层存激活；Routing Transformer 用在线 k-means 路由，作者也指出局部注意力本身就是强基线。低秩方面：Linformer 把键值长度投影到 k 维实现线性复杂度；RFA 和 Performer 用随机特征近似 softmax 核，使计算顺序可以先算键值外积，因果版本可像 RNN 一样递推，Performer 进一步用正随机特征和正交采样降低误差。
+
+最后一节讲强化学习。GTrXL 把层归一化移出捷径流、用 GRU 式门控替代残差连接并初始化为近似恒等映射，从而稳定训练；Decision Transformer 把离线强化学习改写为以期望剩余回报、状态和动作为序列的条件序列建模，实验表明它在少数据时优于行为克隆、能处理稀疏奖励，且长上下文是效果好的关键。

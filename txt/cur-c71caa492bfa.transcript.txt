@@ -1294,3 +1294,2205 @@ function pair(a, b) {
 现在，你可能会由此得出结论：随意把东西换成南瓜会导致灾难，有时确实如此。但并非总是这样。
 
 假设你有了一份新工作，在玩具店包装礼物。你整天包装各种礼物，不管是玩偶、小汽车，还是一整栋玩具房子。然后有一天，有人递给你一个南瓜。虽然你可能出于原则拒绝这个请求，但*从技术上讲*，你完全可以把南瓜包好。当你包装东西时，你并不依赖它们的属性（比如绳子之所以为绳子的特性）。你只是把它们放进盒子里。你是在*嵌入*，而不是在*内省*。
+
+上面 `concat` 和 `pair` 的区别在于，`concat` *在乎*传给它的是什么。它在*内省*。如果你传给它一个南瓜，它就无法工作。但 `pair` 会欣然接受绳子、玩具或南瓜。它在*嵌入*，所以它不在乎。
+
+我们来看看这和执行顺序有什么关系。
+
+由于 `concat` 会*内省*参数 `a` 和 `b`（具体来说，`+` 会把它们转成字符串），如果你把一个未解释的标签作为参数传进去，`concat` 就会出错：
+
+```
+concat('Hello ', <prompt>Who are you?</prompt>);
+// 'Hello, [object Object]'
+```
+
+而 `pair` 则是*嵌入*它的参数 `a` 和 `b`。它产生一个新的 `[a, b]` 数组——无论你传入什么作为 `a` 或 `b`，这都能正确工作。所以它乐于接受一个标签作为参数之一。它只是把那个标签嵌入到自己的输出中：
+
+```
+const todo = pair('Hello ', <prompt>Who are you?</prompt>);
+// ['Hello, ', { fn: 'prompt', args: ['Who are you?'] }]
+```
+
+这让你可以在 `pair` 调用*之后*的某个时候再去解释那个标签：
+
+```
+const result = interpret(todo, { prompt: window.prompt });
+// ['Hello, ', 'Dan']
+```
+
+我们来总结一下。
+
+一般来说，函数希望在调用之前计算好它们的参数。然而，如果一个函数只是把参数*嵌入*到输出中而不*内省*它，你就可以推迟计算这个参数。你可以在这个参数仍未计算（是一个标签）的情况下调用那个函数，并在必要或方便的时候再计算那个标签。
+
+也许你终究找到了打败时间的方法。
+
+* * *
+
+### 思考与执行
+
+你的程序还是一样：
+
+```
+function app() {
+  return [
+    <greeting />,
+    <p>The time is: <clock /></p>
+  ];
+}
+ 
+function clock() {
+  return new Date().toString();
+}
+ 
+function greeting() {
+  return (
+    <p>
+      Hello,
+      <prompt>Who are you?</prompt>
+    </p>
+  );
+}
+ 
+function p(...children) {
+  return (
+    <alert>
+      <concat>
+        {children}
+      </concat>
+    </alert>
+  );
+}
+ 
+function alert(message) {
+  window.alert(message);
+}
+ 
+function prompt(message) {
+  return window.prompt(message);
+}
+ 
+function concat(a, b) {
+  return a + b;
+}
+```
+
+但你的 `interpret` 函数更简单了——它*由外向内*地解释标签。它不会试图在调用前解释参数；相反，它*把标签传给其他标签*。
+
+```
+function interpret(json, knownTags) {
+  if (json && json.fn) {
+    if (knownTags[json.fn]) {
+      let fn = knownTags[json.fn];
+      let args = json.args;
+      let result = fn(...args);
+      return interpret(result, knownTags);
+    } else {
+      let args = json.args.map(arg => interpret(arg, knownTags));
+      return { fn: json.fn, args };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(item => interpret(item, knownTags));
+  } else {
+    return json;
+  }
+}
+```
+
+时间冲你冷笑。
+
+*“这行不通的，对吧？函数需要知道它们的参数。”*
+
+“*有些*函数需要。”
+
+你检查程序中的所有函数，看它们是*内省*你嵌套在其标签内的东西，还是只是*嵌入*它而不做内省：
+
+*   显然，`alert` 和 `concat` 会内省你放进它们标签里的东西。
+*   有些函数（`app`、`clock` 和 `greeting`）根本不接受任何参数。
+*   虽然你*确实*向 `p` 传入了东西，但它只是嵌入你在其中嵌套的任何东西。
+*   `prompt` 的情况比较模糊。从技术上讲，它确实内省了 `message` 参数（因为它把 `message` 传给了内置的 `window.prompt`）。然而，到目前为止，我们还没有想在 `<prompt>` 里嵌套其他标签的冲动。所以只要我们承诺不这样做（例如通过某种方式限制类型），这就无关紧要。
+
+为了理清思路，你将引入一个新的约定。
+
+那些在接收标签作为参数时不会出错的函数，也就是那些*嵌入*而不是*内省*参数的函数，从现在起名字以大写字母开头：
+
+```
+function App() {
+  return [
+    <Greeting />,
+    <P>The time is: <Clock /></P>
+  ];
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+ 
+function Greeting() {
+  return (
+    <P>
+      Hello,
+      <prompt>Who are you?</prompt>
+    </P>
+  );
+}
+ 
+function P(...children) {
+  return (
+    <alert>
+      <concat>
+        {children}
+      </concat>
+    </alert>
+  );
+}
+ 
+function alert(message) {
+  window.alert(message);
+}
+ 
+function prompt(message) {
+  return window.prompt(message);
+}
+ 
+function concat(a, b) {
+  return a + b;
+}
+```
+
+我们给这些首字母大写的函数起一个特别的名字：组件（Components）。组件是我们程序的“大脑”——它们负责想清楚需要做什么。因为它们不内省你嵌套在里面的东西，所以它们可以以任意顺序、分任意多步、一起或分开运行。换句话说，组件*是*真正永恒的。它们摆脱了未来的束缚，因为它们*返回*标签；它们也摆脱了过去的束缚，因为它们*接收*标签作为参数。
+
+那剩下的函数呢，比如 `alert`、`prompt` 和 `concat`？我们称它们为原语（Primitives）。原语也可以作为标签使用，但它们不只是嵌入东西——它们会内省它。它们*必须*知道自己的所有参数。原语是我们程序的“肌肉”——在组件已经完成了大部分思考之后，它们才真正去*做事*。原语最后运行：*“先思而后行”*。
+
+这一区分让你可以很自然地把程序切成两个阶段。
+
+首先，你需要*思考*——也就是运行组件。你现有的 `interpret` 函数可以处理这件事：
+
+```
+const primitives = interpret(<App />, {
+  App,
+  Greeting,
+  Clock,
+  P
+});
+ 
+// [
+//   { fn: 'alert', args: [{ fn: 'concat', args: ['Hello', { fn: 'prompt', args: ['Who are you?'] }] }] },
+//   { fn: 'alert', args: [{ fn: 'concat', args: ['The time is: ', 'Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)'] }] }
+// ]
+```
+
+*思考*之后，你需要*执行*。“思考”阶段的结果只包含原语。我们来创建一个新的 `perform` 函数，它看起来和 `interpret` 很像，但它处理的是原语而不是组件。由于原语会内省东西、需要*知道*它们的参数，`perform` 确保它们由内向外运行：
+
+```
+function perform(json, knownTags) {
+  if (json && json.fn) {
+    let fn = knownTags[json.fn];
+    let args = perform(json.args, knownTags);
+    let result = fn(...args);
+    return perform(result, knownTags);
+  } else if (Array.isArray(json)) {
+    return json.map(item => perform(item, knownTags));
+  } else {
+    return json;
+  }
+}
+```
+
+注意，`perform` 不包含任何跳过未知标签的代码——它假设 `knownTags` 包含它可能遇到的*所有*原语。这是因为 `perform` 的定位就是*最终*一步，不允许你再进一步拆分计算。
+
+现在你可以用 `perform` 来完成计算：
+
+```
+perform(primitives, {
+  alert,
+  concat,
+  prompt
+});
+ 
+// undefined
+```
+
+这会显示 prompt 和两个预期的提示框。
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-6f6jz7?file=%2Fsrc%2Findex.mjs)
+
+那么，你打败时间了吗？
+
+算是吧。
+
+以前，`interpret` 很脆弱，因为跳过*某些*标签（比如 `concat`）会破坏另一些标签（比如 `alert`）隐含假设的顺序。但现在这种情况不会再发生了。现在 `interpret` *只*处理组件，而组件不介意以任意顺序运行（因为它们*嵌入*而不是*内省*）。
+
+另一方面，原语现在由 `perform` 处理，而它总是一步完成工作。所以那里也不会出现这个问题。
+
+如果你将来把程序扩展到跨越两台计算机，被拆分到两台计算机上的会是组件（而不是原语）。这是因为组件不介意以不同顺序运行。而原语则必须在最后一起运行——这就把它们牢牢地放在了 Late 世界中。
+
+如果你对运行 Late 世界的计算机有一定控制权，你可以做一个有趣的优化。你可以把你预期所有程序都会共享的原语和 JavaScript 运行时一起*预装*好。当然，这样一组原语必须经过精心挑选，以服务尽可能广泛的使用场景。但你已经能看到一些不错的候选者了！例如，你的 `P` 函数作为原语也许更合理：
+
+```
+function p(...children) {
+  return (
+    <alert>
+      <concat>
+        {children}
+      </concat>
+    </alert>
+  );
+}
+```
+
+可以说，“段落”是许多程序都可能想显示的东西！
+
+如果你想得更大一些，你可能会想出一整套这样的原语——有些是图形性的（比如让某些东西变成 `<b>粗体</b>` 或 `<i>斜体</i>`），有些是行为性的（比如展开 `<details></details>` 或 `<a />` 链接）。
+
+现在，如果很多程序都使用相同的原语，而且每个人都在用它们构建复杂的程序，那么把它们的内部实现从 JavaScript 移到某种更底层的语言（比如 Rust 或 C++）里可能就很合理了。然后它们可以通过某些更高层的 API 暴露给 JavaScript。接着可以重写 `perform`，用这些 API 来编排计算：
+
+```
+function perform(json) {
+  if (json && json.fn) {
+    let tagName = json.fn;
+    let children = perform(json.args);
+    let node = document.createElement(tagName);
+    for (let child of [children].flat().filter(Boolean))) {
+      node.appendChild(child);
+    }
+    return node;
+  } else if (typeof json === 'string') {
+    return document.createTextNode(json);
+  } else if (Array.isArray(json)) {
+    return json.map(perform);
+  } else {
+    return json;
+  }
+}
+ 
+const tree = perform(json);
+document.body.appendChild(tree);
+```
+
+你甚至可以设计一门*专门*用来描述这种原语树的声明式语言。它可以被设计得比我们现在的方案更宽容，因为在某些使用场景下，手写它会比较方便。
+
+关于原语说得够多了。接下来，我们将假设存在[相当多的原语](https://developer.mozilla.org/en-US/docs/Web/HTML/Element)，它们被写成小写的标签（比如 `<p>`），并且存在一个知道如何处理它们的 `perform` 函数。
+
+时间退到一旁。
+
+你已经学会了驾驭时间的力量——*并且*学会了尊重它的法则。现在，如果你想继续你的学业，是时候学习空间的课程了。
+
+* * *
+
+## 第二幕
+
+### 读者与作者
+
+*读者：* 这篇文章可真长！
+
+*作者：* 那还用说。
+
+*读者：* 而我们才读到一半？
+
+*作者：* 我想是吧。
+
+*读者：* 什么叫你*想是吧*？你不知道自己要往哪儿去吗？
+
+*作者：* 我有个大概的想法，但说实话，我基本是边写边想。
+
+*读者：* 嗯，这可不太负责任。我花了很多时间读这个。万一它最后没有一个令人满意的结局呢？万一你搞砸了呢？
+
+*作者：* 是的，这一直是我担心的事情之一。但在*我*写完之前，我没法知道。在你那边，我想你只能继续读下去了。
+
+*读者：* 好吧，行，我想我只能这么做了。
+
+*作者：* 感谢你的理解。
+
+*读者：* 反正我也没得选。
+
+*作者：* 为什么没得选？你知道你可以直接关掉这个标签页，去过你的日子。
+
+*读者：* 你心知肚明我做不到。
+
+*作者：* 那到底是为什么呢？
+
+*读者：* 嗯，*我*只是你的一个角色。是*你*在让我说话。我没有多少，那叫什么来着……*回旋余地*。
+
+*作者：* 啊。对。*回旋余地。*
+
+*作者短暂地看了一眼观众。很难读懂他的表情。*
+
+*读者：* ……
+
+*作者：* ……
+
+*读者：* 你没给我准备多少台词了，是吧？
+
+*作者：* 我的错。我想我能写出来的也就这些了。
+
+*读者：* ……
+
+*作者：* ……
+
+*读者：* 这段对话为什么会在这里？它给故事增加了什么吗？
+
+*作者：* 我不知道。*你*告诉我。
+
+*读者：* 我还以为写东西的是*你*。
+
+*作者：* 当然，但读东西的不是*你*吗？
+
+* * *
+
+### 代码与数据
+
+在这篇文章的前半部分，我们学会了如何在时间上拆分计算。
+
+结果发现，计算中的某些部分——那些主动*做*事情的原语——不喜欢被拆开，希望一起执行。计算的另一些部分——那些*思考*事情的组件——可以在不同的时间、以不同的顺序，甚至可能在不同的*地点*执行。
+
+我们暂时把组件和原语放到一边。
+
+我们来研究一下*在时间上*拆分函数和*在空间上*拆分函数的区别。我们前面看到，要在时间上拆分一个函数，只需增加嵌套就够了：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return function resume() {
+    alert('Hello, ' + name);
+  };
+}
+```
+
+这让你可以分步运行它，而不是一次运行完。
+
+```
+const resume = greeting(); // 运行第一步
+resume();                  // 运行第二步
+```
+
+`greeting` 的返回值是一个函数——但这不是全貌。关键在于，这个函数嵌套在 `greeting` *内部*，否则它就无法读取 `name` 变量。换句话说，`greeting` 既返回了一段代码（`alert` 调用），*也*返回了这段代码所需要的一段数据（`name` 变量）。
+
+如果你把 `resume` 提取为一个顶层函数，这一点就更明显了。现在它必须把 `name` 作为显式参数接收：
+
+```
+function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+我们该怎么调整 `greeting` 来适应这一点呢？我们可以让它返回一个嵌套函数，由这个函数把 `name` 提供给 `resume`：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return () => resume(name);
+}
+ 
+function resume(name) {
+  alert('Hello, ' + name);
+}
+ 
+const resume = greeting(); // 运行第一步
+resume();                  // 运行第二步
+```
+
+但我们还可以更进一步。从概念上讲，`() => resume(name)` 组合了两条信息：*代码*（`resume`）和*数据*（`name`）。我们可以通过返回 `[resume, name]`——代码与数据*配对*——来让这种关系变得明确：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+ 
+function resume(name) {
+  alert('Hello, ' + name);
+}
+ 
+const [code, data] = greeting(); // 运行第一步
+code(data);                      // 运行第二步
+```
+
+事实上，这看起来和我们目前用于*标签*的对象表示法非常相似，只不过 `fn` 函数是一个*真正的函数*而不是字符串：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return { fn: resume, args: [name] };
+}
+ 
+function resume(name) {
+  alert('Hello, ' + name);
+}
+ 
+const { fn, args } = greeting(); // 运行第一步
+fn(...args);                     // 运行第二步
+```
+
+这几乎就像 `greeting` 返回的是一个*标签*，而不是一个函数调用。它表达了*它接下来想要运行的代码*，但它还没有真正*去做*。
+
+这给了我们一个看待标签究竟是什么的新视角。是的，标签是一个潜在的函数调用。但另一种看法是：*标签是代码与数据的配对。*
+
+* * *
+
+### 时间与空间
+
+现在我们来回忆一下如何在空间上拆分计算。我们之前发现了一种可行的模式——把一段代码作为字符串返回：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+ 
+const code = greeting();
+```
+
+然后你可以调用 `greeting()`，保存它返回的 `code`，再在另一台计算机上把它*作为代码*运行。第二台计算机会以为*这*就是整个程序：
+
+```
+function resume() {
+  alert('Hello, ' + "Dan");
+}
+```
+
+但*你*知道，真正的程序包含这两部分。
+
+目前，`greeting` 返回的是一个代码字符串。然而，把它看作同时返回了代码*和*数据也是完全合理的。我们只是恰好把数据（`name` 变量）直接插值到了那个代码字符串中。
+
+如果我们把 `resume` 的代码移到 `greeting` 外面，这一点就更明显了：
+
+```
+const RESUME_CODE = `
+  function resume(name) {
+    alert('Hello, ' + name);
+  }
+`;
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+ 
+const [code, data] = greeting();
+const jsonString = JSON.stringify([code, data]);
+```
+
+既然 `resume` 接收 `name` 作为参数，`greeting` 就需要*同时*返回 `resume` 函数的代码*和*它所需要的数据（`name`）。然后我们可以拿着 `[code, data]`，用 `JSON.stringify` 把它转成 JSON，再在另一台计算机上 `JSON.parse` 它，最后调用 `code(data)` 来完成程序。
+
+当然，写程序时，我们并不真的想把 `resume` 的代码当作一个*字符串*来考虑。我们想把它当作一段普通的代码：写在顶层，有语法高亮，可以做类型检查，等等：
+
+```
+function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+但我们要怎么把这段代码和 `greeting` 函数*连接*起来呢？
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+```
+
+这些函数就像存在于两个不同的*世界*中——一个存在于即将被发送的代码字符串的“外面”，另一个存在于它的“里面”。就好像 `greeting` 在写一个故事，而 `resume` 是那个故事*里面*的某个人。
+
+它们之间有清晰的逻辑连续性，但隔开它们的鸿沟远比“位于不同文件”宽得多。当 `greeting` 函数运行时，`resume` 只是一个字符串——与其说是一个真正的函数，不如说更像一个计划或一个想法。另一方面，当 `resume` 最终运行时，它完全不知道 `greeting` 曾经存在过——它收到的只有传给它的 `name`。
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+```
+
+```
+function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+如果你眯起眼睛看，仍然可以辨认出程序“真正”的形态：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+```
+
+但这种“拆分”的看法对两个世界都更公平。它不偏重任何一方。它们两个*都是*我们的程序，只是被时间和空间拆开了：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+```
+
+```
+function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+问题是，我们如何把它们连在一起？
+
+* * *
+
+### 两个世界
+
+把两个世界连在一起最简单的方法，是给 Late 世界中的每个函数一个唯一的名字，让我们可以从 Early 世界中引用它。
+
+例如，我们可以假设我们永远只需要一个叫 `resume` 的函数：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return ['resume', name];
+}
+```
+
+```
+window['resume'] = function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+虽然这有点笨拙，但它*确实*建立了一种显式的（尽管脆弱的）联系。如果我们哪天要在 Late 世界中重命名 `resume`，我们也许会记得在代码库中搜索其他可能引用它的代码，然后可能会找到 Early 世界中的 `greeting`。我们甚至可以给 `window['resume']` 加上类型。
+
+这个方案并没有*那么*糟糕。事实上，它和*你*引用任何浏览器内置原语时幕后发生的事情很相似。你并没有从任何地方直接导入它们；你只是使用像 `p` 这样的全局名称：
+
+```
+function Greeting() {
+  const name = prompt('Who are you?');
+  return <p>Hello, {name}</p>;
+}
+```
+
+```
+document.createElement = function(tagName) {
+  switch (tagName) {
+    case 'p':
+    // ...
+  }
+}
+```
+
+从这个意义上说，浏览器内部本身就是一种“Late”世界。它们的很大一部分是用不同于 JavaScript 的语言编写的，并且没有直接暴露给你的程序。与 `p` 这样的原语相关的大量逻辑——包括应用样式、文本排版、绘制、合成、渲染等等——会在你调用 `document.createElement('p')` *之后*的某个时刻运行。从这个意义上说，`<p>` 确实是一个*标签*——一个仍需将来某种“执行”的调用。
+
+但我们别跑题了。浏览器原语可以使用全局名称，是因为它们的数量有限，你需要能查到它们，而且它们在各个项目之间总是相同的。而如果你自己定义函数，你大概会希望它们之间有更显式的联系。
+
+让我们回到你想要连接的那两部分：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+```
+
+```
+function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+显而易见的第一步，是把 `resume` 函数标记为 `export`。你希望其他文件中的代码能够引用它。它不是一个可以随意删除的实现细节。你不希望它看起来像死代码！
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+```
+
+```
+export function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+既然你已经 `export` 了它，下一步自然就是在这里 `import` 它：
+
+```
+import { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [RESUME_CODE, name];
+}
+```
+
+```
+export function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+只不过等等。
+
+这帮不了你！
+
+你想得到的是 `RESUME_CODE`，也就是前面的这个东西：
+
+```
+const RESUME_CODE = `
+  function resume(name) {
+    alert('Hello, ' + name);
+  }
+`;
+```
+
+但你通过导入 `resume` *得到*的是另一个东西：
+
+```
+function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+*你把反引号弄丢了！*
+
+* * *
+
+### 小心鸿沟
+
+让我们彻底说服自己：使用 `import` 是行不通的。
+
+归根结底，我们想做的是把这个模式*模块化*：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+```
+
+为此，我们把 `greeting` 和 `resume` 函数拆到了两个不同的世界中——但结果是，我们失去了它们之间的语法联系。
+
+假设我们试图用一个 `import` 来跨越两个世界之间的“鸿沟”：
+
+```
+import { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+```
+
+```
+export function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+不幸的是，除非我们改变 `import` 的工作方式，否则这本质上只会把 `resume` 函数*本身*“带进” `greeting` 的世界：
+
+```
+function resume(name) {
+  alert('Hello ', + name);
+}
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+```
+
+```
+export function resume(name) {
+  alert('Hello, ' + name);
+}
+```
+
+换句话说，程序的整体形态看起来大致是这样的：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return function resume() {
+    alert('Hello, ' + name);
+  };
+}
+```
+
+但我们*需要*的整体形态看起来大致是这样的：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `function resume() {
+    alert('Hello, ' + ${JSON.stringify(name)});
+  }`;
+}
+```
+
+关键全在反引号！
+
+当我们 `import` 某样东西时，我们就把那段代码带进了导入方的世界。但我们这里*想要*的只是*引用*那段代码，而不执行它的任何部分。我们想让 `greeting` 返回一个关于南瓜的*故事*——而不是一个真正的南瓜。
+
+如果你设想 `resume` *本身*也导入了某个第三方库——比如用来显示一个 toast 提示——`import` 的问题就更明显了：
+
+```
+import { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+```
+
+```
+import { showToast } from 'toast-library';
+ 
+export function resume(name) {
+  showToast('Hello, ' + name);
+}
+```
+
+使用普通的 `import`，我们整个程序的形态相当于这样：
+
+```
+// 来自 toast-library
+function initializeToastLibrary() { /* ... */ }
+function showToast(message) { /* ... */ }
+initializeToastLibrary();
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return function resume() {
+    showToast('Hello, ' + name);
+  };
+}
+```
+
+然而，我们*想要*的形态更接近这样：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `
+    // 来自 toast-library
+    function initializeToastLibrary() { /* ... */ }
+    function showToast(message) { /* ... */ }
+    initializeToastLibrary();
+ 
+    function resume() {
+      showToast('Hello, ' + name);
+    }
+  `;
+}
+```
+
+两个世界之间的边界是坚固的，而且*理应*如此。我们希望每个世界内部的行为都是一致的——至少对任何已有的代码来说如此。
+
+为了确保这一点，来自 Early 世界的导入*应该*成为 Early 世界的一部分。来自 Late 世界的导入*应该*成为 Late 世界的一部分。就其自身而言，每个世界都应该表现得像一个独立的隔离程序——不搞任何花样。
+
+我们不想破坏这种一致性。
+
+我们需要的只是一扇*门*。
+
+* * *
+
+### 一扇门
+
+我们需要一种方式来表达：“我想引用另一个文件里的这个东西，但我实际上并不想执行、甚至不想加载它的任何代码。只要给我一个能让我以后以编程方式找到那个东西的代码的东西就行。”幸运的是，这一切完全是虚构的，所以我们可以随便编一个语法来表达它。
+
+*噔噔！*
+
+```
+import tag { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+```
+
+```
+import { showToast } from 'toast-library';
+ 
+export function resume(name) {
+  showToast('Hello, ' + name);
+}
+```
+
+什么，*就这样*？
+
+当然，为什么不呢。
+
+好吧，但这个语法*做*什么？
+
+嗯，首先，我们假设它只是返回函数的源代码。这会让我们能够像最初打算的那样，把那段代码发送到另一台计算机：
+
+```
+import tag { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+ 
+const [code, data] = greeting();
+// [
+//   'function resume(name) { showToast("Hello, " + name); }',
+//   'Dan'
+// ]
+```
+
+然而，这其实没什么大用——注意，`showToast` 不见踪影。我们真正想要的不是*单单 `resume` 函数*的源代码，而是*另一台计算机加载并运行 `resume` 所需的一切*。
+
+这是第二个想法。
+
+我们为什么不让它返回某种专门为定位代码而设计的标识符呢？例如，它可以把文件名和导出名组合起来：
+
+```
+import tag { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+ 
+const [code, data] = greeting();
+// [
+//   '/src/stuff/resume.js#resume',
+//   'Dan'
+// ]
+```
+
+当然，这意味着这个格式必须在某种程度上知道另一台计算机*如何*加载和执行代码。例如，如果另一台计算机运行的是 Node.js 进程，它可以从文件系统中 `import()` 那个文件——前提是该文件会被部署到那台计算机上。如果另一台计算机运行的是 Web 浏览器，它可以通过 HTTP 从一台必须提供该文件的服务器上 `import()` 它。
+
+对于 Web 浏览器来说，逐个导入远程文件、依靠浏览器的模块系统去下载它们的每个依赖，可能效率不高。相反，使用一个自动化的*打包器（bundler）*（它会把这些代码合并成若干代码块）并使用打包器专用的标识符可能更合理：
+
+```
+import tag { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+ 
+const [code, data] = greeting();
+// [
+//   'chunk123#module456#resume',
+//   'Dan'
+// ]
+```
+
+在最简单的情况下，如果所有要发往 Late 世界的代码最终都被组装成一个巨大的单一文件，通过网络发送给另一台计算机，那么这个标识符可以就是被引用函数的全局名称：
+
+```
+import tag { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+ 
+const [code, data] = greeting();
+// [
+//   'window.resume',
+//   'Dan'
+// ]
+```
+
+重要的是，我们现在有了一种语法，可以让 Early 世界中的某段代码*引用* Late 世界中的某段代码。它是两个环境之间的一扇*门*。
+
+它让我们可以实现这样的效果：
+
+```
+function greeting() {
+  const name = prompt('Who are you?');
+  return `
+    import { showToast } from 'toast-library';
+ 
+    function resume() {
+      showToast('Hello, ' + name);
+    }
+  `;
+}
+```
+
+只需要这样写：
+
+```
+import tag { resume } from './resume';
+ 
+function greeting() {
+  const name = prompt('Who are you?');
+  return [resume, name];
+}
+```
+
+```
+import { showToast } from 'toast-library';
+ 
+export function resume(name) {
+  showToast('Hello, ' + name);
+}
+```
+
+它让我们可以写一个横跨两个编程环境的单一程序。
+
+* * *
+
+### 春季大扫除
+
+我们已经在两个世界——Early 世界和 Late 世界——之间找到了一扇*门*。这扇门，`import tag`，将让我们可以在时间*和*空间上拆分计算。
+
+不过在使用这扇门之前，我们需要先打扫一下屋子。我们要对标签语法做一些调整，让它更适合编写组件。（如果你熟悉 React，你会发现这些调整让我们更接近 JSX。）
+
+看这个例子：
+
+```
+function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>The time is: <Clock /></p>
+    </div>
+  );
+}
+```
+
+到目前为止，我们一直假设这个语法会产生这样一棵对象树：
+
+```
+function App() {
+  return {
+    fn: 'div',
+    args: [
+      { fn: 'Greeting', args: [] },
+      {
+        fn: 'p',
+        args: ['The time is: ', { fn: 'Clock', args: [] }]
+      }
+    ]
+  };
+}
+```
+
+这一切都很好，但它没有给我们留下传递像 `<p className="text-purple-500">` 这样具名属性的方法。我们要调整一下约定：组件和原语都不再接收按位置排列的 `args`，而是接收一个包含*具名*参数的单一对象。我们把这个对象叫做 `props`，意思是“properties（属性）”。嵌套的标签会移到该对象中一个叫 `children` 的 prop 里。
+
+```
+function App() {
+  return {
+    type: 'div',
+    props: {
+      children: [
+        { type: 'Greeting', props: {} },
+        {
+          type: 'p',
+          props: {
+            className: 'text-purple-500',
+            children: ['The time is: ', { type: 'Clock', props: {} }]
+          }
+        }
+      ]
+    }
+  };
+}
+```
+
+我擅自把 `fn` 改名为 `type`。既然像 `<p>` 这样的原语现在是在幕后由 `document.createElement('p')`（不管它是什么）处理，而不是由我们自己的 `p()` 函数处理，再把 `p` 称作“函数”就有误导性了。
+
+我们需要调整 `interpret` 以适应这些变化。如果你不记得它长什么样了，别担心——已经过去一阵子了。这是重要的部分：
+
+```
+function interpret(json, knownTags) {
+  if (json && json.type) {
+    if (knownTags[json.type]) {
+      let Component = knownTags[json.type];
+      let props = json.props;
+      let result = Component(props);
+      return interpret(result, knownTags);
+    } else {
+      let children = json.props.children?.map(arg => interpret(arg, knownTags));
+      let props = { ...json.props, children };
+      return { type: json.type, props };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(item => interpret(item, knownTags));
+  } else {
+    return json;
+  }
+}
+```
+
+我们也会调整 `perform`，加入一些应用 `className` 之类 props 的新逻辑：
+
+```
+function perform(json) {
+  if (json && json.type) {
+    let tagName = json.type;
+    let node = document.createElement(tagName);
+    for (let [propKey, propValue] of Object.entries(json.props)) {
+      if (propKey === 'children') {
+        let children = perform(propValue);
+        for (let child of [children].flat().filter(Boolean)) {
+          node.appendChild(child);
+        }
+      } else {
+        node[propKey] = propValue;
+      }
+    }
+    return node;
+  } else if (typeof json === 'string') {
+    return document.createTextNode(json);
+  } else if (Array.isArray(json)) {
+    return json.map(perform);
+  } else {
+    return json;
+  }
+}
+```
+
+现在 `<p className="text-purple-500">` 就能工作了！
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-sg7dnt?file=%2Fsrc%2Findex.mjs)
+
+* * *
+
+### 更多春季大扫除
+
+现在正好可以再做一个提升体验的改动。
+
+回想一下，现在要把一棵组件树转换成一棵原语树，你必须把所有已知组件作为一个字典传给 `interpret` 函数：
+
+```
+function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>The time is: <Clock /></p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+ 
+const primitives = interpret(<App />, {
+  App,
+  Greeting,
+  Clock
+});
+```
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-sg7dnt?file=%2Fsrc%2Findex.mjs)
+
+然而，这感觉相当傻。当我们写 `<Greeting />` 时，`Greeting` 函数已经在作用域里了。即使它不在，我们也会*想要*把它导入作用域，让这种联系变得明确。那么，既然 `Greeting` 函数已经在作用域中，为什么 `<Greeting />` 语法不能“记住”它指的是哪个 `Greeting` 呢？
+
+我们可以通过采用一个新约定来解决这个问题。如果标签是小写的，比如 `<div>`，我们就让它在标签的对象表示中的 `type` 保持为像 `'div'` 这样的字符串。但如果标签以大写字母开头，比如 `<Greeting />`，我们就把它的 `type` 改为*`Greeting` 函数本身*，而不是 `'Greeting'` 字符串：
+
+```
+function App() {
+  return {
+    type: 'div', // 原始值（字符串）
+    props: {
+      children: [
+        { type: Greeting, props: {} }, // 组件（函数）
+        {
+          type: 'p', // 原始值（字符串）
+          props: {
+            children: [
+              'The time is: ',
+              { type: Clock, props: {} } // 组件（函数）
+            ],
+          }
+        }
+      ]
+    }
+  };
+}
+```
+
+方便的是，我们早就一直用大写字母作为组件名的开头来区分它们和原语，所以不需要重命名任何东西。
+
+这让我们可以简化 `interpret` 函数。它不再需要随身携带一个 `knownTags` 字典，而只需检查 `typeof json.type`。如果 `json.type` 是一个函数，那么*这个函数本身*就是组件。否则，它一定是原语：
+
+```
+function interpret(json) {
+  if (json && json.type) {
+    if (typeof json.type === 'function') {
+      let Component = json.type;
+      let props = json.props;
+      let result = Component(props);
+      return interpret(result);
+    } else {
+      let children = json.props.children?.map(interpret);
+      let props = { ...json.props, children };
+      return { type: json.type, props };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(interpret);
+  } else {
+    return json;
+  }
+}
+```
+
+现在我们可以直接调用 `interpret`，不必传给它任何额外信息：
+
+```
+const primitives = interpret(<App />);
+// {
+//   type: 'div',
+//   props: {
+//     children: [{
+//       type: 'p',
+//       props: {
+//         children: [
+//           'Hello, ',
+//           { type: 'input', props: { placeholder: 'Who are you?' } }
+//         ]
+//       }
+//     }, {
+//       type: 'p',
+//       props: {
+//         children: ['The time is ', 'Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)']
+//       }
+//     }]
+//   }
+// }
+```
+
+`interpret` 函数会由外向内“溶解”我们所有的组件，只留下原语。然后 `perform` 函数会由内向外“溶解”所有原语，生成最终结果——一棵浏览器 DOM 树：
+
+```
+const tree = perform(primitives);
+// [HTMLDivElement]
+document.body.appendChild(tree);
+```
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-n5gvxs?file=%2Fsrc%2Findex.mjs)
+
+Boss 战的音乐响起。
+
+来见见*空间*吧。
+
+* * *
+
+### Early 组件与 Late 组件
+
+这是你完整的组件树：
+
+```
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>The time is: <Clock /></p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+```
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-n5gvxs?file=%2Fsrc%2Findex.mjs)
+
+要打败空间，你必须把这个计算拆分到两台不同的计算机上。
+
+具体来说，`App` 和 `Greeting` 应该在第一台机器上运行，而 `Clock` 组件应该在第二台机器上运行。这两部分计算应该被无缝地组合起来，并在第二台计算机上变成一棵浏览器 DOM 树。你不应该修改组件函数中的任何代码。
+
+我们一步一步来。
+
+你要做的第一件事是把 `Clock` 移到另一个文件中并 `export` 它：
+
+```
+export function Clock() {
+  return new Date().toString();
+}
+```
+
+现在你可以从主文件中导入它：
+
+```
+import { Clock } from './Clock';
+ 
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>The time is: <Clock /></p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+```
+
+只不过等等，这并没有把代码拆分到两台计算机上。为此，你需要通过把 `import` 改成 `import tag` 来*打开一扇门*。你从 Early 世界打开这扇门，立即*让 Late 世界显现出来*：
+
+```
+import tag { Clock } from './Clock';
+ 
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>The time is: <Clock /></p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+```
+
+```
+export function Clock() {
+  return new Date().toString();
+}
+```
+
+如果你检查 `App` 组件返回的标签，你会注意到 `<Clock />` 标签变成了某种奇特的东西：
+
+```
+{
+  type: 'div', // 原始值（一个字符串）
+  props: {
+    children: [{
+      type: Greeting, // 组件（一个函数）
+      props: {}
+    }, {
+      type: 'p',
+      props: {
+        children: [
+          'The time is ',
+          {
+            type: '/src/Clock.js#Clock', // 这是什么？
+            props: {}
+          }
+        ]
+      }
+    }]
+  }
+}
+```
+
+按照我们最新的约定，以大写字母开头的标签会使用作用域中对应的值作为 `type`——例如，`<Greeting />` 会变成 `{ type: Greeting, props: {} }`，其中 `Greeting` 是一个函数。
+
+`<Clock />` 也是如此。`Clock` 以大写字母开头，所以我们得到 `{ type: Clock, props: {} }`。然而，`Clock` 不是普通的 `import`，而是 `import tag`——我们之前把它定义为与普通 `import` 不同的东西。它给我们的不是 `Clock` *函数*，而是一种*引用*——一个以后能让我们从另一台计算机加载 `Clock` 源代码的标识符。这就是那个 `'/src/Clock.js#Clock'` 字符串。
+
+现在是引入一些术语的好时机：
+
+*   **Early 组件**是在 Early 世界中执行的组件。在这个例子中，`App` 和 `Greeting` 是 Early 组件。
+*   **Late 组件**是被发送到 Late 世界去完成工作的组件。在这个例子中，`Clock` 将是唯一的 Late 组件。
+
+你会想先溶解 Early 组件。这会给你 Late 世界的代码以及这段代码所需的数据。你将*用*这段代码构建 Late 世界，并在那里溶解 Late 组件。*那*会给你原语。
+
+听起来是个计划。
+
+我们在 Early 世界中运行 `interpret(<App />)` 并检查结果。注意所有 Early 组件（`App` 和 `Greeting`）是如何从输出中溶解掉的：
+
+```
+{
+  type: 'div',
+  props: {
+    children: [{
+      type: 'p',
+      props: {
+        children: [
+          'Hello, ',
+          { type: 'input', props: { placeholder: 'Who are you?' } }
+        ]
+      }
+    }, {
+      type: 'p',
+      props: {
+        children: [
+          'The time is ',
+          {
+            type: '/src/Clock.js#Clock',
+            props: {}
+          }
+        ]
+      }
+    }]
+  }
+}
+```
+
+剩下的只有原语（`'div'`、`'p'`、`'input'`）和……Late 组件（这里只有 `'/src/Clock.js#Clock'`）。我们不需要为 Late 组件做任何特殊处理——因为它们不是函数，`interpret` 不会尝试执行它们，而是把它们留在原处，就像它对待原语一样：
+
+```
+function interpret(json) {
+  if (json && json.type) {
+    if (typeof json.type === 'function') {
+      let Component = json.type;
+      let props = json.props;
+      let result = Component(props);
+      return interpret(result);
+    } else {
+      let children = json.props.children?.map(interpret);
+      let props = { ...json.props, children };
+      return { type: json.type, props };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(interpret);
+  } else {
+    return json;
+  }
+}
+```
+
+由于 `interpret` 的结果不包含任何函数，它可以很容易地转换成字符串，然后通过网络发送：
+
+```
+const lateComponents = intepret(<App />);
+const jsonString = JSON.stringify(lateComponents);
+```
+
+之后，在另一台计算机上，你可以把这个字符串再转回对象。你可能会忍不住立即把它传给 `perform` 来创建 DOM 树：
+
+```
+const lateComponents = JSON.parse(jsonString);
+const tree = perform(lateComponents);
+```
+
+然而，这会[给你一个错误](https://codesandbox.io/p/devbox/r2c-forked-t2v9js?file=%2Fsrc%2Findex.mjs)：
+
+```
+function perform(json) {
+  if (json && json.type) {
+    let tagName = json.type;
+    // 🔴 Failed to execute 'createElement' on 'Document':
+    // 提供的标签名（'/src/Clock.js#Clock'）不是有效名称。
+    let node = document.createElement(tagName);
+    // ...
+    return node;
+  } else {
+    // ...
+  }
+}
+```
+
+对了——`perform` 只处理原语，但 `Clock` 是一个 Late 组件。你已经在 Early 世界中溶解了 Early 组件（`App`、`Greeting`）。现在你在 Late 世界中，所以是时候溶解 Late 组件（`Clock`）了。
+
+你试着调用 `interpret` 来溶解剩下的组件：
+
+```
+const lateComponents = JSON.parse(jsonString);
+const primitives = interpret(lateComponents);
+```
+
+但什么也没发生。`'/src/Clock.js#Clock'` 标签还在那里。
+
+*空间冷笑。*
+
+啊对，`interpret` 只会尝试执行*函数*：
+
+```
+function interpret(json) {
+  if (json && json.type) {
+    if (typeof json.type === 'function') {
+      let Component = json.type;
+      let props = json.props;
+      let result = Component(props);
+      return interpret(result);
+    } else {
+      let children = json.props.children?.map(interpret);
+      let props = { ...json.props, children };
+      return { type: json.type, props };
+    }
+  } else if (Array.isArray(json)) {
+    return json.map(interpret);
+  } else {
+    return json;
+  }
+}
+```
+
+但你手上的只是一个*引用*，一个告诉你去哪里*获取* `Clock` 函数的地址。你仍然需要在这台计算机上真正加载它。
+
+*空间递给你这个：*
+
+```
+async function loadReference(lateReference) {
+  // 假装它是通过网络或从打包器缓存加载的。
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  if (lateReference === '/src/Clock.js#Clock') {
+    return Clock;
+  } else {
+    throw Error('Module not found.');
+  }
+}
+```
+
+好吧，假设有人给了你一个能替你做这件事的函数。也许它由环境提供，或者由那些开发打包器的好心人提供。你可以把 `'/src/Clock.js#Clock'` 交给它，它会异步地加载 `Clock`：
+
+```
+await loadReference('/src/Clock.js#Clock');
+// function Clock(){}
+```
+
+这是拼图的最后一块。
+
+每当你的 `JSON.parse` 函数遇到看起来像引用的东西时，就把它传给 `loadReference()`，并保存好每一个这样的 Promise：
+
+```
+const pendingPromises = [];
+const lateComponents = JSON.parse(jsonString, (key, value) => {
+  if (typeof value?.type === 'string' && value.type.includes('#')) {
+    // `value.type` 是一个引用，但我们想要一个函数。
+    // 开始加载那个函数。
+    const promise = loadReference(value.type).then(fn => {
+      // 函数加载后，直接在解析后的 JSON 中替换它。
+      value.type = fn;
+    });
+    // 记录它何时完成。
+    pendingPromises.push(promise);
+  }
+  return value;
+});
+ 
+// 等待所有引用加载完毕。
+await Promise.all(pendingPromises);
+```
+
+经过这番处理后，`lateComponents` 对象会是这样：
+
+```
+{
+  type: 'div',
+  props: {
+    children: [{
+      type: 'p',
+      props: {
+        children: [
+          'Hello, ',
+          { type: 'input', props: { placeholder: 'Who are you?' } }
+        ]
+      }
+    }, {
+      type: 'p',
+      props: {
+        children: [
+          'The time is ',
+          {
+            type: Clock, // 加载好的函数！
+            props: {}
+          }
+        ]
+      }
+    }]
+  }
+}
+```
+
+里面只有 Late 组件和原语——所有引用都已加载。
+
+现在你终于可以把它传给 `interpret`，执行 `Clock` 了。这会给你一棵原语树，你可以用 `perform` 把它变成 DOM：
+
+```
+const primitives = interpret(lateComponents);
+const tree = perform(primitives);
+document.body.appendChild(tree);
+```
+
+这样，你就完成了！
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-k9jl8g?file=%2Fsrc%2Findex.mjs)
+
+我们再看一眼全貌，回顾一下它是如何工作的。
+
+在 Early 世界中，你用 `interpret` 溶解所有 Early 组件。这会给你一个字符串，它表示如何在 Late 世界中完成计算：
+
+```
+const lateComponents = intepret(<App />);
+const jsonString = JSON.stringify(lateComponents);
+```
+
+在 Late 世界中，你解析这个字符串，加载引用，然后用 `interpret` 溶解 Late 组件。这会给你留下一棵原语树：
+
+```
+const pendingPromises = [];
+const lateComponents = JSON.parse(jsonString, (key, value) => {
+  if (typeof value?.type === 'string' && value.type.includes('#')) {
+    const promise = loadReference(value.type).then(fn => {
+      value.type = fn;
+    });
+    pendingPromises.push(promise);
+  }
+  return value;
+});
+ 
+await Promise.all(pendingPromises);
+const primitives = interpret(lateComponents);
+```
+
+最后，这些原语已准备好被转换成 DOM 或其他格式：
+
+```
+const tree = perform(json);
+document.body.appendChild(tree);
+```
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-k9jl8g?file=%2Fsrc%2Findex.mjs)
+
+恭喜！
+
+你已经把一个计算同时在时间和空间上拆分了。
+
+* * *
+
+### 甜甜圈
+
+空间在你面前折叠起来，终于承认你与它平起平坐。
+
+*“你做得很好。”*
+
+但它并没有让开。相反，空间继续折叠，把自己扭成一个奇怪的形状——向前，然后由内向外翻转，在中间形成一个虫洞。
+
+它看起来有点像一个甜甜圈。
+
+一个包罗万象、美丽而又可怕的甜甜圈。
+
+*“但你还没完成。”*
+
+等等……你以前听过这个声音。
+
+难道是……
+
+*“时间？”*
+
+第二条血条出现了。
+
+* * *
+
+### 组合
+
+这是你的程序：
+
+```
+import tag { Clock } from './Clock';
+ 
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>
+        The time is: <Clock />
+      </p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+```
+
+```
+export function Clock() {
+  return new Date().toString();
+}
+```
+
+[运行代码。](https://codesandbox.io/p/devbox/r2c-forked-k9jl8g?file=%2Fsrc%2Findex.mjs)
+
+要打败时空，你需要修改程序，让 `Clock` 显示来自 Early 世界的时间，而包裹 `<Clock>` 的那个 `<p>` 的颜色由 Late 世界决定。
+
+第一部分很简单。
+
+要让 `Clock` 显示来自 Early 世界的时间，只需把它移回上面去：
+
+```
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p>
+        The time is: <Clock />
+      </p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+```
+
+现在你需要指定 `<p>` 的颜色。假设 `perform` 函数已经知道如何处理 `style` 这个 prop，你可以这样指定它：
+
+```
+<p style={{
+  color: prompt('Pick a color:')
+}}>
+  <Clock />
+</p>
+```
+
+这很好，但时空说 `prompt` 只存在于 Late 世界中。目前 `App` 组件定义在 Early 世界里，而那里不存在 `prompt`：
+
+```
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p style={{
+        // 🔴 ReferenceError: prompt is not defined.
+        color: prompt('Pick a color:')
+      }}>
+        <Clock />
+      </p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+```
+
+也许你可以把 `App` 组件本身移到 Late 世界中？这解决了 `prompt` 的问题，但 `Greeting` 和 `Clock` 在 Late 世界中都不可用：
+
+```
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+```
+
+```
+export function App() {
+  // 🔴 ReferenceError: Greeting is not defined
+  // 🔴 ReferenceError: Clock is not defined
+  return (
+    <div>
+      <Greeting />
+      <p style={{
+        color: prompt('Pick a color:')
+      }}>
+        <Clock />
+      </p>
+    </div>
+  );
+}
+```
+
+也许你可以把 `Greeting` 和 `Clock` 也移下去？
+
+```
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p style={{
+        color: prompt('Pick a color:')
+      }}>
+        <Clock />
+      </p>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+```
+
+等等，可你想让 `Clock` 显示来自 Early 世界的时间。你不能把它移下去。这越来越让人挠头了……
+
+也许你可以把 `App` 留在 Late 世界，但用 `import tag` 去引用 Early 世界中的 `Greeting` 和 `Clock`？我们试试：
+
+```
+export function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+export function Clock() {
+  return new Date().toString();
+}
+```
+
+```
+// 🔴 无法从 Late 模块导入 Early 标签。
+import tag { Clock, Greeting } from './early';
+ 
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p style={{
+        color: prompt('Pick a color:')
+      }}>
+        <Clock />
+      </p>
+    </div>
+  );
+}
+```
+
+不，这说不通。它说不通的原因，和反引号*里面*的函数无法调用反引号*外面*的函数是一样的：
+
+```
+function greeting() {
+  function showToast() {
+    /* ... */
+  }
+ 
+  return `function resume() {
+    const name = prompt('Who are you?');
+    // 🔴 ReferenceError: showToast is not defined
+    showToast('Hello, ' + name);
+  }`;
+}
+```
+
+`import tag` 语法只能*从下面导入，不能从上面导入*。
+
+时空甜甜圈开始向你收拢。你没剩多少时间思考了。你还有最后一个来自半遗忘梦境的点子。
+
+`import tag` 语法只能从*下面的世界*导入东西。但你不是还发明了一个姊妹语法 `import rpc`，可以*跨越网络边界*导入函数吗？如果 Early 世界还在那里的某个地方，也许它可以响应你的请求，返回 `Greeting` 和 `Clock` 的结果？
+
+```
+export function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+export function Clock() {
+  return new Date().toString();
+}
+```
+
+```
+import rpc { Clock, Greeting } from './early';
+ 
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <p style={{
+        color: prompt('Pick a color:')
+      }}>
+        <Clock />
+      </p>
+    </div>
+  );
+}
+```
+
+甜甜圈晃了晃，停止旋转了片刻。
+
+*这*就是答案吗？
+
+看起来确实行得通——
+
+*“不许有额外的网络调用。你必须一次搞定一切。”*
+
+甜甜圈重新开始旋转，并开始包裹住你。虫洞越来越近。你不再害怕它，几乎是在迎接它。
+
+一个念头闪过你的脑海。
+
+甚至不是一个念头——而是一幅画面。
+
+一个形状。
+
+```
+import tag { Donut } from './Donut';
+ 
+export function App() {
+  return (
+    <div>
+      <Greeting />
+      <Donut>
+        The time is: <Clock />
+      </Donut>
+    </div>
+  );
+}
+ 
+function Greeting() {
+  return (
+    <p>
+      Hello, <input placeholder="Who are you?" />
+    </p>
+  );
+}
+ 
+function Clock() {
+  return new Date().toString();
+}
+```
+
+```
+export function Donut({ children }) {
+  return (
+    <p style={{
+      color: prompt('Pick a color:')
+    }}>
+      {children}
+    </p>
+  );
+}
+```
+
+你无法从未来*调用*过去，但你可以把过去*包裹*进未来。你不知道这意味着什么，但你知道你现在没有违反任何规则。
+
+所以，它一定行得通。
+
+*你闭上了眼睛。*
+
+* * *
+
+### 一段梦境
+
+太初有标签，  
+标签在 Early 世界里，  
+标签就是 `<App />`。
+
+`<App />`
+`App` 是什么？
+
+它是一个 `<div>`，  
+里面有一个 `<Greeting>`，  
+还有一个 `<Donut>`，  
+里面有一个 `<Clock />`。
+
+```
+<div>
+  <Greeting />
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+`<div>` 是什么？
+
+```
+<div>
+  <Greeting />
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+我们还不知道。
+
+`<Greeting />` 是什么？
+
+```
+<div>
+  <Greeting />
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+它是一个 `<p>`，  
+里面有一个 `<input>`。
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+`<p>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+我们还不知道。
+
+`<input>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+我们还不知道。
+
+`Donut` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+*我们还不知道。*
+
+`Clock` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: <Clock />
+  </Donut>
+</div>
+```
+
+它是这个世界的  
+时间，  
+这个世界是 Early，  
+而它的时间  
+已到尽头。
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </Donut>
+</div>
+```
+
+再见，`App`，  
+再见，`Greeting`，  
+再见，`Clock`。
+
+_***_
+
+*（调制解调器的声音）*
+
+_***_
+
+`<div>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </Donut>
+</div>
+```
+
+我们暂时不关心。
+
+`<p>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </Donut>
+</div>
+```
+
+我们暂时不关心。
+
+`<input>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </Donut>
+</div>
+```
+
+我们暂时不关心。
+
+`<Donut>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <Donut>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </Donut>
+</div>
+```
+
+*让我们加载它。*
+
+`<script src="chunk123.js"></script>`
+哦，一个 `Donut`  
+是一个 `<p>`，  
+颜色由用户来选。  
+尽管选吧！
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <p style={{ color: 'purple' }}>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </p>
+</div>
+```
+
+*你已作出选择。*
+
+`<p>` 是什么？
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <p style={{ color: 'purple' }}>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </p>
+</div>
+```
+
+我们暂时不关心——  
+关心它不是我们的事。  
+再见，`Donut`；  
+让我们把这个  
+交给某段  
+C++ 代码。
+
+```
+<div>
+  <p>
+    Hello, <input placeholder="Who are you?" />
+  </p>
+  <p style={{ color: 'purple' }}>
+    The time is: Wed Apr 09 2025 15:13:04 GMT+0900 (Japan Standard Time)
+  </p>
+</div>
+```
+
+[运行代码。](https://codesandbox.io/p/sandbox/8dgdz8?file=%2Fsrc%2Findex.mjs)
+
+* * *
+
+## 尾声
+
+还有一些我们没讲到的内容，但恐怕我的纸快用完了。如果有心的读者沿着这条思路继续下去，可能会发现以下几点：
+
+*   **毒丸（Poison Pills）：** 随着代码库的增长，你会越来越发现自己不想时刻去想自己处在哪个世界——你只想声明自己所依赖的能力。例如，如果你在从数据库读取数据，而整个数据库都存在于 Early 世界中，你会希望有某种方式给数据库模块下“毒丸”，使得从 Late 世界导入它会立即导致构建错误（而不是，比如说，试图把数据库代码打包进去）。在 Node.js 中，[自定义用户条件（custom user conditions）](https://nodejs.org/api/packages.html#resolving-user-conditions)提供了一种方便的方式来强制执行这一点。
+*   **指令（Directives）：** 事实证明，`import tag` 和 `import rpc` 虽然在理论上很优雅，但在实践中用起来并不顺手。两个世界之间的技术隔离必须保持坚固；然而，在心理上，你会逐渐转向这样写代码：仿佛处在哪个世界并不重要。有了毒丸来确保东西不会在*错误*的世界中执行，你基本上可以“自动驾驶”般地移动边界——四处挪动代码，并根据构建错误开凿新的“门”。当你*想要*开凿一扇“门”时，你会发现把它标记在 *`export` 旁边*比标记在 `import` 的地方更自然。这能让你快速地让边界“出现”或“消失”——被导入的模块处在哪个世界成了一个实现细节。给导出加注解的一种方式是（滥）用[指令语法](https://stackoverflow.com/a/37535869)。如果你再把 Early 和 Late 改名为更有描述性的名字（例如，“Early”可以变成“Server（服务器）”，“Late”可以变成“Client（客户端）”），那么 `import tag` 就可以被放在 `export` 旁边的 [`'use client'`](https://react.dev/reference/rsc/use-client) 取代，而 `import rpc` 可以变成 [`'use server'`](https://react.dev/reference/rsc/use-server)。
+*   **数据获取：** Early 世界（或者你愿意的话，叫 Server 世界）是获取数据的完美场所，因为你有机会把代码部署到低延迟的环境中。调整代码让“思考”阶段可以是异步的并不难；你可以把它当作练习，看看能否做到。
+*   **流式执行：** 在我们的例子中，计算的每个阶段都是顺序发生的：前一个阶段完全结束之前，下一个阶段不会开始。然而在实践中，由于组件可以由外向内执行，你可以把*所有*阶段混合起来，以非阻塞的方式执行它们。具体来说，与其等待一整棵 Late 组件（或者我们该叫它们 Client 组件？）的 JSON 树，你可以开发一种专门的传输格式，在未完成的计算处留下“空洞”，之后再用更多 JSON 填补这些空洞。
+*   **有状态的 Late 世界：** 如果你引入状态（State）的概念，Late 组件会变得有用得多。这再次强调了标签是一个*潜在的*函数调用——它可能发生，可能不发生，也可能*发生很多次*。每当你改变某个 Late 组件的状态时，你都可以重新执行它，而不影响任何 Early 组件。这确保了状态变化能保持可预期的即时性。
+*   **重新利用 Early 和 Late 世界：** 记住，Early 和 Late 世界不必与现有的“服务器”和“客户端”概念一一对应。例如，如果你的 Late 组件是有状态的，而你有一台服务器，你可能会发现在那台服务器上*同时*运行 Early *和* Late 世界很有用。在服务器上，你会用*初始*状态调用 Late 世界——以生成一棵初始的原语树，然后把它转换成像 HTML 这样的格式。这让你可以很早就开始向用户展示内容——在任何 Late 组件在用户的机器上加载之前。
+*   **缓存：** Early 世界不必按需运行。事实上，你可以提前运行它，并存储其计算的中间结果（这通常被称为静态站点生成）。如果你雄心勃勃，你甚至可以再添加一个世界——[缓存世界](https://nextjs.org/docs/app/api-reference/directives/use-cache)——来跨请求复用部分计算。
+
+如果你想玩一玩最终的例子，请便：
+
+[运行最终代码。](https://codesandbox.io/p/sandbox/8dgdz8?file=%2Fsrc%2Findex.mjs)
+
+如果你想玩真正的东西，但又不想使用框架，[Parcel 最近发布了对 React Server Components 的支持](https://parceljs.org/recipes/rsc/)，一定要去看看。
+
+感谢阅读！
