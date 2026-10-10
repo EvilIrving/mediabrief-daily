@@ -2,4 +2,4 @@ https://lucumr.pocoo.org/2026/10/6/codemode/
 
 什么是 Codemode（What is Codemode） ｜ Armin Ronacher ｜ 文章 ｜ https://lucumr.pocoo.org/2026/10/6/codemode/
 
-Armin Ronacher 介绍他在 agent 工具 Pi 1.0 里加入的 Codemode（名字借自 Cloudflare），并说明它与他此前"多用脚本和 CLI、少塞自定义工具"的主张一脉相承。bash 擅长组合程序，但读图、子 agent 编排等能力只能做成 harness 的原生工具。他把系统分成受信任的"大脑"和执行 bash 的"手"，Codemode 让模型在大脑一侧用 JavaScript 编排工具调用，运行在无网络、无文件系统、内存受限的 WASM 版 QuickJS 沙箱中。好处是中间结果不必进上下文，可拿到结构化输出、用 Promise 表达并发，还能把状态存进会话。他举了生图、批量分类 issue、调用 Sentry MCP 等例子，并建议 MCP 返回稳定的结构化 JSON。结论是这不是否定 CLI，而是生态走向"代码"；持久化、二进制和小模型适配仍待解决。
+Armin Ronacher 介绍他在 agent 工具 Pi 1.0 里加入的 Codemode（名字借自 Cloudflare），并说明它与他此前"多用脚本和 CLI、少塞自定义工具"的主张一脉相承。bash 擅长组合程序，但读图、子 agent 编排等能力只能做成 harness 的原生工具。他把系统分成受信任的"大脑"和执行 bash 的"手"，Codemode 让模型在大脑一侧用 JavaScript 编排工具调用，运行在无网络、无文件系统、内存受限的 WASM 版 QuickJS 沙箱中。好处是中间结果不必进上下文，可拿到结构化输出、用 Promise 表达并发，还能把状态存进会话。他举了生图、批量分类 issue、调用 Sentry MCP 等例子，并建议 MCP 返回稳定的结构化 JSON。结论是这不是否定 CLI，而是生态走向"代码"；持久化、二进制和小模型适配仍待解决。他还批评 Cloudflare MCP 那种"Codemode 套 Codemode"的做法，双层转义、内层又调不了外层工具，体验很糟。

@@ -2,12 +2,4 @@ https://www.joshwcomeau.com/css/anchor-positioning/
 
 锚点定位入门（Getting Started with Anchor Positioning） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/anchor-positioning/
 
-Josh W. Comeau 的一篇 CSS 教程，介绍浏览器新的锚点定位 API（Anchor Positioning API）。网页上常见一个元素"粘"着另一个元素：工具提示浮在目标上方，下拉菜单从触发按钮往下展开。看似简单，难在细节，比如目标正好贴着视口顶部时，提示框会被裁掉。过去只能靠 JavaScript，代码往往很繁琐。他坦言自己刚学时也被大量选项弄得发懵，于是按二八法则，只讲能解决大约八成实际场景的那两成核心用法。
-
-基本概念是两个元素：锚点元素，也就是被粘附的基准；目标元素，即浮动的那个。这个 API 是定位布局模式的扩展，目标必须设 position: absolute 或 fixed。帮他理解的一点是：绝对或固定定位通常把元素锚定在包含块的边缘，而锚点定位让你可以拿另一个元素当锚点。做法分两步：用 anchor-name 给锚点起一个以两个短横线开头的名字（形似 CSS 自定义属性，但并不是，不能用 var() 取值），再在目标上用 position-anchor 指向它。然后用 position-area 指定目标相对锚点的位置：设想以锚点为中心格、在包含块里切出 3×3 的网格，给一个或两个值来选格子，比如 top left；只给一个值如 top，目标会横跨垂直方向上的整行三列。至少要有一个 position-area 值，否则目标不会被锚定。目标默认紧贴锚点，没有类似 gap 的属性，可以用 margin 留间距。
-
-他认为最有用的是它的动态性。视口缩小时，只要目标尺寸是弹性的（用 max-width 而非 width），它会自动缩小以免溢出，自己用 JavaScript 写过提示逻辑的人都知道这有多头疼。真正的难题是空间根本不够时，比如锚点靠近视口顶部，提示框应该翻到下方。position-try-fallbacks 可以解决：浏览器在滚动时持续检测目标是否溢出，一旦溢出就依次尝试列出的后备位置（可以用逗号分隔多个，但他还没遇到需要多个的情况），放得下就移过去，直到下一次溢出。
-
-但翻到下方后，提示框的小三角仍然朝下。原版 API 无法得知目标用的是首选位置还是后备位置，只能回到 JavaScript，像是前进两步又退一步。CSS 工作组在第二版里给出了方案：一种新的容器查询。把目标设为 anchored 容器，就能用 @container anchored(fallback: bottom) 在使用后备位置时应用不同样式。因为容器不能对自身做出反应，他把结构拆成负责定位的父元素 .target 和负责外观（包括用 border-shape 画小三角）的子元素 .tooltip。截至 2026 年 7 月，第二版只在 Chromium 浏览器可用，但锚点定位已纳入各大浏览器厂商共同推进的 Interop 2026，他预计年底会在其他浏览器落地。另一个办法是用 flip-block 关键字代替显式写 bottom：它在块方向（通常是垂直方向）翻到对侧，还会连带翻转其他方向性属性，比如 margin-bottom 在翻转后自动变成上边距。这个例子里改小三角仍需容器查询，但很多场景 flip-block 就足够了，而且所有主流浏览器都已支持。这一点他感谢 Jake Archibald 告知，并推荐对方的文章《恰到好处的可定制 select 高度》。
-
-如何照顾旧浏览器？可以用 OddBird 的锚点定位 polyfill，但它不支持第二版的容器查询，还有其他限制；也可以用 @supports 做层层递进的体验：不支持时提示框固定在视口顶部，支持锚点定位时正常锚定但没有小三角，支持 anchored 容器时再加上会翻转的小三角。他坦白说，至少目前很多情况还是用 JavaScript 库更好，正如 Jake Archibald 指出的，一些现存 bug 让 API 的某些部分在各浏览器上并不可靠，遇到问题别怪自己。但浏览器厂商正在积极改进，他相信一两年内这会成为网页上做锚定界面的最佳方式。
+Josh W. Comeau 的 CSS 教程，按二八法则介绍浏览器新的锚点定位 API。工具提示、下拉菜单这类"粘"在另一个元素上的界面，过去只能靠繁琐的 JavaScript，难点在于贴近视口边缘时会被裁掉。新 API 中，目标元素用绝对或固定定位，先用 anchor-name 给锚点命名，再用 position-anchor 指向它，并用 position-area 在以锚点为中心的 3×3 网格里选择位置。他认为最有用的是它的动态性：空间不足时目标可以自动缩小，position-try-fallbacks 还能在溢出时翻到后备位置。但翻转后小三角的方向无法得知，第二版用一种新的容器查询解决这个问题，目前只有 Chromium 支持，不过已纳入 Interop 2026；flip-block 关键字则已获所有主流浏览器支持。旧浏览器可以用 polyfill 或 @supports 渐进增强。他坦言目前一些 bug 让 JavaScript 库在很多场景下仍更可靠，但相信一两年内这会成为最佳方式。他提醒目标默认紧贴锚点，需要间距时用 margin。

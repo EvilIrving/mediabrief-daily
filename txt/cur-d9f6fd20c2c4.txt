@@ -2,12 +2,8 @@ https://overreacted.io/algebraic-effects-for-the-rest-of-us/
 
 写给普通人的代数效应（Algebraic Effects for the Rest of Us） ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/algebraic-effects-for-the-rest-of-us/
 
-Dan Abramov 用 JavaScript 读者能懂的方式介绍代数效应。他说自己读学术 PDF 一直没弄懂，直到同事 Sebastian（React 团队成员，提出过 Hooks 和 Suspense）反复拿它当 React 内部设计的心智模型，这甚至成了团队里的梗。他强调只用 React 完全不必懂它，这是一种研究阶段的语言特性，只有少数实验语言支持，OCaml 正在推进，读者补充说 LISP 也有类似机制；了解它有点像 1999 年去思考 async/await。
+Dan Abramov 用 JavaScript 读者能懂的方式介绍代数效应。他读学术论文一直没弄懂，直到 React 团队的 Sebastian 反复拿它当 React 内部设计的心智模型。他强调用 React 完全不必懂它，这是研究阶段的语言特性，了解它有点像 1999 年去思考 async/await。
 
-他从 try/catch 讲起：在 getName 里抛错，会穿过 makeFriends 冒泡到最近的 catch，中间层不必管错误处理；但进了 catch 就回不去了。他虚构了一种"ES2025"语法：用 perform 代替 throw 执行一个效应，用 try/handle 捕获它，处理器可以 resume with 一个值，让程序跳回原处、拿着这个值继续执行，比如名字缺失时由外层补上"Arya Stark"。他说可以先把它理解为"可恢复的 try/catch"，但用途远不止错误恢复。
+他从 try/catch 讲起：错误会穿过中间层冒泡到最近的 catch，但进了 catch 就回不去了。他虚构了一种语法：用 perform 执行一个效应，外层 handle 捕获后可以 resume with 一个值，让程序回到原处继续执行，可以先理解为"可恢复的 try/catch"。它对异步的意义在于：JavaScript 里一个函数变成 async，所有调用者都得跟着变，而效应处理器可以等一秒、查完数据库再恢复，中间的函数一行都不用改。它还能把"做什么"和"怎么做"分开，比如遍历目录的函数只管 perform 记日志、读文件，具体实现由外层决定，测试时换成假的就行。效应通常会写进类型签名，所以不会失控。至于要不要加进 JavaScript，他坦言不知道，可能太强大了。
 
-接着讲它对异步的意义：在 JavaScript 里一个函数变成 async，所有调用者都得跟着变，生成器也一样，这叫函数的"颜色"。而在代数效应里，处理器可以过一秒、甚至查完数据库后再 resume，中间的函数一行都不用改。resume with 就像只能调用一次的回调，学名"一次性定界续延"；抛异常会展开调用栈、销毁局部变量，执行效应则是把函数剩余部分打包成回调。
-
-他指出代数效应源自函数式编程，在 Haskell 这类禁止任意副作用的语言里，它能比 Monad 更省事地传递效应；即便在 JavaScript 这样的非纯语言里，它也能把"做什么"和"怎么做"分开。例子是一个只管 perform 打开目录、记日志、处理文件的遍历函数，外层再决定用哪个日志库和文件系统实现，这些处理器还能做成库、互相嵌套，测试时换成假文件系统、给日志拍快照。关于类型，他说效应通常会写进函数签名，不会出现无法追踪的随机效应；虽然这也算一种"颜色"，但改类型注解不是语义变化，还能用空操作或模拟实现把效应封存起来。要不要把它加进 JavaScript，他坦言不知道，可能对这门语言来说太强大了，更适合少用可变状态、标准库全面拥抱效应、有模式匹配和效应类型的语言，那种语言也许能编译成 JS。
-
-最后谈与 React 的关系，他自认有点牵强。Suspense 中组件读缓存时数据还没到，read() 会抛出一个 Promise，React 接住后等它解决再重渲染，这不是真正的代数效应，却达成了同样的目标：底层代码把控制权交给上层，中间层不知情、也不被 async 污染，因为 React 的编程模型假定幂等，重渲染就相当于恢复执行。Hooks 也类似：useState 靠 React 对象上可变的"当前调度器"和"当前组件"字段知道自己属于谁，概念上可以看成由 React 处理的 perform State() 效应。他总结说，在 JS 里抛异常可以粗略模拟 IO 效应，在 try/finally 中恢复的调度器字段可以粗略模拟同步效应处理器，用生成器能更逼真但得把一切都变成生成器。他说自己一直搞不懂 Monad，代数效应却一下就通了；如果到 2025 年还没有主流语言采用它，他会失望。文末推荐了 OCaml 效应教程等资料，并提到 Common Lisp 的条件系统和 call/cc 都是更早的先例。
+最后他有点牵强地联系 React：Suspense 让组件在数据未到时抛出 Promise，React 等它解决后重渲染；Hooks 靠 React 记录"当前组件"来知道 useState 属于谁。两者都不是真正的代数效应，却达成了类似目标。他说 Monad 一直没懂，代数效应却一下就通了，并推荐了 OCaml 等资料。

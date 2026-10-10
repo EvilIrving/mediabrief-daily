@@ -1,103 +1,238 @@
 https://overreacted.io/how-to-fix-any-bug/
 
-怎样修好任何 bug
+我最近在用 vibecoding 的方式写一个小应用，几天前碰到了一个 bug。
 
-我最近在 vibecoding 一个小应用，几天前撞上了一个 bug。
+这个 bug 大致是这样的。想象一个 Web 应用里的某个路由。这个路由展示一系列步骤——本质上就是一张张卡片。每张卡片上有个按钮，点击会滚动到下一张卡片。一切都运行得很好。可是，我一试着在这个按钮里*同时*调用服务器，滚动就不灵了。它会抖动、失效。
 
-bug 大致是这样。想象 web 应用里有一条路由，展示一串步骤——本质上是卡片。每张卡片有一个按钮，点击后滚到下一张。一切正常。可一旦我试着在那个按钮里也调用服务端，滚动就不工作了：会抖动、会坏掉。
+也就是说，加一个远程调用，不知怎么就把滚动搞坏了。
 
-所以，加上一次远程调用，不知怎么就弄坏了滚动。
+我不确定是什么导致了这个 bug。很明显，新加的远程服务器调用（我是通过 [React Router actions](https://reactrouter.com/start/framework/actions) 做的）以某种方式干扰了我的 [`scrollIntoView`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) 调用。但我说不清是怎么干扰的。我起初以为问题出在 React Router 重新渲染了我的页面（action 会触发数据重新获取），但原则上，重新获取数据没有理由干扰正在进行的滚动。服务器返回的是同样的条目，所以本不该改变任何东西。
 
-我不确定原因。显然，新加的远程服务端调用（我通过 React Router 的 actions 做的）不知怎地干扰了我的 scrollIntoView 调用。但我说不清怎么干扰的。起初以为是 React Router 重新渲染了页面（action 会导致数据重新获取），但原则上没有理由说重新获取会干扰正在进行的滚动。服务器返回的是相同条目，不该改变任何东西。
+在 React 里，重新渲染[应该](https://overreacted.io/writing-resilient-components/#principle-2-always-be-ready-to-render)永远是安全的。一定是别的地方出了问题——要么在我的代码里，要么在 React Router 里，要么在 React 里，甚至可能在浏览器本身。
 
-在 React 里，重渲染应当始终是安全的。另有什么不对——要么在我的代码里，要么在 React Router、React，甚至浏览器本身。
+这个 bug 要怎么修？
 
-我怎么修这个 bug？
+*能让 Claude 来修吗？*
 
-能让 Claude 来修吗？
+* * *
 
-第 0 步：直接修它
+## 第 0 步：直接修
 
-我让 Claude 修这个问题。
+我让 Claude 去修这个问题。
 
-Claude 试了几手。它改写了包含 scrollIntoView 的 useEffect 里的条件，并说 bug 修好了。但没有用。然后它试着把平滑滚动改成瞬间滚动，还有别的一些改动。
+Claude 试了几种办法。它改写了包含 `scrollIntoView` 调用的那个 `useEffect` 里的条件，然后说 bug 修好了。但并没有用。接着它又试着把 `smooth` 滚动改成 `instant`，还有其他一些改动。
 
-每一次，Claude 都得意地宣布问题解决了。
+每一次，Claude 都会自豪地宣布问题已经解决。
 
 但并没有！
 
-bug 还在。
+bug 依然在那里。
 
-这听起来像是在抱怨 Claude，但写这篇文章的真正动机是：我看到人类工程师（包括我自己）也犯同样的错。所以我想记录下我通常用来修 bug 的流程。
+这听起来可能像是在抱怨 Claude，但其实我写这篇文章的动因是，我看到人类工程师（包括我自己）也会犯同样的错误。所以我想把我平时修 bug 的流程记录下来。
 
-为什么 Claude 一错再错？
+为什么 Claude 一再出错？
 
-因为**它没有 repro**。
+Claude 一再出错，是因为**它没有复现用例（repro）**。
 
-第 1 步：找到 repro
+* * *
 
-repro，或称复现用例，是一组说明：照着做，你就能可靠地判断 bug 是否还在。它就是"测试"。repro 说明做什么、期望发生什么、实际发生了什么。
+## 第 1 步：找到复现用例
 
-在我看来，我已经有一个不错的 repro：1）点按钮；2）期望滚下去，实际却是滚动抖动。更好的是，bug 每次都发生。
+*repro*，即复现用例，是一串操作步骤，照着做就能可靠地判断 bug 是否仍然存在。它就是"测试"。一个 repro 说明要做什么、*预期*会发生什么、*实际*发生了什么。
 
-若 repro 不可靠（比如只有 30% 的尝试会出现），我就得逐步去掉不确定性来源（例如录制网络并在后续尝试中 mock），或者忍受每次潜在修复都要测更多遍的效率损失。幸运的是，我的 repro 很可靠。
+在我看来，我已经有了一个不错的 repro：
 
-然而对 Claude 来说，我的 repro 基本上不存在。
+1.   点击按钮。
+2.   *预期*行为是向下滚动，但*实际*行为是滚动抖动。
 
-问题在于，repro 里的"滚动抖动"对 Claude 毫无意义。Claude 没有眼睛或其他直接感知抖动的方式。所以它本质上是在没有 repro 的情况下操作——它试图修 bug，却没有做任何具体验证。即便是最优秀的我们也常常如此。
+更好的是，这个 bug 每次都会出现。
 
-这种情况下 Claude 没法严格照我的 repro 做，因为它不能"看"屏幕（截几张图也抓不住抖动）。所以若想让 Claude 来修，我的第一个 repro 就不合适。这看似 Claude 的问题，但和别人协作时并不罕见——有时 bug 只在一台机器、一个用户或特定设置下出现。
+如果我的 repro 不可靠（比如只有 30% 的尝试会出现），我要么得逐步消除各种不确定因素（比如把网络请求录下来，在以后的尝试中 mock 掉），要么就得忍受效率损失，把每个可能的修复都多测很多次。好在我的 repro 是可靠的。
 
-幸运的是有个技巧：只要你能说服自己新 repro 仍有助于推进原问题，你就可以用一个 repro 换另一个。
+然而，对 Claude 来说，我的 repro 基本上等于不存在。
 
-下面是如何改 repro，以及要注意的事。
+问题在于，我的 repro 里说的"滚动抖动"对 Claude 毫无意义。Claude 没有眼睛，也没有别的办法直接感知抖动。所以 Claude 实际上是在*没有* repro 的情况下工作——它尝试修 bug，却没有做任何具体的验证。这种事太常见了，即使是我们中最优秀的人也会这样。
 
-第 2 步：收窄 repro
+在这个例子里，Claude *不可能*完全按照我的 repro 来做，因为它没法"看"屏幕（截几张图也捕捉不到抖动）。所以如果我想让 Claude 来修，我最初的 repro 是不合适的。这看似是 Claude 的问题，但其实和别人合作时也并不少见——有时候 bug 只在某一台机器上出现，或只对某个特定用户出现，或只在特定设置下出现。
 
-改你正在用的 repro 总有风险：新 repro 可能和原 bug 无关，解决它是在浪费时间。但有时改 repro……（原文继续说明把"看抖动"换成程序可测的信号。）
+幸运的是，有个窍门。你可以把一个 repro 换成*另一个* repro，只要你能说服自己，新的 repro 有助于你在原问题上取得进展。
 
-他让 Claude 在点击前后测量滚动位置：若位置不变，就证明滚动没发生。Claude 终于能验证 bug 存在了。
+下面讲讲怎么更换 repro，以及需要注意的一些事。
 
-常见陷阱是：你以为找到了好 repro，其实新 repro 抓到的是表现相似的无关问题。**这是代价非常昂贵的错误**，可能浪费数小时去修另一个问题。
+* * *
 
-例如，Claude 可能读滚动位置读得太早，即便 bug 已修好，它仍会"看见"位置不变——连正确修复也会被测成仍坏。人类工程师也会这样。
+## 第 2 步：收窄复现用例
 
-**因此，每当你收窄 repro，还应确认用新 repro 仍可能得到正向结果（"一切正常"）。**
+更换你正在使用的 repro 总是有风险的。风险在于新 repro 可能和你原来的 bug 毫无关系，解决它纯属浪费时间。
 
-他让 Claude 注释掉最初暴露 bug 的网络调用。若新 repro（测滚动、点按钮、再测滚动）真正捕获了原 bug，则他已验证能修好原 bug 的改动（注释掉 action）也应修好新 repro 中的行为。确实如此。值得来回改几次，确认每次编辑都能预测新 repro 的结果。
+不过，有时候更换 repro 是不可避免的（Claude 看不到我的屏幕，所以我得想点别的办法）。有时候它对迭代有巨大的好处（比如，一个只需十秒的 repro 远比一个需要十分钟的 repro 有价值）。所以学会更换 repro 很重要。
 
-这仍不意味着新 repro 代表同一问题，始终有风险。但"网络调用与滚动位置有关"至少和原问题一样可疑，本身就值得解决——足够继续用新 repro。
+理想情况下，你会把一个 repro 换成一个更简单、更窄、更直接的 repro。
 
-第 3 步：删光其他一切
+下面是我给 Claude 提的思路：
 
-他建了新分支，让 Claude 按如下工作流：1）跑 repro 确认 bug 在；2）从相关代码里删掉一点（组件、事件处理、条件、样式、导入等）；3）再跑 repro；4）若 bug 还在，提交；5）若 bug 没了，写下可能"修好它"的理论，然后 **reset 到上次提交**，试着删更小一块。
+1.   测量文档的滚动位置。
+2.   点击按钮。
+3.   再次测量文档的滚动位置。
+4.   *预期*行为是两次位置有差值，*实际*行为是没有差值。
 
-他出门前让 Claude 一直做，直到收窄到无法再减：一个不依赖额外库（甚至不要 React Router）、逻辑最少的 React 组件。
+我的想法是，这和我亲眼看到的问题大致等价。虽然这个 repro 捕捉不到抖动，但没能向下滚动很可能与之相关。即使它不是*唯一*的问题，单独修好它也是值得的。
 
-回来时 Claude 交了几个复现案例，但令人沮丧的是没有一个表现出 bug。它写了一大段：测过纯 React 状态更新、Router 重新验证、组件重挂载等等，真实页面仍失败，最小化案例却都正常；setTimeout 推迟网络调用的变通有效，但说不清为什么。
+Claude 加了一些 `console.log`，通过 Playwright MCP 打开页面，到处点了点。果然，尽管点了按钮，滚动位置却*没有*变化。
 
-这是否意味着收窄并不总管用？不。意味着 Claude 没按指示做。但它失败的方式很有意思，因为人（包括我）也常犯。
+好了，现在 Claude *能够*验证 bug 的存在了！
 
-简化代码时它开始形成理论，并去测这些理论、做孤立的复现——看到它们不表现出 bug。创建并测试理论很好！但指示的要点是：**任何时刻都要有一个 bug 仍在发生的检查点，每一步都在缩小该 bug 的表面积。**
+找 repro 这一步完成了吗？
 
-Claude 太沉溺于自测理论，最后得到一堆并不表现 bug 的测试用例。理论失败时，正确做法是回到仍表现 bug 的原案例，继续删东西直到找到原因。
+其实还没有！
 
-这让他想起良基递归（well-founded recursion）。错误的 fib 实现写成 fib(n) + fib(n-1) 会永远递归；Lean 等理解良基递归的语言会报错，因为 n 没有"变小"。收窄 repro 也一样：你要始终、**始终**在做增量进展，repro 不断变小。必须有纪律地一块块删，只有 bug 仍在时才提交。最终要么暴露你代码里的错，要么暴露你无法再减的底层（如 React）里的错。
+收窄 repro 时一个常见的陷阱是：你*以为*找到了一个好的 repro，但实际上新 repro 捕捉到的是某个表现相似、却毫不相干的问题。**这是一个代价非常高的错误**，因为你可能会浪费好几个小时，去追查一个和你想解决的问题不同的问题。
+
+比如，有可能 Claude 只是读取滚动位置读得*太早*了，那么即使 bug *已经*修好，它仍然会"看到"位置没变。这会非常误导人——即使修复是对的，测试也会说还有 bug，Claude 就会错过正确的修复！人类工程师也会遇到这种事。
+
+**所以，每当你收窄一个 repro 时，还应该确认在新 repro 下仍然*有可能*得到*阳性*结果（"一切正常"）。**
+
+用例子更容易解释。
+
+我让 Claude 把网络调用（最初引出这个 bug 的那个）注释掉。如果新 repro（"测量滚动，点按钮，再测量滚动"）确实捕捉到了我想修的那个 bug（"点击时滚动抖动"），那么一个我*已经验证过*能修好该 bug 的改动（注释掉 action 调用），应该*也*能修好新 repro 中的行为（滚动位置现在应该不同了）。
+
+结果正是如此！确实，临时注释掉网络调用，*也*修好了 Claude 在做的测试——滚动位置*确实*不同了。
+
+到这一步，值得把代码来回改几次（取消注释、再注释掉），验证每次改动都能预测新 repro 的结果。（也值得做些其他改动，排除"每隔一次改动就能成功"这类巧合。）
+
+滚动测量结果看起来仍然与那个网络调用相关。
+
+这仍然不代表新 repro 代表的是同一个问题。它可能是某个无关的问题，或者只是问题的一部分。**更换 repro 总是有风险的。**不过，网络调用会影响滚动位置，这件事至少和原来的问题（滚动抖动）*一样可疑*，单独解决也是值得的。这就足以成为继续使用新 repro 的理由了。
+
+* * *
+
+## 第 3 步：把其他东西全删掉
+
+我新建了一个分支，让 Claude 按照下面的流程做：
+
+1.   运行 repro，验证 bug 存在。
+2.   从相关代码中删掉一些东西（删组件、删事件处理函数、简化条件、删样式、删 import 等等）。
+3.   再次运行 repro，验证 bug 是否仍然存在。
+4.   如果 bug 还在，就提交改动。
+5.   如果 bug *不在*了，就写下一个关于什么可能"解决了它"的推测，然后**重置到上一次提交**，尝试删掉更小的一块。
+
+我正要出门，所以让 Claude 一直做下去，在把 repro 缩减到无法再缩减之前不要停——一个不带额外库（连 React Router 都不要）、逻辑最少的 React 组件。
+
+等我回来，Claude 给我做了几个复现用例，但令人沮丧的是，没有一个表现出这个 bug：
+
+```
+⏺ I've done extensive investigation and created three progressively more
+  accurate minimal reproductions. All of them work correctly, but the real
+  page fails. I've tested:
+ 
+  - Plain React state updates
+  - React Router revalidation
+  - Component remounting
+  - New object references
+  - Synchronous loaders
+  - Various dependency arrays
+  - Multiple renders during scroll
+ 
+  Everything I can think of has been tested and ruled out. The bug
+  consistently reproduces in the real app but not in any repro. This
+  suggests there's something very specific about the page
+  environment that I haven't captured.
+ 
+  The workaround (deferring network call with setTimeout) works reliably,
+  which confirms that the issue is the timing between the
+  mutation/revalidation and the scroll. But I cannot determine WHY React
+  Router's revalidation breaks scrollIntoView in the real app when it
+  doesn't in the repros.
+ 
+  I've committed all the repros and investigation notes for future
+  reference.
+```
+
+这是不是说明缩小 bug 范围的方法并不总是管用？
+
+不是。
+
+这说明 Claude 没有遵守我的指令。但它*没遵守的方式*很有意思，因为人们（包括我）也经常犯同样的错。
+
+Claude 在简化代码的过程中开始形成*推测*。也许是这个 effect 有 bug。也许跟重新挂载有关。也许是 React 在做什么奇怪的事。然后它开始*验证*这些推测，围绕它们创建孤立的复现用例——看看它们是否表现出 bug。
+
+提出推测并加以验证是很好的！我们当然应该这样做。
+
+但再看一遍我的指令：
+
+1.   运行 repro，验证 bug 存在。
+2.   从相关代码中删掉一些东西（删组件、删事件处理函数、简化条件、删样式、删 import 等等）。
+3.   再次运行 repro，验证 bug 是否仍然存在。
+4.   如果 bug 还在，就提交改动。
+5.   如果 bug *不在*了，就写下一个关于什么可能"解决了它"的推测，然后**重置到上一次提交**，尝试删掉更小的一块。
+
+我是想让它做一件很具体的事。我们要确保的是：**在任何时刻，我们都有一个 bug 仍然*存在*的检查点，并且每走一步，都在缩小这个 bug 的表面积。**
+
+Claude 太沉迷于验证自己的推测，最后得到一堆实际上并不表现出 bug 的测试用例。再说一次，验证新推测不是坏主意，但如果推测失败了，正确的做法是回到原始用例（它仍然表现出 bug！），继续删东西，直到找到原因。
+
+这让我想起*良基递归*（well-founded recursion）的概念。看看下面这个试图实现 `fib(n)` 函数、用来计算[斐波那契数](https://en.wikipedia.org/wiki/Fibonacci_sequence)的尝试：
+
+```
+function fib(n) {
+  if (n <= 1) {
+    return n;
+  } else {
+    return fib(n) + fib(n - 1);
+  }
+}
+```
+
+实际上这个函数有 bug——它会永远挂起。我不小心把 `fib(n - 2)` 写成了 `fib(n)`，于是 `fib(n)` 会调用 `fib(n)`，后者又调用 `fib(n)`，如此往复。它永远跳不出递归，因为 `n` 从来没有"变小"。
+
+理解*良基递归*的语言不会让我犯这种错。比如在 Lean 里，[这会是一个类型错误](https://live.lean-lang.org/?from=lean#codez=CYUwZgBGCWBGEAoB2EBcEByBDALgSjU1zQF4AoCCaSFQEyIIBGCHACxCQsog8pABsAziE6UY8FAGoocRCgC0EAEx4yZIA)：
+
+```
+def fib (n : Nat) : Nat := /- error: fail to show termination for fib -/
+  if n ≤ 1 then
+    n
+  else
+    fib n + fib (n - 2)
+```
+
+Lean 知道 `n`"没有变小"（[更精确的说明见这里](https://lean-lang.org/doc/reference/latest/Definitions/Recursive-Definitions/#well-founded-recursion)），所以它知道这个递归会永远挂起。它不会"随着时间越来越接近"终点。
+
+这不是 Lean 教程，希望你原谅这个有点轻佻的比喻。
+
+我认为缩减复现用例的过程也是一样的。你要确保*你始终、**始终**在取得增量进展*，repro 一直在变小。这意味着你必须保持纪律，一点一点地删，只有在 bug 仍然存在时才提交。到某个时候，你必然会没有东西可删，这时要么会暴露出你代码里的错误，要么会暴露出你无法再缩减的部分（比如 React）里的错误。
 
 重复，直到找到它。
 
-第 4 步：找到根因
+* * *
 
-Claude 最终没独立解决，但把它推到了很近。
+## 第 4 步：找到根本原因
 
-在他要求真正只删东西之后，删到问题落在单个文件。他把该文件移出路由，同样代码突然正常；移回路由又坏；做成顶层路由又好。
+Claude 最终没能解决这个问题，但它让我离答案非常近了。
 
-是嵌在根布局里时坏掉的。根布局里有 React Router 的 ScrollRestoration。原来有一个（六月已修好的）bug：ScrollRestoration 会在每次 revalidation 时激活，而不只是路由变更时。他的网络调用（经 action）会重新验证路由，于是在 scrollIntoView 期间触发 ScrollRestoration，造成抖动。
+在我告诉它要真正遵守我的指令、只*删*东西之后，它删掉了足够多的代码，让问题被限定在单个文件里。我把那个文件移到路由器之外，同样的代码突然就能正常工作了。然后我把它移回路由器里，又坏了。接着我把它做成一个*顶层*路由，它又能工作了。
 
-**这种一边确保 bug 仍在、一边逐项删除的工作流，多次救过他。**（他曾花一周删掉半棵 Facebook 的 React 树追一个 bug，最终 repro 约 50 行。）理论用尽之后，他不知道还有什么方法如此有效。
+当它嵌套在根布局里时，就有什么东西坏掉了。
 
-若项目是他自己搭的，会用最新 React Router，遇不到这个 bug。但项目是 Claude 搭的，不知为何决定用旧版核心依赖。
+我的根布局是这样的：
 
-啊好吧！
+```
+import { Outlet, ScrollRestoration } from "react-router-dom";
+ 
+export function RootLayout() {
+  return (
+    <div>
+      <ScrollRestoration />
+      <Outlet />
+    </div>
+  );
+}
+```
 
-vibecoding 的乐趣。
+啊哈。原来，[以前有一个 bug](https://github.com/remix-run/react-router/issues/13672)（6 月已经修复），会导致 React Router 的 `ScrollRestoration` 在每次重新验证（revalidation）时都被激活，而不是只在每次路由变化时激活。由于我的网络调用（通过 action）会重新验证路由，它在 `scrollIntoView` 期间触发了 `ScrollRestoration`，造成了抖动。
+
+**正是这个流程——一样一样地删东西，同时确保 bug 仍然存在——救过我很多次。**（我曾经花了一周时间删掉 Facebook 的半棵 React 树来追查一个 bug。最终的 repro 大约 50 行代码。）在你已经没有推测可用之后，我不知道还有什么别的方法如此有效。
+
+如果是我自己搭建这个项目，我会用最新版的 React Router，也就不会碰上这个 bug。但项目是 Claude 搭的，不知出于什么莫名其妙的原因，它决定让我用一个核心依赖的旧版本。
+
+唉，算了！
+
+这就是 vibecoding 的乐趣。

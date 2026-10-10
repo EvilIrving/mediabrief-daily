@@ -1,3 +1,5 @@
 https://www.ruanyifeng.com/blog/2026/06/anthropic.html
 
-阮一峰的一篇短评。Anthropic 创始人 Dario Amodei 认为，公开的模型看不到内部运作，只能叫"开放权重"，没法像传统开源那样多人共同修改；开源也不等于免费，所以他只问模型够不够好。阮一峰斥之为"睁着眼瞎说"：开放权重模型无需许可就能私密地自己运行，Claude 却不行；DeepSeek 也发论文解释了模型原理，真正的黑箱是 Claude。他还说自己一个经第三国开通、几乎闲置的账户刚被 Anthropic 封禁，只因是中国用户。他认为技术从来守不住秘密，这种歧视性封锁只会加速开源模型发展，让 Anthropic 陷入孤立。
+Dario Amodei：AI 开源是伪命题 ｜ 阮一峰 ｜ 文章 ｜ https://www.ruanyifeng.com/blog/2026/06/anthropic.html
+
+阮一峰反驳 Anthropic 创始人 Dario Amodei 的说法。Dario 认为公开的模型只是"开放权重"，看不到内部运作，开源也不等于免费，所以只看模型够不够好。阮一峰斥之为"睁着眼瞎说"：开放权重模型可以私密地自己运行，真正的黑箱是 Claude。他的账户也刚因是中国用户被封，他认为这种封锁只会加速开源模型发展，让 Anthropic 陷入孤立。

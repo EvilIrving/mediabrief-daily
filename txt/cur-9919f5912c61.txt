@@ -2,4 +2,4 @@ https://overreacted.io/progressive-json/
 
 渐进式 JSON（Progressive JSON） ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/progressive-json/
 
-Dan Abramov 借渐进式 JPEG 的思路发问：JSON 能不能也先模糊、再逐渐清晰？普通 JSON 要等最后一个字节到达才能解析，服务器上一处慢操作就会拖住一切；流式解析器只能得到形状残缺、分不清是否完成的对象。他提出改为广度优先发送：先用占位符代替尚未就绪的部分，之后以任意顺序补发，客户端用 Promise 表示待到达的数据，还可以内联快的部分、对重复对象去重。他点明这基本就是 React Server Components 的工作方式。关键在于 React 不会把待定数据显示成空洞，而是显示最近的 Suspense 边界所声明的加载状态，从而让数据到达与界面揭示解耦。他强调这与 SSR 无关，并呼吁更多工具采用渐进式数据流，同时配上能优雅处理不完整信息的编程模型。
+Dan Abramov 借渐进式 JPEG 的思路发问：JSON 能不能也先模糊、再逐渐清晰？普通 JSON 要等最后一个字节到达才能解析，服务器上一处慢操作就会拖住一切；流式解析器只能得到形状残缺、分不清是否完成的对象。他提出改为广度优先发送：先用占位符代替尚未就绪的部分，之后以任意顺序补发，客户端用 Promise 表示待到达的数据，还可以内联快的部分、对重复对象去重。他点明这基本就是 React Server Components 的工作方式。关键在于 React 不会把待定数据显示成空洞，而是显示最近的 Suspense 边界所声明的加载状态，从而让数据到达与界面揭示解耦。他强调这与 SSR 无关，并呼吁更多工具采用渐进式数据流，同时配上能优雅处理不完整信息的编程模型。他打比方说，树里的 Promise 像 throw，Suspense 像 catch。

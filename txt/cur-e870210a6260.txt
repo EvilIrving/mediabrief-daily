@@ -2,10 +2,4 @@ https://emily.space/posts/251023-uv
 
 uv 是 Python 生态十年来最好的事情（uv is the best thing to happen to the Python ecosystem in a decade） ｜ Hacker News ｜ 文章 ｜ https://emily.space/posts/251023-uv
 
-一位天文学背景的开发者（博客 emily.space）写的 uv 推荐兼入门教程，2025 年 10 月发表后登上 Hacker News。她开门见山地问：都 2025 年了，装 Python、管虚拟环境、和同事同步依赖，真的非得这么难吗？她的回答是不必，因为有了 uv。
-
-uv 是 Astral 出品的免费开源工具，这家小公司此前做了出色的代码检查工具 Ruff。uv 能安装任意版本的 Python、安装包、管理虚拟环境，并极快地解决依赖冲突；它用 Rust 编写、快得惊人、几乎支持所有平台，作者认为每一项都比其他工具做得好。安装只需一行命令，而且它是独立工具，不会搞乱已有的 Python。
-
-接着是基本用法。她强调任何 Python 项目都该用虚拟环境，而 uv 天然如此：它依据目录里的 pyproject.toml（声明 Python 版本范围和依赖的现代标准格式，也是发布到 PyPI 的方式）来构建环境。uv init 新建项目并生成样板文件，还有 --bare、--package 等变体；在已有项目里运行 uv sync，会自动装好合适的 Python、把依赖装进 .venv，并生成跨平台的 uv.lock 锁定每个包的确切版本，让同事能完全复现环境。最"uv 风格"的用法是不激活环境，直接在命令前加 uv run，比如 uv run myscript.py、uv run jupyter lab。添加依赖可以手改 pyproject.toml，也可以用 uv add numpy>=2.0 自动改写，它还能从 git 等远程来源添加依赖。她认为最有用的功能之一是 uv python pin 3.12.9，把项目固定在确切的 Python 版本上，让多台机器装出完全相同的环境。至于只想临时跑个工具的场合，uvx（uv tool run 的简写）会在一次性的环境里下载并运行它，有缓存后快如闪电，比如 uvx ruff、用 --with 临时带上 pandas 和 pyarrow 开 IPython 看 parquet 文件、或者打开学生发来的 Jupyter 笔记本，她称之为总在手边的"免罪金牌"。
-
-最后她讲了亲身经历：在为天文学家做开源社交媒体集成的 Astrosky 生态项目中，多名开发者在不同系统上异步协作，Python 安装管理一度成了大难题；uv 让所有人用上完全一致的 Python，这对那些每个版本都有破坏性变更的半实验性依赖尤其重要。他们计划在 GitHub Actions 里用它跑测试，生产服务器上的 Python 也已全部交给它管理。能确信所有机器上的安装都一致且正确，正是她称 uv 为 Python 生态十年来最好的事情的理由。
+一位天文学背景的开发者写的 uv 推荐兼入门教程，2025 年 10 月登上 Hacker News。她认为装 Python、管虚拟环境、同步依赖本不必这么难。uv 是做出 Ruff 的 Astral 公司的开源工具，用 Rust 编写，能装任意版本的 Python、管理包和环境、极快地解决依赖。她介绍了基本用法：uv init 建项目，uv sync 按 pyproject.toml 装好环境并生成跨平台锁文件，uv run 免激活运行，uv add 加依赖，uv python pin 固定版本，uvx 在一次性环境里临时跑工具。她在多人异步协作的 Astrosky 项目里用它统一了所有人的 Python，这就是她称它为"十年来最好的事"的理由。

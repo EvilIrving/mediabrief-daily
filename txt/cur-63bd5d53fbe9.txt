@@ -2,4 +2,4 @@ https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-si
 
 Reading privileged memory with a side-channel ｜ Hacker News ｜ 文章 ｜ https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html
 
-Google Project Zero 的 Jann Horn 于 2018 年 1 月披露，现代 CPU 的推测执行会在错误路径上留下缓存时序等微架构痕迹，可跨越本地安全边界泄漏特权内存，影响部分 Intel、AMD 和 ARM 处理器。问题于 2017 年 6 月报告给厂商，其他研究者也独立有所发现。文章归纳三个变体：绕过边界检查和注入分支目标，后来合称 Spectre；恶意数据缓存加载，即 Meltdown。核心原理是指令虽然按序提交、错误路径会回滚架构状态，但缓存状态不会被清除，攻击者可通过测量访问延迟还原秘密数据。概念验证分别借助内核的 eBPF、污染间接分支预测从 KVM 客户机读取宿主机内存，以及用户态直接读取内核地址的竞态。文末列出开放研究方向和三家厂商声明，并强调缓解方案应由处理器厂商主导。
+Google Project Zero 的 Jann Horn 于 2018 年 1 月披露，现代 CPU 的推测执行会在错误路径上留下缓存时序等微架构痕迹，可跨越本地安全边界泄漏特权内存，影响部分 Intel、AMD 和 ARM 处理器。问题于 2017 年 6 月报告给厂商，其他研究者也独立有所发现。文章归纳三个变体：绕过边界检查和注入分支目标，后来合称 Spectre；恶意数据缓存加载，即 Meltdown。核心原理是指令虽然按序提交、错误路径会回滚架构状态，但缓存状态不会被清除，攻击者可通过测量访问延迟还原秘密数据。概念验证分别借助内核的 eBPF、污染间接分支预测从 KVM 客户机读取宿主机内存，以及用户态直接读取内核地址的竞态。文末列出开放研究方向和三家厂商声明，并强调缓解方案应由处理器厂商主导。作者特别说明，文中对 CPU 内部的描述大多是根据行为做出的推测，未必符合真实电路；变体 2 的概念验证在特定旧版内核上每秒能泄漏约 1500 字节。

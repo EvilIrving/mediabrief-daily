@@ -2,14 +2,10 @@ https://www.joshwcomeau.com/javascript/promises/
 
 从零理解 Promise（Promises From The Ground Up） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/javascript/promises/
 
-Josh W. Comeau 的一篇 JavaScript 教程。他认为 Promise 是学 JavaScript 路上最大的坑之一，难点不在 API 本身，而在于要先深入理解 JavaScript 怎么运作、有什么限制，否则 Promise 根本说不通。所以他从"为什么要这样设计"讲起，一路推到 async/await。
+Josh W. Comeau 认为 Promise 是学 JavaScript 最大的坑之一，难点不在 API，而在于得先理解 JavaScript 的运作和限制，否则 Promise 根本说不通。所以他从"为什么要这样设计"讲起，一路推到 async/await。
 
-他用一个新年倒计时做主线。在大多数语言里，打印 3、sleep 一秒、打印 2……就行了，但 JavaScript 是单线程的，没有 sleep：唯一的线程同时负责处理事件、网络请求和更新界面，一旦被占住，页面就彻底卡死。他用 window.prompt() 演示这种感觉：弹窗开着的时候，页面无法滚动、点击或选中文字。
+主线是一个新年倒计时。别的语言打印 3、sleep 一秒、打印 2 就行，但 JavaScript 是单线程的，没有 sleep：唯一的线程同时负责事件、网络和界面更新，一旦被占住页面就会卡死，他用 window.prompt() 弹窗时页面无法滚动和点击来演示这种感觉。解决办法是 setTimeout 这类回调：sleep 像打客服电话一直在线等，setTimeout 像让对方有空再回电。代价是代码不再按书写顺序执行，多步倒计时还会层层嵌套成"回调地狱"。
 
-解决办法是 setTimeout 这类异步函数，也就是回调：sleep 像打客服电话一直在线等，setTimeout 像按 1 让对方有空时回电，你可以挂断去做别的事。代价是代码不再按书写顺序执行，他用"线程的日志本"说明为什么 1、3 先打印、2 半秒后才出现。addEventListener 也是同样的回调思路。但要做多步倒计时，只能一层套一层，就是早年人人头疼的"回调地狱"。
+Promise 把嵌套改成 .then() 链。它在 2015 年加入语言，setTimeout 为了向后兼容没法改，但 fetch 等现代 API 都建立在 Promise 之上。fetch 返回的像一张"欠条"，数据还没到但保证会到。Promise 有 pending、fulfilled、rejected 三种状态，只能决议一次，所以适合一次性的异步工作，不适合会反复触发的鼠标事件。
 
-Promise 的核心想法是把嵌套改成链式：每一步用 .then() 接在后面。它是 2015 年的语言大更新加进来的；setTimeout 因为早于 Promise、为了向后兼容没法改，但 fetch 这类现代 Web API 都建立在 Promise 之上。fetch 返回的不是数据，而像一张"欠条"：数据还没到，但保证会到。Promise 有三种状态：pending、fulfilled、rejected，后两者都算"已决议"，而且只能决议一次，所以它适合一次性的异步工作，不适合会触发成百上千次的鼠标事件。
-
-接着他教读者自己造 Promise：用 new Promise 包住 setTimeout，写一个 wait(duration) 工具函数，逐句拆解 resolve 如何引发连锁反应，并说明直接传 resolve 和包一层箭头函数是等价的（函数在 JavaScript 里是一等公民）。随后讲链式调用、通过 resolve 传递数据（以一个回调式数据库查询为例）、用 reject 和 .catch() 处理失败的"承诺被打破"。
-
-最后的高潮是 async/await：倒计时终于能写得几乎和同步代码一样。看似在函数中途暂停、违背单线程，其实只是 Promise 的语法糖：加了 async 的函数一定返回 Promise，await 等价于 .then()。他的总结是，Promise 为 JavaScript 提供了底层设施，让代码看起来是同步的，底下却完全是异步的。
+接着他带读者用 new Promise 包住 setTimeout 写出 wait 函数，逐句拆解 resolve 如何引发连锁反应，再讲链式调用、用 resolve 传数据、用 reject 和 .catch() 处理"承诺被打破"。最后，async/await 让倒计时写得几乎和同步代码一样；它看似在函数中途暂停，其实没有违背单线程，只是 Promise 的语法糖。他的总结是，Promise 让代码看起来是同步的，底下却完全是异步的。
