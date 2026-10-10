@@ -1,5 +1,7 @@
 https://lea.verou.me/blog/2026/dark-mode-toggles-2/
 
+The best dark mode toggle is probably none ｜ Lea Verou ｜ 文章 ｜ https://lea.verou.me/blog/2026/dark-mode-toggles-2/
+
 CSS 工作组与 HCI 背景的 Lea Verou 跟进自己那篇爆款的双态深色模式文：若被迫做常驻开关，仍主张在"跟随系统"与"当前系统的反面"之间切换，而不是系统/亮/暗三态。但本文进一步问：多数网站是否该有常驻开关？她现在坚定认为不该。
 
 起因是 CSS WG 会上 Bramus 认为她写进 Modern Web Guidance 的建议有误；柏林当面争论未果，她写成博文解释——结果成了她最成功的文章之一，Josh Collinsworth、Dylan Beattie 等纷纷转发。Bramus 两周后发文反对，核心场景是：系统按时段自动切换，用户白天试深色又拨回浅色（双态背后映到 System），夜里再访却变成深色，像开关坏了。Lea 逐条反驳：自动切换并非"不能用"，而是一键覆盖的时机问题；Bramus 拿开发者做了什么控件的投票当可用性证据，问错了人；三态里两项视觉结果相同，按钮高亮但页面不变，正是 Norman 的评估鸿沟；三态是实现驱动 UI，用户当下目标是亮或暗，不是抽象的"系统"；该失败场景频率×影响×持久性都低，且 Bramus 自承纯属理论。辩论催生了 Vale 的 3-in-2 等替代设计，她也指出其空间与可发现性代价。

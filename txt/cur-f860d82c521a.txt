@@ -1,5 +1,7 @@
 https://syntax.fm/921
 
+921: AI Coding Roadmap for Newbies (And Skeptics) ｜ Syntax ｜ 49分钟 ｜ https://syntax.fm/921
+
 这一期 Syntax 是 Wes Bos 和 Scott Tolinski 给 AI 编程新手和怀疑者准备的路线图：先讲用 AI 写代码的几种方式，再讲自己动手做一个 AI 应用，借此弄懂上下文、提示词、流式输出、嵌入、RAG、MCP 等概念。
 
 写代码的方式按"吓人程度"从低到高排列：编辑器里的幽灵文本自动补全；IDE 侧边栏的 agent 模式聊天，改动先暂存，可逐条接受或回滚，Scott 主要用这种；终端里的 CLI agent，Claude Code 领先，另有 Gemini CLI、Codex、OpenCode 和 Warp，适合并行派任务。两人承认 Claude Code 质量更高，但仍偏爱 IDE 的图形界面看 diff。补上下文推荐 Context7，能注入 Tailwind 4、Svelte 5 等库的最新文档；AI 只熟悉特定时期的工具，Svelte 把 on:click 改成 onclick 它就不认识。Wes 的原则是：觉得 AI 蠢时，多半该通过 MCP 给它补个工具。v0、Lovable、Bolt.new、Replit 适合主要做 UI、不想碰代码的人，别小看它们；在 ChatGPT 里复制粘贴最原始，Scott 现在改用能引用多个标签页的 Dia 浏览器。

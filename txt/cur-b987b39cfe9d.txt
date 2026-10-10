@@ -1,5 +1,7 @@
 https://overreacted.io/jsx-over-the-wire/
 
+JSX Over The Wire ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/jsx-over-the-wire/
+
 Dan Abramov 这篇长文从一个反直觉的设想开场：API 返回的 JSON 本质上就是在给某个组件传 props，只是没写明传给谁；如果直接让 API“返回组件”，组件和 API 的关系就倒了过来，像好莱坞原则——不是组件调用 API，而是 API 返回组件。全文分三部分，从两条看似无关的历史脉络出发，最后汇合到 React 服务器组件（RSC）。
 
 第一部分“作为组件的 JSON”从 REST 讲起。REST 资源按数据模型组织，而界面按屏幕演进：点赞按钮想显示“你、Alice 和另外 13 人赞过”，就得要么让客户端多次请求、拼接数据，形成瀑布，要么不断往通用接口里塞特定字段，接口变得臃肿又不敢删。作者认为根本矛盾在于 UI 需要的数据跟着 UI 变，REST 却试图独立于 UI。出路是在服务器上加一层专门为屏幕服务的“ViewModel API”，也就是 BFF（为前端服务的后端）：每个屏幕一个端点，在服务端一次往返组装好所需数据。这层还能继续拆分，LikeButtonViewModel、PostDetailsViewModel 等函数各自负责屏幕的一块，再像组件一样组合；通过内存缓存去重，重复调用 getPost 也无妨。参数需要从顶层一路传下来，类型也要和组件对齐。这样做解决了瀑布和接口臃肿，但留下一个缺口：ViewModel 和它供给 props 的组件之间没有直接连接。

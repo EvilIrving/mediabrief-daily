@@ -2,14 +2,4 @@ https://overreacted.io/how-to-fix-any-bug/
 
 怎样修好任何 bug（How to Fix Any Bug） ｜ Dan Abramov ｜ 文章 ｜ https://overreacted.io/how-to-fix-any-bug/
 
-Dan Abramov 用一次 vibecoding 的真实 bug，总结他习惯的修 bug 流程——人也和 Claude 一样常犯同样的错。场景是：页面上一串卡片，按钮本该滚到下一张；一旦按钮里再加上经 React Router actions 的服务端调用，滚动就抖动、失效。重渲染按理不该打断进行中的滚动，所以问题可能在他的代码、Router、React 甚至浏览器。
-
-第 0 步：直接让 Claude 修。Claude 改 useEffect 条件、把 smooth 改成 instant，每次都宣布修好了，其实没有——因为它没有可复现用例（repro）。
-
-第 1 步：找到 repro：一组说明"做什么、期望什么、实际什么"的步骤，相当于测试。他的 repro 可靠（每次点击都抖），但对 Claude 几乎不存在，因为"滚动抖动"它看不见。技巧是在你确信仍指向原问题的前提下，把 repro 换成另一种可验证的形式。
-
-第 2 步：收窄 repro。风险是新 repro 抓到另一个无关问题。他把"看抖动"换成测量点击前后 scroll 位置；并强调收窄后还要确认正向结果仍可能——注释掉网络调用后，新测试也应显示滚动恢复，并来回开关几次验证相关。网络调用与滚动位置的关联至少和原问题一样可疑，值得继续。
-
-第 3 步：删光其他一切。工作流：跑 repro 确认 bug 在 → 删一点相关代码 → 再跑；还在就提交；没了就记下理论、reset 回上次提交、改删更小一块。目标是任何时刻都有一个 bug 仍在的检查点，表面积只减不增——他比作 Lean 里的良基递归：参数必须"变小"。Claude 一开始沉溺于自建理论、做出一堆不复现 bug 的最小案例，违背了"只删、且始终保持 bug 仍在"。
-
-第 4 步：找到根因。按纪律删到单文件后，移出路由就好、嵌回根布局就坏、做成顶层路由又好。根布局里有 React Router 的 ScrollRestoration；原来有个已在六月修好的 bug，会在每次 revalidation（而不只是路由变更）时激活——action 触发的重新验证在 scrollIntoView 期间搅局导致抖动。项目是 Claude 搭的，不知为何用了旧版核心依赖。"vibecoding 的乐趣。"
+Dan Abramov 借一次 vibecoding 中遇到的 bug，总结自己的修 bug 流程，并指出人类工程师和 Claude 常犯同样的错。按钮里加了经 React Router actions 的服务端调用后，滚动开始抖动。Claude 屡次宣布修好却没修好，因为它没有可验证的复现用例。他的方法是：先找到可靠的 repro，必要时换成能被测量的形式，比如比较点击前后的滚动位置；再收窄它，并确认去掉嫌疑代码后问题真的消失；然后只删代码、每步确认 bug 仍在再提交，让表面积只减不增。最终删到单文件，定位到根布局里的 ScrollRestoration：旧版 React Router 有个已修复的 bug，会在每次重新验证时触发。项目恰好用了旧依赖。

@@ -1,5 +1,7 @@
 https://lilianweng.github.io/posts/2023-01-10-inference-optimization/
 
+Large Transformer Model Inference Optimization ｜ Lilian Weng ｜ 文章 ｜ https://lilianweng.github.io/posts/2023-01-10-inference-optimization/
+
 Lilian Weng 这篇 2023 年 1 月的综述（1 月 24 日补了蒸馏一节）回答两个问题：大型 Transformer 推理为什么又贵又慢，以及有哪些办法压低成本。她引用 Pope 等人（2022）指出，除了模型本身越来越大，还有两个硬约束。一是内存占用大：参数和中间状态都要常驻内存，批大小 512、上下文 2048 时 KV 缓存就有约 3TB，是模型体积的三倍；注意力开销还随序列长度平方增长。二是可并行性低：自回归解码只能逐个生成。优化目标因此归结为三点：少用 GPU 和显存，少算 FLOPs，降低延迟。可用的手段有多卡并行、CPU 卸载（省内存但更慢）、去填充的批处理（如 EffectiveTransformer）、网络压缩和架构改进。并行与卸载在她讲大模型训练的旧文里已经写过，本文集中讲压缩和架构。
 
 蒸馏最直接：让小的学生模型在高温 softmax 下模仿教师的软分布，已知标签时再加一项交叉熵，用超参数 λ 平衡软硬目标。DistilBERT 把 BERT 参数减少 40%，保留 97% 的下游性能，速度快 71%，还额外用余弦嵌入损失对齐两者的隐藏状态。蒸馏也很容易和量化、剪枝组合：教师是全精度稠密模型，学生是量化或稀疏化后的版本。

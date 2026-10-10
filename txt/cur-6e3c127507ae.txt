@@ -1,5 +1,7 @@
 https://darknetdiaries.com/episode/53
 
+53: Shadow Brokers ｜ Darknet Diaries ｜ 53分钟 ｜ https://darknetdiaries.com/episode/53
+
 这一期 Darknet Diaries 讲的是 2016 年到 2017 年的“影子经纪人”（Shadow Brokers）泄密事件。主持人 Jack Rhysider 采访了 Jake Williams：Rendition InfoSec 的创始人、SANS 讲师，在 Twitter 上以 @MalwareJake 闻名。事件发生前，几乎没人知道他曾在 NSA 的精英黑客部门 TAO 工作过约五年。
 
 Jack 先交代背景。2013 年，《明镜》周刊公开了 NSA 的 ANT 目录，里面有伪装成 USB 插头的无线窃听器 COTTONMOUTH（标价 2 万美元一个）、iPhone 植入软件 DROPOUTJEEP、思科防火墙后门固件 JETPLOW、能远程复制显示器画面的 VGA 窃听器 RAGEMASTER 等等。使用这些工具的是 TAO（Tailored Access Operations），安全业界给它起的代号叫“方程式组织”。

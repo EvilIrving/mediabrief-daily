@@ -1,5 +1,7 @@
 https://shoptalkshow.com/668/
 
+668: Jake Archibald on Native HTML Includes ｜ ShopTalk Show ｜ 65分钟 ｜ https://shoptalkshow.com/668/
+
 这一期 ShopTalk Show 由 Dave Rupert 和 Chris Coyier 主持，请来 Jake Archibald 讨论一个看似简单的问题：CSS 能用 @import 引入别的 CSS，JavaScript 能用 import 引入别的 JavaScript，为什么 HTML 不能引入 HTML？Chris 此前写过一篇文章问这件事，最典型的场景是 Web 开发课第二周：三个页面共用同一套页头和页脚，结果要么复制粘贴，要么引入构建工具。三人干脆在节目里把一个原生 HTML include 当场设计了一遍。
 
 先排除的是 iframe 和 object：它们的内容像被一堵墙隔开，CSS 进不去，尺寸也不会随内容变化。Chrome 近期提出的"响应式 iframe"需要嵌入方和被嵌入方都声明同意，但只在内部文档触发 load 事件时调整一次高度，Disqus 式的"加载更多评论"照样解决不了。Jake 在 blink-dev 上的反馈是：既然这么麻烦，还不如自己用 postMessage。

@@ -1,5 +1,7 @@
 https://darknetdiaries.com/episode/57/
 
+57: MS08-067 ｜ Darknet Diaries ｜ 62分钟 ｜ https://darknetdiaries.com/episode/57/
+
 这一期 Darknet Diaries 讲的是 2008 年 Windows 漏洞 MS08-067：微软如何从自己的崩溃遥测里把它揪出来、为何带外发补丁，以及几个月后 Conficker 如何把它变成史上最大蠕虫之一。主持人 Jack Rhysider 采访的是微软的 John Lambert——他曾在可信计算组做了十年安全，日常工作就是把安全研究那套方法嵌进微软各产品的开发流程，而不只盯着 Windows 或 Office。
 
 故事从补丁星期二和公告编号讲起。MS07-029、MS08-067 这类名字里，前两位是年份，后三位是当年公告序号。公告按产品归组，并标严重、重要、中等。2008 年多数人还在用 Windows XP（Vista 采用率不高），代码量约四千五百万行，bug 几乎不可能清零。前一年的 MS07-029 是 Windows DNS 的零日：客户拿着野外攻击工具找上门，MSRC 验证后出了公告。John 当时在看 Windows 错误报告（WER，内部也叫 Dr. Watson）里 DNS 相关的崩溃，发现那些本不该出现的崩溃其实都是攻击——如果能更早从每天数百万、每月逾十亿条崩溃里把“针”挑出来，本可以比客户来报更早发现。Vista 时代可信计算侧还靠静态分析改过约十万处、靠 WER 再揪出约五千个漏网问题；John 想的是把同一套遥测当成安全传感器。

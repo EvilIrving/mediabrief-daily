@@ -1,5 +1,7 @@
 https://www.joshwcomeau.com/react/why-react-re-renders/
 
+Why React Re-Renders ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/react/why-react-re-renders/
+
 Josh W. Comeau 用交互图解建立「何时、为何」重新渲染的心智模型，并澄清两条常见误解，再落到 React.memo、Context 与 DevTools。
 
 核心循环：每次重渲染都由状态变更触发（forceUpdate 已不存在）。状态挂在某个组件实例上，变更时该组件及其全部后代重渲染——不是整棵应用。重渲染的目的是生成新 UI 快照，再与上一张做差分并改 DOM；数据不能向上流，故父级 App 不必因子级 count 变化而重渲。

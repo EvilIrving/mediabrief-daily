@@ -1,5 +1,7 @@
 https://magazine.sebastianraschka.com/p/from-gpt-2-to-gpt-oss-analyzing-the
 
+From GPT-2 to gpt-oss: Analyzing the Architectural Advances ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/from-gpt-2-to-gpt-oss-analyzing-the
+
 Sebastian Raschka 梳理 OpenAI 自 GPT-2 以来首批大型开放权重模型 gpt-oss-20b / 120b 的架构：表面看仍是常见的解码器 Transformer，细节却叠满了这些年业界的共识改动。他推测实验室共用底座，是因为人员流动、尚未证明有东西在大规模上稳赢 Transformer，以及收益多半来自数据与算法而非大改结构。20B 可在约 16GB 消费级卡上跑，120B 可进单张 80GB H100——关键前提是 MoE 专家用了 MXFP4；若退回 bf16，大约分别要 48GB 与 240GB。
 
 相对 GPT-2，他逐项说明：单 epoch 海量数据下 Dropout 几乎无用甚至有害，故被去掉；RoPE 取代绝对位置嵌入；前馈从 GELU 两层换成计算更便宜的 Swish/SwiGLU（以 1024 维为例，常规两层约 839 万参数，三层 GLU 约 315 万，更少却因多了门控乘法而更有表达力）；再用 MoE 用“大总参数、每 token 只激活少数专家”换容量与推理效率；GQA 让多查询头共享 KV 以省参数与 KV cache；每隔一层用仅 128 token 的滑动窗口注意力与全上下文层交替（窗口小得惊人，而 GPT-3 原文其实已提过交替稠密/局部稀疏模式）；LayerNorm 换成更省的 RMSNorm。他仍建议先实现 GPT-2 再叠这些改动，才能真正理解它们在修什么。

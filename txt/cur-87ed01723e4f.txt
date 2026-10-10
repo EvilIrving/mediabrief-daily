@@ -1,5 +1,7 @@
 https://lilianweng.github.io/posts/2025-05-01-thinking/
 
+Why We Think ｜ Lilian Weng ｜ 文章 ｜ https://lilianweng.github.io/posts/2025-05-01-thinking/
+
 Lilian Weng 2025 年 5 月的这篇长文（致谢 John Schulman 的大量反馈与修改）系统梳理了"测试时计算"与思维链（CoT）：怎样让模型在推理时多花算力"思考"，以及这为什么有效。
 
 文章先给出三条动机。一是心理学类比：卡尼曼的系统 1 快而凭直觉、易出错，系统 2 慢而审慎，CoT 相当于让模型启用系统 2。二是把计算视为资源：Transformer 每生成一个 token 的计算量约为参数量的 2 倍（MoE 为 2×参数/稀疏度），CoT 让模型为每个答案 token 投入多得多、且可随题目难度变化的计算。三是隐变量视角：把思考过程 z 当作隐变量，P(y|x) 是对 z 的边缘化；并行采样多条 CoT 或在 CoT 上搜索，本质是从后验 P(z|x,y) 采样，这也说明直接优化对数损失 log P(y|x) 是合理目标。

@@ -1,5 +1,7 @@
 https://changelog.com/jsparty/258
 
+The rise & fall of JS frameworks ｜ JS Party ｜ 52分钟 ｜ https://changelog.com/jsparty/258
+
 这期 JS Party（2023 年 1 月）由 KBall 主持，嘉宾是以"原生 JS 达人"著称的 Chris Ferdinandi。Chris 的核心判断是：前端正处在新一轮四到十年一次的变革浪潮起点，上一波是"基于状态的 UI + 大型客户端库包揽一切"，这一波则是减少发往浏览器的 JavaScript，他戏称为"JavaScript 是新的 PHP"——JS 越来越多地挪到构建期和服务端，顺带把 PHP 一二十年前做过的事重新发明一遍。他强调这不等于 React 会死：就像 jQuery 至今仍遍布网络、靠惯性和好文档存续，React 也会长期存在，只是新的主流做法会演进到它之外。他甚至半开玩笑地说，在各自要解决的问题上，jQuery 比 React 做得更好。
 
 Chris 把当下的应对方案分成几类。一类是"更小的同类"：Preact 几乎照搬 React API，体积约十分之一、渲染更快；SolidJS 模式相近而更轻；尤雨溪受 Alpine.js 启发做了约 6KB 的 petite-vue。另一类是 Next.js、Nuxt 这种服务端渲染再在浏览器"交接"的混合方案，但仍把整个库发下去，没解决"JS 太多"的根本问题。真正的新方向是编译器路线：Svelte 让你用状态式写法，编译出的代码接近手写的精准 DOM 操作；Astro 更进一步，可以混用 React、Vue、Svelte 组件，输出以静态 HTML 为主、按需加 JS 的结果。他引用 Jason Lengstorf 的实验：一个 Next 项目几乎原样迁到 Astro，JS 减少约九成，加载运行快三倍。他的悬而未决之问是：Svelte、Astro 是"下一个 React"，还是像 jQuery 时代的 Umbrella.js、Shoestring 那样只是过渡桥梁——在他看来 Preact、Solid 属于后者，而 Astro、Svelte 的工作原理确实根本不同。

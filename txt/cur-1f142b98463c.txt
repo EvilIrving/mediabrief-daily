@@ -1,5 +1,7 @@
 http://sites.libsyn.com/100962/why-is-node_modules-so-big
 
+Why Is node_modules So Big? ｜ Syntax ｜ 25分钟 ｜ http://sites.libsyn.com/100962/why-is-node_modules-so-big
+
 这期 Syntax 短节目里，Wes Bos 用 DaisyDisk 拆开自己课程平台 Boss Monster 前后端，以及另外几个项目的 node_modules，逐类找出是什么在占空间。他的结论是：占地方的大多是文本，几乎都不是真正会跑起来的代码。他从 Syntax 逐字稿的例子说起：带逐词时间戳的 JSON 有七兆，用 gzip 压缩后只剩约 300K。
 
 Wes 列了这几类。一是源码：包里常常留着 TypeScript、ESM 的源文件，甚至 README 里的截图，作者不知道可以用 .npmignore 排除，一张截图就是好几百 K。Scott 倒觉得能在 node_modules 里读到依赖的源码对学习很有帮助。二是类型定义：AWS SDK 光类型就有 14MB，装一个转录服务的包就把全套 SDK 都带了进来；每个 Babel 插件只有约 8K 代码，却带着近 1MB 类型，一个项目有几十个插件，加起来就是 30MB。三是 source map 和 core-js 这类 polyfill。四是为兼容 ESM、CJS 和浏览器而发两三份构建。五是 Markdown：一个 React 项目里，README、许可证、changelog 加起来有 10MB。还有 TypeScript 自带的全部语言报错翻译，约 4MB。

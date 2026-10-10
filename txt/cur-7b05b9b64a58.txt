@@ -1,5 +1,7 @@
 https://magazine.sebastianraschka.com/p/the-state-of-llm-reasoning-model-training
 
+The State of Reinforcement Learning for LLM Reasoning ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/the-state-of-llm-reasoning-model-training
+
 Sebastian Raschka 用这篇长文给 2025 春的“推理模型热”画地图。GPT-4.5、Llama 4 反响平淡，因仍是未做推理向 RL 的常规模型；而 o3 把训练算力堆到约 o1 的 10 倍，说明瓶颈不在继续堆规模，而在把算力投进可验证任务上的强化学习。全文从 RLHF/PPO 讲到 GRPO 与 RLVR，再落到 DeepSeek-R1 与十五篇跟进论文。
 
 对齐管线仍是预训练 → SFT → RLHF。RLHF 三步：用人写回答做 SFT；对人排序数据训奖励模型（输出改回归）；再用 PPO 按 RM 分数更新策略。PPO 用概率比 × 优势、裁剪与相对参考策略的 KL，把更新锁在“近端”；还涉及 critic 估期望回报。DeepSeekMath 的 GRPO 去掉 critic，改为对同一提示采样一组回答、用组内相对质量算优势，省显存。R1 再走一步：奖励改为编译器/答案核对等**可验证奖励（RLVR）**，连 RM 也可去掉，以规避大规模 RL 里神经奖励模型的奖励黑客。

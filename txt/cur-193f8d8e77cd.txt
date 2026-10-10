@@ -1,5 +1,7 @@
 https://www.latent.space/p/harness-eng
 
+Extreme Harness Engineering for Token Billionaires: 1M LOC, 1B toks/day, 0% human code, 0% human review — Ryan Lopopolo, OpenAI Frontier & Symphony ｜ Latent Space ｜ 文章 ｜ https://www.latent.space/p/harness-eng
+
 这期 Latent Space 由 swyx 和 Vibhu 对谈 OpenAI Frontier 产品探索团队的 Ryan Lopopolo。他此前在 Snowflake、Brex、Stripe、Citadel 工作，最近一篇关于"Harness 工程"的长文在业内引发热议。节目开头的编者按把核心事实摆了出来：他的小团队用五个月做出一个内部 beta 产品，代码库超过 100 万行、PR 约 1500 个，人类手写代码为零，合并前也没有人工审查。Ryan 甚至说，每天用不到 10 亿 token（按市价约 2000 到 3000 美元）几乎算"失职"。
 
 实验起点是他给自己定的硬约束：自己一行代码都不写。他的逻辑是，如果要做能部署进企业端到端干活的智能体，它就该能做他做的所有事；而模型和 harness 在能力上已经与他"同构"。起步用的是早期 Codex CLI 和 Codex Mini，头一个半月比他亲手写慢 10 倍。团队的原则是：智能体做不到时，不去改提示词或让它"再努力点"，而是追问缺的是什么能力、上下文或结构，把任务拆成更小的积木再组装。正因付出了这个代价，后来才跑得比任何单个工程师都快。模型一路从 GPT-5 升到 5.4，每代都有怪癖：5.3 引入后台 shell 后不愿阻塞等待，他们就把构建从 Makefile 换到 Bazel、Turbo，最后换成 Nx，硬压到一分钟以内。一分钟是内循环的上限，一旦超出就拆构建图，像棘轮一样维持纪律。token 便宜、并行度极高，所以这些不变量可以持续打理。

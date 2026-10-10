@@ -1,5 +1,7 @@
 https://t-wada.hatenablog.jp/entry/design-for-testability
 
+現在時刻が関わるユニットテストから、テスト容易性設計を学ぶ ｜ Takuto Wada ｜ 文章 ｜ https://t-wada.hatenablog.jp/entry/design-for-testability
+
 这是和田卓人（t_wada）2013 年发表在 CodeIQ MAGAZINE 上的长文，CodeIQ 关站后于 2019 年以 CC BY 4.0 许可重新公开。他出了一道 TDD 题，又逐一点评读者的解答，借此讲可测试性设计。题目是：根据当前时间（Asia/Tokyo）返回问候语，5–12 点"おはようございます"，12–18 点"こんにちは"，其余时间"こんばんは"，调用方式是 greeter.greet()。选做题再加上 locale，并要求把"如何取得 locale"本身也纳入设计。
 
 题目看似简单，难点在于当前时间会改变被测行为。他举了一个坏例子：A 在 14 点写下断言"こんにちは"的测试，本地和 CI 都通过；傍晚过了 18 点 CI 突然变红，CI 还把刚提交无关代码的 B 当成了嫌疑人。好的单元测试必须是 Repeatable 的，无论何时、跑多少次结果都一样，否则就是《xUnit Test Patterns》所说的 Erratic Test。所以这道题的可测试性设计，就是让测试能够控制"现在"。此外还要想清楚接口（多数人照题意写成无参 greet()，也有人做成带默认参数的 greet(time)），以及边界测试数据（00:00:00、04:59:59、05:00:00、11:59:59 等，甚至毫秒和夏令时）。

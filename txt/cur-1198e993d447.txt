@@ -1,5 +1,7 @@
 https://changelog.com/podcast/599
 
+It all starts with Postgres (Interview) ｜ The Changelog ｜ 95分钟 ｜ https://changelog.com/podcast/599
+
 The Changelog 第 599 期，Adam Stacoviak 和 Jerod Santo 时隔两年半再次请来 Supabase CEO Paul Copplestone（两位主持人是 Supabase 的天使投资人）。节目从一个玩笑开场：一年前 Supabase 作为 Redpoint InfraRed 100 的一员登上时代广场大屏，Paul 发推说公司“悄悄上市了”，Adam 在 Changelog News 里照搬了这个标题，结果那期的收听量是平时的两倍。
 
 正题从新标语“周末搭起来，扩展到百万级”开始。Paul 说这不是夸张：当时已有 12 家公司在 Supabase 上从零用户涨到百万以上，大多是 AI 应用。被问到在各家开源公司接连“抽地毯”改协议的背景下是否动摇，他说开源从来没讨论过，他和联合创始人在理念上就是开源的人，商业化风险也已经消除，“只要我还是 CEO，就终身开源”。AWS 也很难照搬，因为 Supabase 是一整套服务，不是一个镜像。自托管的人其实很多，最低付费档每月 25 美元，嫌贵的人自托管也无妨，官方支持就是一个 Docker Compose。

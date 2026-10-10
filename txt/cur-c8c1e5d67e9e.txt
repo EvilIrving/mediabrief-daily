@@ -1,5 +1,7 @@
 https://changelog.com/podcast/356
 
+Observability is for your unknown unknowns (Interview) ｜ The Changelog ｜ 66分钟 ｜ https://changelog.com/podcast/356
+
 《The Changelog》2019 年 8 月的一期访谈，主持人 Jerod Santo 和 Adam Stacoviak，嘉宾是 Honeycomb 联合创始人兼 CEO Christine Yen，她即将在 Strange Loop 大会上演讲《可观测性：开发者的超能力》。她的核心主张是：可观测性常被当成运维和 SRE 救火的工具，其实对写代码的人威力更大，应该提前到开发的每个环节。
 
 开场她自嘲已经很少写代码：公司长到 25 人后，工程总监劝她别再半夜偷偷修 bug，因为她包办了，团队就没法改进流程。随后谈开发与运维的鸿沟。联合创始人 Charity Majors 是典型运维，17 岁起就背寻呼机；她自己是产品开发出身。两人曾在移动后端服务 Parse 共事，那里人人轮流做一天客服，写代码的人始终清楚软件哪里难用。但即便如此，运维还是常来问她"Mongo 集群写入吞吐变了，你知道吗"，她一头雾水。被 Facebook 收购后，他们用上了内部工具 Scuba（Honeycomb 的前身），问题变成"最大客户在这个端点上某类请求延迟上升了"——这是开发者听得懂的名词。她认为，开发者只有看到代码与生产表现之间的因果，才能培养运维的敏感度；所谓"在生产中测试"，本质就是比较实际与预期，并把信号关联回代码。她也注意到不少开发者仍持"按规格写、测完上线，出事是基础设施的锅"的心态，正在慢慢改变；反方向上，DevOps 运动已让运维更习惯用代码工作。

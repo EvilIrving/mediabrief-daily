@@ -1,5 +1,7 @@
 https://shoptalkshow.com/734/
 
+734: Web Performance with Ben Schwarz ｜ ShopTalk Show ｜ 57分钟 ｜ https://shoptalkshow.com/734/
+
 这一期 ShopTalk Show 由 Dave Rupert 和 Chris Coyier 主持，嘉宾是 Calibre 创始人兼 CEO Ben Schwarz，他上一次上节目还是 2013 年的第 68 期。开场三人怀旧了一番，盘点当年的嘉宾如今的去向：Mike Taylor 在 Google 低调做 Web 兼容性，Hampton Catlin 转向创业，Val Head 还在 Adobe。随后话题转入 Ben 最近那篇关于航空公司网站为何如此之慢的研究。
 
 Ben 先介绍了 Calibre。这套面向团队的 Web 性能工具已经做了近十年，提供三种视角：合成测试（持续跑 Lighthouse，可以深挖每个请求和第三方资源）、来自 Chrome 真实用户的 CrUX 数据，以及装脚本采集的真实用户监控（RUM）。所有结果都按受影响的会话数排序，打开就能看到对最多人影响最大的页面或元素。

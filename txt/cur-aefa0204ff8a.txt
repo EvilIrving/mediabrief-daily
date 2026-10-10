@@ -1,5 +1,7 @@
 https://overreacted.io/a-complete-guide-to-useeffect/
 
+A Complete Guide to useEffect ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/a-complete-guide-to-useeffect/
+
 Dan Abramov 这篇“小书”式长文要解决的是：用惯了 Hooks 的人，在 useEffect 上总觉得哪里拼不起来——怎么实现 componentDidMount、怎么正确取数据、[] 是什么、函数要不要列为依赖、为什么会无限重复请求、为什么 effect 里拿到旧值。他的核心主张是：不要透过 class 生命周期去理解 useEffect，大部分功夫在于“忘掉已学的”。文章开头先给出一份 TLDR，结尾再回到它。
 
 第一层基础是“每次渲染都有它自己的 props 和 state”。在 const [count, setCount] = useState(0) 里，count 只是一个普通数字，不是数据绑定或监听器；每次 setCount，React 重新调用组件，这一次的 count 是新的常量。事件处理函数也一样：点“Show alert”后把计数从 3 加到 5，三秒后弹出的仍是 3，因为那个处理函数属于点击时的那次渲染，闭包捕获了当时的 count——这和普通 JavaScript 函数调用各自持有局部常量是同一个道理。effect 同样如此：不是 count 在一个不变的 effect 里变了，而是每次渲染都有一个新的 effect 函数，各自看到自己那次渲染的值。概念上可以把 effect 看成渲染结果的一部分；React 在浏览器绘制之后才运行它。

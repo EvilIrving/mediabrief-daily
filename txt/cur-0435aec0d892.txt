@@ -1,5 +1,7 @@
 https://se-radio.net/2023/12/se-radio-596-maxim-fateev-on-durable-execution-with-temporalse-radio-596/
 
+SE Radio 596: Maxim Fateev on Durable Execution with Temporal ｜ Software Engineering Radio ｜ 69分钟 ｜ https://se-radio.net/2023/12/se-radio-596-maxim-fateev-on-durable-execution-with-temporalse-radio-596/
+
 这一期 Software Engineering Radio，Philip Winston 采访 Temporal 联合创始人兼 CEO Maxim Fateev，主题是 durable execution（持久执行）：运行时始终把代码执行的完整状态持久化，进程崩、网络断甚至整片区域宕机后，执行能迁到别处并从断点继续——包括卡在某次 API 调用上的局部变量。Temporal 开源（MIT）、可自建，源自 Uber 的 Cadence，已在生产高规模跑约七年，被全球数千家公司用于关键任务。Maxim 的路径是 Amazon Simple Workflow（内部三轮迭代才公开）→ Samar Abbas 在微软做的 Durable Task / Azure Durable Functions → Uber Cadence → fork 成 Temporal（thrift→protobuf、Uber 专用协议→gRPC 等，fork 后改了一年才宣布生产可用）。后端集群 MIT 许可，开源支持 MySQL/Postgres/Cassandra/SQLite；应用只做出站 gRPC，不需开端口。
 
 他强调队列和事件驱动运行时特性很好（缓冲、隔离故障），却不是编排业务的正确抽象：服务互相缠死、难做清晰状态机。Temporal 里的“workflow”特指用 Java/Go/TypeScript/PHP/.NET 等写的持久代码，而不是 YAML/XML 画出来的传统工作流引擎——那些对开发者不友好，也从未真正普及。实现上不靠序列化任意语言的内存快照，而靠 event history + 确定性重放：从头跑代码，已完成的外部动作直接喂历史结果；因此有路由层把迟到的结果送到当前等待的进程。代码必须确定性；随机、时间、线程等要走 Temporal 提供的 API。Worker 像队列消费者一样监听 task queue；碰到 sleep 就变成服务器侧持久 timer，到期再唤醒。短等待会在 worker 里缓存状态以免反复恢复。
@@ -8,6 +10,6 @@ https://se-radio.net/2023/12/se-radio-596-maxim-fateev-on-durable-execution-with
 
 可观测性来自事件溯源：UI/CLI 看每步参数、结果、重试与 timer，可下载历史在本地调试器重放；支持按自定义属性检索海量工作流，并自动打点。实体工作流靠 signal（单向事件）、query（只读同步取状态）、update（可阻塞的请求-响应，适合结账向导分页）交互；workflow ID 由应用指定并保证唯一，从而 exactly-once。Interceptor 做横切（如每次 activity 完成写 Kafka），避免再包一层 API。SDK 力求语言母语化；共享状态机约 80% 复杂度收进 Rust 核心（Python/.NET/TypeScript 用它，Go/Java 较早仍自建；Rust SDK 尚未排上）。并行就用各语言自己的 Promise/async/goroutine；完成事件逐个送达，服务端暂无“等全部再唤醒”。
 
-本地 `brew install temporal` 后 `temporal start-dev` 单二进制（默认 SQLite）即可开发，另有可快进时间的单测框架；生产用 Go 二进制 + 上述数据库（大规模索引常接 Elasticsearch），部署方式不绑死 K8s。历史约 50MB 上限、单 activity 结果约 2MB，大 blob 应存别处传指针；长跑实体用 continue-as-new 重置历史并便于升级。版本管理：短工作流宜启动时钉版本；长跑可用 patching 在代码里并存新旧分支，并用单测/重放防破兼容。相对之下，纯事件编排没有显式工作流时，不兼容变更几乎无法安全推进。多集群复制主要为跨区域可用性（异步复制 + 冲突解决，namespace 可单独故障转移，甚至不同版本/不同存储类型），扩展瓶颈在数据库——低速率 MySQL/Postgres，高速率自建常上 Cassandra。
+本地 `brew install temporal` 后 `temporal server start-dev` 单二进制（默认 SQLite）即可开发，另有可快进时间的单测框架；生产用 Go 二进制 + 上述数据库（大规模索引常接 Elasticsearch），部署方式不绑死 K8s。历史约 50MB 上限、单 activity 结果约 2MB，大 blob 应存别处传指针；长跑实体用 continue-as-new 重置历史并便于升级。版本管理：短工作流宜启动时钉版本；长跑可用 patching 在代码里并存新旧分支，并用单测/重放防破兼容。相对之下，纯事件编排没有显式工作流时，不兼容变更几乎无法安全推进。多集群复制主要为跨区域可用性（异步复制 + 冲突解决，namespace 可单独故障转移，甚至不同版本/不同存储类型），扩展瓶颈在数据库——低速率 MySQL/Postgres，高速率自建常上 Cassandra。
 
 Temporal Cloud 是 namespace-as-a-service，集群不暴露给用户；自研窄用途存储支撑极高吞吐（测过约 30 万 actions/秒；Snapchat story 更新走 Cloud，尖峰不必客户自己扩容）。保留约三个月，可 export 到自有 S3 做合规或批分析；指标走带证书的 Prometheus 端点，CLI/自建 UI 走同一 gRPC。安全上代码与密钥在客户侧，仅出站 gRPC，payload 可端到端加密，codec 在浏览器连客户 VPC 解密——过大型银行评审。计费按 action 用量（activity、signal 等）。上手建议官方 101/102 课程 + Slack（约九千人）；Ruby SDK 等由社区（如 Coinbase/Stripe）贡献，也有公司以 Temporal 为引擎重写内部平台（如 Netflix 侧 Spinnaker 类管道）。展望 2024：Cloud 上的 global namespace、信用卡自助注册，以及把长时 RPC 做成服务网格一等公民的 Nexus 项目。

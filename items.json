@@ -1312,6 +1312,26 @@
   "title_zh": "“我见过政府如何压制自由” ， Telegram创始人帕维尔·杜罗夫在奥斯陆自由论坛上"
  },
  {
+  "id": "cur-5988276564e5",
+  "kind": "curated",
+  "type": "article",
+  "source": "阮一峰",
+  "title": "Dario Amodei：AI 开源是伪命题",
+  "link": "https://www.ruanyifeng.com/blog/2026/06/anthropic.html",
+  "date": "2026/06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5988276564e5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5988276564e5.transcript.txt"
+   }
+  ]
+ },
+ {
   "id": "I-A_yaUXK2E",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -4077,8 +4097,8 @@
     "url": "txt/cur-a3d03cc6ae0c.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-a3d03cc6ae0c.m4a",
-  "title_zh": "10倍开发者神话（面试）"
+  "title_zh": "10倍开发者神话（面试）",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-a3d03cc6ae0c.m4a"
  },
  {
   "id": "cur-92a94e7953b1",
@@ -4581,26 +4601,6 @@
    {
     "label": "原文",
     "url": "txt/cur-4e8227e28349.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "cur-5988276564e5",
-  "kind": "curated",
-  "type": "article",
-  "source": "阮一峰",
-  "title": "Dario Amodei：AI 开源是伪命题",
-  "link": "https://www.ruanyifeng.com/blog/2026/06/anthropic.html",
-  "date": "2026/06",
-  "audio_url": null,
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/cur-5988276564e5.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/cur-5988276564e5.transcript.txt"
    }
   ]
  },

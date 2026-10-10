@@ -1,5 +1,7 @@
 https://share.transistor.fm/s/d7a0d796
 
+Model Context Protocol Deep Dive ｜ Practical AI ｜ 42分钟 ｜ https://share.transistor.fm/s/d7a0d796
+
 这是 Practical AI 一期没有嘉宾的“全连接”节目，Prediction Guard CEO Daniel Whitenack 与洛克希德·马丁首席 AI 研究工程师 Chris Benson 专门拆解 Anthropic 于 2024 年 11 月 25 日推出的模型上下文协议（MCP）。
 
 Daniel 先从客户身上的一个规律切入：企业做完 RAG 知识库问答、text-to-SQL 和各种自动化之后，会想在这些独立助手之上加一层“智能体层”，把它们串成工作流。过去这靠工具调用：把 API schema 塞给 LLM，让它生成 JSON 请求体，再由普通代码去真正调用外部 API。LLM 不擅长时间序列预测之类的任务，交给外部工具更好，但问题是每家的工具、数据库、API 和胶水代码都不一样，你的智能体想用我的工具，总得有一方改代码。他把 MCP 比作 Web 早期出现的 HTTP：有了统一协议，任何客户端都知道服务器会返回什么。Chris 则把它看作 AI 走向成熟的标志，是一种新的“中间件”。

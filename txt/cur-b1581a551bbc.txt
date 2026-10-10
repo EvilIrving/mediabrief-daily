@@ -1,5 +1,7 @@
 https://magazine.sebastianraschka.com/p/state-of-llms-2025
 
+The State Of LLMs 2025: Progress, Problems, and Predictions ｜ Sebastian Raschka ｜ 文章 ｜ https://magazine.sebastianraschka.com/p/state-of-llms-2025
+
 Sebastian Raschka 在 2025 年底写的这篇年度回顾，判断这一年 LLM 的进展丝毫没有放缓，但动力已经从单纯堆规模，转向训练流程、推理扩展和工具使用等多条战线。
 
 他把 2025 年称为"推理之年"。1 月 DeepSeek R1 以开放权重发布，性能比肩最好的专有模型，还促使人们重读 V3 论文，结论是训练前沿模型可能只要约 500 万美元（只算最终那次训练的算力，不含人员和实验成本），R1 在 V3 基础上又只花了 29.4 万美元。更关键的是，它提出用 GRPO 算法做基于可验证奖励的强化学习（RLVR）：数学、代码这类答案能被确定性地判对错，于是摆脱了 SFT 和 RLHF 依赖昂贵人工标注的瓶颈，可以在后训练阶段大规模投入算力。此后几乎每家都推出了"思考"版本。他把各年的重点概括为：2022 年 RLHF+PPO，2023 年 LoRA 微调，2024 年中期训练，2025 年 RLVR+GRPO。他预测 2026 年会是 RLVR 扩展到其他领域、给解释过程打分（DeepSeekMath-V2 已有苗头，而 R1 论文曾说过程奖励模型得不偿失），以及更多推理时扩展；2027 年轮到持续学习，但灾难性遗忘这一难题目前还没有突破。

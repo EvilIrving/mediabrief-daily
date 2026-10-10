@@ -1,5 +1,7 @@
 https://www.latent.space/p/attention-interface
 
+The Evolution of the Agent Harness ｜ Latent Space ｜ 文章 ｜ https://www.latent.space/p/attention-interface
+
 Latent Space 这篇文章把 2025 年圣诞前后智能体“突然能用了”归因于模型与 harness 一起进步、两条曲线在恰当时刻交叉。Transformer 发明者之一 Lukasz Kaiser 也说那次跳跃很难说清来自哪里。作者的答案是：不全在权重里，而在权重之外让智能体运转的一切，即环境、工具、上下文和护栏。没有 harness，模型只是缸中之脑。
 
 Harness 1.0 是“外挂时代”，用“harness 要求什么”与“模型能交付什么”的差距衡量。ReAct 只把循环写在提示里；AutoGPT/BabyAGI 过早放手，循环放大错误，每步 95% 可靠、20 步成功率只有约 36%；Cursor/Copilot 把循环交回人手，初版 Devin 成功率约 15%；o1 之后模型能力首次反超；Claude Code 在交叉点上给模型终端、bash 和权限规则，半年 ARR 约 10 亿美元。

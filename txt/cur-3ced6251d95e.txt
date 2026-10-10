@@ -1,5 +1,7 @@
 https://syntax.fm/855
 
+855: Fast Websites: The New Speculation Rules API ｜ Syntax ｜ 24分钟 ｜ https://syntax.fm/855
+
 起因是 McMaster-Carr 网站在推特上走红：一家百年老公司，网站却快得惊人。Wes Bos 研究后发现，最见效的一招是鼠标悬停在链接上就预加载目标页的 HTML。他借这个话题向 Scott Tolinski 介绍浏览器新推出的 Speculation Rules API；CSS Wizardry 的 Harry Roberts 已经在自己的网站上用上了。
 
 他们先回顾老办法。link rel="preload" 提前下载字体、首屏图片这类资源；preconnect 只提前做好 DNS 和 SSL 握手，免得 HTML、CSS、字体一层层排队请求。Scott 的比方是：preload 是"穿鞋上车出发"，preconnect 是"先把导航打开"。新 API 是在页面里放一个 type="speculationrules" 的脚本，用正则或 CSS 选择器写规则，指定哪些链接要 prefetch（只下载 HTML），哪些要 prerender（像后台标签页那样连资源一起完整渲染，点击后瞬间切换）。积极程度用 eagerness 设定，分 immediate、eager、moderate、conservative 四档；浏览器还会参考网速、设备性能和电量自行决定，比如电量只剩 4% 就不预取。

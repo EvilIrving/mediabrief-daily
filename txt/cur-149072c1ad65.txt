@@ -1,5 +1,7 @@
 https://changelog.com/jsparty/304
 
+From WebGL to WebGPU ｜ JS Party ｜ 59分钟 ｜ https://changelog.com/jsparty/304
+
 这期 JS Party 是听众 Daniel Buckmaster 点播的，原本想聊 WebGL。Jerod Santo 和 Amal Hussein 邀请了 WebGLFundamentals.org 的作者、Google 工程师 Gregg Tavares，他建议改聊 WebGPU。理由是 WebGL 2011 年上线，已经"做完了"，不会再有大的改动；WebGPU 今年 5 月在 Chrome 上线，Firefox 和 Safari 还要打开开关才能用，Unity 等公司已经宣布支持，前进方向就在这里。
 
 Gregg 自称游戏开发者，但最后一款游戏停在 2007 年。2008 年他进 Google 写游戏引擎 O3D，项目发布后被砍，他转去做 WebGL，觉得让大家自己写引擎才是对的。他在 Stack Overflow 上答问题时发现，这类 GPU API 准备工作极多：用 canvas 画个圆只要四行，用 WebGL 要七八十到上百行，Stack Overflow 那种短小的回答根本讲不清，于是他写起了教程，后来就有了 WebGL Fundamentals。

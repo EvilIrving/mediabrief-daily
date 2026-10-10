@@ -1,5 +1,7 @@
 https://changelog.com/jsparty/320
 
+A Solid primer on Signals ｜ JS Party ｜ 88分钟 ｜ https://changelog.com/jsparty/320
+
 《JS Party》第 320 期（2024 年 4 月），主持人 Amal Hussein 和 Nick Nisi，嘉宾是 Solid.js 的作者、人称"Signals CEO"的 Ryan Carniato。节目名义上介绍 Solid，实际想讲清楚的是：为什么"细粒度响应式"和 Signals 会在短短几年里席卷几乎所有前端框架，它除了性能还带来什么。
 
 Ryan 先讲了自己的来路。他 2010 年在 Knockout.js 里迷上响应式，喜欢那种"电子表格式"的数据流：定好规则、改数据、一切自动传播。2014 年后 React 的"全部重渲染"模型成为主流，响应式库被冷落。他对当时的性能基准颇不以为然：真实应用要的是少传数据、少做更新，而不是每秒把整个数据库刷到页面上；React 擅长的是给性能"设下限"，而不是真正让东西快起来。于是他 2016 年开始做 Solid、2018 年开源，实验的问题是："如果 Signals 就是整个框架呢？"不要虚拟 DOM、不要 diff，只在数据变化处直接更新真实 DOM。

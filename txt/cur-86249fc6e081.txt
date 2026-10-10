@@ -1,5 +1,7 @@
 https://surma.dev/things/when-workers/
 
+When should you be using Web Workers? ｜ Surma ｜ 文章 ｜ https://surma.dev/things/when-workers/
+
 Surma 开篇就亮出鲜明态度："你应该总是用 Web Workers——而在当前框架格局下几乎不可能。"然后展开细说。
 
 性能鸿沟在加宽：旗舰手机越来越快，但廉价机卡在约 2014 年的芯，二十美元级手机把更多人带上网；Google I/O 2019 Elizabeth Sweeny 与 Barb Palser 发 Nokia 2 让合作伙伴体验"看起来高端、内核像半旧机"的错位；功能机回归后像素更少、每像素算力反而可能更好。最快与最慢的落差变大，中位数在往下走。JavaScript 一长跑就阻塞主线程：布局、绘制、滚动手势都得等。RAIL 给的时间预算（如约 16ms 一帧）绑在人类感知上、不随设备变——你不在最慢机上开发，就几乎无法预测代码在那台机上要跑多久。他说忽视低端机和忽视读屏用户一样，是包容性问题。

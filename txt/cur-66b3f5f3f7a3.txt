@@ -1,5 +1,7 @@
 https://share.transistor.fm/s/e13d399b
 
+We've all done RAG, now what? ｜ Practical AI ｜ 44分钟 ｜ https://share.transistor.fm/s/e13d399b
+
 这一期 Practical AI 由 Daniel Whitenack 单独主持，嘉宾是节目的老朋友、Contextual AI 首席布道师 Rajiv Shah。Rajiv 将在 11 月 13 日印第安纳波利斯的 Midwest AI Summit 上讲“95% 的 AI 试点为什么失败”。这期的主线是：RAG 已经人人都做过，接下来真正的难点在哪里。
 
 Rajiv 先回顾了两年半来的变化。代码工具突飞猛进，聊天机器人进展有限。RAG 的出发点是：想让 ChatGPT 了解你的公司，并不需要用公司资料去训练它，而是把相关知识检索出来交给模型，所以它成了企业里最普遍的用法，用来查内部知识库、人力资源文档、做客服。Daniel 指出，“ChatGPT 在用我的数据训练”是一个普遍误解。Rajiv 解释说，ChatGPT 是一个系统，检索、工具、记忆、多轮对话摘要这些部件共同构成了所谓的上下文工程。他打了个比方：一个人不停读十年书，大约读到十亿 token，而模型训练用的数据有 15 万亿 token，近年的进步很大程度上来自更好地调动模型已有的知识。Daniel 举了医疗的例子：不同机构、儿童和老人的护理指南互相冲突，“事实”取决于上下文，这正是要靠检索和提示来注入的东西。Rajiv 还用火车相遇的应用题说明，所谓推理模型，就是被训练成先分步思考、再给答案。

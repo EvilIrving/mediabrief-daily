@@ -1,5 +1,7 @@
 https://surma.dev/things/webgpu/
 
+WebGPU — All of the cores, none of the canvas ｜ Surma ｜ 文章 ｜ https://surma.dev/things/webgpu/
+
 Surma 自称图形方面经验不多，用 WebGL 一直不顺手。别人都说 WebGPU 的样板代码比 WebGL 还多，他真上手后的结论却是：样板量差不多，API 用起来顺手得多。这篇长文想让 Web 开发者入门 WebGPU，但刻意不讲图形渲染，只讲用它调用 GPU 的通用算力（GPGPU）。他也说明，目标是能“有效”使用，而不是“高效”使用。
 
 他先解释为什么需要新 API。WebGL 基本就是 OpenGL ES 2.0 加一层薄封装，而 OpenGL 的设计围绕一个内部的全局状态对象：调用顺序极其关键，写库和抽象时必须小心保存、恢复各种指针，出错时往往只得到一块黑色画布。在他看来，这正是大家宁可用 ThreeJS 的原因。做通用计算时，WebGL 1 要把数据编码成纹理、算完再编码回去；WebGL 2 的 Transform Feedback 好一些，但 Safari 直到 2021 年 9 月才支持。与此同时，原生领域已经有了 Vulkan、Metal、DirectX 12 这些更底层的新一代 API，适应 GPU 无处不在、多线程以及提前做验证的需求。WebGPU 不照搬其中任何一个，而是自成一套抽象，既符合 Web 习惯，又能架在各家原生 API 之上，由 W3C 联合各大浏览器厂商标准化。

@@ -1,5 +1,7 @@
 https://changelog.com/friends/111
 
+npm under siege (what to do about it) (Friends) ｜ The Changelog ｜ 95分钟 ｜ https://changelog.com/friends/111
+
 这期 Changelog & Friends 里，Jerod Santo 和 Adam Stacoviak 请来 Socket Security 创始人 Feross Aboukhadijeh，梳理 2025 年 8–9 月间 npm 遭遇的一连串供应链攻击，并讨论开发者能做什么、平台该做什么。
 
 Feross 认为这是 npm 史上最严重的一波攻击：钓鱼、维护者账号被接管，恶意代码被塞进每周下载量数十亿次的包里，受害者包括 Prettier 相关包、Nx 构建系统、Sindre Sorhus 一位共同维护者手里的一批包，以及 CrowdStrike 的十几个开源包。这种手法早有先例（2017 年 event-stream 被接管、定向偷取某钱包应用用户的加密货币），这次之所以集中爆发，是因为“发邮件骗维护者重置 2FA，否则冻结账号”的钓鱼招数奏效后，在攻击者圈子里成了一种“梗”，引来大批模仿者各显神通。攻击者都图财，但收益其实很寒酸：在 Sindre 系列包被投毒的那次，恶意代码拦截前端的 fetch/XHR，用 Levenshtein 距离挑一个最像收款地址的攻击者地址做替换，可链上数据显示只偷到约 500 美元。Feross 半开玩笑地说他们“本可以做得更好”：藏进深层依赖、混淆拆分、窃取 SSH 和浏览器 Cookie 以获得持久访问，而不是动静大到几小时就被发现。主持人还猜测，这些高调攻击也可能是掩护真正目标的障眼法。

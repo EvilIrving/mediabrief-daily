@@ -1,5 +1,7 @@
 https://changelog.com/jsparty/263
 
+Web development's lost decade ｜ JS Party ｜ 78分钟 ｜ https://changelog.com/jsparty/263
+
 这期 JS Party 由 Amal Hussein 单独主持，嘉宾是微软 Edge 团队的产品经理 Alex Russell。他此前在 Google 做了约 14 年 Web 平台工作，起点是 Chrome 1.0 之前。他之前发表的《柠檬市场》（The Market for Lemons）一文在前端圈引起轩然大波，这期节目就是让他给这篇文章补上背景和细节。
 
 Alex 先讲了自己的履历：2000 年代领导 Dojo Toolkit，给 IBM、Sun、AOL 做大型 Ajax 应用；在 Google 期间参与 ES6 的箭头函数、class、Promise、async/await，以及 Web Components、Service Worker、PWA、推送通知和 Fugu 项目，在 TC39 待了十年，后来负责 Chrome 的标准工作。他说自己本不想关心性能，但从 2015 年起给团队做咨询，性能问题永远排在第一位。那些用最新 JavaScript 框架做出来的产品性能糟糕透顶，而做产品的都是优秀工程师。他打比方说，房子容易着火不是因为工人不会盖，而是卖给他们的材料不合用。

@@ -1,5 +1,7 @@
 https://mizchi.dev/202009122126-cloudflare-workers
 
+Cloudflare Workers それは Frontend / Node.js が CDN Edge Side まで拡張されるもの ｜ mizchi ｜ 文章 ｜ https://mizchi.dev/202009122126-cloudflare-workers
+
 mizchi 在 2020 年 9 月花了几个周末研究 Cloudflare Workers，写下这篇总结，并说明自己只在本地试过，没上过生产。他的核心判断是：别把 Workers 当成又一个 Node.js FaaS，它更像"在 CDN 边缘用 JavaScript 写的 L7 代理"，API 沿用 ServiceWorker。
 
 在边缘运行代码，意味着请求到达源站之前就能被处理或直接用缓存返回：到源站 100ms、到边缘 15ms，一个往返就省下 170ms，多次往返的应用收益更大。他认为前端在移动端 4G 和 Web Vitals 的压力下必须重视性能，信条是"HTML 请求到达应用服务器就输了"。

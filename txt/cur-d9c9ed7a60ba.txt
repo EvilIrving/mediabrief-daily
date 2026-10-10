@@ -1,5 +1,7 @@
 https://syntax.fm/1020
 
+1020: Do You Read The Code? ｜ Syntax ｜ 88分钟 ｜ https://syntax.fm/1020
+
 《Syntax》第 1020 期（2026 年 7 月 13 日）是一期周一直播新闻杂谈。Wes Bos 休假，由 Scott Tolinski 和 CJ Reynolds 主持。开场闲聊世界杯，两人吐槽足球假摔，CJ 还主张取消越位。之后的主线是开发者圈正在吵的"你还读不读代码"，后面跟着一串 Web 和 AI 新闻。
 
 讨论起于一条推文："模型还要进步多少，你才会停止读代码？"两人梳理了各方回应。David Khourshid 说读代码本来就没意义，关键是验证；Cheng Lou 说自己连目录结构都不看了；Turso 的 Glauber Costa 则说数据库和操作系统代码永远要读，"很多人至今还在读汇编"；ThePrimeagen 认为这不过是新一轮的无谓之争。两人更认同几种务实的声音。Theo 认为一次性脚本可以不读，生产代码不能不管成本和效率。Dax 反问那些宣称"代码不重要"的人：既然这么领先，你们靠它赚到钱了吗？两人也觉得 Twitter 上很多人只是在空烧 token、拿不出成果。Zack Korman 批评有人以为当了经理、或者有了一队 agent 就可以撒手，其实掌控局面的责任比以往更大。David Fowler 指出，大家只谈"软件工厂"，却没人讨论未来的工程团队怎么协作；CJ 补充说，JS Nation 上不少人在讨论"结对提示"，团队之间如何共享 skill 和工作流还是空白。Scott 还拿 Notch 那条"PR 要好到什么程度才不读"的推文打趣 CJ 不认识 Minecraft 的作者。

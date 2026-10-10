@@ -1,5 +1,7 @@
 https://changelog.com/practicalai/295
 
+Creating tested, reliable AI applications ｜ Practical AI ｜ 50分钟 ｜ https://changelog.com/practicalai/295
+
 这一期 Practical AI 的 Fully Connected 节目只有两位主持人：Prediction Guard 的 CEO Daniel Whitenack，以及洛克希德·马丁的首席 AI 研究工程师 Chris Benson。话题从 AI 智能体的落地讲起，最后落到怎样把一个“八成时候惊艳、两成时候翻车”的 AI 应用变成可依赖的软件。
 
 开场 Daniel 推荐了 MLOps Community 的线上会议 Agents in Production，顺口问 Chris 生活里用不用智能体。Chris 说没有，还提到他读到智能体的普及速度远低于预期。由此引出当时的一个新闻背景：OpenAI 今年不会发 GPT-5，下一代模型的能力跃升看起来比想象中难。Daniel 抛出一个假设：如果模型就停在 Llama 3.1、Claude、GPT-4o 这一代，AI 还能带来大家所说的变革吗？Chris 认为模型停滞只会让开源更快追上闭源，加速整个领域的商品化。他还提醒，AI 远不止生成式 AI，深度强化学习加机器人这类方向一直在出成果，只是没人报道；生成式 AI 正在滑进炒作周期的“幻灭低谷”。Daniel 的看法是，现有的通用模型已经足以做“编排层”：例如做时间序列预测时，让 LLM 理解需求、抽取数据，再去调用 Prophet 这类专门工具。这样一来，靠现有模型和规则系统、API、统计模型的组合，他整个职业生涯都有做不完的产品。Chris 补充说，真正的空白在于企业很少系统梳理成千上万条工作流，去做流程再造，大家的注意力却总被下一个模型吸走。Daniel 拿早期 Web 打比方：基本构件早就够用，后来的流媒体这类跃迁锦上添花，但真正的变革靠的是现有构件。

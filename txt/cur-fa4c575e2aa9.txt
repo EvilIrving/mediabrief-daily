@@ -1,5 +1,7 @@
 https://www.joshwcomeau.com/css/interactive-guide-to-grid/
 
+An Interactive Guide to CSS Grid ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/interactive-guide-to-grid/
+
 Josh W. Comeau 这篇交互式教程（2023 年发表，2026 年 6 月更新）把自己学 CSS Grid 时最关键的几个"顿悟点"串起来讲。CSS Grid 已被约 96% 的用户的浏览器支持，只比 Flexbox 少 0.5% 左右。
 
 核心心智模型是：Grid 的行列结构完全由 CSS 定义，一个 DOM 节点被切成看不见的隔间，而 Table 布局必须靠 <tr>、<td> 等额外节点才能做到。display: grid 默认是单列的隐式网格，每个子元素自动占一行；父元素高度仍按 Flow 布局由内容撑开，给定固定高度时则均分成等高的行。

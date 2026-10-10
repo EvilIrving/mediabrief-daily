@@ -1,5 +1,7 @@
 https://softwareengineeringdaily.com/podcasts/biome-and-the-future-of-javascript-tooling/
 
+Biome and the Future of JavaScript Tooling ｜ Software Engineering Daily ｜ 61分钟 ｜ https://softwareengineeringdaily.com/podcasts/biome-and-the-future-of-javascript-tooling/
+
 这期 Software Engineering Daily（2026 年 6 月）由 Josh Goldberg 主持，嘉宾是 Biome 创建者兼首席维护者 Emanuele Stoppa（Ema）——他同时是 Cloudflare 高级系统工程师、Astro 负责人之一。话题从 Ema 的入行讲起：本想做游戏，大学游戏设计课缺教授，转去做 PHP、Postgres、jQuery，一路走到 React；他调侃如今 SSR、岛屿架构不过是旧模式换了 JavaScript 外衣，只是工具干净多了。
 
 转向工具之前，他因天天跟 Webpack 较劲进了 Webpack CLI 团队，又被 Rome Tools 的"一体化"使命吸引：格式化、lint、打包、测试塞进一个二进制。Rome 当时用 TypeScript，后来公司化并雇了他；他主导了向 Rust 的迁移。选 Rust 有三点：严格类型让依赖破坏更少、编译期就能抓住；原生内存管理摆脱 Node 极限（Rome 自打包一度吃掉 8GB）；wasm-bindgen 让 playground 一类场景好做。Rome 背后公司倒闭后，志愿者继续发版，直到 NPM token 过期被迫改名——前 CTO James 曾提过"第二罗马 / Biome"，Ema 征得同意后，Rome 十二月倒下、次年八月 Biome 亮相。资源变少后使命收窄：不做打包器和测试套件，纵向深挖格式化器与 linter。

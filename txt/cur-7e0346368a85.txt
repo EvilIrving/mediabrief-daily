@@ -1,5 +1,7 @@
 https://addyosmani.com/blog/own-the-outer-loop/
 
+Own the Outer Loop ｜ Addy Osmani ｜ 文章 ｜ https://addyosmani.com/blog/own-the-outer-loop/
+
 Addy Osmani 2026 年 AI Engineer World's Fair 闭幕主题演讲的文字版。核心主张：agentic 工程谈 harness、循环、舰队、软件工厂时，工程师必须握住外环——对这些系统的问责；Fable、GPT-5.6 越强，这一点越真。
 
 他定义三个词。质量：放行前装上的全部检查，产出证据。裁决（Verdict）：工作进入依赖系统前的最终决定——发货、拦截、改道、收窄、加护栏或干脆拒绝；模型可以写那一行，裁决是他的。可答性（Answerability）：有人问起时能解释为什么。agent = 模型 + harness；循环 = 调查、实现、验证、再来；工厂 = 许多循环并行。系统内侧是能力，外侧是能动性。工程师握住外环。

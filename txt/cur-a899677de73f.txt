@@ -1,5 +1,7 @@
 https://www.joshwcomeau.com/react/server-components/
 
+Making Sense of React Server Components ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/react/server-components/
+
 Josh W. Comeau 这篇文章（2023 年 9 月，2025 年更新）想澄清围绕 React 服务器组件（RSC）的大量困惑。作者坦言，亲手试过之后，他对这项技术的兴奋程度远超预期。
 
 文章先从服务器端渲染讲起。早期 React 应用多为客户端渲染：用户收到一个只有空 div 和脚本标签的 HTML，要等 JS 包下载、解析、执行之后才能看到界面，而且包会随功能增加越来越大。SSR 改由服务器生成完整 HTML，浏览器端的 React 再“水合”这份现成的 DOM，绑定事件、补上交互。作者引用 Dan Abramov 的比喻：水合就是用交互的“水”浇灌“干燥”的 HTML。

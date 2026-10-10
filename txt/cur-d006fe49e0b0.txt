@@ -1,5 +1,7 @@
 https://karpathy.bearblog.dev/animals-vs-ghosts/
 
+Animals vs Ghosts ｜ Andrej Karpathy ｜ 文章 ｜ https://karpathy.bearblog.dev/animals-vs-ghosts/
+
 Andrej Karpathy 回应 Dwarkesh 对 Richard Sutton 的访谈。讽刺之处在于，《苦涩的教训》的作者本人认为 LLM 并不"苦涩教训化"：它依赖有限的人类数据，带着人类偏见。Sutton 想要的是图灵式的"儿童机器"，不做预训练也不做监督微调，只靠强化学习和内在动机与世界交互，在测试时持续学习。
 
 Karpathy 承认批评成立，因为 LLM 的每个环节都有人的手笔。但他质疑常见的两个例证：围棋太封闭；动物也不是白板，小斑马出生几十分钟就会奔跑，靠的是进化训练出的 DNA 初始化。所以"预训练是我们蹩脚的进化"，用来解决冷启动问题。今天的 LLM 不是在造动物，而是在"召唤幽灵"，也就是人类文档的统计蒸馏。它们也许能逐渐变得更像动物，也可能像飞机之于鸟那样永远不同，但照样改变世界。他认为这期访谈是给沉迷刷基准的研究者的一记提醒。附录里他还谈到：上下文学习和 CLAUDE.md 这类记忆机制本身就是测试时学习；对创业这类超长时程的稀疏奖励，时序差分解释不了。

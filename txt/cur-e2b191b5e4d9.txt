@@ -1,5 +1,7 @@
 https://changelog.com/jsparty/224
 
+Were SPAs a big mistake? ｜ JS Party ｜ 55分钟 ｜ https://changelog.com/jsparty/224
+
 《JS Party》第 224 期（2022 年 5 月）是一期 Yep/Nope 辩论节目，辩题取自 Chris Ferdinandi 当年 2 月的博文《SPAs were a mistake》，主持人 Jerod Santo 还特意加了个"大"字："单页应用（SPA）是一个大错误吗？"正方是 Divya Sasidharan 和 Nick Nisi；反方本该是 Kevin Ball（Kball）和 Amal Hussein，Amal 因家中施工缺席，Kball 只好单挑，扬言要召唤历届嘉宾的"幽灵"助阵。Jerod 照例当主持兼裁判，用 Christopher Hiller 的一声"Wut?"代替计时铃。
 
 开场陈述中，Divya 先界定概念：SPA 把整个应用一次性加载到用户设备上，之后无需刷新页面；多页应用则每次导航都回服务器取页面。她攻击的是首屏成本：用户未必用到整个应用，却要为它全部下载买单。Kball 的立论是：正是 SPA 把浏览器从文档阅读器变成了能与原生应用比肩的应用平台。渲染之后，导航不必回服务器，只需一次 API 调用，交互也更灵敏；在 React、Vue 这类框架里掌控整个体验，比在服务端渲染页面上拼凑交互容易一个数量级。他提醒，辩题不是"某些场景下该不该用 SPA"，"博客不必做成 SPA"之类的说法都是稻草人。Nick 一边玩"二即是一，一即是无"之类的文字游戏，一边给出实质论点：SPA 默认破坏后退按钮和 URL，可访问性和 Lighthouse 分数都得靠每个团队自己补救，起点就处于劣势。Kball 的第二次陈述引用 Laurie Voss 的观点：浏览器进步得慢，用户态的库先探索，成功的做法再上升为平台能力，jQuery 之后就是 React 及其催生的 SPA。随后他效仿 Feross 当年的名场面"诉诸权威"，念了一串谷歌搜来的"SPA 好处"引语，被众人嘲为 Horse JS 式的断章取义。

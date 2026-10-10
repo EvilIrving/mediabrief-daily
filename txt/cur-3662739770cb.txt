@@ -1,5 +1,7 @@
 https://syntax.fm/895
 
+895: React Server Components: Where are we at? ｜ Syntax ｜ 31分钟 ｜ https://syntax.fm/895
+
 这期节目录于 2025 年 4 月。Wes Bos 和 Scott Tolinski 盘点 React Server Components（RSC）推出近五年后的现状，讨论它为什么一直没能真正普及。
 
 Wes 先讲清概念。服务端组件在构建时或服务器上渲染，只把输出发给浏览器；客户端组件则要把自己渲染所需的一切都带到浏览器，实际项目里两者通常混用。服务端组件是异步的，可以直接 await 数据库调用再返回 JSX；也可以 suspend，配合流式渲染，比如 Wes 新网站页脚的推特动态，就不会拖慢整个页面。它发出的是 RSC 负载，不涉及再水合，概念上有点像 htmx 换 HTML 片段。最大的好处是代码高亮、Markdown 解析这类重型库只在服务器上运行。服务端函数（原名 server actions）相当于内置 RPC，配合 useActionState 等 hook 使用。

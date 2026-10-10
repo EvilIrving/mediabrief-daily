@@ -1,5 +1,7 @@
 https://changelog.com/jsparty/315
 
+Getting a pulse on your Core Web Vitals 🩺 ｜ JS Party ｜ 84分钟 ｜ https://changelog.com/jsparty/315
+
 JS Party 第 315 期由 Amal Hussein 和 Nick Nisi 主持，嘉宾是 Google Chrome 团队的 Annie Sullivan（Core Web Vitals 技术负责人，在 Google 工作 19 年）和 Rick Viscomi（Web 性能开发者关系负责人）。节目录制于 2024 年 2 月 28 日，此时 INP 再过几周就要正式取代 FID，成为 Core Web Vitals 之一。
 
 开场先把几个基础概念讲清楚。主线程是 JavaScript 运行和 DOM 更新的地方，执行期间会阻塞界面，所以性能建议总说"别阻塞主线程"。事件循环是浏览器调度主线程工作的机制，可以把它想成一个不停转动的轮子，Rick 推荐看 Jake Archibald 的演讲《In the Loop》（"双重 requestAnimationFrame"为什么有效，用它就能解释）。网页和游戏一样有帧率，长动画帧就是耗时超出用户预期的那一帧。对交互来说，响应应在 100 毫秒以内。"响应性"在这里指从用户操作到下一帧画面出现的时间，跟响应式设计无关。"交互"只算点击、轻触、按键这类离散操作，而且按下和抬起分开处理，不会因为用户抬手慢而扣网页的分。滚动不算在内，因为 GPU 加速滚动基本不归页面控制。
