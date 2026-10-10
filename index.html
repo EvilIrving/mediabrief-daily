@@ -51,7 +51,7 @@ function show(n,push){if(n<0||n>=ITEMS.length)return;const i=ITEMS[n];
  document.body.classList.add('reading');render();$('#main').scrollTop=0}
 function render(){const i=ITEMS[cur],t=i.txt||[];
  $('#rd').innerHTML=`<div class="hd"><button id="back">← 返回列表</button><h2 title="${esc(i.title)}">${esc(i.title)}</h2>
- <div class="row"><div class="meta mono">${esc((i.date||'').slice(0,10))} · ${esc(i.source)}${i.link?` · <a href="${esc(i.link)}" target="_blank" rel="noopener" title="原链接">原文链接 ↗</a>`:''}${i.audio_url?` · <a href="${esc(i.audio_url)}" target="_blank" rel="noopener">音频 ↗</a>`:''}</div>
+ <div class="row"><div class="meta mono">${esc((i.date||'').slice(0,10))} · ${esc(i.source)}${i.link?` · <a href="${esc(i.link)}" target="_blank" rel="noopener" title="原链接">原链接 ↗</a>`:''}${i.audio_url?` · <a href="${esc(i.audio_url)}" target="_blank" rel="noopener">音频 ↗</a>`:''}</div>
  ${t.length>1?`<div class="tabs">${t.map((x,k)=>`<button data-k="${k}" class="${k===tab?'on':''}">${esc(x.label)}</button>`).join('')}</div>`:''}</div></div>
  ${t.length?'<div id="txt">加载中…</div>':''}
  <p class="hint">快捷键：j/k 或 ↓/↑ 切换条目 · t 或 ←/→ 切换 总结/原文</p>`;
