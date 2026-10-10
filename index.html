@@ -69,7 +69,7 @@ $('#list').addEventListener('mouseout',e=>{const a=e.target.closest('.it');if(a&
 let lp,lpA,lpDone=0;$('#list').addEventListener('touchstart',e=>{lpA=e.target.closest('.it');lpDone=0;lp=setTimeout(()=>{sw(lpA,1);lpDone=1},450)},{passive:true});
 ['touchend','touchcancel','touchmove'].forEach(v=>$('#list').addEventListener(v,()=>{clearTimeout(lp);if(lpDone)setTimeout(()=>sw(lpA,0),1200)},{passive:true}));
 $('#list').addEventListener('contextmenu',e=>{if(lpDone)e.preventDefault()});
-$('#list').addEventListener('click',e=>{if(lpDone){e.preventDefault();lpDone=0;return}});
+$('#list').addEventListener('click',e=>{if(lpDone){e.preventDefault();e.stopImmediatePropagation();lpDone=0}});
 $('#list').addEventListener('click',e=>{const a=e.target.closest('.it');if(a){e.preventDefault();show(+a.dataset.n)}});
 addEventListener('hashchange',fromHash);
 addEventListener('keydown',e=>{if(e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA/.test(e.target.tagName))return;const k=e.key;
