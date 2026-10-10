@@ -1,13 +1,13 @@
 https://shoptalkshow.com/712/
 
-第 712 期：和 Scott Jehl 聊给 Web 做懒加载（712: Lazy Loading the Web with Scott Jehl） ｜ ShopTalk Show ｜ 播客 ｜ https://shoptalkshow.com/712/
+这一期 ShopTalk Show 只有 Chris Coyier 主持，Dave Rupert 缺席。嘉宾是响应式设计和 Web 性能领域的老将 Scott Jehl，他现在在 Squarespace，刚刚把 video 和 audio 的原生懒加载推成了 HTML 标准。整期从这个特性本身聊起，讲到响应式视频的来龙去脉，再到普通 Web 开发者怎样参与标准制定。
 
-《ShopTalk Show》2026 年 4 月的一期，主持人 Chris Coyier 和 Dave Rupert 请来了响应式设计和 Web 性能领域的老将 Scott Jehl，他当时在 Squarespace 工作，最近亲自推动了几项 HTML 标准的落地。整期从具体的媒体特性聊到普通开发者怎样参与 Web 标准。
+懒加载的意思是把资源的获取推迟到它真正和视口相交的时候，轮播里没翻到的那一页也算。图片和 iframe 早就支持 loading="lazy"，视频以前只能靠脚本在滚入视口时再把 video 元素或 src 写进去，既麻烦又会弄坏 RSS。现在静态 HTML 里放上千个视频，也只会在可见时才去下载。各浏览器提前加载的距离不同：Firefox 大约 800 到 1200 像素，更看重省带宽；Chrome 提前得更多，更看重滚到时已经显示好。图片、iframe、视频用的是同一套距离。在此之前，video 只有 preload 属性可以控制：auto 让浏览器自己决定，通常会下很多；metadata 只取够画封面帧的数据；none 完全不加载，要配合 IntersectionObserver 才能模拟懒加载。新的 loading="lazy" 还会推迟自动播放，这对用 video 取代 GIF 的场景很有用。用流媒体时，video 指向一份分片清单，懒加载同样有效。
 
-第一个话题是给 video 和 audio 元素加上 loading="lazy"。图片和 iframe 早就支持原生懒加载，而视频一直只能靠客户端脚本在元素滚入视口时再写入 video 或 src，这种做法还会破坏 RSS 等场景。有了原生支持，静态 HTML 里放上千个视频也只会在可见时才去获取，大幅节省带宽，三人笑称"简直是环保战士"。Scott 提到不同浏览器对"提前多远开始加载"的判断不同，有的偏向省带宽，有的偏向保证滚到时已经显示；Chris 则从 CodePen 大量嵌入 iframe 的角度，谈到懒加载会让脚本想通信的 iframe 暂时不存在，需要留意。他们也谈到流媒体视频：video 指向一份描述分片的清单，浏览器根据视口和网速选择，懒加载对它同样有效。
+接着是响应式视频的历史。当年响应式图片社区小组设计 picture 时，拿 video 的 source 加 media 属性当先例，结果这项能力恰好在那段时间从规范里被删了，理由大概是流媒体被视为更好的方案。Scott 认为流媒体常常确实更好，但只靠一份 HTML、不需要服务器配合就能按屏幕方向或尺寸换视频源，门槛低得多，值得保留。他也重申了两种机制的区别：media 是浏览器必须执行的规则，srcset 加 sizes 只是给浏览器的建议，网速慢时浏览器可以自己挑小图。后来 Mozilla 的 Simon Pieters 和 Apple 方面都表示支持，规范恢复了这一能力。Scott 从 Firefox 的 git 历史里把旧实现找了回来，WebKit 也恢复了，进展很快。
 
-第二个话题是视频 source 元素上的 media 属性。当年响应式图片的经验是：picture 配合 media 是开发者给出的严格规则，srcset 配合 sizes 则把选择权交给浏览器。video 的 source 曾经支持 media，后来被从规范中移除，理由大概是流媒体被视为更好的替代方案，许多开发者在 issue 里留言希望恢复。最终 Mozilla 的 Simon Pieters 和苹果方面都表示支持，于是它又回来了。Scott 在 Firefox 的实现上很幸运：git 历史里还保留着当初能用的代码，他基本是把它找回来再修整，"像衔尾蛇一样绕了一圈"。
+懒加载视频起源于 Squarespace 每半年一次的黑客周。Scott 一年前就在 HTML 标准的跟踪器里提了 issue，一直没人动。四人小组分头推进：Scott 写规范，有人写 Web Platform Tests，有人改 WebKit 和 Firefox 的构建，几条线互相校正。标准流程包括：三家浏览器厂商里至少两家表态支持（WebKit 和 Firefox 有专门征询立场的 GitHub 仓库），PR 模板里列着全部步骤，要补齐测试，还要在 WHATWG 每周例会上演示，逐级推进各个阶段。Scott 特别推荐把 Web Platform Tests 当作参与标准的第一步：只要懂原生 JavaScript 就能写，写测试的过程本身就能让人吃透一个特性，比如先验证 display:none 的懒加载视频没有发起请求，再改成可见，看它是否触发加载事件。测试可以先标成 tentative 合并，等标准落地再去掉。正因为测试是共享的，第三方开发者 Helmut Januschka 一两天内就在 Chromium 里写出了完全符合规范的实现，现在已经进入 Chrome 稳定版，但要用命令行参数开启。Firefox 和 WebKit 的补丁还在审核。Scott 也感谢了 Mozilla 的 Keith Cirkel 一路帮忙。两人还吐槽 HTML 规范是用一种自有的源格式写成，再生成标准 HTML，全文约 8 MB。
 
-接着他详细讲了推进一个标准要走的流程：至少要有两家浏览器厂商表示积极态度，WebKit 和 Firefox 都有专门的 GitHub 仓库可以提交"请表明立场"的请求；向 HTML 标准提交 PR 时会自动附上一份清单，其中一项是 Web 平台测试，这是每家浏览器构建时都会跑的共享测试套件。他推荐想参与标准工作的开发者从写这些测试入手，写测试本身就能让你熟悉特性的行为，而且要用事件而不是定时器来避免不稳定，比如先放一个 display:none 且懒加载的视频，验证它没有发起请求，再让它显示出来检查是否开始加载；尚未成为标准的特性可以先以"暂定"状态合入测试。他特别感谢 Mozilla 的 Keith Cirkel 一路帮忙。Chris 感叹这听起来很合理，实际上是一项需要多人参与的艰巨技术工作；他们还调侃 HTML 规范本身是用一种非标准的 HTML 源文件写的，生成后约 8MB。
+下一个提案针对 poster 属性：它只能指定一张图，不能响应式，也没有 alt 那样的可访问名称，更不支持 fetchpriority、decoding 这类图片早已有的控制。Scott 团队的设想是让 video 的直接子元素 img（可以放在 picture 里，带 srcset 和 sizes）充当封面，与 source、track 并列。如果它和 poster 属性同时存在，以 img 为准，旧浏览器则自然回退到 poster。封面默认继承 video 的懒加载设置，也可以单独覆盖，比如让封面优先加载。吸取上次规范 PR 被要求大量修改的教训，这次他们先在跟踪器里贴出设计思路征求意见，再动手写代码，因为标准一旦定下就很难再改，值得多花时间讨论。
 
-最后 Scott 介绍了他提交的另一个提案：video 的 poster 属性已经显得过时，不能做响应式，也没有像 alt 那样的无障碍描述，而图片这些年却多了 crossorigin、decoding、fetchpriority 等控制。他提议允许在 video 里放一个子 img 元素（可以有 srcset、sizes，也可以包在 picture 里）充当海报，这样就能为横屏、竖屏视频配对应的海报，并提供替代文本。
+中间还穿插了一些闲聊：Chris 刚加入 CSS 工作组，两人都推崇侧边标签页和分屏标签页；Chris 开玩笑说要请 MrBeast 来为响应式封面站台。节目最后，Scott 让听众到 scottjehl.com 关注他的博客。

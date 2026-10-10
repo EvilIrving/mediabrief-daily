@@ -1,0 +1,11 @@
+https://www.joshwcomeau.com/react/usememo-and-usecallback/
+
+理解 useMemo 与 useCallback Understanding useMemo and useCallback ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/react/usememo-and-usecallback/
+
+Josh W. Comeau 这篇交互式教程要解开很多 React 开发者对 useMemo 和 useCallback 的困惑。他先建立心智模型：React 的核心工作是让 UI 与状态同步，每次重新渲染都是一张基于当前状态的 UI“快照”，React 通过比较快照找出需要改动的 DOM。重新渲染通常不贵，但有时快照生成很慢，这两个 hook 就是优化重新渲染的工具，途径有二：减少单次渲染的工作量，减少组件重新渲染的次数。
+
+第一个用途是避免重复的繁重计算。他以计算 0 到用户所选数字之间所有质数的组件为例：再加一个每秒更新的数字时钟后，每次时间变化都会重算整张质数表，占满主线程。用 useMemo 包住计算并把 selectedNum 列为依赖，React 只在依赖变化时重算，否则复用缓存值——useMemo 就像一个小缓存，依赖列表就是缓存失效策略。但他指出往往有更好的办法：重构组件结构，把时钟和质数计算器拆成各管各状态的独立组件，“把状态往下推”而不是总往上提；如果时间状态确实必须提升，就用 React.memo 把计算器包成纯组件，相当于给它加了力场，只在 props 或内部状态变化时才重新渲染。这是记忆化整个组件而非某段计算，在这个例子里他更偏好这种做法。
+
+第二个用途是保持引用稳定。纯组件常常莫名其妙地重新渲染，原因是每次渲染都会新建数组、对象或函数，它们值相同但引用不同，就像双胞胎不是同一个人，=== 比较的是引用。于是每次父组件因无关状态（如用户名）重新渲染时，传给 Boxes 的 boxes 数组都是新的，力场被击穿。用 useMemo 以 boxWidth 为依赖包住数组即可复用同一引用。useCallback 则是同样的东西，只是针对函数：useCallback(fn, deps) 等价于 useMemo(() => fn, deps)，纯属语法糖，他用“Mega Boost”计数按钮演示了它如何让纯组件 MegaBoost 不再随 count 重新渲染。
+
+至于何时使用，他认为给每个对象、数组、函数都套上这些 hook 是浪费时间，React 已高度优化，最好是遇到问题时再用 React Profiler 定位慢渲染，先考虑重构，再考虑这两个 hook。他只在两种情形下预先使用：通用的自定义 hook（如 useToggle 中用 useCallback 记忆 toggle，因为不知道将来会在哪里被调用几十次）以及 context provider 的 value 对象（否则 provider 的父组件一重新渲染，所有消费该 context 的纯组件都会被迫重新渲染）。文末推广他的课程《The Joy of React》。

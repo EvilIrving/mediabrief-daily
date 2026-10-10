@@ -3,8 +3,6 @@ https://lilianweng.github.io/posts/2026-06-24-scaling-laws/
 谨慎看待缩放定律
 Lilian Weng ｜ Lil’Log ｜ 2026-06-24
 
-（原文中的大部分独立公式和图表未能抓取。译文在可确定的位置按所引论文的标准形式补出公式，标注为“〔补〕”；无法确定的保留原文描述。）
-
 缩放定律是深度学习中最关键的经验发现之一。这一观察在形式上很简单：当我们扩大模型规模 $N$、数据集规模 $D$ 和算力 $C$ 时，训练损失 $L$ 会按照幂律曲线可预测地下降，在双对数坐标图上表现为一条直线。我们可以把缩放定律看作一个描述算力、损失、模型规模和数据之间关系的框架；其核心在于如何在 $N$ 和 $D$ 之间最优地分配宝贵的算力。
 
 这种可预测性让缩放定律在实践中极具价值。一种常见的工作流程是：在少量小规模训练上拟合缩放定律，然后外推，估算更大模型所需的 token 量和算力。
@@ -29,7 +27,7 @@ Amari 等（1992）用贝叶斯方法和退火近似推导出四类学习曲线�
 3. 确定性学习算法、有噪声数据：$\epsilon \sim c \cdot D^{-1/2}$；数据中的噪声让学习更难。
 4. 随机性学习算法、有噪声数据：$\epsilon \sim c \cdot D^{-1} + E$；这里的不可约损失 $E$ 是随机学习器无法进一步降低的残差，比如模型在大数据上容量耗尽时。四类学习曲线都服从幂律：
 
-〔补〕$\epsilon \sim c \cdot D^{\alpha} + E$
+$$\epsilon \sim c \cdot D^\alpha + E$$
 
 其中 $E$ 可以为 0，$\alpha = -2, -1, -1/2$。尽管他们的理论设定基于一个简化的二分类任务，但它为构建经验性的机器学习损失预测模型指出了一个有用的方向。
 
@@ -44,11 +42,12 @@ Hestness 等（2017）最早的经验研究之一解释了泛化误差、模型�
 
 Rosenfeld 等（2020）更进一步，尝试在一系列不同的架构（ResNet、WRN、LSTM、Transformer）和优化器（Adam、SGD 变体）上，把误差建模为模型规模 $N$ 和数据规模 $D$ 的联合函数。他们在经验上观察到，固定一个轴时，误差在另一个轴上按幂律衰减：
 
-〔补〕$L(N) \approx A N^{-\alpha} + E_N$，$L(D) \approx B D^{-\beta} + E_D$
+$$\hat{L}(D,N) \approx \frac{A}{N^{\alpha}} + E_N,\quad 
+\hat{L}(D,N) \approx \frac{B}{D^{\beta}} + E_D$$
 
 二者可以合并为一个联合形式：
 
-〔补〕$\hat{L}(N, D) = E + \dfrac{A}{N^{\alpha}} + \dfrac{B}{D^{\beta}}$
+$$\hat{L}(D, N) \approx \frac{A}{N^{\alpha}} + \frac{B}{D^{\beta}} + E$$
 
 其中 $A > 0, B > 0, \alpha \geq 0, \beta \geq 0$ 是标量常数，$E$ 既不依赖于 $N$ 也不依赖于 $D$。
 
@@ -60,7 +59,7 @@ Rosenfeld 等（2020）更进一步，尝试在一系列不同的架构（ResNet
 
 ## Kaplan 等的缩放定律
 
-Kaplan 等（2020）让缩放定律的概念在语言建模界流行起来。他们发现，交叉熵测试损失 $L$ 在许多个数量级上，分别随模型规模 $N$（不含嵌入层）、数据集规模 $D$ 和训练算力 $C$ 按幂律缩放。这些发现与上一节的早期工作一致，但 Kaplan 等以 Transformer 语言模型为重点，在更大规模上做了经验实验，把这一概念形式化：模型规模从 768 到 15 亿个非嵌入参数，数据集规模从 2200 万到 230 亿个 token。（原文写作“768M”，据 Kaplan 等论文应为 768 个参数。）论文中所有训练都使用了 3000 步线性预热、随后余弦衰减到零的学习率调度。
+Kaplan 等（2020）让缩放定律的概念在语言建模界流行起来。他们发现，交叉熵测试损失 $L$ 在许多个数量级上，分别随模型规模 $N$（不含嵌入层）、数据集规模 $D$ 和训练算力 $C$ 按幂律缩放。这些发现与上一节的早期工作一致，但 Kaplan 等以 Transformer 语言模型为重点，在更大规模上做了经验实验，把这一概念形式化：模型规模从 768 到 15 亿个非嵌入参数，数据集规模从 2200 万到 230 亿个 token。论文中所有训练都使用了 3000 步线性预热、随后余弦衰减到零的学习率调度。
 
 主要发现列表：
 
@@ -73,7 +72,7 @@ Kaplan 等（2020）让缩放定律的概念在语言建模界流行起来。他
 
 他们用一个方程概括了对 $N$ 和 $D$ 的联合依赖：
 
-〔补〕$L(N, D) = \left[\left(\dfrac{N_c}{N}\right)^{\frac{\alpha_N}{\alpha_D}} + \dfrac{D_c}{D}\right]^{\alpha_D}$
+$$\hat{L}(N,D) = \left[ \left(\frac{a}{N}\right)^{\frac{\alpha}{\beta}} + \frac{b}{D} \right]^{\beta}$$
 
 这一形式的一个好处是，过拟合的程度（即模型复杂或数据少）主要取决于比值 $N^{\alpha / \beta} / D$，这表明数据需要按特定比例随模型规模增长，才能避免训练受数据限制。
 
@@ -83,7 +82,16 @@ Kaplan 等的另一个有用分析，是根据 $D$ 和 $N$ 近似估算所需的
 
 在 $d_\text{attn} = d_\text{model} = d_\text{ff}/4$ 的标准配置下，不把嵌入层计入 $N$，每个 token 的前向计算量为：
 
-〔补〕$C_\text{forward} \approx 2N + 2 n_\text{layer} n_\text{ctx} d_\text{attn}$，其中 $N \approx 2 d_\text{model} n_\text{layer}(2d_\text{attn} + d_\text{ff}) = 12 n_\text{layer} d_\text{model}^2$；上下文相关项在 $d_\text{model}$ 远大于 $n_\text{ctx}/12$ 时可忽略，故约为 $2N$
+$$\begin{align}
+N &= n_\text{layer} d_\text{model} 3 d_\text{attn} + n_\text{layer} d_\text{attn} d_\text{model} + n_\text{layer} 2 d_\text{model} d_\text{ff} & \small{\text{; no embedding layer}} \\
+&= 2\;n_\text{layer} d_\text{model}(2d_\text{attn} + d_\text{ff}) & \\
+&= 12\;n_\text{layer} d_\text{model}^2 & \\
+\\
+C_\text{fwd} &= 2 n_\text{layer} (d_\text{model} 3 d_\text{attn} + n_\text{ctx}d_\text{attn} + d_\text{attn}d_\text{embed} + 2 d_\text{model} d_\text{ff}) & \\
+&= 2 n_\text{layer} (12 d_\text{model}^2 + n_\text{ctx}d_\text{attn}) & \\
+&= 2N + 2 n_\text{layer}n_\text{ctx}d_\text{attn} & \\
+&\approx 2N \quad\quad \small{\text{; assuming }n_\text{ctx} < 12 d_\text{model} \text{ and the }n_\text{ctx}\text{ term is relatively small.}}\\
+\end{align}$$
 
 然后，我们把反向传播的 FLOPs 计为前向传播的两倍，因为反向传播要做两次矩阵乘法，分别计算对输入激活和对权重的梯度。因此，每个 token 的训练 FLOPs 总计约为 $6N$，在 $D$ 个 token 上训练的总 FLOPs 为 $C \approx 6ND$。
 
@@ -109,17 +117,31 @@ Chinchilla 论文提出了三种设计精巧的缩放定律拟合方法。
 
 直接拟合与 Rosenfeld 等（2020）相同的参数化函数：
 
-〔补〕$\hat{L}(N, D) = E + \dfrac{A}{N^{\alpha}} + \dfrac{B}{D^{\beta}}$
+$$\hat{L}(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E$$
 
 通过在约束 $\text{FLOPs}(N,D) = C \approx 6ND$ 下最小化 $\hat{L}(N, D)$，我们实际上可以得到最优 $N_\text{opt}(C), D_\text{opt}(C)$ 的闭式近似。
 
+$$N_\text{opt}(C), D_\text{opt}(C) = \operatorname*{arg\,min}_{\text{s.t. } \text{FLOPs}(N,D) = C} \hat{L}(N, D)$$
+
 首先把表达式化简为只含 $N$：
 
-〔补〕代入 $D = C/(6N)$，得 $\hat{L}(N) = E + A N^{-\alpha} + B\left(\dfrac{C}{6N}\right)^{-\beta}$；令导数为零，解得 $N_\text{opt}(C) = G\left(\dfrac{C}{6}\right)^{\frac{\beta}{\alpha+\beta}}$，$D_\text{opt}(C) = G^{-1}\left(\dfrac{C}{6}\right)^{\frac{\alpha}{\alpha+\beta}}$，其中 $G = \left(\dfrac{\alpha A}{\beta B}\right)^{\frac{1}{\alpha+\beta}}$
+$$\begin{align}
+\hat{L}(N) &= A N^{-\alpha} + B \Big(\frac{C}{6}\Big)^{-\beta}N^\beta + E \\
+\hat{L}'(N) &= -\alpha A N^{-\alpha-1} + \beta B \Big(\frac{C}{6}\Big)^{-\beta} N^{\beta -1} = 0 & \small{\text{; derivative wrt }N\text{ should be zero.}} \\
+\text{Thus}\quad & \alpha A N^{-\alpha-1} = \beta B \Big(\frac{C}{6}\Big)^{-\beta} N^{\beta -1} \\
+& \alpha A = \beta B \Big(\frac{C}{6}\Big)^{-\beta} N^{\alpha + \beta} \\
+& N_\text{opt} = \Big(\frac{\alpha A}{\beta B}\Big)^{\frac{1}{\alpha + \beta}} \Big(\frac{C}{6}\Big)^{\frac{\beta}{\alpha+\beta}} \\
+& D_\text{opt} = \frac{C}{6 N_\text{opt}} = \Big(\frac{\beta B}{\alpha A}\Big)^{\frac{1}{\alpha + \beta}} \Big(\frac{C}{6}\Big)^{\frac{\alpha}{\alpha+\beta}}
+\end{align}$$
 
 当 $\alpha \approx \beta$ 时，模型规模和训练 token 应以相同速率扩大。
 
 为了求得最优的 $\boldsymbol{\theta} = \langle A, B, E, \alpha, \beta\rangle$，Chinchilla 论文采用了 Huber 损失（对离群点稳健；$\delta=10^{-3}$）和 L-BFGS 算法（适合参数较少的曲线拟合）。
+
+$$\begin{align}
+\min_{A,B,E,\alpha,\beta} \sum_{\text{runs }\{i\}} \text{Huber}_\delta (\log \hat{L}(N_i, D_i) - \log L_i) \\
+\text{ where }\text{Huber}_\delta (x) = \begin{cases}\frac{1}{2} x^2 & \text{for }\vert x \vert \leq \delta \\ \delta \cdot (\vert x \vert - \frac{1}{2}\delta), & \text{otherwise.}\end{cases}
+\end{align}$$
 
 Chinchilla 通过三种相互补充的方法得出答案，而这三种方法的最终结果彼此一致，这正是其结论相当有说服力的部分原因。
 
@@ -145,13 +167,19 @@ Kaplan 等主要在较小的模型上做实验，而 Chinchilla 论文的实验�
 
 为了连接二者，他们拟合了总参数 $N_T$ 与非嵌入参数 $N_{\setminus E}$ 之间的关系，其中 $\omega$ 为某个常数：
 
-〔补〕$N_T = N_{\setminus E} + \omega N_{\setminus E}^{1/3}$
+$$N = N_{\setminus E} + \omega\, N_{\setminus E}^{1/3}.$$
 
 这一形式有很好的性质：严格递增，且 $\lim_{N \to \infty} N = N_{\setminus E}$（因为 $\frac{N}{N_{\setminus E}} = 1 + \omega {N_{\setminus E}}^{- \frac{2}{3}}$，$\lim_{N_{\setminus E} \to \infty} \frac{N}{N_{\setminus E}} = 1$）。
 
 把它代入 Chinchilla 定律的方程：
 
-（原文此处公式未能抓取。）
+$$\begin{align}
+L(N_{\setminus E}, C_{\setminus E}) &= A(N_{\setminus E} + \omega\, N_{\setminus E}^{1/3})^{-\alpha} + B \Big(\frac{C_{\setminus E}}{6}\Big)^{-\beta} N_{\setminus E}^\beta + E \\
+L'(N_{\setminus E}, C_{\setminus E}) &= - \alpha A (N_{\setminus E} + \omega N_{\setminus E}^{1/3})^{-\alpha -1}(1 + \frac{\omega}{3}N_{\setminus E}^{-2/3}) + \beta B \Big(\frac{C_{\setminus E}}{6}\Big)^{-\beta} N_{\setminus E}^{\beta -1} = 0 & \small{\text{; derivative wrt }N_{\setminus E}\text{ should be zero.}} \\
+\text{Rearrange to get }& \alpha A (N^{*}_{\setminus E} + \omega {N^{*}_{\setminus E}}^{1/3})^{-\alpha -1}(1 + \frac{\omega}{3} {N^{*}_{\setminus E}}^{-2/3}) = \beta B \Big(\frac{C_{\setminus E}}{6}\Big)^{-\beta} {N^{*}_{\setminus E}}^{\beta -1} \\
+& 6^{-\beta}\frac{\alpha A}{\beta B} ({N^{*}_{\setminus E}} + \omega {N^{*}_{\setminus E}}^{1/3})^{-\alpha -1}(1 + \frac{\omega}{3}{N^{*}_{\setminus E}}^{-2/3}) {N^{*}_{\setminus E}}^{1 - \beta} = C_{\setminus E}^{-\beta} \\
+& 6 \Big(\frac{\beta B}{\alpha A}\Big)^{\frac{1}{\beta}} ({N^{*}_{\setminus E}} + \omega {N^{*}_{\setminus E}}^{1/3})^{\frac{1 + \alpha}{\beta}} ({N^{*}_{\setminus E}} + \frac{\omega}{3}{N^{*}_{\setminus E}}^{1/3})^{-\frac{1}{\beta}} {N^{*}_{\setminus E}} = C_{\setminus E} \\
+\end{align}$$
 
 上式中 $C_{\setminus E}$ 与 $N_{\setminus E}$ 之间的关系不再是一个干净的幂律。我们只能在局部把它近似为 $N^*_{\setminus E} \overset{\propto}{\sim} C_{\setminus E}^g$，其中 $g$ 是基于一阶导数的局部指数（$\overset{\propto}{\sim}$），而不是全局幂律指数，即 $g = \frac{\mathrm{d} \log C_{\setminus E}}{\mathrm{d} \log N_{\setminus E}}$。指数 $g$ 如何近似的完整细节，见 Pearce 和 Song（2024）的附录 A.1。
 
@@ -187,7 +215,9 @@ Muennighoff 等（2023）研究的问题是：当模型训练受数据约束时�
 
 然后，他们更新了 Chinchilla 的参数化拟合（方法三），用有效（打了折扣的）数据量 $D'$ 和模型规模 $N'$ 代替原始数量：
 
-〔补〕$\hat{L}(N', D') = E + \dfrac{A}{N'^{\alpha}} + \dfrac{B}{D'^{\beta}}$，其中 $D' = U_D + U_D r_D\left(1 - e^{-R_D / r_D}\right)$
+$$\hat{L}(N, D) = \frac{A}{N'^\alpha} + \frac{B}{D'^\beta} + E
+\quad\text{ where }
+D' = U_D + U_D\, r_D\left(1 - \exp\!\left(-\frac{R_D}{r_D}\right)\right).$$
 
 直觉是，一个 token 的价值会随着重复而*指数*衰减。在他们的建模中，每重复一次，该 token 会损失其剩余价值的 $(1 - 1/r_D)$ 比例，其中 $r_D$ 是一个可学习的“半衰期”参数。当 $R_D = 0$ 或 $R_D \ll r_D$ 时，我们恢复 $D' \approx D$。
 
@@ -201,7 +231,7 @@ Muennighoff 等（2023）研究的问题是：当模型训练受数据约束时�
 
 他们引入了一个显式的过拟合惩罚项，围绕*容量比* $N / U_D$（参数量相对于独特 token 数）构建：
 
-（原文此处公式未能抓取。）
+$$\hat{L}(N, U_D, R_D) = E + \frac{A}{N^\alpha} + \frac{B}{\big(U_D (1 + R_D)\big)^\beta} + \color{red}{P \cdot R_D^\delta \cdot \left(\frac{N}{U_D}\right)^\kappa}$$
 
 其中：
 
@@ -237,7 +267,7 @@ Kaplan 等与 Chinchilla 结果之间的分歧，就是展示缩放定律拟合�
 
 我们假设真实函数为：
 
-〔补〕$L(N, D) = 1.8172 + \dfrac{482.01}{N^{0.3478}} + \dfrac{2085.43}{D^{0.3658}}$
+$$\hat{L}(N, D) = 482.01 \cdot N^{-0.3478} + 2085.43 D^{-0.3658} + 1.8172$$
 
 因此 $N_\text{opt} \propto C^{0.5126}, D_\text{opt} \propto C^{0.4874}$。这是 Besiroglu 等（2024）的估计。
 

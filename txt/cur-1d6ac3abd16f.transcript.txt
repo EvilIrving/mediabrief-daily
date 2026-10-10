@@ -1,0 +1,839 @@
+https://www.joshwcomeau.com/react/usememo-and-usecallback/
+
+理解 useMemo 与 useCallback
+Josh W. Comeau ｜ 2022-08-30（最后更新于 2025-12-03）
+
+（原文中的代码演示为可交互的 Code Playground，抓取时代码注释丢失；译文保留代码本身，渲染关系图和控制台输出改为文字说明。）
+
+## 引言
+
+如果你一直搞不明白 `useMemo` 和 `useCallback`，你并不孤单！我和*非常多*对这两个 hook 摸不着头脑的 React 开发者聊过。
+
+这篇博文的目标就是把这些困惑全部澄清。我们会了解它们做什么、为什么有用，以及如何最大限度地用好它们。
+
+我们开始吧！
+
+## 基本思路
+
+好，我们先从 `useMemo` 讲起。
+
+`useMemo` 的基本思路是：它让我们能在多次渲染之间*“记住”*一个计算出的值。
+
+这个定义需要拆解一下。事实上，它需要一个关于 React 如何工作的相当成熟的心智模型！所以我们先解决这个问题。
+
+React 做的主要事情，是让我们的 UI 与应用状态保持同步。它用来做这件事的工具叫做“重新渲染”（re-render）。
+
+每次重新渲染，都是基于当前应用状态、在某一给定时刻应用 UI 应该呈现的样子的一张快照。我们可以把它想象成一叠照片，每一张都记录了在每个状态变量取特定值时，事物的样子。
+
+—— 快照 #1 ——
+
+{ ticketIds: [] }
+
+```html
+<p style="color: red;">
+  请至少选择 2 张票。
+  （你已选择 0 张。）
+</p>
+```
+
+—— 快照 #2 ——
+
+{ ticketIds: ['abc'] }
+
+```html
+<p style="color: red;">
+  请至少选择 2 张票。
+  （你已选择 1 张。）
+</p>
+```
+
+—— 快照 #3 ——
+
+{ ticketIds: ['abc', 'def'] }
+
+```html
+<p>
+  ✅ 已选择 2 张票。
+</p>
+```
+
+每次“重新渲染”都会根据当前状态，生成一幅 DOM 应该是什么样子的心理图像。在上面的小演示中，它被画成了 HTML，但实际上它是一堆 JS 对象。如果你听说过这个术语的话，这有时被称为*“虚拟 DOM”*。
+
+我们并不直接告诉 React 哪些 DOM 节点需要改变。相反，我们根据当前状态告诉 React UI *应该是*什么样子。通过重新渲染，React 创建一张新的快照，然后通过比较快照来找出需要改变的地方，就像玩“找不同”游戏一样。
+
+React 开箱即用就经过了大量优化，所以*总体而言*，重新渲染不是什么大事。但在某些情况下，生成这些快照*确实*要花一些时间。这可能导致性能问题，比如用户执行操作后 UI 更新得不够快。
+
+从根本上说，`useMemo` 和 `useCallback` 是为帮助我们优化重新渲染而打造的工具。它们通过两种方式做到这一点：
+
+1. 减少一次渲染中需要完成的工作量。
+2. 减少组件需要重新渲染的次数。
+
+我们逐一讨论这两种策略。
+
+## 用途一：繁重的计算
+
+假设我们在开发一个工具，帮助用户找出 0 到 `selectedNum` 之间的所有质数，其中 `selectedNum` 是用户提供的值。质数是只能被 1 和它自身整除的数，比如 17。
+
+这是一种可能的实现：
+
+```jsx
+import React from 'react';
+
+function App() {
+
+  const [selectedNum, setSelectedNum] = React.useState(100);
+
+  const allPrimes = [];
+  for (let counter = 2; counter < selectedNum; counter++) {
+    if (isPrime(counter)) {
+      allPrimes.push(counter);
+    }
+  }
+
+  return (
+    <>
+      <form>
+        <label htmlFor="num">Your number:</label>
+        <input
+          type="number"
+          value={selectedNum}
+          onChange={(event) => {
+
+            let num = Math.min(100_000, Number(event.target.value));
+
+            setSelectedNum(num);
+          }}
+        />
+      </form>
+      <p>
+        There are {allPrimes.length} prime(s) between 1 and {selectedNum}:
+        {' '}
+        <span className="prime-list">
+          {allPrimes.join(', ')}
+        </span>
+      </p>
+    </>
+  );
+}
+
+function isPrime(n){
+  const max = Math.ceil(Math.sqrt(n));
+
+  if (n === 2) {
+    return true;
+  }
+
+  for (let counter = 2; counter <= max; counter++) {
+    if (n % counter === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export default App;
+```
+
+我不指望你读懂这里的每一行代码，所以以下是相关的要点：
+
+* 我们有一个状态，一个名为 `selectedNum` 的数字。
+* 我们用一个 `for` 循环，手动计算 0 到 `selectedNum` 之间的所有质数。
+* 我们渲染一个受控的数字输入框，让用户可以修改 `selectedNum`。
+* 我们向用户展示计算出的所有质数。
+
+**这段代码需要大量计算。**如果用户选了一个很大的 `selectedNum`，我们就需要遍历*成千上万*个数，逐一检查它是否是质数。而且，虽然*确实*存在比我上面用的更高效的质数检测算法，但它始终是计算密集型的。
+
+我们*有时*确实需要执行这个计算，比如当用户选择了新的 `selectedNum` 时。但如果我们在不需要的时候*无谓地*做这项工作，就可能遇到一些性能问题。
+
+例如，假设我们的例子里还有一个数字时钟：
+
+```jsx
+import React from 'react';
+import format from 'date-fns/format';
+
+function App() {
+  const [selectedNum, setSelectedNum] = React.useState(100);
+
+  const time = useTime();
+
+  const allPrimes = [];
+  for (let counter = 2; counter < selectedNum; counter++) {
+    if (isPrime(counter)) {
+      allPrimes.push(counter);
+    }
+  }
+
+  return (
+    <>
+      <p className="clock">
+        {format(time, 'hh:mm:ss a')}
+      </p>
+      <form>
+        <label htmlFor="num">Your number:</label>
+        <input
+          type="number"
+          value={selectedNum}
+          onChange={(event) => {
+
+            let num = Math.min(100_000, Number(event.target.value));
+
+            setSelectedNum(num);
+          }}
+        />
+      </form>
+      <p>
+        There are {allPrimes.length} prime(s) between 1 and {selectedNum}:
+        {' '}
+        <span className="prime-list">
+          {allPrimes.join(', ')}
+        </span>
+      </p>
+    </>
+  );
+}
+
+function useTime() {
+  const [time, setTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    }
+  }, []);
+
+  return time;
+}
+
+function isPrime(n){
+  const max = Math.ceil(Math.sqrt(n));
+
+  if (n === 2) {
+    return true;
+  }
+
+  for (let counter = 2; counter <= max; counter++) {
+    if (n % counter === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export default App;
+```
+
+我们的应用现在有两个状态，`selectedNum` 和 `time`。`time` 变量每秒更新一次以反映当前时间，这个值被用来在右上角渲染一个数字时钟。
+
+**问题在于：**只要这两个状态变量中*任意一个*发生变化，我们就会重新运行所有那些昂贵的质数计算。而由于 `time` 每秒变化一次，这意味着我们在*不停地*重新生成那张质数列表，即使用户选择的数字根本没有变！
+
+（图：上述代码的标注截图，显示每当时间值变化，质数就必须重新计算。）
+
+在 JavaScript 中，我们只有一个主线程，而我们每一秒都在反复运行这段代码，让它*极其*繁忙。这意味着当用户试图做其他事情时，应用可能会显得迟钝，尤其是在低端设备上。
+
+**但如果我们能“跳过”这些计算呢？**如果我们已经有了某个数对应的质数列表，为什么不*复用*这个值，而是每次都从头计算呢？
+
+这正是 `useMemo` 让我们能做到的。它看起来是这样的：
+
+```jsx
+const allPrimes = React.useMemo(() => {
+  const result = [];
+
+  for (let counter = 2; counter < selectedNum; counter++) {
+    if (isPrime(counter)) {
+      result.push(counter);
+    }
+  }
+
+  return result;
+}, [selectedNum]);
+```
+
+`useMemo` 接收两个参数：
+
+1. 一块要执行的工作，包在一个函数里
+2. 一个依赖列表
+
+在挂载阶段，也就是这个组件第一次被渲染时，React 会调用这个函数来运行所有这些逻辑，计算出所有质数。**我们从这个函数返回的任何东西，都会被赋值给 `allPrimes` 变量。**
+
+然而，在之后的每一次渲染中，**React 都要做一个选择。**它应该：
+
+1. 再次调用这个函数，重新计算这个值，还是
+2. 复用它*上一次*做这项工作时已经得到的数据。
+
+为了回答这个问题，React 会查看传入的依赖列表。自上一次渲染以来，其中有任何一项发生变化了吗？如果有，React 就会重新运行传入的函数，计算一个新值。否则，它会跳过所有这些工作，复用之前算好的值。
+
+**`useMemo` 本质上就像一个小缓存，而依赖项就是缓存失效策略。**
+
+在这个例子中，我们实际上是在说“*只有当* `selectedNum` 变化时才重新计算质数列表”。当组件因为*其他*原因（比如 `time` 状态变量变化）重新渲染时，`useMemo` 会忽略这个函数，直接传出缓存的值。
+
+这通常被称为*记忆化*（memoization），这也是这个 hook 叫做“useMemo”的原因。
+
+下面是这个方案的可运行版本：
+
+```jsx
+import React from 'react';
+import format from 'date-fns/format';
+
+function App() {
+  const [selectedNum, setSelectedNum] = React.useState(100);
+  const time = useTime();
+
+  const allPrimes = React.useMemo(() => {
+    const result = [];
+
+    for (let counter = 2; counter < selectedNum; counter++) {
+      if (isPrime(counter)) {
+        result.push(counter);
+      }
+    }
+
+    return result;
+  }, [selectedNum]);
+
+  return (
+    <>
+      <p className="clock">
+        {format(time, 'hh:mm:ss a')}
+      </p>
+      <form>
+        <label htmlFor="num">Your number:</label>
+        <input
+          type="number"
+          value={selectedNum}
+          onChange={(event) => {
+
+            let num = Math.min(100_000, Number(event.target.value));
+
+            setSelectedNum(num);
+          }}
+        />
+      </form>
+      <p>
+        There are {allPrimes.length} prime(s) between 1 and {selectedNum}:
+        {' '}
+        <span className="prime-list">
+          {allPrimes.join(', ')}
+        </span>
+      </p>
+    </>
+  );
+}
+
+function useTime() {
+  const [time, setTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    }
+  }, []);
+
+  return time;
+}
+
+function isPrime(n){
+  const max = Math.ceil(Math.sqrt(n));
+
+  if (n === 2) {
+    return true;
+  }
+
+  for (let counter = 2; counter <= max; counter++) {
+    if (n % counter === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export default App;
+```
+
+### 另一种方法
+
+所以，`useMemo` hook 确实能帮我们在这里避免不必要的计算……但它*真的*是这里的最佳方案吗？
+
+很多时候，我们可以通过重新组织应用的结构来避免使用 `useMemo`。
+
+以下是一种做法：
+
+```jsx
+import React from 'react';
+
+import Clock from './Clock';
+import PrimeCalculator from './PrimeCalculator';
+
+function App() {
+  return (
+    <>
+      <Clock />
+      <PrimeCalculator />
+    </>
+  );
+}
+
+export default App;
+```
+
+我拆出了两个新组件，`Clock` 和 `PrimeCalculator`。它们从 `App` 分支出来，各自管理自己的状态。一个组件的重新渲染不会影响另一个。
+
+（原文此处有一张交互式关系图：每个方框代表一个组件实例，重新渲染时会闪烁。图中 App 下分出 Clock（time: 20:45:52）和 PrimeCalculator（selectedNum: 10）两个组件，点击“Increment”按钮可以看到二者各自独立地重新渲染。）
+
+我们经常听到“状态提升”，但有时候，更好的做法是*把状态往下推！*每个组件都应该只承担单一职责，而在上面的例子中，`App` 在做两件毫不相干的事。
+
+当然，这并不总是可行的。在一个大型的真实应用中，有很多状态*需要*被提升到相当高的层级，没法往下推。
+
+**对于这种情况，我还有另一招。**
+
+我们来看一个例子。假设我们**需要**把 `time` 变量提升到 `PrimeCalculator` 之上：
+
+```jsx
+import React from 'react';
+import { getHours } from 'date-fns';
+
+import Clock from './Clock';
+import PrimeCalculator from './PrimeCalculator';
+
+const PurePrimeCalculator = React.memo(PrimeCalculator);
+
+function App() {
+  const time = useTime();
+
+  const backgroundColor = getBackgroundColorFromTime(time);
+
+  return (
+    <div style={{ backgroundColor }}>
+      <Clock time={time} />
+      <PurePrimeCalculator />
+    </div>
+  );
+}
+
+const getBackgroundColorFromTime = (time) => {
+  const hours = getHours(time);
+
+  if (hours < 12) {
+
+    return 'hsl(50deg 100% 90%)';
+  } else if (hours < 18) {
+
+    return 'hsl(220deg 60% 92%)'
+  } else {
+
+    return 'hsl(220deg 100% 80%)';
+  }
+}
+
+function useTime() {
+  const [time, setTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    }
+  }, []);
+
+  return time;
+}
+
+export default App;
+```
+
+（这里 `getBackgroundColorFromTime` 根据时间返回背景色：上午、下午、晚上分别返回不同的颜色。）
+
+下面是更新后的关系图，展示了这里发生的事情：
+
+（图：App（time: 20:45:52）下有 Clock 和 PurePrimeCalculator（selectedNum: 10），后者被标为“纯组件”。）
+
+`React.memo` 像一个力场一样包裹着我们的组件，保护它不受无关更新的影响。我们的 `PurePrimeCalculator` 只会在收到新数据，或者其内部状态变化时才重新渲染。
+
+这被称为*纯组件*（pure component）。本质上，我们是在告诉 React：给定相同的*输入*，这个组件总会产生相同的*输出*，所以可以跳过那些什么都没变的重新渲染。
+
+我在最近的博文[《React 为什么会重新渲染》](https://www.joshwcomeau.com/react/why-react-re-renders/)中更详细地写了 `React.memo` 的工作原理。
+
+**这里有一个有趣的视角转换：**之前，我们记忆化的是某个特定计算的结果，即计算质数。然而在这个例子中，*我记忆化的是整个组件。*
+
+无论哪种方式，那些昂贵的计算只会在用户选择新的 `selectedNum` 时才重新运行。但我们优化的是父组件，而不是那几行具体的慢代码。
+
+我不是说一种方法比另一种好；每种工具在工具箱里都有它的位置。但在这个具体例子中，我更喜欢这种做法。
+
+现在，如果你曾在真实场景中尝试使用纯组件，你很可能注意到一件怪事：**纯组件经常重新渲染相当多次，**即使看起来什么都没变！😬
+
+这就很自然地引出了 `useMemo` 解决的第二个问题。
+
+## 用途二：保持引用
+
+在下面的例子中，我创建了一个 `Boxes` 组件。它显示一组彩色方块，用于某种装饰用途。
+
+我还有一个不相关的状态：用户的名字。
+
+```jsx
+import React from 'react';
+
+import Boxes from './Boxes';
+
+function App() {
+  const [name, setName] =
+    React.useState('');
+  const [boxWidth, setBoxWidth] =
+    React.useState(1);
+
+  const id = React.useId();
+
+  const boxes = [
+    {
+      flex: boxWidth,
+      background: 'hsl(345deg 100% 50%)',
+    },
+    {
+      flex: 3,
+      background: 'hsl(260deg 100% 40%)',
+    },
+    {
+      flex: 1,
+      background: 'hsl(50deg 100% 60%)',
+    },
+  ];
+
+  return (
+    <>
+      <Boxes boxes={boxes} />
+
+      <section>
+        <div className="row">
+          <label htmlFor={`${id}-name`}>
+            Name:
+          </label>
+          <input
+            id={`${id}-name`}
+            type="text"
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+            }}
+          />
+        </div>
+        <label htmlFor={`${id}-box-width`}>
+          First box width:
+        </label>
+        <input
+          id={`${id}-box-width`}
+          type="range"
+          min={1}
+          max={5}
+          step={0.01}
+          value={boxWidth}
+          onChange={(event) => {
+            setBoxWidth(
+              Number(event.target.value)
+            );
+          }}
+        />
+      </section>
+    </>
+  );
+}
+
+export default App;
+```
+
+（控制台输出：Render Boxes 8:45:52 PM）
+
+`Boxes` 是一个纯组件，因为 `Boxes.js` 的默认导出外面包了一层 `React.memo()`。这意味着它应该只在 props 变化时才重新渲染。
+
+*然而*，每当用户修改名字时，`Boxes` 也会重新渲染！
+
+（原文此处有一张交互式关系图：App 下是接收 `{ boxes }` props 的纯组件 Boxes。在文本框里输入时，可以看到两个组件都重新渲染了。）
+
+搞什么？！为什么我们的 `React.memo()` 力场在这里没有保护我们？？
+
+`Boxes` 组件只有一个 prop，`boxes`，而看起来我们每次渲染都给它传了完全相同的数据。它始终是同样的东西：一个红色方块、一个宽的紫色方块、一个黄色方块。我们*确实*有一个影响 `boxes` 数组的 `boxWidth` 状态变量，但我们并没有改变它！
+
+**问题在于：**每次 React 重新渲染，我们都在生成一个*全新的数组*。它们在*值*上是等价的，但在*引用*上不是。
+
+我想暂时忘掉 React，聊聊普通的 JavaScript 会有帮助。我们来看一个类似的情况：
+
+```js
+function getNumbers() {
+  return [1, 2, 3];
+}
+
+const firstResult = getNumbers();
+const secondResult = getNumbers();
+
+console.log(firstResult === secondResult);
+```
+
+你怎么看？`firstResult` 等于 `secondResult` 吗？
+
+从某种意义上说，它们是相等的。两个变量持有相同的结构，`[1, 2, 3]`。但这并不是 `===` 运算符真正检查的东西。
+
+相反，`===` 检查的是两个表达式*是否是同一个东西。*
+
+我们创建了两个不同的数组。它们可能包含相同的内容，但它们不是同一个数组，就像*一对同卵双胞胎并不是同一个人*一样。
+
+（插图：两个长得一模一样的人说：“我们是不同的人！”）
+
+每次调用 `getNumbers` 函数，我们都会创建一个全新的数组，一个保存在计算机内存中的独立的东西。如果我们调用它多次，就会在内存中存储这个数组的多个副本。
+
+注意，简单数据类型——比如字符串、数字和布尔值——可以按值比较。但数组和对象只按*引用*比较。关于这一区别的更多信息，请看 Dave Ceddia 这篇很棒的博文：[《JavaScript 引用图解指南》](https://daveceddia.com/javascript-references/)。
+
+**回到 React：**我们的 `Boxes` React 组件也是一个 JavaScript 函数。渲染它的时候，我们就是在调用这个函数：
+
+```jsx
+// 每次渲染这个组件，我们都会调用这个函数……
+function App() {
+  // ……最终创建一个全新的数组……
+  const boxes = [
+    { flex: boxWidth, background: 'hsl(345deg 100% 50%)' },
+    { flex: 3, background: 'hsl(260deg 100% 40%)' },
+    { flex: 1, background: 'hsl(50deg 100% 60%)' },
+  ];
+
+  // ……然后把它作为 prop 传给这个组件！
+  return (
+    <Boxes boxes={boxes} />
+  );
+}
+```
+
+当 `name` 状态变化时，我们的 `App` 组件重新渲染，重新运行所有代码。我们构造了一个全新的 `boxes` 数组，并把它传给 `Boxes` 组件。
+
+**于是 `Boxes` 重新渲染了，因为我们给了它一个全新的数组！**
+
+`boxes` 数组的*结构*在两次渲染之间并没有变，但这无关紧要。React 只知道 `boxes` 这个 prop 收到了一个新创建的、从未见过的数组。
+
+为了解决这个问题，我们可以使用 `useMemo` hook：
+
+```jsx
+const boxes = React.useMemo(() => {
+  return [
+    { flex: boxWidth, background: 'hsl(345deg 100% 50%)' },
+    { flex: 3, background: 'hsl(260deg 100% 40%)' },
+    { flex: 1, background: 'hsl(50deg 100% 60%)' },
+  ];
+}, [boxWidth]);
+```
+
+与前面质数的例子不同，这里我们并不担心计算开销大的运算。我们唯一的目标是*保持对某个特定数组的引用*。
+
+我们把 `boxWidth` 列为依赖，因为当用户调整红色方块的宽度时，我们*确实*希望 `Boxes` 组件重新渲染。
+
+我想画个简图会有助于说明。之前，我们在每张快照中都创建了一个全新的数组：
+
+（图：每张快照都构建一个全新的“boxes”数组。）
+
+然而，有了 `useMemo`，我们复用的是之前创建的 `boxes` 数组：
+
+（图：各张快照复用同一个“boxes”数组。）
+
+通过在多次渲染之间保持同一个引用，我们让纯组件能按我们期望的方式工作，忽略那些不影响 UI 的渲染。
+
+## useCallback hook
+
+好，`useMemo` 差不多讲完了……那 `useCallback` 呢？
+
+**简短的说法是：**它是完全一样的东西，只不过针对的是*函数*，而不是数组/对象。
+
+和数组、对象一样，函数也是按引用比较，而不是按值比较：
+
+```js
+const functionOne = function() {
+  return 5;
+};
+const functionTwo = function() {
+  return 5;
+};
+
+console.log(functionOne === functionTwo); // false
+```
+
+这意味着，如果我们在组件内部定义一个函数，它会在每一次渲染时重新生成，每次都产生一个完全相同却又独一无二的函数。
+
+我们来看一个例子：
+
+```jsx
+import React from 'react';
+
+import MegaBoost from './MegaBoost';
+
+function App() {
+  const [count, setCount] =
+    React.useState(0);
+
+  function handleMegaBoost() {
+    setCount(
+      (currentValue) => currentValue + 1234
+    );
+  }
+
+  return (
+    <>
+      Count: {count}
+      <button
+        onClick={() => {
+          setCount(count + 1);
+        }}
+      >
+        Click me!
+      </button>
+      <MegaBoost
+        handleClick={handleMegaBoost}
+      />
+    </>
+  );
+}
+
+export default App;
+```
+
+（控制台输出：Render Boxes 8:45:52 PM）
+
+这个沙盒展示了一个典型的计数器应用，但多了一个特别的“Mega Boost”按钮。这个按钮会让计数大幅增加，以防你赶时间、不想把普通按钮点上一大堆次。
+
+`MegaBoost` 组件是一个纯组件，这要归功于 `React.memo`。它并不依赖 `count`……**但每当 `count` 变化时它都会重新渲染！**
+
+就像我们在 `boxes` 数组那里看到的，这里的问题在于我们每次渲染都生成一个全新的函数。如果渲染 3 次，我们就会创建 3 个独立的 `handleMegaBoost` 函数，击穿 `React.memo` 的力场。
+
+利用我们学到的 `useMemo` 知识，可以这样解决问题：
+
+```jsx
+const handleMegaBoost = React.useMemo(() => {
+  return function() {
+    setCount((currentValue) => currentValue + 1234);
+  }
+}, []);
+```
+
+我们返回的不是数组，而是一个*函数*。这个函数随后被存储在 `handleMegaBoost` 变量中。
+
+这样可行……但还有更好的办法：
+
+```jsx
+const handleMegaBoost = React.useCallback(() => {
+  setCount((currentValue) => currentValue + 1234);
+}, []);
+```
+
+`useCallback` 的作用与 `useMemo` 相同，但它是专门为函数打造的。我们直接把一个函数交给它，它会记忆化这个函数，让它贯穿多次渲染。
+
+换句话说，下面这两个表达式效果相同：
+
+```jsx
+// 这个：
+React.useCallback(function helloWorld(){}, []);
+
+// ……在功能上等价于这个：
+React.useMemo(() => function helloWorld(){}, []);
+```
+
+**useCallback 是语法糖。**它的存在纯粹是为了让我们在记忆化回调函数时日子好过一点。
+
+## 什么时候使用这些 hook
+
+好，我们已经看到 `useMemo` 和 `useCallback` 如何让我们在多次渲染之间传递同一个引用，以复用复杂的计算，或避免破坏纯组件。问题是：**我们应该多频繁地使用它？**
+
+在我个人看来，把每一个对象/数组/函数都包进这些 hook 里是浪费时间。在大多数情况下，好处微乎其微；React 经过了高度优化，重新渲染往往并不像我们常以为的那么慢或那么昂贵！
+
+使用这些 hook 的最佳方式，是把它们作为对问题的回应。如果你注意到应用变得有点迟钝，可以用 React Profiler 揪出慢渲染。有些情况下，你可以通过重组应用结构来提升性能。另一些情况下，`useMemo` 和 `useCallback` 能帮忙提速。
+
+（如果你不确定怎么使用 React Profiler，我在最近的博文[《React 为什么会重新渲染》](https://www.joshwcomeau.com/react/why-react-re-renders/)里讲过！）
+
+话虽如此，有几种场景下我*确实*会预先使用这些 hook。
+
+### 在通用的自定义 hook 里
+
+我最喜欢的小自定义 hook 之一是 `useToggle`，一个友好的小帮手，用起来几乎和 `useState` 一模一样，但只能在 `true` 和 `false` 之间切换一个状态变量：
+
+```jsx
+function App() {
+  const [isDarkMode, toggleDarkMode] = useToggle(false);
+
+  return (
+    <button onClick={toggleDarkMode}>
+      切换颜色主题
+    </button>
+  );
+}
+```
+
+这个自定义 hook 是这样定义的：
+
+```jsx
+function useToggle(initialValue) {
+  const [value, setValue] = React.useState(initialValue);
+
+  const toggle = React.useCallback(() => {
+    setValue(v => !v);
+  }, []);
+
+  return [value, toggle];
+}
+```
+
+注意，`toggle` 函数是用 `useCallback` 记忆化的。
+
+当我构建这类可复用的自定义 hook 时，我喜欢让它们尽可能高效，因为**我不知道将来它们会被用在哪里。**在 95% 的情况下这也许是大材小用，但如果我把这个 hook 用上 30 或 40 次，它很有可能会帮助提升应用的性能。
+
+### 在 context provider 里
+
+当我们用 context 在整个应用中共享数据时，通常会把一个大对象作为 `value` 属性传进去。
+
+记忆化这个对象一般是个好主意：
+
+```jsx
+const AuthContext = React.createContext({});
+
+function AuthProvider({ user, status, forgotPwLink, children }){
+  const memoizedValue = React.useMemo(() => {
+    return {
+      user,
+      status,
+      forgotPwLink,
+    };
+  }, [user, status, forgotPwLink]);
+
+  return (
+    <AuthContext.Provider value={memoizedValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+```
+
+**为什么这样做有好处？**可能有几十个纯组件在消费这个 context。如果没有 `useMemo`，只要 `AuthProvider` 的父组件碰巧重新渲染，所有这些组件都会被迫重新渲染。
+
+## React 的乐趣
+
+呼！你读到最后了。我知道这篇教程涉及了一些相当崎岖的内容。😅
+
+我知道这两个 hook 很棘手，React 本身也会让人觉得非常难以招架、令人困惑。它是一个很难的工具！
+
+**但关键在于：**只要你能翻过最初那道坎，使用 React 就是一种*绝对的乐趣*。
+
+我从 2015 年开始使用 React，它已经成为我构建复杂用户界面和 Web 应用最喜欢的方式。我几乎试过天底下所有的 JS 框架，但用它们时，我的效率都不如用 React 时高。
+
+如果你在 React 上遇到了困难，我可以帮忙！
+
+过去两年，我一直在努力打造一门名为[《The Joy of React》](https://www.joyofreact.com/)（React 的乐趣）的课程。这是一门对初学者友好、按自己节奏学习的交互式在线课程，教你用 React 构建更上一层楼的酷东西。
+
+如果你觉得这篇博文哪怕有一点点帮助，我想你会从我的课程中收获*非常多*。与这篇博文不同，这门课把像这样的交互式文章与视频、练习、小游戏，甚至一些真实风格的项目结合在一起。这是一场动手实践的冒险。
+
+你可以进一步了解这门课程，发现用 React 构建的乐趣：
+
+* [The Joy of React](https://www.joyofreact.com/)

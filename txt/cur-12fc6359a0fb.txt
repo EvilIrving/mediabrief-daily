@@ -1,0 +1,13 @@
+https://surma.dev/things/js-to-asc/
+
+WebAssembly 是神奇的性能仙尘吗？Is WebAssembly magic performance pixie dust? ｜ Surma ｜ 文章 ｜ https://surma.dev/things/js-to-asc/
+
+Surma（时任谷歌 Chrome 团队开发者关系工程师，AssemblyScript 的赞助者）用一组实验回答“加上 WebAssembly 就能获得性能吗”，答案是：看情况。
+
+他先澄清 Wasm 的优势：最成熟的用途是借用 C/C++、Rust 等其他语言的生态（如 Squoosh 中的图像处理库）。他一直主张 Wasm 与 JavaScript 的峰值性能相同，Wasm 更应被看作获得更可靠性能的方式，不过 SIMD 和共享内存线程正让 Wasm 有机会超越 JS。具体优势有三：无需预热（V8 执行 JS 要经历 Ignition 解释器、Sparkplug 非优化编译，再观察类型由 TurboFan 优化，而强类型的 Wasm 可直接由 Liftoff 流式编译、随即交给 TurboFan，无需先观察）；不会去优化（JS 类型假设一旦失效就要退回解释器，Wasm 类型不会变）；二进制体积则有争议，因为 Wasm 除算术外什么都不自带，高级功能都得打包进去。
+
+实验对象是 AssemblyScript（ASC），一种语义模仿 TypeScript、编译为 Wasm 的语言，移植大多只需加类型注解。他把图像模糊库 glur 移植过去（顺带提醒：倒序循环用无符号 u32 会导致死循环），在 2020 款 M1 MacBook Air 上用最“无菌”的 d8 环境测试，并反复强调结果只是粗略参考。朴素移植后，Liftoff 编译的 ASC 已比 Ignition/Sparkplug 下的 JS 快得多，但优化后仍比 TurboFan 下的 JS 慢约 3 倍。原因在于 V8 掌握 JS 高层语义，能省掉边界检查、把 TypedArray 的两次内存访问合为一次，而 ASC 只在 Wasm 字节码层面通过 Binaryen 优化。用 unchecked() 去掉边界检查、改用不可增长的 StaticArray 后降到 1.6 倍；再发现 --optimize 默认等于为省体积而牺牲速度的 -O3s，改用 -O3 仅多约 30 字节，ASC 就反超 JS（0.9 倍）。冒泡排序测试中优化后的 ASC 甚至快近一倍。
+
+但涉及大量内存分配时局面逆转：100 万个随机数的二叉堆测试中 ASC 慢了 80 倍。换用不自动运行 GC 的 minimal 运行时或只做指针递增分配的 stub 运行时后降到 1.5 倍；进一步分析发现 Array 的 push 每次只扩容到刚好够用，不断重新分配和复制，而 Rust 的 Vec、Go 的切片都是容量翻倍。自定义翻倍扩容的数组后各运行时都约为 1.4 倍（ASC 团队随后在 v0.18.31 修复了这一问题），但仍不及 JS。用 Rust 地道实现为 1.9 倍，加 unsafe 去边界检查后 1.2 倍；C++ 经 Emscripten 首次编译就与 JS 持平。体积上 ASC 优势明显：gzip 后 stub 版不到 1KB，Rust 7.2KB，C++ 连胶水代码 12.8KB，但仍大于 449 字节的原始 JS。
+
+结论：不要从这些数字得出任何泛化的量化结论。可以带走的是：需要零预热的性能时 Wasm 是首选；V8 执行 JS 的能力非常强，Wasm 要超越它往往需要手工优化，SIMD 和线程普及后天平可能倾斜；成熟的编译器能替你做更多优化；ASC 生成的模块比其他语言小得多。

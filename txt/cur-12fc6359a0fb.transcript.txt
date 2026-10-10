@@ -1,0 +1,341 @@
+https://surma.dev/things/js-to-asc/
+
+WebAssembly 是神奇的性能仙尘吗？
+Surma ｜ surma.dev ｜ 2021-04-13
+
+加上 WebAssembly，就能获得性能。真的是这样吗？
+
+一个令人极其不满意的答案是：看情况。它取决于非常非常多的因素，我会在这里谈到其中*一些*。
+
+## 我为什么要做这件事？（可以跳过这一节）
+
+我真的很喜欢 AssemblyScript（完全披露：我是他们的赞助者之一）。它是一门非常年轻的语言，有一个小而充满热情的团队，为一种以 WebAssembly 为目标、类似 TypeScript 的语言打造了自定义编译器。我喜欢 AssemblyScript（简称 ASC）的原因，是它让普通 Web 开发者无需学习 C++ 或 Rust 这类可能全新的语言，就能利用 WebAssembly。需要特别注意的是，这门语言是*类似* TypeScript 的。别指望你现有的 TypeScript 代码开箱即可编译。话虽如此，这门语言有意模仿 TypeScript（因而也是 JavaScript）的行为和语义，这意味着把 TypeScript“移植”到 AssemblyScript 的工作往往大多是表面上的，通常只是加上类型注解。
+
+我一直想知道，把一段 JavaScript 改写成 AssemblyScript 并编译成 WebAssembly，到底能不能带来什么好处。当我的同事 Ingvar 发给我一段用于模糊图像的 JavaScript 代码时，我想这会是一个完美的案例研究。我做了一个快速实验，看看是否值得更深入地探索把 JavaScript 移植到 AssemblyScript。结果——*哇哦*——太值得了。这篇文章就是那次更深入的探索。
+
+如果你想进一步了解 AssemblyScript，可以去它的网站、加入 Discord，或者如果你愿意，看看我和我的播客“老公” Jake 一起做的 AssemblyScript 介绍视频。
+
+## WebAssembly 的优势
+
+我认为可以公平地说，WebAssembly 最成熟的用例是利用其他语言的生态。例如在 Squoosh 中，我们使用来自 C/C++ 和 Rust 生态的库来处理图像。这些库编写时并没有考虑 Web，但通过 WebAssembly，它们照样能在 Web 上运行。
+
+在我的感觉中，很多人也把 WebAssembly 与性能紧密联系在一起。它的设计目标就是快，而且它是编译型的，所以一定很快，对吧？嗯，很长时间以来，我一直公开表示 WebAssembly 和 JavaScript 有着相同的*峰值*性能，至今我仍坚持这个观点。在理想条件下，两者都会被编译成机器码，最终一样快。但这里显然还有更多细微之处，而 Web 上的条件什么时候*理想过*‽ 相反，我认为把 WebAssembly 看作一种获得更*可靠*性能的方式会更好。
+
+不过，同样重要的是要认识到，WebAssembly 最近一直在获得 JavaScript 无法利用的性能原语（比如 SIMD 或共享内存线程），这让 WebAssembly 有更大的机会胜过 JavaScript。WebAssembly 还有一些其他特性，可能让它在特定情况下比 JavaScript 更合适：
+
+### 无需预热
+
+V8 要执行 JavaScript，首先会把代码交给解释器“Ignition”。Ignition 经过优化，能让代码*尽快*运行起来。之后，“Sparkplug”会接过 Ignition 的输出（臭名昭著的“字节码”），把它转换成未优化的机器码，以增加内存占用为代价换来更好的性能。在你的代码执行期间，V8 会密切观察它，收集关于对象形状（可以把它们想成类型）的数据。一旦收集到足够的数据，V8 的优化编译器“TurboFan”就会介入，生成针对这些类型优化过的底层机器码。这会带来又一次显著的速度提升。
+
+**一路都是取舍：**如果你想进一步了解 JavaScript 引擎必须做出的具体取舍，我推荐 Benedikt 和 Mathias 写的这篇文章。
+
+另一方面，WebAssembly 是强类型的。它可以*直接*被转换成机器码。V8 有一个名为“Liftoff”的流式 Wasm 编译器，它和 Ignition 一样，旨在让你的代码*快速*运行起来，代价是生成的代码执行速度可能不是最优的。Liftoff 一完成，TurboFan 就会介入，生成比 Liftoff 产出的更快的优化机器码，但生成需要更长时间。与 JavaScript 的最大区别在于，TurboFan 无需先观察你的 Wasm 就能开展工作。
+
+### 不会降级
+
+TurboFan 为 JavaScript 生成的机器码，只有在关于类型的假设成立时才可用。如果 TurboFan 为一个以数字为参数的函数 `f` 生成了机器码，而现在这个函数 `f` 突然被传入一个对象来调用，引擎就必须退回到 Ignition 或 Sparkplug。这被称为“去优化”（deoptimization，简称“deopt”）。同样，由于 WebAssembly 是强类型的，类型*不可能*改变。不仅如此，WebAssembly 支持的类型在设计上就能很好地映射到机器码。WebAssembly 不会发生去优化。
+
+### 二进制体积
+
+这一点有点难以捉摸。根据 webassembly.org 的说法，“wasm 栈机器被设计为以一种在体积和加载时间上都高效的二进制格式进行编码”。然而，WebAssembly 目前却因生成庞大的二进制块而有些臭名昭著，至少按 Web 上所认为的“大”来说是这样。WebAssembly 的压缩效果非常好（通过 gzip 或 brotli），可以抵消很多膨胀。
+
+人们很容易忘记，JavaScript 自带了很多“电池”（尽管有人说它没有标准库）。例如：你可以处理数组、对象，遍历键和值，拆分字符串，filter、map，拥有原型继承，等等等等。所有这些都内置在 JavaScript 引擎里。而 WebAssembly 除了算术之外*什么都不*自带。每当你在一门编译到 WebAssembly 的语言中使用任何这些高层概念时，其底层代码都必须被打包进你的二进制文件，这是 WebAssembly 二进制文件庞大的原因之一。当然，这些函数只需要被包含一次，所以较大的项目会比小模块更多地受益于 Wasm 的紧凑二进制表示。
+
+并非所有这些优势在任何给定场景下都同样可得或同样重要。不过，AssemblyScript 以生成相当小的 WebAssembly 二进制文件著称，我很好奇在速度和体积上，它与*直接*可比的 JavaScript 相比表现如何。
+
+## 移植到 AssemblyScript
+
+如前所述，AssemblyScript 尽可能地模仿 TypeScript 的语义和 Web 平台 API，这意味着把一段 JS 移植到 ASC *基本上*就是给代码加上类型注解。作为第一个例子，我选用了 `glur`，一个用于模糊图像的 JavaScript 库。
+
+### 添加类型
+
+ASC 的内置类型与 WebAssembly 虚拟机的类型一一对应。TypeScript 中的数值只有 `number`（按规范是 64 位 IEEE754 浮点数），而 AssemblyScript 的基本类型有 `u8`、`u16`、`u32`、`i8`、`i16`、`i32`、`f32` 和 `f64`。ASC 小而足够强大的标准库增加了更高层的数据结构，如 `string`、`Array<T>`、`ArrayBuffer`、`Uint8Array` 等。唯一一个 ASC 特有、既不在 JavaScript 也不在 Web 平台中的数据结构是 `StaticArray`，我稍后会谈到它。
+
+举个例子，下面是 glur 库中的一个函数及其 AssemblyScript 化的版本：
+
+```js
+function gaussCoef(sigma) {
+  if (sigma < 0.5)
+    sigma = 0.5;
+  var a = Math.exp(0.726 * 0.726) / sigma;
+  /* ……更多数学运算…… */
+  return new Float32Array([
+    a0, a1, a2, a3,
+    b1, b2,
+    left_corner, right_corner
+  ]);
+}
+```
+
+```ts
+function gaussCoef(sigma: f32): Float32Array {
+  if (sigma < 0.5)
+    sigma = 0.5;
+  let a: f32 = Mathf.exp(0.726 * 0.726) / sigma;
+  /* ……更多数学运算…… */
+  const r = new Float32Array(8);
+  const v = [
+    a0, a1, a2, a3,
+    b1, b2,
+    left_corner, right_corner
+  ];
+  for (let i = 0; i < v.length; i++) {
+    r[i] = v[i];
+  }
+  return r;
+}
+```
+
+末尾那个用来填充数组的显式循环，是因为 AssemblyScript 目前的一个不足：还不支持函数重载。ASC 中 `Float32Array` 只有*唯一*一个构造函数，它接收一个 `i32` 参数作为 `TypedArray` 的长度。ASC 支持回调，但不支持闭包，所以我不能用 `.forEach()` 来填值。这确实*不方便*，但还不至于无法接受。
+
+**Mathf**：你可能注意到了这里用的是 `Mathf` 而不是 `Math`。`Mathf` 专门用于 32 位浮点数，而 `Math` 用于 64 位浮点数。我本可以用 `Math` 再做类型转换，但由于需要更高的精度，它们会稍微慢那么一点点。无论如何，`gaussCoef` 函数不在热路径上，所以真的没什么区别。
+
+### 旁注：留意符号
+
+有件事我花了长得令人尴尬的时间才弄明白，那就是，呃，类型很重要。模糊图像涉及卷积，这意味着要用一大堆 for 循环遍历所有像素。我天真地以为，既然所有像素索引都是正数，循环计数器也会是正数，于是给这些循环变量选了 `u32`。如果其中任何一个循环恰好是倒序遍历的，比如下面这个，你就会被一个*可爱的*死循环咬上一口：
+
+```ts
+let j: u32;
+// ……很多很多行代码……
+for (j = width - 1; j >= 0; j--) {
+  // ……
+}
+```
+
+除此之外，把 JS 移植到 ASC 是一项相当机械的工作。
+
+### 用 d8 做基准测试
+
+现在我们有了一个 JS 文件和一个 ASC 文件，可以把 ASC 编译成 WebAssembly，跑一个小基准测试来比较运行时性能。
+
+**d 什么？**：`d8` 是 V8 的一个极简命令行封装，对 Wasm 和 JS 的各种引擎特性都提供细粒度的控制。你可以把它想成 Node，但完全没有标准库，只有原汁原味的 ECMAScript。除非你在本地编译过 V8（你*可以*按照 v8.dev 上的指南来做），否则你很可能没有 `d8`。jsvu 是一个可以为许多 JavaScript 引擎（包括 V8）安装预编译二进制文件的工具。
+
+不过，既然这一节的标题里有“基准测试”这个词，我认为有必要在这里加个免责声明：我在这里列出的数字，特定于*我*用*我*选择的语言写的代码，在*我的*机器（2020 款 M1 MacBook Air）上用*我*自己做的基准测试脚本运行。这些结果*充其量*只是粗略的指标，据此对 AssemblyScript、WebAssembly 或 JavaScript 的总体性能得出定量结论是不明智的。
+
+有些人可能会好奇，为什么我用 `d8` 而不是在浏览器甚至 Node 里运行。Node 和浏览器都有……一些其他东西，可能会也可能不会干扰结果。`d8` 是我能得到的最“无菌”的环境，而且锦上添花的是，它让我能控制分层升级的行为。我可以限制只用 Ignition、Sparkplug 或 Liftoff 执行，确保性能特征不会在基准测试中途改变。
+
+### 方法
+
+如上所述，做基准测试时“预热” JavaScript 很重要，要给 V8 优化它的机会。如果不这样做，你很可能最终测到的是解释执行的 JS 与优化后机器码两种性能特征的混合。为此，我在开始测量前先运行模糊程序 5 次，然后进行 50 次计时运行，并剔除最快和最慢的各 5 次，以去除可能的离群值。结果如下：
+
+| 语言 | 引擎 | 平均耗时 | 相对 JS |
+|---|---|---|---|
+| JavaScript | Ignition | 4434.15ms | 42.5x |
+| JavaScript | Sparkplug | 2476.60ms | 23.7x |
+| AssemblyScript | Liftoff | 380.52ms | 3.6x |
+| AssemblyScript | TurboFan | 298.13ms | 2.9x |
+| JavaScript | TurboFan | 104.35ms | 1.0x |
+
+一方面，我很高兴看到 Liftoff 的输出比 Ignition 或 Sparkplug 从 JavaScript 中榨出的性能更快。但同时，优化后的 WebAssembly 模块耗时大约是 JavaScript 的 3 倍，这让我心里不太舒服。
+
+公平地说，这是一场大卫对歌利亚的较量：V8 是一个历史悠久的 JavaScript 引擎，有一支庞大的工程师团队在实现各种优化和其他巧妙的东西，而 AssemblyScript 是一个相对年轻的项目，团队很小。ASC 的编译器是单遍的，把所有优化工作都交给 Binaryen（另见：`wasm-opt`）。这意味着优化是在 Wasm 虚拟机字节码层面进行的，那时大部分高层语义已经在编译中丢掉了。V8 在这里有明显的优势。不过，模糊代码非常简单——只是对内存中的值做算术运算——所以我真的以为差距会更小。这是怎么回事？
+
+### 深入挖掘
+
+在快速请教了 V8 团队和 AssemblyScript 团队的几位朋友之后（感谢 Daniel 和 Max！），事实证明，这里的一个巨大差异在于“边界检查”——或者说，是否有边界检查。
+
+V8 有一个得天独厚的条件：它能访问你原始的 JavaScript 代码，并了解这门语言的语义。它可以利用这些信息施加额外的优化。例如：它能看出你不是在随意地从内存中读取值，而是在用 `for ... of` 循环遍历一个 `ArrayBuffer`。这有什么区别？嗯，在 `for ... of` 循环中，语言语义保证你永远不会试图读取 `ArrayBuffer` 之外的值。当缓冲区只有 10 个字节长时，你永远不会意外读到第 11 个字节，或者说：你永远不会*越界*。这意味着 TurboFan 不需要生成边界检查——你可以把边界检查想象成确保你没有访问不该访问的内存的 `if` 语句。一旦编译成 WebAssembly，这类信息就丢失了，而由于 ASC 的优化只在 WebAssembly 虚拟机层面进行，它未必能施加同样的优化。
+
+幸运的是，AssemblyScript 提供了一个神奇的 `unchecked()` 注解，用来表明我们自己负责保证不越界。
+
+```diff
+- prev_prev_out_r = prev_src_r * coeff[6];
+- line[line_index] = prev_out_r;
++ prev_prev_out_r = prev_src_r * unchecked(coeff[6]);
++ unchecked(line[line_index] = prev_out_r);
+```
+
+但还不止这些：AssemblyScript 中的类型化数组（`Uint8Array`、`Float32Array` 等）提供与平台上相同的 API，这意味着它们只是底层 `ArrayBuffer` 上的一个视图。好处是 API 设计为人熟知、久经考验，但由于缺乏高层优化，这意味着每次访问类型化数组上的一个字段（比如 `myFloatArray[23]`）都需要访问两次内存：一次加载这个数组底层 `ArrayBuffer` 的指针，另一次加载正确偏移处的值。而 V8 能看出你在访问类型化数组、却从未访问底层缓冲区，所以它很可能能够优化整个数据结构，让你只需一次内存访问就能读到值。
+
+为此，AssemblyScript 提供了 `StaticArray<T>`，它基本上等同于 `Array<T>`，只是不能增长。由于长度固定，就没有必要把数组实体与存储值的内存分开，从而消除了这层间接访问。
+
+我把这两项优化都应用到我的“朴素移植”版本上，再测了一次：
+
+| 语言 | 变体 | 平均耗时 | 相对 JS |
+|---|---|---|---|
+| JavaScript |  | 104.35ms | 1.0x |
+| AssemblyScript | 优化版 | 162.63ms | 1.6x |
+| AssemblyScript | 朴素版 | 298.13ms | 2.9x |
+
+好多了！虽然 AssemblyScript 仍然比 JavaScript 慢，但我们已经接近了很多。这是我们能做到的最好结果吗？
+
+### 狡猾的默认值
+
+AssemblyScript 的朋友们向我指出的另一件事是，`--optimize` 标志等同于 `-O3s`，它会激进地为速度优化，但会为了减小二进制体积而做出取舍。`-O3` 则只为速度优化。把 `-O3s` 设为默认值，出发点是好的——在 Web 上二进制体积很重要——但值得吗？至少在这个具体例子中，答案是否定的：`-O3s` 最终用区区约 30 字节的可笑节省，换来了巨大的性能损失：
+
+| 语言 | 变体 | 优化器 | 平均耗时 | 相对 JS |
+|---|---|---|---|---|
+| AssemblyScript | 优化版 | O3 | 89.60ms | 0.9x |
+| JavaScript |  |  | 104.35ms | 1.0x |
+| AssemblyScript | 优化版 | O3s | 162.63ms | 1.6x |
+| AssemblyScript | 朴素版 | O3s | 298.13ms | 2.9x |
+
+仅仅一个优化器标志就带来了天壤之别，让 AssemblyScript 超过了 JavaScript（在这个特定测试用例上！）。我们让 AssemblyScript 比 JavaScript 更快了！
+
+**O3**：从这里开始，本文我只使用 `-O3`。
+
+### 冒泡排序
+
+为了确认图像模糊的例子不只是侥幸，我想应该用第二个程序再试一次。我很没创意地从 StackOverflow 上拿了一个冒泡排序实现，走了一遍同样的流程：加类型。跑基准测试。优化。跑基准测试。待冒泡排序的数组的创建和填充*不*在被测代码路径之内。
+
+| 语言 | 引擎 | 变体 | 平均耗时 | 相对 JS |
+|---|---|---|---|---|
+| AssemblyScript | TurboFan | 优化版 | 65.42ms | 0.6x |
+| JavaScript | TurboFan |  | 103.85ms | 1.0x |
+| AssemblyScript | Liftoff | 优化版 | 256.98ms | 2.5x |
+| AssemblyScript | TurboFan | 朴素版 | 434.05ms | 4.2x |
+| AssemblyScript | Liftoff | 朴素版 | 714.70ms | 6.9x |
+| JavaScript | Sparkplug |  | 1616.00ms | 15.6x |
+| JavaScript | Ignition |  | 2340.07ms | 22.5x |
+
+我们又做到了！这一次差距更大：优化后的 AssemblyScript 几乎比 JavaScript 快一倍。但请帮我个忙：现在别停下来不读了。
+
+## 内存分配
+
+你们中有些人可能已经注意到，这两个例子都几乎没有或完全没有内存分配。在 JavaScript 中，V8 为你处理所有的内存管理（以及垃圾回收），我不会假装自己很懂这方面。而在 WebAssembly 中，你得到的是一块线性内存，你必须决定怎么使用它（或者说：由语言来决定）。如果我们*大量*使用动态内存，这些排名会改变多少？
+
+为了测量这一点，我选择对一个二叉堆的实现做基准测试。基准测试往二叉堆里填入 100 万个随机数（由 `Math.random()` 提供），再把它们全部 `pop()` 出来，检查这些数是否按递增顺序排列。流程与上面相同：把 JS 代码朴素地移植到 ASC，跑基准测试，优化，再跑一次：
+
+| 语言 | 引擎 | 变体 | 平均耗时 | 相对 JS |
+|---|---|---|---|---|
+| JavaScript | TurboFan |  | 233.68ms | 1.0x |
+| JavaScript | Sparkplug |  | 1712.58ms | 7.3x |
+| JavaScript | Ignition |  | 3157.97ms | 13.5x |
+| AssemblyScript | TurboFan | 优化版 | 18758.50ms | 80.3x |
+| AssemblyScript | Liftoff | 优化版 | 18867.08ms | 80.7x |
+| AssemblyScript | TurboFan | 朴素版 | 19031.60ms | 81.4x |
+| AssemblyScript | Liftoff | 朴素版 | 19409.10ms | 83.1x |
+
+比 JavaScript 慢 80 倍？！甚至比 Ignition 还慢？肯定还有别的地方出了问题。
+
+### 运行时
+
+我们在 AssemblyScript 中创建的所有数据都需要存储在内存中。为了确保我们不会覆盖内存中已有的其他东西，就需要内存管理。由于 AssemblyScript 旨在提供一个熟悉的环境、模仿 JavaScript 的行为，它会往你的 WebAssembly 模块中加入一个完全托管的垃圾回收器，让你不必操心何时分配、何时释放内存。
+
+默认情况下，AssemblyScript 自带一个两级分离适配（Two-Level Segregated Fit）内存分配器，以及一个增量三色标记-清除（ITCMS）垃圾回收器。它们具体用的是哪种分配器和垃圾回收器，其实与本文无关，我只是觉得你可以去看看它们挺有意思的。
+
+这个默认运行时叫做 `incremental`，它出人意料地小，只给你的模块增加约 2KB（gzip 后）的 WebAssembly。AssemblyScript 还提供了替代的运行时，即 `minimal` 和 `stub`，可以用 `--runtime` 标志来选择。`minimal` 使用相同的分配器，但用的是一个更轻量的 GC，它*不会*自动运行，而必须手动调用。这对于游戏这类高性能场景可能很有意思，因为你希望自己控制 GC 何时暂停你的程序。`stub` *极其*小（gzip 后约 400B）且快，因为它只是一个指针递增分配器（bump allocator）。
+
+**我可爱的内存递增**：指针递增分配器*极其*快，但缺乏释放内存的能力。虽然这听起来很蠢，但对于单一用途的模块来说可能非常有用：与其释放内存，不如直接删除整个 WebAssembly 实例，再新建一个。如果你好奇的话，我其实在我的文章《不用 Emscripten 把 C 编译成 WebAssembly》里写过一个指针递增分配器。
+
+这能让我们的二叉堆实验快多少？相当显著！
+
+| 语言 | 变体 | 运行时 | 平均耗时 | 相对 JS |
+|---|---|---|---|---|
+| JavaScript |  |  | 233.68ms | 1.0x |
+| AssemblyScript | 优化版 | stub | 345.35ms | 1.5x |
+| AssemblyScript | 优化版 | minimal | 354.60ms | 1.5x |
+| AssemblyScript | 优化版 | incremental | 18758.50ms | 80.3x |
+
+`minimal` 和 `stub` 都让我们*显著*接近了 JavaScript 的性能。但*为什么*这两个会快这么多？如上所述，`minimal` 和 `incremental` 共用同一个分配器，所以不可能是分配器的原因。两者也都有垃圾回收器，但 `minimal` 除非被显式调用否则不会运行它（而我们并没有调用）。这意味着区别在于：`incremental` 会*运行*垃圾回收，而 `minimal` 和 `stub` 不会。考虑到垃圾回收器只需要追踪*一个*数组，我看不出它为什么会造成这么大的差别。
+
+### 增长
+
+在一个带调试符号（`--debug`）的构建上用 d8 做了一些性能分析之后发现，大量时间花在了一个系统库 `libsystem_platform.dylib` 中，它包含操作系统层面的线程和内存管理原语。对这个库的调用来自 `__new` 和 `__renew`，而它们又是由 `Array<f32>#push` 调用的：
+
+```
+[Bottom up (heavy) profile]:
+  ticks parent  name
+  18670   96.1%  /usr/lib/system/libsystem_platform.dylib
+  13530   72.5%    Function: *~lib/rt/itcms/__renew
+  13530  100.0%      Function: *~lib/array/ensureSize
+  13530  100.0%        Function: *~lib/array/Array<f32>#push
+  13530  100.0%          Function: *binaryheap_optimized/BinaryHeap<f32>#push
+  13530  100.0%            Function: *binaryheap_optimized/push
+   5119   27.4%    Function: *~lib/rt/itcms/__new
+   5119  100.0%      Function: *~lib/rt/itcms/__renew
+   5119  100.0%        Function: *~lib/array/ensureSize
+   5119  100.0%          Function: *~lib/array/Array<f32>#push
+   5119  100.0%            Function: *binaryheap_optimized/BinaryHeap<f32>#push
+```
+
+显然，我们在内存分配上有问题。但 JavaScript 不知怎么地就能让一个不断增长的数组变得很快，为什么 AssemblyScript 不行呢？幸运的是，AssemblyScript 的标准库相当小，也很好读，所以我们去看看 `Array<T>` 类里这个不祥的 `push()` 函数：
+
+```ts
+export class Array<T> {
+  // ……
+  push(value: T): i32 {
+    var length = this.length_;
+    var newLength = length + 1;
+    ensureSize(changetype<usize>(this), newLength, alignof<T>());
+    // ……
+    return newLength;
+  }
+  // ……
+}
+```
+
+`push()` 函数正确地算出数组的新长度是当前长度加 1，然后调用 `ensureSize()`，确保底层缓冲区有足够的空间（“容量”）增长到这个长度。
+
+```ts
+function ensureSize(array: usize, minSize: usize, alignLog2: u32): void {
+  // ……
+  if (minSize > <usize>oldCapacity >>> alignLog2) {
+    // ……
+    let newCapacity = minSize << alignLog2;
+    let newData = __renew(oldData, newCapacity);
+    // ……
+  }
+}
+```
+
+`ensureSize()` 则会检查容量是否小于新的 `minSize`，如果是，就用 `__renew` 分配一个大小为 `minSize` 的新缓冲区，这需要把所有数据从旧缓冲区复制到新缓冲区。正因如此，我们这个把*一百万个值*逐个推入数组的基准测试，最终引发了*大量*的分配工作，并产生了大量垃圾。
+
+在其他语言中，比如 Rust 的 `std::vec` 或 Go 的切片，新缓冲区的容量是旧缓冲区的*两倍*，这会随时间摊销分配工作。我正在努力在 ASC 中修复这个问题，但在此期间，我们可以创建自己的 `CustomArray<T>`，让它具备期望的行为。瞧，我们让程序变快了！
+
+*已修复*：ASC 团队此后已在 v0.18.31 中修复了这一退化问题。
+
+| 语言 | 变体 | 运行时 | 平均耗时 | 相对 JS |
+|---|---|---|---|---|
+| JavaScript |  |  | 233.68ms | 1.0x |
+| AssemblyScript | customarray | minimal | 329.23ms | 1.4x |
+| AssemblyScript | customarray | stub | 329.43ms | 1.4x |
+| AssemblyScript | customarray | incremental | 335.35ms | 1.4x |
+| AssemblyScript | 优化版 | stub | 345.35ms | 1.5x |
+| AssemblyScript | 优化版 | minimal | 354.60ms | 1.5x |
+| AssemblyScript | 优化版 | incremental | 18758.50ms | 80.3x |
+
+有了这个改动，`incremental` 和 `stub`、`minimal` 一样快了，但在这个测试用例中，它们都没有 JavaScript 快。也许我还能做更多优化，但我们已经陷得相当深了，而这篇文章本来就不是讲如何优化 AssemblyScript 的。
+
+还有很多简单的优化，我希望 AssemblyScript 的*编译器*能替我完成。为此，他们正在开发一种名为“AIR”的中间表示。它能否让程序开箱即用地变快，而不必手工优化每一次数组访问？很有可能。它会比 JavaScript 快吗？很难说。但我*确实*想知道，那些拥有“非常聪明”的编译器工具链的“更成熟”的语言能做到什么程度。
+
+### Rust 与 C++
+
+我又用 Rust 重写了一遍代码，尽可能写得地道，并把它编译成 WebAssembly。虽然它比朴素移植的 AssemblyScript 快，但比我们用了 `CustomArray<T>` 的优化版 AssemblyScript 慢。所以我不得不做和在 AssemblyScript 中一样的事：到处撒点 `unsafe` 来避免边界检查。有了这项优化，Rust 的 WebAssembly 模块比我们优化过的 AssemblyScript 快，但仍然不比 JavaScript 快。
+
+我对 C++ 也采取了同样的方法，用 Emscripten 把它编译成 WebAssembly。出乎我意料的是，我第一次尝试的结果就和 JavaScript 表现得一样好。
+
+| 语言 | 变体 | 平均耗时 | 相对 JS |
+|---|---|---|---|
+| C++ | 地道版 | 226.18ms | 1.0x |
+| JavaScript |  | 233.68ms | 1.0x |
+| Rust | 优化版 | 284.60ms | 1.2x |
+| AssemblyScript | customarray | 335.35ms | 1.4x |
+| Rust | 地道版 | 442.88ms | 1.9x |
+
+**学学怎么写代码吧（Lrn2code）**：标为“地道版”的版本，在很大程度上仍然受原始 JS 代码的启发。我试图运用自己对目标语言惯用写法的了解，但归根结底它仍然是一次移植。我相信，由对这些语言更有经验的人从头实现，写出来会不一样。
+
+我相当确定 Rust 和 C++ 还能变得更快，但我对这两门语言的了解都不够深，榨不出最后那几项优化。
+
+### gzip 后的文件大小
+
+值得注意的是，文件大小是 AssemblyScript 的*强项*。比较 gzip 后的文件大小，我们得到：
+
+| 语言 | 运行时 | .wasm | .js | 合计 |
+|---|---|---|---|---|
+| JavaScript |  | 0 B | 449 B | 449 B |
+| AssemblyScript | stub | 959 B | 0 B | 959 B |
+| AssemblyScript | incremental | 2.6KB | 0 B | 2.6KB |
+| Rust |  | 7.2KB | 0 B | 7.2KB |
+| C++ |  | 6.6KB | 6.2KB | 12.8KB |
+
+## 结论
+
+我想说得非常清楚：从这篇文章中得出任何泛化的、定量的结论都是不明智的。例如，Rust *并不是*比 JavaScript 慢 1.2 倍。这些数字非常特定于*我*写的代码、*我*施加的优化以及*我*使用的机器。不过，我认为我们可以从中提炼出一些通用的指导原则，帮助你将来做出更明智的决定：
+
+- V8 的 Liftoff 编译器从 WebAssembly 生成的代码，运行速度明显快于 Ignition 或 SparkPlug 为 JavaScript 所能提供的。如果你需要*完全*无需预热时间的性能，WebAssembly 是你的首选工具。
+- V8 执行 JavaScript 的能力*真的*很强。虽然 WebAssembly 可以比 JavaScript 跑得更快，但你很可能需要手工优化代码才能做到。我能想象，一旦 SIMD 和线程得到广泛支持，并且围绕它们的使用有了良好的开发者体验，这种平衡就会发生变化。
+- 编译器可以为你做很多工作，更成熟的编译器很可能更擅长优化你的代码。
+- AssemblyScript 模块往往比其他语言生成的 WebAssembly 模块小得多。在这次探索中，AssemblyScript *并没有*比原始 JavaScript 更小，但对于更大的模块，情况很可能会不同。
+
+如果你不相信我（你也不该相信！），想亲自深入研究基准测试代码，可以看看这个 gist。

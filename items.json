@@ -1136,6 +1136,10 @@
    {
     "label": "总结",
     "url": "txt/cur-f00d750dd07e.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f00d750dd07e.transcript.txt"
    }
   ],
   "title_zh": "712 ：斯科特杰尔懒洋洋地上网",
@@ -1445,6 +1449,28 @@
   "title_zh": "动物与鬼魂"
  },
  {
+  "id": "cur-66b3f5f3f7a3",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Practical AI",
+  "title": "We've all done RAG, now what?",
+  "link": "https://share.transistor.fm/s/e13d399b",
+  "date": "2025-09-29",
+  "audio_url": "https://pscrb.fm/rss/p/dts.podtrac.com/redirect.mp3/media.transistor.fm/e13d399b/bf9fec0b.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-66b3f5f3f7a3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-66b3f5f3f7a3.transcript.txt"
+   }
+  ],
+  "title_zh": "我们都做过抹布，现在怎么办？",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-66b3f5f3f7a3.m4a"
+ },
+ {
   "id": "cur-28a19bfcde1f",
   "kind": "curated",
   "type": "article",
@@ -1576,6 +1602,10 @@
    {
     "label": "总结",
     "url": "txt/cur-f0762e98ea80.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f0762e98ea80.transcript.txt"
    }
   ],
   "title_zh": "668 ：杰克阿奇博尔德关于原生HTML包括",
@@ -1660,6 +1690,27 @@
    }
   ],
   "title_zh": "平台实力被低估"
+ },
+ {
+  "id": "cur-87ed01723e4f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Why We Think",
+  "link": "https://lilianweng.github.io/posts/2025-05-01-thinking/",
+  "date": "2025-05-01",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-87ed01723e4f.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-87ed01723e4f.transcript.txt"
+   }
+  ],
+  "title_zh": "我们认为"
  },
  {
   "id": "cur-14116eca0eb9",
@@ -1821,6 +1872,48 @@
   "title_zh": "构建生成式人工智能应用程序时的常见陷阱"
  },
  {
+  "id": "cur-adfd540de302",
+  "kind": "curated",
+  "type": "article",
+  "source": "Chip Huyen",
+  "title": "Agents",
+  "link": "https://huyenchip.com//2025/01/07/agents.html",
+  "date": "2025-01-07",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-adfd540de302.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-adfd540de302.transcript.txt"
+   }
+  ],
+  "title_zh": "代理"
+ },
+ {
+  "id": "cur-af1a476c6de0",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Reward Hacking in Reinforcement Learning",
+  "link": "https://lilianweng.github.io/posts/2024-11-28-reward-hacking/",
+  "date": "2024-11-28",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-af1a476c6de0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-af1a476c6de0.transcript.txt"
+   }
+  ],
+  "title_zh": "强化学习中的奖励黑客"
+ },
+ {
   "id": "cur-5eb8ac407733",
   "kind": "curated",
   "type": "podcast",
@@ -1839,8 +1932,8 @@
     "url": "txt/cur-5eb8ac407733.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5eb8ac407733.m4a",
-  "title_zh": "创建经过测试、可靠的人工智能应用程序"
+  "title_zh": "创建经过测试、可靠的人工智能应用程序",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5eb8ac407733.m4a"
  },
  {
   "id": "cur-fb8757e9a46d",
@@ -2100,6 +2193,27 @@
   "title_zh": "对LLM的对抗性攻击"
  },
  {
+  "id": "cur-a899677de73f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Josh W. Comeau",
+  "title": "Making Sense of React Server Components",
+  "link": "https://www.joshwcomeau.com/react/server-components/",
+  "date": "2023-09-06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-a899677de73f.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-a899677de73f.transcript.txt"
+   }
+  ],
+  "title_zh": "理解React Server组件"
+ },
+ {
   "id": "cur-9a3b1e72e2f3",
   "kind": "curated",
   "type": "article",
@@ -2218,6 +2332,27 @@
   "title_zh": "前端开发的终结"
  },
  {
+  "id": "cur-1d65254430ae",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lilian Weng",
+  "title": "Prompt Engineering",
+  "link": "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
+  "date": "2023-03-15",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1d65254430ae.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1d65254430ae.transcript.txt"
+   }
+  ],
+  "title_zh": "提示词工程"
+ },
+ {
   "id": "cur-463897804367",
   "kind": "curated",
   "type": "article",
@@ -2300,6 +2435,27 @@
    }
   ],
   "title_zh": "Flexbox交互式指南"
+ },
+ {
+  "id": "cur-1d6ac3abd16f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Josh W. Comeau",
+  "title": "Understanding useMemo and useCallback",
+  "link": "https://www.joshwcomeau.com/react/usememo-and-usecallback/",
+  "date": "2022-08-30",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1d6ac3abd16f.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1d6ac3abd16f.transcript.txt"
+   }
+  ],
+  "title_zh": "了解useMemo和useCallback"
  },
  {
   "id": "cur-8048e0704e5c",
@@ -2563,6 +2719,27 @@
   "title_zh": "对比表示学习"
  },
  {
+  "id": "cur-12fc6359a0fb",
+  "kind": "curated",
+  "type": "article",
+  "source": "Surma",
+  "title": "Is WebAssembly magic performance pixie dust?",
+  "link": "https://surma.dev/things/js-to-asc/",
+  "date": "2021-04-13",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-12fc6359a0fb.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-12fc6359a0fb.transcript.txt"
+   }
+  ],
+  "title_zh": "WebAssembly是魔术表演精灵尘埃吗？"
+ },
+ {
   "id": "cur-cd810a923d14",
   "kind": "curated",
   "type": "article",
@@ -2724,6 +2901,28 @@
    }
   ],
   "title_zh": "再见，干净的代码"
+ },
+ {
+  "id": "cur-6e3c127507ae",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Darknet Diaries",
+  "title": "53: Shadow Brokers",
+  "link": "https://darknetdiaries.com/episode/53",
+  "date": "2019-12-10",
+  "audio_url": "https://www.podtrac.com/pts/redirect.mp3/dovetail.prxu.org/7057/9bbdeb96-b14b-466e-a85b-47aae166357d/darknet-diaries-ep53-shadowbrokers.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-6e3c127507ae.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-6e3c127507ae.transcript.txt"
+   }
+  ],
+  "title_zh": "53 ：影子经纪人",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6e3c127507ae.m4a"
  },
  {
   "id": "cur-5e8f73181152",
