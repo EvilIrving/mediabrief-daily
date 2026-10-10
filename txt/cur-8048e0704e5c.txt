@@ -1,11 +1,9 @@
 https://www.joshwcomeau.com/react/why-react-re-renders/
 
-为什么 React 会重新渲染（Why React Re-Renders） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/react/why-react-re-renders/
-
 Josh W. Comeau 用交互图解建立「何时、为何」重新渲染的心智模型，并澄清两条常见误解，再落到 React.memo、Context 与 DevTools。
 
 核心循环：每次重渲染都由状态变更触发（forceUpdate 已不存在）。状态挂在某个组件实例上，变更时该组件及其全部后代重渲染——不是整棵应用。重渲染的目的是生成新 UI 快照，再与上一张做差分并改 DOM；数据不能向上流，故父级 App 不必因子级 count 变化而重渲。
 
-误解一「任何状态都会让全应用重渲」为假。误解二「props 变了才重渲」也为假：父级重渲时会尝试重渲所有后代，不论是否传入相关 prop。真实世界组件常不纯（如读当前时间、ref 突变），React 宁可多渲也不愿给用户过期 UI。React.memo / PureComponent 用记忆化跳过：props（含 Context 消费）未变则复用旧快照；Decoration 无 props 时即可躲过。Context 对纯组件相当于「隐形 props」——只有真正 useContext 的才会因该值变化而重渲。
+误解一「任何状态都会让全应用重渲」为假。误解二「props 变了才重渲」也为假：父级重渲时会尝试重渲所有后代，不论是否传入相关 prop。真实世界组件常不纯（如读当前时间、ref 突变），React 宁可多渲也不愿给用户过期 UI。React.memo / PureComponent 用记忆化跳过：props（含 Context 消费）未变则复用旧快照；Decoration 无 props 时即可躲过；作者把 memo 比作偷懒的摄影师，同样的指示只拍一张照片。为何不默认全部 memo？开发者常高估重渲开销，props 多、后代少的组件比较 props 可能比直接重渲更慢，所以只对后代多或内部计算重的组件才值得用。Context 对纯组件相当于「隐形 props」——只有真正 useContext 的才会因该值变化而重渲。
 
 排查：Chrome/Firefox 的 React DevTools Profiler 勾选「Record why each component rendered」，录一段操作可看每个组件因何重渲；还可开「Highlight updates」看绿框闪烁范围。进阶陷阱：组件是函数，每次渲染都会新建内部对象/函数，可能让 memo 子组件「看似没变却仍重渲」——续篇讲 useMemo/useCallback。性能提示：开发模式耗时不可信，应用生产包 + Performance 面板；在低端机（如红米 8）体感测试；别为减渲染次数而过度优化，等真卡再动手。

@@ -1,9 +1,7 @@
 https://surma.dev/things/when-workers/
 
-什么时候该用 Web Workers？（When should you be using Web Workers?） ｜ Surma ｜ 文章 ｜ https://surma.dev/things/when-workers/
-
-前 Google Chrome 团队工程师 Surma 的态度很鲜明开场："你应该总是用 Web Workers——而在当前框架格局下几乎不可能。"然后展开细说。
+Surma 开篇就亮出鲜明态度："你应该总是用 Web Workers——而在当前框架格局下几乎不可能。"然后展开细说。
 
 性能鸿沟在加宽：旗舰手机越来越快，但廉价机卡在约 2014 年的芯，二十美元级手机把更多人带上网；Google I/O 2019 Elizabeth Sweeny 与 Barb Palser 发 Nokia 2 让合作伙伴体验"看起来高端、内核像半旧机"的错位；功能机回归后像素更少、每像素算力反而可能更好。最快与最慢的落差变大，中位数在往下走。JavaScript 一长跑就阻塞主线程：布局、绘制、滚动手势都得等。RAIL 给的时间预算（如约 16ms 一帧）绑在人类感知上、不随设备变——你不在最慢机上开发，就几乎无法预测代码在那台机上要跑多久。他说忽视低端机和忽视读屏用户一样，是包容性问题。
 
-缓解办法一是把 JS 切块、用 MessageChannel 等让出主线程（PROXX 里用 async/await 包 task），但切到下一断点的时间仍设备相关。真正出路是把大部分 JS 挪到只跑 JS、没有别的职责的线程——Web Workers：独立 JS 作用域、无共享内存，靠 postMessage 与结构化克隆通信。原生平台一直把主线程当 UI 线程（Android AsyncTask/协程、iOS GCD），web 几乎只在重计算场景用 Worker。劝退点在 DX：消息事件成中心、不能共享任意对象。他写了 Comlink（约 1.2KB gzip）把 postMessage 藏起来，用起来像跨线程共享变量；也提到 workway、workerize，以及与 Paul Lewis 试的 Actor 模型。PROXX 对照实验：全在主线程时 Nokia 2 最差可冻约 6.6 秒；Worker 版 tap 处理只需约 48ms 发消息，活仍要做但 UI 可更新。结论是：当代框架常把 VDOM diff 等非 UI 活也挤在 UI 线程，削弱了 Worker 收益；框架若声称面向全球用户，就有责任帮开发者覆盖性能鸿沟全谱。应质疑为何唯独 web 不把 UI 线程留空当作默认。
+缓解办法一是把 JS 切块、用 MessageChannel 等让出主线程（PROXX 里用 async/await 包 task），但切到下一断点的时间仍设备相关。真正出路是把大部分 JS 挪到只跑 JS、没有别的职责的线程——Web Workers：独立 JS 作用域、无共享内存，靠 postMessage 与结构化克隆通信。原生平台一直把主线程当 UI 线程（Android AsyncTask/协程、iOS GCD），web 几乎只在重计算场景用 Worker。劝退点在 DX：消息事件成中心、不能共享任意对象。他写了 Comlink（约 1.2KB gzip）把 postMessage 藏起来，用起来像跨线程共享变量；也提到 Andrea Giammarchi 的 workway、Jason Miller 的 workerize，以及与 Paul Lewis 在 Chrome Dev Summit 2018 讲过的 Actor 模型。PROXX 对照实验（应 Dion Almaer 之请）：Pixel 3、MacBook 上差别很少察觉，全在主线程时 Nokia 2 最差可冻约 6.6 秒；Worker 版 tap 处理只需约 48ms 发消息，活仍要做（约 6 秒以上），但 UI 线程保持响应并接收中间结果。PROXX 甚至因低端机扛不住而放弃了 VDOM diff，自己操作 DOM。结论是：当代框架常把 VDOM diff 等非 UI 活也挤在 UI 线程，削弱了 Worker 收益；框架若声称面向全球用户，就有责任帮开发者覆盖性能鸿沟全谱。应质疑为何唯独 web 不把 UI 线程留空当作默认。

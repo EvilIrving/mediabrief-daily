@@ -2,60 +2,521 @@ https://www.joshwcomeau.com/css/custom-css-reset/
 
 一套现代 CSS Reset
 
-每当我开始新项目，第一件事就是打磨 CSS 语言的一些毛边。我用一套实用的自定义基线样式来做这件事。
+## 引言
 
-很长一段时间我用的是 Eric Meyer 著名的 CSS Reset。那是扎实的一块 CSS，但如今有点老了：十多年没更新，而这期间发生了太多变化！
+每当我开始一个新项目，第一件事就是把 CSS 这门语言的一些毛边磨平。我用一套实用的自定义基础样式来做这件事。
 
-最近我改用自己的自定义 CSS reset。它收录了我发现的、能同时改善用户体验与 CSS 编写体验的那些小技巧。和其他 CSS reset 一样，它在设计/外观上不带意见。无论你追求何种美学，都可以用在任何项目上。
+很长一段时间里，我用的是 Eric Meyer 那套著名的 CSS Reset。它是一段扎实的 CSS，但到现在已经有点老了：它十多年没有更新过，而这期间变化*太多*了！
 
-本教程带你逛一遍我的自定义 CSS reset。我们会深入每条规则，弄清它做什么、以及你为何可能想用它。
+最近，我一直在用我自己定制的 CSS reset。它包含了我发现的所有小技巧，既能改善用户体验，也能改善编写 CSS 的体验。
 
-CSS Reset
+和其他 CSS reset 一样，它在设计/外观方面不带立场。不管你追求什么样的审美，任何项目都可以用这套 reset。
 
-如下所示：（原文给出完整十条规则的样式表。）
+在这篇教程里，我们将巡览我的自定义 CSS reset。我们会逐条深入每一条规则，你会了解它做了什么、以及你为什么可能想用它！
 
-它相对短，但这小段样式表里塞了很多东西。我们逐条看。
+## CSS Reset
 
-1. 盒模型
+废话不多说，就是它：
 
-小测验：在没有其他 CSS 时，按可见粉红边框量，.box 有多宽？元素 width:100%，父级 200px，那 100% 解析为 200px。但默认它把这 200px 用在内容盒上。内容盒是盒模型里真正装内容的矩形，在边框与内边距之内。于是 padding 再加 40px、border 再加 4px，可见粉红矩形变成 244px，塞进 200px 宽的父级就会溢出。
+```
+/* 1. 使用更直观的盒模型 */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
-幸运的是可以改：*, *::before, *::after { box-sizing: border-box; }。应用后百分比按边框盒解析，粉红盒会是 200px，内部内容盒缩到 156px。我喜欢把它应用到所有元素与伪元素，成为默认行为。与流行看法相反，这对性能并不坏（见 Paul Irish）。在我看来这是必備规则，它让 CSS 好用得多。
+/* 2. 移除默认外边距 */
+*:not(dialog) {
+  margin: 0;
+}
 
-2. 去掉默认 margin
+/* 3. 启用关键字动画 */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
 
-*:not(dialog) { margin: 0; }。若干 HTML 标签自带 margin，好让未样式化的文档可读（比如段落之间有空隙）。自己做项目时，我希望自己控制间距；我认为 margin 是设计关切，不该默认施加。所以几乎从所有元素去掉 margin，期望你在应用样式里按需加回。例外是 <dialog>：它默认 margin:auto，把对话框在视口内居中，我认为这合理，故排除。感谢 Oriol 的提醒！
+body {
+  /* 4. 增大行高 */
+  line-height: 1.5;
+  /* 5. 改善文字渲染 */
+  -webkit-font-smoothing: antialiased;
+}
 
-3. 启用关键字动画
+/* 6. 改善媒体元素默认样式 */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
 
-在 prefers-reduced-motion: no-preference 媒体查询里给 html 设置 interpolate-size: allow-keywords。新属性让我们可以在绝对值（如 0px）与派生值（如 auto、fit-content）之间过渡。撰写本文时（2025 年 3 月）主要在 Chrome/Edge 支持；上面演示用了 Radix Accordion 在 JS 里解决同一问题。放进减少动态偏好查询，有助于避免给运动敏感用户添麻烦。
+/* 7. 表单控件继承字体 */
+input, button, textarea, select {
+  font: inherit;
+}
 
-4. 增大行高
+/* 8. 避免文字溢出 */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
 
-body { line-height: 1.5; }。默认因浏览器而异，多在 1.2 左右。无单位数字是相对字号的比率。行距太近更难读，尤其对阅读障碍者；共识是正文约 1.5 更友好。标题我往往会选更小的 line-height，但具体值取决于应用设计，故不放进 reset。
+/* 9. 改善断行 */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
 
-5. 改善文本渲染
+/*
+  10. 创建根层叠上下文
+*/
+#root, #__next {
+  isolation: isolate;
+}
+```
 
--webkit-font-smoothing: antialiased。过去有人认为这能提高对比度；也有文章反对"修复"字体平滑。令人困惑的是，Chrome 与 Safari 等 macOS 浏览器仍默认用次像素抗锯齿，需要显式设为 antialiased 才能关掉。
+它相对较短，但这份小小的样式表里塞了*很多东西*。我们开始吧！
 
-6. 改善媒体默认
+### 1. 盒模型（box-sizing）
 
-img, picture, video, canvas, svg { display: block; max-width: 100%; }。行内替换元素底部常留空隙；块级可去掉。max-width:100% 防止大图撑破容器。
+突击小测验！以可见的粉色边框来量，在下面这个场景中，假设没有应用其他 CSS，`.box` 元素有多宽？
 
-7. 表单控件继承字体
+我们的 `.box` 元素设置了 `width: 100%`。因为它的父元素宽 200px，这个 100% 会解析为 200px。
 
-input, button, textarea, select { font: inherit; }。默认按钮和输入框不继承父级排版，而有一套怪异自有样式。继承字体让表单看起来像页面的一部分。
+但*这 200px 的宽度应用在哪里呢？*默认情况下，它会把这个尺寸应用到*内容盒*（content box）上。
 
-8. 避免文本溢出
+如果你不熟悉，"内容盒"就是盒模型中真正容纳内容的那个矩形，位于边框和内边距之内：
 
-p 与 h1–h6 { overflow-wrap: break-word; }，长 URL 或不间断字符串时可在任意点断行，减少横向溢出。
+![图 1：一个粉色盒子里有一个绿色盒子。粉色代表边框，绿色代表内边距。里面一个黑色矩形标注为"content-box"](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fcustom-css-reset%2Fcontent-box.png&w=1200&q=75)
 
-9. 改善换行
+`width: 100%` 声明会把 `.box` 的内容盒设为 200px。内边距会再加 40px（每侧 20px）。边框最后再加 4px（每侧 2px）。算下来，可见的粉色矩形宽 244px。
 
-p { text-wrap: pretty; }；标题 { text-wrap: balance; }。pretty 减少段落末行难看短行；balance 让多行标题更匀称。
+当我们试图把一个 244px 的盒子塞进一个 200px 宽的父元素时，它就溢出了：
 
-10. 创建根层叠上下文
+代码演练场
 
-#root, #__next { isolation: isolate; }。给常见 React / Next.js 根节点独立层叠上下文，减少第三方组件疯狂 z-index 时的意外重叠。
+```
+<style>  .parent {    width: 200px;    border: 2px solid black;  }  .box {    width: 100%;    border: 2px solid hotpink;    padding: 20px;  }</style>
+<div class="parent">  <div class="box"></div></div>
+```
 
-（以上即整套 reset 的意图与取舍；完整代码见原文篇首样式表。）
+这种行为很怪，对吧？幸运的是，我们可以通过设置下面这条规则来改变它：
+
+```
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+```
+
+应用这条规则后，百分比会基于*边框盒*（border-box）来解析。在上面的例子里，我们的粉色盒子会是 200px，而里面的内容盒会缩小到 156px（200px - 40px - 4px）。
+
+与其逐个元素应用，我更喜欢把它应用到所有元素（用通配符 `*`）以及所有伪元素（`*::before` 和 `*::after`）上。这样它就成了所有元素的默认行为。与普遍的看法相反，这样做并不会损害性能。
+
+**在我看来，这是一条必备规则。**它让 CSS 用起来*明显*舒服得多。
+
+（页面上还给出了另一种写法：）
+
+```
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+```
+
+### 2. 移除默认外边距
+
+```
+*:not(dialog) {
+  margin: 0;
+}
+```
+
+有几个 HTML 标签默认带有外边距，好让没加样式的 HTML 文档美观易读；例如，每个 `<p>` 都有一点垂直外边距，使段落之间有清晰的视觉间隔。
+
+然而，在给自己的项目加样式时，我想自己控制这些间距！在我看来，外边距是设计层面的事，不应该被默认应用。所以我决定在这套 CSS reset 里移除*几乎*所有元素的外边距，并期望你在应用样式里自行加上需要的外边距。
+
+例外是 `<dialog>`。这个元素默认带有 `margin: auto`，让对话框在视口内居中，我觉得这是个合理的默认值。所以我把它排除在这条规则之外。感谢 Oriol 的提醒！
+
+### 3. 启用关键字动画
+
+```
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+```
+
+假设我们在构建一个可折叠的手风琴组件，大概像这样：
+
+每个子项的 `height` 从 `0px` 变到 `auto`。过去，这不是我们能用 CSS 过渡做动画的东西；我们需要用 JavaScript 测量元素的高度。要做好这件事出奇地棘手；除非你用的是久经考验的库，否则很可能会引入细微的 bug。
+
+**新的 `interpolate-size` 属性解决了这个问题。**启用它之后，我们就能在绝对值（如 `0px`）和推导值（如 `auto`）之间做过渡。它甚至对其他基于尺寸的关键字也有效，比如 `fit-content`！
+
+这意味着我们可以使用标准的 CSS 过渡，而且效果完美。例如：
+
+```
+.accordion {
+  height: 0px;
+  transition: height 300ms;
+  overflow: hidden;
+}
+
+.accordion[data-state="open"] {
+  height: auto;
+}
+```
+
+在我写下这些的 2025 年 3 月，这个属性只有 Chrome/Edge 支持。我上面做的演示用的是 Radix 的 Accordion 组件，它用 JavaScript 解决了这个问题。
+
+不过说实话，除非相关动画对用户体验*至关重要*，我认为开始使用这个特性没问题。回退体验——没有动画——对大多数用例来说完全可以接受。我在博文《评估浏览器支持的框架》（A Framework for Evaluating Browser Support）里更多地分享了这种理念。
+
+在这套 CSS reset 里，我把 `interpolate-size` 声明放在了一个 `prefers-reduced-motion` 媒体查询中。这有助于确保我们不会无意间给对动效敏感的人造成麻烦。
+
+我还要指出：只要有可能，我们仍应优先使用 `transform: scale` 来改变元素尺寸，而不是 `height` 或 `width`。它的性能好得多，能产生更流畅的硬件加速动效。
+
+你可以在我的《关键字过渡代码片段》（Keyword Transitions Snippet）里了解这个新特性的更多内容。
+
+### 4. 增大行高
+
+```
+body {
+  line-height: 1.5;
+}
+```
+
+`line-height` 控制段落中每行文字之间的垂直间距。默认值因浏览器而异，但通常在 1.2 左右。
+
+这个无单位的数字是一个基于字号的比例。它的作用就像 `em` 单位。`line-height` 为 1.2 时，每行会比元素的字号大 20%。
+
+问题在于，当文字行挨得太近时，文字更难阅读，尤其是对有阅读障碍的人。普遍的共识是，对正文来说，1.5 左右的行高更友好。所以我在 CSS reset 中把它设为默认行高。
+
+不过，这个数值在标题和其他大字号元素上往往会产生相当大的行距：
+
+代码演练场
+
+```
+<style>  * {    line-height: 1.5;  }</style>
+<p>  This paragraph has a 1.5x ratio for line-height, and it feels pretty good, right? I think this text is legible and pleasant.</p><h1>  But it's a bit much on headings!</h1>
+```
+
+因此，我倾向于给标题选择更小的 `line-height` 值，但具体数值取决于应用的设计，所以我没有把它放进 CSS reset。
+
+（页面上还给出了另一种做法：）
+
+```
+* {
+  line-height: calc(1em + 0.5rem);
+}
+```
+
+### 5. 改善文字渲染
+
+```
+body {
+  -webkit-font-smoothing: antialiased;
+}
+```
+
+好吧，这一条有点争议。
+
+在 macOS 电脑上，浏览器默认使用"次像素抗锯齿"（subpixel antialiasing）。这是一种利用每个像素内的 R/G/B 光点、旨在让文字更易阅读的技术。
+
+过去，这被视为无障碍方面的胜利，因为它提高了文字对比度。你可能读过一篇很流行的博文《别再"修复"字体平滑了》（Stop "Fixing" Font Smoothing），它*反对*切换到"antialiased"。
+
+问题是：那篇文章写于 2012 年，在高 DPI"视网膜"显示屏时代之前。如今的像素小得多，肉眼根本看不见。
+
+像素 LED 的物理排列也变了。如果你在显微镜下看一台现代显示器，你不会再看到整齐的 R/G/B 线条网格了。
+
+在 2018 年发布的 macOS Mojave 中，**苹果在整个操作系统范围内禁用了次像素抗锯齿**。我猜他们意识到，在现代硬件上它弊大于利。
+
+令人困惑的是，Chrome 和 Safari 等 macOS 浏览器默认仍然使用次像素抗锯齿。我们需要通过把 `-webkit-font-smoothing` 设为 `antialiased` 来显式关闭它。
+
+区别如下：
+
+### 抗锯齿
+
+![图 2：一段"lorem ipsum"文字，笔画较粗](https://www.joshwcomeau.com/images/custom-css-reset/subpixel.png)
+
+### 次像素抗锯齿
+
+![图 3：一段"lorem ipsum"文字，笔画更清晰](https://www.joshwcomeau.com/images/custom-css-reset/antialiased.png)
+
+macOS 是唯一使用次像素抗锯齿的操作系统，所以这条规则对 Windows、Linux 或移动设备没有影响。如果你用的是 macOS 电脑，可以在实时渲染中试一试：
+
+代码演练场
+
+```
+<p>  This paragraph uses the default subpixel antialiasing.</p>
+<p class="antialiased">  This paragraph does not use subpixel antialiasing.</p>
+```
+
+### 6. 改善媒体元素的默认样式
+
+```
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+```
+
+有件怪事：图片被视为"行内"元素。这意味着它们应该被用在段落中间，就像 `<em>` 或 `<strong>` 一样。
+
+这和我大多数时候使用图片的方式不符。通常，我对待图片的方式和对待段落、标题或侧边栏一样：它们是布局元素。
+
+但是，如果我们在布局中使用行内元素，就会发生怪事。如果你曾遇到过一个神秘的 4px 间隙，既不是外边距也不是内边距或边框，那很可能就是浏览器随 `line-height` 添加的"行内魔法空隙"。
+
+通过默认给所有图片设置 `display: block`，我们就避开了一整类古怪的问题。
+
+我还设置了 `max-width: 100%`。这样做是为了防止大图片在被放进宽度不足以容纳它们的容器时溢出。
+
+大多数块级元素会自动伸缩以适应父元素，但像 `<img>` 这样的媒体元素很特殊：它们被称为*替换元素*（replaced elements），不遵循同样的规则。
+
+如果一张图片的"原生"尺寸是 800×600，那么即使我们把它放进一个 500px 宽的父元素里，`<img>` 元素也会是 800px 宽。
+
+这条规则会阻止图片超出容器，在我看来这是合理得多的默认行为。
+
+（页面上关于"故意让图片超出容器"的示例：）
+
+```
+img.oversized {
+  position: absolute;
+  width: 120%;
+  left: -10%;
+  right: -10%;
+}
+```
+
+```
+img.oversized {
+  position: absolute;
+  width: 120%;
+  max-width: revert;
+  left: -10%;
+  right: -10%;
+}
+```
+
+### 7. 表单控件继承字体
+
+```
+input, button, textarea, select {
+  font: inherit;
+}
+```
+
+又一件怪事：默认情况下，按钮和输入框不会从父元素继承排版样式。相反，它们有自己*古怪*的样式。
+
+例如，`<textarea>` 会使用系统默认的等宽字体。文本输入框会使用系统默认的无衬线字体。而且两者都会选一个小得离谱的字号（在 Chrome 中是 13.333px）。
+
+可以想见，在移动设备上阅读 13px 的文字非常困难。当我们聚焦一个字号很小的输入框时，浏览器会自动放大，让文字更容易阅读。
+
+不幸的是，这种体验并不好：
+
+如果我们想避免这种自动缩放行为，输入框的字号至少要有 1rem / 16px。这是解决该问题的一种方式：
+
+```
+input, button, textarea, select {
+  font-size: 1rem;
+}
+```
+
+这修复了自动缩放问题，但只是权宜之计。我们来从根本上解决：表单输入框不应该有自己的排版样式！
+
+```
+input, button, textarea, select {
+  font: inherit;
+}
+```
+
+`font` 是一个很少用的简写属性，它设置一系列与字体相关的属性，比如 `font-size`、`font-weight` 和 `font-family`。把它设为 `inherit`，就是让这些元素匹配周围环境的排版。
+
+只要我们不给正文选一个小得离谱的字号，这就一次性解决了所有问题。🎉
+
+### 8. 避免文字溢出
+
+```
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+```
+
+在 CSS 中，如果一行没有足够空间容纳所有字符，文字会自动换行。
+
+默认情况下，算法会寻找"软换行"机会；也就是算法可以在其处断开的字符。在英语中，唯一的软换行机会是空白和连字符，但这因语言而异。
+
+如果一行没有任何软换行机会，而且放不下，就会导致文字溢出：
+
+代码演练场
+
+```
+<div class="wrapper">  <p>    This is a narrow column of text, with a very long word: antidisestablishmentarianism.  </p>  <p>    The same problem happens with URLs: https://www.somewebsite.com/articles/a1b2c3  </p></div>
+```
+
+这会造成一些恼人的布局问题。在这里，它添加了一个水平滚动条。在其他情况下，它可能导致文字与其他元素重叠，或滑到图片/视频后面。
+
+`overflow-wrap` 属性让我们可以调整换行算法，允许它在找不到软换行机会时使用硬换行：
+
+代码演练场
+
+```
+<style>  p {    overflow-wrap: break-word;  }</style>
+<div class="wrapper">  <p>    This is a narrow column of text, with a very long word: antidisestablishmentarianism.  </p>  <p>    The same problem happens with URLs: https://www.somewebsite.com/articles/a1b2c3  </p></div>
+```
+
+两种方案都不完美，但至少硬换行不会搞乱布局！
+
+感谢 Sophie Alpert 提议了一条类似的规则！她建议把它应用到*所有*元素上，这大概是个好主意，但我本人没有测试过。
+
+你也可以试着加上 `hyphens` 属性：
+
+```
+p {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+```
+
+`hyphens: auto` 会（在支持连字符的语言中）用连字符来标示硬换行。它也会让硬换行变得常见得多。
+
+如果你有非常窄的文字栏，这可能值得一用，但它也可能有点分散注意力。我选择不把它放进 reset，但值得试验一下！
+
+### 9. 改善断行
+
+```
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+```
+
+当一行文字放不下太多单词时，默认行为是把放不下的单词推到下一行。这个过程不断重复，直到没有一行溢出：
+
+这个算法大多数时候都够用，但有时会产生别扭的结果。我最不喜欢的例子是段落以一个 emoji 结尾，而那个 emoji 被推到了单独一行：
+
+![图 4：一个四行文字的段落。最后一"行"只有一个 emoji，看起来孤零零的。](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fcustom-css-reset%2Fpretty-wrap-before.png&w=1080&q=75)
+
+为了解决这个问题，我们可以借助新的 `text-wrap` 属性，选用另一种换行算法！
+
+对于段落，我使用 `pretty` 选项。这个算法会确保最后一行文字至少有两个单词。它还会做一些其他细微调整，改善段落的视觉平衡：
+
+![图 5：同一段落，只是现在最后一行除了 emoji 还有一个普通单词。视觉上平衡得多。](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fcustom-css-reset%2Fpretty-wrap-after.png&w=1080&q=75)
+
+对于标题，我使用 `balance` 选项。它的效果强得多：算法会尽量让每行文字长度大致相同。这往往让两行的标题感觉平衡得多。
+
+这不*总是*我们想要的，但 CSS reset 的意义就在于设定更好的基础样式。我们随时可以为某个特定的标题或段落覆盖这个属性。
+
+`text-wrap` 的浏览器支持因取值而异；在我写下这些的 2024 年 11 月，`pretty` 的支持率为 72%，`balance` 为 87%。这些数字不算*很好*，但其实无所谓；正如我在最近一篇博文中分享的，对于这样的渐进增强，我们不必担心浏览器支持。
+
+### 10. 根层叠上下文
+
+```
+#root, #__next {
+  isolation: isolate;
+}
+```
+
+最后这一条是可选的。一般只有在你使用 React 这类 JS 框架时才需要。
+
+正如我们在《z-index 到底怎么回事？？》（What The Heck, z-index??）中看到的，`isolation` 属性让我们无需设置 `z-index` 就能创建一个新的层叠上下文。
+
+这样做的好处是，能保证某些高优先级元素（模态框、下拉菜单、工具提示）总是显示在应用中其他元素之上。没有奇怪的层叠上下文 bug，也没有 z-index 军备竞赛。
+
+你应该调整选择器以匹配你的框架。我们要选中的是应用被渲染进去的那个顶层元素。例如，create-react-app 使用 `<div id="root">`，所以正确的选择器是 `#root`。
+
+## 最终成品
+
+下面再次给出这套 CSS reset，采用便于复制的精简格式：
+
+```
+/*
+  Josh 的自定义 CSS Reset
+  https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+*:not(dialog) {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+```
+
+欢迎把它复制粘贴到你自己的项目里！它不附带任何限制，发布到公有领域（不过如果你愿意保留指向这篇博文的链接，我会很感激！）。
+
+我选择不把这套 CSS reset 作为 NPM 包发布，因为我觉得*你应该拥有自己的 reset*。把它带进你的项目，随着你学到新东西、发现新技巧，不断调整它。如果你愿意，随时可以做一个自己的 NPM 包，方便在多个项目间复用。只要记住：**这段代码归你所有，它应该和你一起成长。**
+
+感谢 Andy Bell 分享他的《现代 CSS Reset》（Modern CSS Reset）。它帮助我调整了一些想法，也启发了这篇博文！
+
+## 更进一步
+
+我的 CSS reset 很短，只有 12 条 CSS 声明，而我却用了一整篇博文来讨论它们。老实说，我还想说的*多得多*！我们在很多地方只是浅尝辄止。
+
+CSS 是一门看似简单、实则复杂的语言。除非你掀开引擎盖，了解底下*真正*在发生什么，否则这门语言总会让人觉得有点不可预测、不一致。当你的心智模型不完整时，你注定会碰到问题。
+
+但如果你花点时间去了解这门语言*真正*的运作方式，一切都会变得直观、可预测得多。如今我很享受写 CSS！
+
+过去几年，我一直专注于帮助 JS 开发者改变他们与 CSS 的关系。我推出了一门全面的交互式在线课程，叫做 **CSS for JavaScript Developers**。
+
+[![图 6：写有"CSS for JavaScript Developers"的横幅](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fthe-importance-of-learning-css%2Fcss-for-js-banner.png&w=1920&q=75)](https://css-for-js.dev/)
+
+如果你希望自己也是那种喜欢/理解 CSS 的人，这门课就是专门为你做的！
+
+你可以在这里了解更多：
+
+## 更新记录
+
+* 2026 年 3 月——更新了 `line-height` 的解释，正确描述 WCAG 的要求。
+
+* 2025 年 12 月——把 `<dialog>` 标签排除在清除外边距的规则之外。
+
+* 2025 年 3 月——加入 `interpolate-size` 属性，使动画可以过渡到 `auto` / `fit-content` 等。
+
+* 2024 年 10 月——加入第 8 条，用 `text-wrap` 改善断行。
+
+* 2023 年 6 月——移除了 `html` 和 `body` 上的 `height: 100%`。加这条规则原本是为了能在应用中使用基于百分比的高度。但如今动态视口单位已得到良好支持，这个取巧的修补不再需要了。
+
+### 最后更新于
+
+2026 年 6 月 3 日

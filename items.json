@@ -1,551 +1,5 @@
 [
  {
-  "id": "g_Pf6R95SiI",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "余凯口述30年史（视频）：世界不止刀光剑影，是一部人来人往的江湖故事",
-  "link": "https://www.youtube.com/watch?v=g_Pf6R95SiI",
-  "date": "2026-10-11T05:24",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/g_Pf6R95SiI.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/g_Pf6R95SiI.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "RUfeYhsundg",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Let’s Dive into Papers Together 干货！开源一段论文探索之旅",
-  "link": "https://www.youtube.com/watch?v=RUfeYhsundg",
-  "date": "2026-10-11T05:19",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/RUfeYhsundg.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/RUfeYhsundg.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "91fmhAnECVc",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Kimi Founder Yang Zhilin K2, Agentic LLMs, Brains in Vats, and the Beginning of Infinity",
-  "link": "https://www.youtube.com/watch?v=91fmhAnECVc",
-  "date": "2026-10-11T05:18",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/91fmhAnECVc.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/91fmhAnECVc.transcript.txt"
-   }
-  ],
-  "title_zh": "Kimi创始人Yang Zhilin K2 ， Agentic LLM ，大桶中的大脑，以及无限的开始"
- },
- {
-  "id": "gWmyu3x5rXY",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Yin Qi On Chairing StepFun, the Seduction of Intelligence, and a Brutal Long-Horizon Game",
-  "link": "https://www.youtube.com/watch?v=gWmyu3x5rXY",
-  "date": "2026-10-11T05:16",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/gWmyu3x5rXY.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/gWmyu3x5rXY.transcript.txt"
-   }
-  ],
-  "title_zh": "尹启主持StepFun ，智力的诱惑，残酷的长视野游戏"
- },
- {
-  "id": "HvMANU1yc0U",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Li Auto Founder Li Xiang MoE, Liang Wenfeng, VLA, Energy, Memory, Intimacy & Human Intelligence",
-  "link": "https://www.youtube.com/watch?v=HvMANU1yc0U",
-  "date": "2026-10-11T05:11",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/HvMANU1yc0U.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/HvMANU1yc0U.transcript.txt"
-   }
-  ],
-  "title_zh": "Li Auto创始人Li Xiang MoE、Liang Wenfeng、VLA、Energy、Memory、Intimacy & Human Intelligence"
- },
- {
-  "id": "4ZWJj0D_FSA",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "【李想2024唯一深度对谈（纯享版）】张小珺对话李想",
-  "link": "https://www.youtube.com/watch?v=4ZWJj0D_FSA",
-  "date": "2026-10-11T05:11",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/4ZWJj0D_FSA.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/4ZWJj0D_FSA.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "2Qs4MfEzCO0",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "【独家对话奔驰全球CEO康林松】转型之中的139岁奔驰",
-  "link": "https://www.youtube.com/watch?v=2Qs4MfEzCO0",
-  "date": "2026-10-11T05:10",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2Qs4MfEzCO0.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2Qs4MfEzCO0.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "UqMtkgQe-kI",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Manus' Final Interview Before the Acquisition Oh, the Surreal Odyssey of 2025…",
-  "link": "https://www.youtube.com/watch?v=UqMtkgQe-kI",
-  "date": "2026-10-11T05:01",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/UqMtkgQe-kI.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/UqMtkgQe-kI.transcript.txt"
-   }
-  ],
-  "title_zh": "Manus在收购前的最后一次采访哦， 2025年的超现实奥德赛……"
- },
- {
-  "id": "-sowOoOeQz4",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Xiaohu Zhu Realism, the AI Feast and Its Bubbles, and a Fifteen-Degree Shift from Consensus",
-  "link": "https://www.youtube.com/watch?v=-sowOoOeQz4",
-  "date": "2026-10-11T05:01",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/-sowOoOeQz4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/-sowOoOeQz4.transcript.txt"
-   }
-  ],
-  "title_zh": "朱小虎现实主义，人工智能盛宴及其泡沫，与共识的十五度转变"
- },
- {
-  "id": "I-A_yaUXK2E",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "与SGLang聊聊DeepSeek V4",
-  "link": "https://www.youtube.com/watch?v=I-A_yaUXK2E",
-  "date": "2026-10-11T04:48",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/I-A_yaUXK2E.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/I-A_yaUXK2E.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "2nVmKcITs7k",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "social life, success, and sleep",
-  "link": "https://youtu.be/2nVmKcITs7k",
-  "date": "2026-10-11T04:42",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2nVmKcITs7k.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2nVmKcITs7k.transcript.txt"
-   }
-  ],
-  "title_zh": "社交生活、成功和睡眠"
- },
- {
-  "id": "QcdpeFbuy8o",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "The One Thing a Legendary PM Optimized For Felicis, Peter Deng",
-  "link": "https://www.youtube.com/watch?v=QcdpeFbuy8o",
-  "date": "2026-10-11T04:37",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/QcdpeFbuy8o.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/QcdpeFbuy8o.transcript.txt"
-   }
-  ],
-  "title_zh": "传奇PM为Felicis优化的一件事， Peter Deng"
- },
- {
-  "id": "rIwgZWzUKm8",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "A 7-hour marathon interview with Saining Xie World Models, AMI Labs, Yann LeCun, Fei-Fei Li, and 42",
-  "link": "https://www.youtube.com/watch?v=rIwgZWzUKm8",
-  "date": "2026-10-11T04:36",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/rIwgZWzUKm8.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/rIwgZWzUKm8.transcript.txt"
-   }
-  ],
-  "title_zh": "Saining Xie World Models、AMI Labs、Yann LeCun、Fei-Fei Li和42的7小时马拉松访谈"
- },
- {
-  "id": "kBsqirnWTpI",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Anker Steven Yang Consumer Electronics Death & birth, The Third Category, Product Philosophy",
-  "link": "https://www.youtube.com/watch?v=kBsqirnWTpI",
-  "date": "2026-10-11T04:35",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/kBsqirnWTpI.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/kBsqirnWTpI.transcript.txt"
-   }
-  ],
-  "title_zh": "Anker Steven Yang消费电子生死，第三类，产品理念"
- },
- {
-  "id": "chWNkwHHSYg",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "The Human Cost of Convenience Ex-VP @Yahoo Srinija Srinivasan",
-  "link": "https://youtu.be/chWNkwHHSYg",
-  "date": "2026-10-11T04:35",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/chWNkwHHSYg.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/chWNkwHHSYg.transcript.txt"
-   }
-  ],
-  "title_zh": "便利的人力成本前副总裁@ Yahoo Srinija Srinivasan"
- },
- {
-  "id": "E7qB_p1D0Xk",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Zeng Ming The Brutal Truth, Companies That Will Disappear, Why “Excellent” ≠ “Great”",
-  "link": "https://www.youtube.com/watch?v=E7qB_p1D0Xk",
-  "date": "2026-10-11T04:35",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/E7qB_p1D0Xk.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/E7qB_p1D0Xk.transcript.txt"
-   }
-  ],
-  "title_zh": "曾明残酷的真相，将要消失的公司，为什么“优秀” ≠ “伟大”"
- },
- {
-  "id": "c-ZVu-Cr1FQ",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "GALAXEA Founder Gao Jiyang Catfish Effect, Zeng Guofan, Waymo vs. Momenta, and Why Xu Huazhe Left",
-  "link": "https://www.youtube.com/watch?v=c-ZVu-Cr1FQ",
-  "date": "2026-10-11T04:34",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/c-ZVu-Cr1FQ.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/c-ZVu-Cr1FQ.transcript.txt"
-   }
-  ],
-  "title_zh": "GALAXEA创始人高继阳鲶鱼效应、曾国帆、Waymo vs. Momenta ，以及徐华哲为何离开"
- },
- {
-  "id": "zawGTDLtWFY",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "NVIDIA VP Ming-Yu Liu Cosmos 3, World Models, Kung Fu, What Jensen Taught Me",
-  "link": "https://www.youtube.com/watch?v=zawGTDLtWFY",
-  "date": "2026-10-11T04:33",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/zawGTDLtWFY.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/zawGTDLtWFY.transcript.txt"
-   }
-  ],
-  "title_zh": "NVIDIA副总裁Ming-Yu Liu Cosmos 3 ，世界模特，功夫， Jensen教我的东西"
- },
- {
-  "id": "a93FT2340c0",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Oral History of SpaceX’s Journey Space and AI, the Prelude to Human Civilization’s Expansion",
-  "link": "https://www.youtube.com/watch?v=a93FT2340c0",
-  "date": "2026-10-11T04:33",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/a93FT2340c0.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/a93FT2340c0.transcript.txt"
-   }
-  ],
-  "title_zh": "SpaceX太空之旅和人工智能的口述历史，人类文明扩张的前奏"
- },
- {
-  "id": "V9eI-t3TApE",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "Luo Fuli OpenClaw, Agent Frameworks — The AI Paradigm Has Already Changed Dramatically!",
-  "link": "https://www.youtube.com/watch?v=V9eI-t3TApE",
-  "date": "2026-10-11T04:24",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/V9eI-t3TApE.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/V9eI-t3TApE.transcript.txt"
-   }
-  ],
-  "title_zh": "Luo Fuli OpenClaw ， Agent框架— AI范式已经发生了巨大变化！"
- },
- {
-  "id": "4hi93cDfVls",
-  "kind": "summary",
-  "source": "十字路口",
-  "title": "【十字路口】高手怎么用 AI？——停止用 ChatGPT 吧｜Koji 对谈课代表立正（上）【视频播客】",
-  "link": "https://youtu.be/4hi93cDfVls",
-  "date": "2026-10-11T04:18",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/4hi93cDfVls.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/4hi93cDfVls.transcript.txt"
-   }
-  ]
- },
- {
-  "id": "moXqSeVQ1Fk",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "How to Turn ADHD Into a Genius-Level Advantage",
-  "link": "https://www.youtube.com/watch?v=moXqSeVQ1Fk",
-  "date": "2026-10-11T04:16",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/moXqSeVQ1Fk.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/moXqSeVQ1Fk.transcript.txt"
-   }
-  ],
-  "title_zh": "如何将多动症转化为天才级的优势"
- },
- {
-  "id": "YM4If6YHN3s",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "steve jobs most innovative speech",
-  "link": "https://www.youtube.com/watch?v=YM4If6YHN3s",
-  "date": "2026-10-11T04:15",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/YM4If6YHN3s.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/YM4If6YHN3s.transcript.txt"
-   }
-  ],
-  "title_zh": "steve Jobs最具创新性的演讲"
- },
- {
-  "id": "Mph1H5u3yeA",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Why I’m Switching From Python to Docker Agent for AI Agents",
-  "link": "https://youtu.be/Mph1H5u3yeA",
-  "date": "2026-10-11T04:03",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/Mph1H5u3yeA.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/Mph1H5u3yeA.transcript.txt"
-   }
-  ],
-  "title_zh": "为什么要从Python切换到Docker Agent for AI Agents"
- },
- {
-  "id": "qjPH9njnaVU",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Pavel Durov Telegram, Freedom, Censorship, Money, Power & Human Nature Lex Fridman Podcast #482",
-  "link": "https://youtu.be/qjPH9njnaVU",
-  "date": "2026-10-11T04:01",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/qjPH9njnaVU.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/qjPH9njnaVU.transcript.txt"
-   }
-  ],
-  "title_zh": "Pavel Durov电报，自由、审查、金钱、权力和人性Lex Fridman播客# 482"
- },
- {
-  "id": "VAuDJ3yrhDM",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "“I’ve seen how governments suppress freedom” Telegram founder Pavel Durov at Oslo Freedom Forum",
-  "link": "https://youtu.be/VAuDJ3yrhDM",
-  "date": "2026-10-11T04:00",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/VAuDJ3yrhDM.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/VAuDJ3yrhDM.transcript.txt"
-   }
-  ],
-  "title_zh": "“我见过政府如何压制自由” ， Telegram创始人帕维尔·杜罗夫在奥斯陆自由论坛上"
- },
- {
-  "id": "sJ4VJWycX9M",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Alexandr Wang “This is a Once-in-a-Civilization Opportunity”",
-  "link": "https://youtu.be/sJ4VJWycX9M",
-  "date": "2026-10-11T03:58",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/sJ4VJWycX9M.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/sJ4VJWycX9M.transcript.txt"
-   }
-  ],
-  "title_zh": "Alexandr Wang “这是一个千载难逢的机会”"
- },
- {
-  "id": "ifniRXf467I",
-  "kind": "summary",
-  "source": "张小珺",
-  "title": "You Kaichao vLLM, Open-Source Infra, Model Co-Design & Journey from Community to Startup",
-  "link": "https://youtu.be/ifniRXf467I",
-  "date": "2026-10-11T03:58",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/ifniRXf467I.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/ifniRXf467I.transcript.txt"
-   }
-  ],
-  "title_zh": "You Kaichao vLLM ，开源基础设施，模型共同设计和从社区到创业的旅程"
- },
- {
-  "id": "hS9BOev_u5U",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "25 things I learned at 25 (i wish i knew earlier)",
-  "link": "https://youtu.be/hS9BOev_u5U",
-  "date": "2026-10-11T03:04",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/hS9BOev_u5U.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/hS9BOev_u5U.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/hS9BOev_u5U.m4a",
-  "title_zh": "我在25岁时学到的25件事（我希望我能更早知道）"
- },
- {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -566,83 +20,23 @@
   "title_zh": "构建人性|与我们的联合创始人对话"
  },
  {
-  "id": "A63sedG-p5Q",
+  "id": "Mph1H5u3yeA",
   "kind": "summary",
   "source": "YouTube 总结",
-  "title": "Are Agents About to Replace Software Engineering? | Lauren Tan and Roshan Sadanani",
-  "link": "https://youtu.be/A63sedG-p5Q",
-  "date": "2026-10-11T02:30",
+  "title": "Why I’m Switching From Python to Docker Agent for AI Agents",
+  "link": "https://youtu.be/Mph1H5u3yeA",
+  "date": "2026-10-10T16:45+08:00",
   "txt": [
    {
     "label": "总结",
-    "url": "txt/A63sedG-p5Q.txt"
+    "url": "txt/Mph1H5u3yeA.txt"
    },
    {
     "label": "原文",
-    "url": "txt/A63sedG-p5Q.transcript.txt"
+    "url": "txt/Mph1H5u3yeA.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/A63sedG-p5Q.m4a",
-  "title_zh": "代理是否即将取代软件工程？ | Lauren Tan和Roshan Sadanani"
- },
- {
-  "id": "kzcI5F4tGiU",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "How I Use AI to Learn Things",
-  "link": "https://youtu.be/kzcI5F4tGiU",
-  "date": "2026-10-11T02:30",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/kzcI5F4tGiU.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/kzcI5F4tGiU.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kzcI5F4tGiU.m4a",
-  "title_zh": "我如何使用人工智能来学习东西"
- },
- {
-  "id": "xZ5TEaleUdg",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "We Built Grok Bot. Here Are Our 14 Best Bots | Peng Zheng & Lauren Tan",
-  "link": "https://youtu.be/xZ5TEaleUdg",
-  "date": "2026-10-11T02:09",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/xZ5TEaleUdg.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/xZ5TEaleUdg.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/xZ5TEaleUdg.m4a",
-  "title_zh": "我们建立了Grok机器人。以下是我们的14款最佳机器人| Peng Zheng和Lauren Tan"
- },
- {
-  "id": "Cmoh-yR-usA",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Lauren Tan XAi Grokbot",
-  "link": "https://youtu.be/Cmoh-yR-usA",
-  "date": "2026-10-11T02:07",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/Cmoh-yR-usA.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/Cmoh-yR-usA.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Cmoh-yR-usA.m4a"
+  "title_zh": "为什么要从Python切换到Docker Agent for AI Agents"
  },
  {
   "id": "Fhx_qNS2P8g",
@@ -650,7 +44,7 @@
   "source": "YouTube 总结",
   "title": "E255",
   "link": "https://youtu.be/Fhx_qNS2P8g",
-  "date": "2026-10-11T01:43",
+  "date": "2026-10-09T08:00+08:00",
   "txt": [
    {
     "label": "总结",
@@ -664,286 +58,12 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Fhx_qNS2P8g.m4a"
  },
  {
-  "id": "HlpeP8Z1e5o",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "【Q&A】自分らしく生きるには？（如何活出自己？）",
-  "link": "https://youtu.be/HlpeP8Z1e5o",
-  "date": "2026-10-11T01:43",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/HlpeP8Z1e5o.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/HlpeP8Z1e5o.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/HlpeP8Z1e5o.m4a",
-  "title_zh": "[问答]我如何像自己一样生活？ （你如何过你的生活？ ）"
- },
- {
-  "id": "KVD_2SDDCzM",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Why Design Is the New Code | Dylan Field",
-  "link": "https://youtu.be/KVD_2SDDCzM",
-  "date": "2026-10-11T01:43",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/KVD_2SDDCzM.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/KVD_2SDDCzM.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/KVD_2SDDCzM.m4a",
-  "title_zh": "为什么设计是新准则| Dylan Field"
- },
- {
-  "id": "QG1AkRe1oW4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "How Chinese Students Get Into INSANE Focus That Feels ILLEGAL 🇨🇳",
-  "link": "https://youtu.be/QG1AkRe1oW4",
-  "date": "2026-10-11T01:43",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/QG1AkRe1oW4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/QG1AkRe1oW4.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/QG1AkRe1oW4.m4a",
-  "title_zh": "中国学生如何进入感觉非法的疯狂焦点 🇨🇳"
- },
- {
-  "id": "Ty5ZoD37xus",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "The Courage to be Disliked Summary + my honest review",
-  "link": "https://youtu.be/Ty5ZoD37xus",
-  "date": "2026-10-11T01:43",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/Ty5ZoD37xus.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/Ty5ZoD37xus.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Ty5ZoD37xus.m4a",
-  "title_zh": "被讨厌的勇气摘要+我诚实的评价"
- },
- {
-  "id": "dNWkwrqAkcM",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "The Marketing GENIUS: How To Build A Brand That Sells In The New Era Of AI (3 Laws Of Marketing)",
-  "link": "https://youtu.be/dNWkwrqAkcM",
-  "date": "2026-10-11T01:43",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/dNWkwrqAkcM.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/dNWkwrqAkcM.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/dNWkwrqAkcM.m4a",
-  "title_zh": "营销天才：如何打造一个在人工智能新时代销售的品牌（营销三定律）"
- },
- {
-  "id": "lwAG7bBg4n8",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Learn English with a Book | The Wizard of Oz | Deep Work Session | Part 1",
-  "link": "https://youtu.be/lwAG7bBg4n8",
-  "date": "2026-10-11T01:43",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/lwAG7bBg4n8.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/lwAG7bBg4n8.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/lwAG7bBg4n8.m4a",
-  "title_zh": "通过书本学习英语|绿野仙踪|深度工作会议|第1部分"
- },
- {
-  "id": "2108218392188518533",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Matt Pocock 对谈 Lauren Tan：从信任阶梯到\"米其林厨房\"（直播访谈）",
-  "link": "https://x.com/impreiaxbt/status/2108218392188518533",
-  "date": "2026-10-11T01:39",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2108218392188518533.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2108218392188518533.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108218392188518533.m4a"
- },
- {
-  "id": "2108245975882166472",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "斯坦福机器学习课：大语言模型与深度学习基础（课堂录像）",
-  "link": "https://x.com/KomalPr17116591/status/2108245975882166472",
-  "date": "2026-10-11T01:39",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2108245975882166472.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2108245975882166472.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108245975882166472.m4a"
- },
- {
-  "id": "n9xKblqyQ28",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Why The Harness Matters More Than The Model | YC Paper Club",
-  "link": "https://youtu.be/n9xKblqyQ28",
-  "date": "2026-10-11T01:38",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/n9xKblqyQ28.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/n9xKblqyQ28.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/n9xKblqyQ28.m4a",
-  "title_zh": "为什么线束比模型更重要| YC Paper Club"
- },
- {
-  "id": "OmfP9WcGjBE",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "UCLA Film Professor Shows You How to Become an Excellent Storyteller",
-  "link": "https://youtu.be/OmfP9WcGjBE",
-  "date": "2026-10-11T01:37",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/OmfP9WcGjBE.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/OmfP9WcGjBE.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/OmfP9WcGjBE.m4a",
-  "title_zh": "加州大学洛杉矶分校电影教授向您展示如何成为一名优秀的讲故事者"
- },
- {
-  "id": "2095867276042154469",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Lauren Tan：从盯着 agent 到让它自动合并 PR（直播分享）",
-  "link": "https://x.com/huxlab/status/2095867276042154469",
-  "date": "2026-10-11T01:36",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2095867276042154469.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2095867276042154469.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2095867276042154469.m4a"
- },
- {
-  "id": "2108121268004536474",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Alexandr Wang 谈怎样快速进步（片段）",
-  "link": "https://x.com/huxlab/status/2108121268004536474",
-  "date": "2026-10-11T01:36",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2108121268004536474.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2108121268004536474.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108121268004536474.m4a"
- },
- {
-  "id": "2108229753572343993",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Lauren Tan：从盯着 agent 到让它自动合并 PR（直播分享）",
-  "link": "https://x.com/0xRicker/status/2108229753572343993",
-  "date": "2026-10-11T01:36",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2108229753572343993.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2108229753572343993.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108229753572343993.m4a"
- },
- {
-  "id": "2108280456835727812",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "GrokBot 团队展示用 bot 工作和生活的日常",
-  "link": "https://x.com/silentguyy66/status/2108280456835727812",
-  "date": "2026-10-11T01:36",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2108280456835727812.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2108280456835727812.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108280456835727812.m4a"
- },
- {
   "id": "lnLWRJ2p_Mg",
   "kind": "summary",
   "source": "YouTube 总结",
   "title": "The Hottest Product Manager in Tech Right Now 🔥 @OpenAI's Holly Li Talks About Dots | Office Drama",
   "link": "https://youtu.be/lnLWRJ2p_Mg",
-  "date": "2026-10-11T01:36",
+  "date": "2026-10-09T06:00+08:00",
   "txt": [
    {
     "label": "总结",
@@ -958,102 +78,99 @@
   "title_zh": "目前技术领域最热门的产品经理🔥@ OpenAI的Holly Li谈论Dots | Office Drama"
  },
  {
-  "id": "2105046803674792166",
+  "id": "2108280456835727812",
   "kind": "summary",
   "source": "YouTube 总结",
-  "title": "OpenAI DevDay 主题演讲五分钟速览",
-  "link": "https://x.com/chefbrent/status/2105046803674792166",
-  "date": "2026-10-11T01:35",
+  "title": "GrokBot 团队展示用 bot 工作和生活的日常",
+  "link": "https://x.com/silentguyy66/status/2108280456835727812",
+  "date": "2026-10-09T03:36+08:00",
   "txt": [
    {
     "label": "总结",
-    "url": "txt/2105046803674792166.txt"
+    "url": "txt/2108280456835727812.txt"
    },
    {
     "label": "原文",
-    "url": "txt/2105046803674792166.transcript.txt"
+    "url": "txt/2108280456835727812.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105046803674792166.m4a"
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108280456835727812.m4a"
  },
  {
-  "id": "2105099231300354100",
+  "id": "2108245975882166472",
   "kind": "summary",
   "source": "YouTube 总结",
-  "title": "Bill Gates 谈 AI 监管（访谈片段）",
-  "link": "https://x.com/Mjreard/status/2105099231300354100",
-  "date": "2026-10-11T01:35",
+  "title": "斯坦福机器学习课：大语言模型与深度学习基础（课堂录像）",
+  "link": "https://x.com/KomalPr17116591/status/2108245975882166472",
+  "date": "2026-10-09T01:19+08:00",
   "txt": [
    {
     "label": "总结",
-    "url": "txt/2105099231300354100.txt"
+    "url": "txt/2108245975882166472.txt"
    },
    {
     "label": "原文",
-    "url": "txt/2105099231300354100.transcript.txt"
+    "url": "txt/2108245975882166472.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105099231300354100.m4a"
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108245975882166472.m4a"
  },
  {
-  "id": "5RnKD4vekF0",
+  "id": "2108229753572343993",
   "kind": "summary",
   "source": "YouTube 总结",
-  "title": "Wei Li - Become Replaceable and Elevate Others",
-  "link": "https://youtu.be/5RnKD4vekF0",
-  "date": "2026-10-11T01:35",
+  "title": "Lauren Tan：从盯着 agent 到让它自动合并 PR（直播分享）",
+  "link": "https://x.com/0xRicker/status/2108229753572343993",
+  "date": "2026-10-09T00:15+08:00",
   "txt": [
    {
     "label": "总结",
-    "url": "txt/5RnKD4vekF0.txt"
+    "url": "txt/2108229753572343993.txt"
    },
    {
     "label": "原文",
-    "url": "txt/5RnKD4vekF0.transcript.txt"
+    "url": "txt/2108229753572343993.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/5RnKD4vekF0.m4a",
-  "title_zh": "Wei Li -成为可替代者并提升他人"
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108229753572343993.m4a"
  },
  {
-  "id": "JFFmp-oTHdM",
+  "id": "2108218392188518533",
   "kind": "summary",
   "source": "YouTube 总结",
-  "title": "Blackrock's Wei Li: Is there an AI bubble?",
-  "link": "https://youtu.be/JFFmp-oTHdM",
-  "date": "2026-10-11T01:35",
+  "title": "Matt Pocock 对谈 Lauren Tan：从信任阶梯到\"米其林厨房\"（直播访谈）",
+  "link": "https://x.com/impreiaxbt/status/2108218392188518533",
+  "date": "2026-10-08T23:30+08:00",
   "txt": [
    {
     "label": "总结",
-    "url": "txt/JFFmp-oTHdM.txt"
+    "url": "txt/2108218392188518533.txt"
    },
    {
     "label": "原文",
-    "url": "txt/JFFmp-oTHdM.transcript.txt"
+    "url": "txt/2108218392188518533.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/JFFmp-oTHdM.m4a",
-  "title_zh": "Blackrock的Wei Li ：有AI泡沫吗？"
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108218392188518533.m4a"
  },
  {
-  "id": "mnjjM2e5oAI",
+  "id": "2108121268004536474",
   "kind": "summary",
   "source": "YouTube 总结",
-  "title": "WTF is the \"Intersection of Art and Technology\"",
-  "link": "https://youtu.be/mnjjM2e5oAI",
-  "date": "2026-10-11T01:34",
+  "title": "Alexandr Wang 谈怎样快速进步（片段）",
+  "link": "https://x.com/huxlab/status/2108121268004536474",
+  "date": "2026-10-08T17:04+08:00",
   "txt": [
    {
     "label": "总结",
-    "url": "txt/mnjjM2e5oAI.txt"
+    "url": "txt/2108121268004536474.txt"
    },
    {
     "label": "原文",
-    "url": "txt/mnjjM2e5oAI.transcript.txt"
+    "url": "txt/2108121268004536474.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/mnjjM2e5oAI.m4a",
-  "title_zh": "WTF是“艺术与技术的交集”"
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108121268004536474.m4a"
  },
  {
   "id": "cur-995ffa137fb3",
@@ -1096,6 +213,26 @@
    }
   ],
   "title_zh": "当Python的GC遇到多重处理时会发生什么- Python和气流以及相关的疑难解答第2部分"
+ },
+ {
+  "id": "KVD_2SDDCzM",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Why Design Is the New Code | Dylan Field",
+  "link": "https://youtu.be/KVD_2SDDCzM",
+  "date": "2026-10-07T06:36+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/KVD_2SDDCzM.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/KVD_2SDDCzM.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/KVD_2SDDCzM.m4a",
+  "title_zh": "为什么设计是新准则| Dylan Field"
  },
  {
   "id": "cur-ad1aae2024e5",
@@ -1161,6 +298,25 @@
   "title_zh": "什么是代码模式"
  },
  {
+  "id": "chWNkwHHSYg",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "The Human Cost of Convenience Ex-VP @Yahoo Srinija Srinivasan",
+  "link": "https://youtu.be/chWNkwHHSYg",
+  "date": "2026-10-05T23:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/chWNkwHHSYg.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/chWNkwHHSYg.transcript.txt"
+   }
+  ],
+  "title_zh": "便利的人力成本前副总裁@ Yahoo Srinija Srinivasan"
+ },
+ {
   "id": "cur-5a3f1f4a82c5",
   "kind": "curated",
   "type": "article",
@@ -1203,6 +359,44 @@
   "title_zh": "通过创建数据分析代理来设计我学到的上下文"
  },
  {
+  "id": "2105099231300354100",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Bill Gates 谈 AI 监管（访谈片段）",
+  "link": "https://x.com/Mjreard/status/2105099231300354100",
+  "date": "2026-09-30T08:55+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2105099231300354100.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2105099231300354100.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105099231300354100.m4a"
+ },
+ {
+  "id": "2105046803674792166",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "OpenAI DevDay 主题演讲五分钟速览",
+  "link": "https://x.com/chefbrent/status/2105046803674792166",
+  "date": "2026-09-30T05:27+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2105046803674792166.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2105046803674792166.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105046803674792166.m4a"
+ },
+ {
   "id": "cur-aadfd31a222b",
   "kind": "curated",
   "type": "podcast",
@@ -1223,6 +417,26 @@
   ],
   "title_zh": "734 ：与Ben Schwarz的网络表演",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aadfd31a222b.m4a"
+ },
+ {
+  "id": "xZ5TEaleUdg",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "We Built Grok Bot. Here Are Our 14 Best Bots | Peng Zheng & Lauren Tan",
+  "link": "https://youtu.be/xZ5TEaleUdg",
+  "date": "2026-09-27T21:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/xZ5TEaleUdg.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/xZ5TEaleUdg.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/xZ5TEaleUdg.m4a",
+  "title_zh": "我们建立了Grok机器人。以下是我们的14款最佳机器人| Peng Zheng和Lauren Tan"
  },
  {
   "id": "cur-4b83598dbd94",
@@ -1246,6 +460,45 @@
   "title_zh": "通过提供更多CSS来提高网站性能"
  },
  {
+  "id": "QcdpeFbuy8o",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "The One Thing a Legendary PM Optimized For Felicis, Peter Deng",
+  "link": "https://www.youtube.com/watch?v=QcdpeFbuy8o",
+  "date": "2026-09-23T21:30+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/QcdpeFbuy8o.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/QcdpeFbuy8o.transcript.txt"
+   }
+  ],
+  "title_zh": "传奇PM为Felicis优化的一件事， Peter Deng"
+ },
+ {
+  "id": "dNWkwrqAkcM",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "The Marketing GENIUS: How To Build A Brand That Sells In The New Era Of AI (3 Laws Of Marketing)",
+  "link": "https://youtu.be/dNWkwrqAkcM",
+  "date": "2026-09-21T20:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/dNWkwrqAkcM.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/dNWkwrqAkcM.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/dNWkwrqAkcM.m4a",
+  "title_zh": "营销天才：如何打造一个在人工智能新时代销售的品牌（营销三定律）"
+ },
+ {
   "id": "cur-fccabe30e41d",
   "kind": "curated",
   "type": "article",
@@ -1265,6 +518,84 @@
    }
   ],
   "title_zh": "布朗菲尔德代理工程"
+ },
+ {
+  "id": "HlpeP8Z1e5o",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "【Q&A】自分らしく生きるには？（如何活出自己？）",
+  "link": "https://youtu.be/HlpeP8Z1e5o",
+  "date": "2026-09-13T19:06+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/HlpeP8Z1e5o.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/HlpeP8Z1e5o.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/HlpeP8Z1e5o.m4a",
+  "title_zh": "[问答]我如何像自己一样生活？ （你如何过你的生活？ ）"
+ },
+ {
+  "id": "n9xKblqyQ28",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Why The Harness Matters More Than The Model | YC Paper Club",
+  "link": "https://youtu.be/n9xKblqyQ28",
+  "date": "2026-09-07T22:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/n9xKblqyQ28.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/n9xKblqyQ28.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/n9xKblqyQ28.m4a",
+  "title_zh": "为什么线束比模型更重要| YC Paper Club"
+ },
+ {
+  "id": "2095867276042154469",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Lauren Tan：从盯着 agent 到让它自动合并 PR（直播分享）",
+  "link": "https://x.com/huxlab/status/2095867276042154469",
+  "date": "2026-09-04T21:31+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2095867276042154469.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2095867276042154469.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2095867276042154469.m4a"
+ },
+ {
+  "id": "E7qB_p1D0Xk",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Zeng Ming The Brutal Truth, Companies That Will Disappear, Why “Excellent” ≠ “Great”",
+  "link": "https://www.youtube.com/watch?v=E7qB_p1D0Xk",
+  "date": "2026-09-03T08:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/E7qB_p1D0Xk.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/E7qB_p1D0Xk.transcript.txt"
+   }
+  ],
+  "title_zh": "曾明残酷的真相，将要消失的公司，为什么“优秀” ≠ “伟大”"
  },
  {
   "id": "cur-0ae88a845983",
@@ -1307,6 +638,45 @@
    }
   ],
   "title_zh": "最好的深色模式切换可能是无"
+ },
+ {
+  "id": "JFFmp-oTHdM",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Blackrock's Wei Li: Is there an AI bubble?",
+  "link": "https://youtu.be/JFFmp-oTHdM",
+  "date": "2026-09-01T11:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/JFFmp-oTHdM.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/JFFmp-oTHdM.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/JFFmp-oTHdM.m4a",
+  "title_zh": "Blackrock的Wei Li ：有AI泡沫吗？"
+ },
+ {
+  "id": "Cmoh-yR-usA",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Lauren Tan XAi Grokbot",
+  "link": "https://youtu.be/Cmoh-yR-usA",
+  "date": "2026-08-26T07:46+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/Cmoh-yR-usA.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/Cmoh-yR-usA.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Cmoh-yR-usA.m4a"
  },
  {
   "id": "cur-4cf9de1ed04a",
@@ -1414,6 +784,46 @@
   "title_zh": "什么是推理"
  },
  {
+  "id": "kzcI5F4tGiU",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "How I Use AI to Learn Things",
+  "link": "https://youtu.be/kzcI5F4tGiU",
+  "date": "2026-08-14T22:18+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/kzcI5F4tGiU.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/kzcI5F4tGiU.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kzcI5F4tGiU.m4a",
+  "title_zh": "我如何使用人工智能来学习东西"
+ },
+ {
+  "id": "A63sedG-p5Q",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Are Agents About to Replace Software Engineering? | Lauren Tan and Roshan Sadanani",
+  "link": "https://youtu.be/A63sedG-p5Q",
+  "date": "2026-08-14T06:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/A63sedG-p5Q.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/A63sedG-p5Q.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/A63sedG-p5Q.m4a",
+  "title_zh": "代理是否即将取代软件工程？ | Lauren Tan和Roshan Sadanani"
+ },
+ {
   "id": "cur-c4e116577a69",
   "kind": "curated",
   "type": "article",
@@ -1433,6 +843,25 @@
    }
   ],
   "title_zh": "实用回路工程"
+ },
+ {
+  "id": "zawGTDLtWFY",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "NVIDIA VP Ming-Yu Liu Cosmos 3, World Models, Kung Fu, What Jensen Taught Me",
+  "link": "https://www.youtube.com/watch?v=zawGTDLtWFY",
+  "date": "2026-08-13T08:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/zawGTDLtWFY.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/zawGTDLtWFY.transcript.txt"
+   }
+  ],
+  "title_zh": "NVIDIA副总裁Ming-Yu Liu Cosmos 3 ，世界模特，功夫， Jensen教我的东西"
  },
  {
   "id": "cur-0d3bab75e5d5",
@@ -1477,6 +906,46 @@
   "title_zh": "创建您自己的vLLM插件第2部分-使用AI原生实现从模型转换到部署的自动化"
  },
  {
+  "id": "lwAG7bBg4n8",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Learn English with a Book | The Wizard of Oz | Deep Work Session | Part 1",
+  "link": "https://youtu.be/lwAG7bBg4n8",
+  "date": "2026-08-06T23:20+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/lwAG7bBg4n8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/lwAG7bBg4n8.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/lwAG7bBg4n8.m4a",
+  "title_zh": "通过书本学习英语|绿野仙踪|深度工作会议|第1部分"
+ },
+ {
+  "id": "mnjjM2e5oAI",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "WTF is the \"Intersection of Art and Technology\"",
+  "link": "https://youtu.be/mnjjM2e5oAI",
+  "date": "2026-07-31T03:39+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/mnjjM2e5oAI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/mnjjM2e5oAI.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/mnjjM2e5oAI.m4a",
+  "title_zh": "WTF是“艺术与技术的交集”"
+ },
+ {
   "id": "cur-1130e94af268",
   "kind": "curated",
   "type": "article",
@@ -1498,6 +967,25 @@
   "title_zh": "导体开发人员"
  },
  {
+  "id": "sJ4VJWycX9M",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Alexandr Wang “This is a Once-in-a-Civilization Opportunity”",
+  "link": "https://youtu.be/sJ4VJWycX9M",
+  "date": "2026-07-30T03:37+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/sJ4VJWycX9M.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/sJ4VJWycX9M.transcript.txt"
+   }
+  ],
+  "title_zh": "Alexandr Wang “这是一个千载难逢的机会”"
+ },
+ {
   "id": "cur-dafe9a2bbb83",
   "kind": "curated",
   "type": "article",
@@ -1517,6 +1005,25 @@
    }
   ],
   "title_zh": "重构的经济效益"
+ },
+ {
+  "id": "ifniRXf467I",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "You Kaichao vLLM, Open-Source Infra, Model Co-Design & Journey from Community to Startup",
+  "link": "https://youtu.be/ifniRXf467I",
+  "date": "2026-07-29T07:03+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/ifniRXf467I.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/ifniRXf467I.transcript.txt"
+   }
+  ],
+  "title_zh": "You Kaichao vLLM ，开源基础设施，模型共同设计和从社区到创业的旅程"
  },
  {
   "id": "cur-39fb82bc57e5",
@@ -1559,6 +1066,26 @@
    }
   ],
   "title_zh": "软件工厂，光明与黑暗"
+ },
+ {
+  "id": "QG1AkRe1oW4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "How Chinese Students Get Into INSANE Focus That Feels ILLEGAL 🇨🇳",
+  "link": "https://youtu.be/QG1AkRe1oW4",
+  "date": "2026-07-15T05:38+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/QG1AkRe1oW4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/QG1AkRe1oW4.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/QG1AkRe1oW4.m4a",
+  "title_zh": "中国学生如何进入感觉非法的疯狂焦点 🇨🇳"
  },
  {
   "id": "cur-7e0346368a85",
@@ -1710,6 +1237,99 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-924729b6849e.m4a"
  },
  {
+  "id": "a93FT2340c0",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Oral History of SpaceX’s Journey Space and AI, the Prelude to Human Civilization’s Expansion",
+  "link": "https://www.youtube.com/watch?v=a93FT2340c0",
+  "date": "2026-06-13T11:06+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/a93FT2340c0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/a93FT2340c0.transcript.txt"
+   }
+  ],
+  "title_zh": "SpaceX太空之旅和人工智能的口述历史，人类文明扩张的前奏"
+ },
+ {
+  "id": "4hi93cDfVls",
+  "kind": "summary",
+  "source": "十字路口",
+  "title": "【十字路口】高手怎么用 AI？——停止用 ChatGPT 吧｜Koji 对谈课代表立正（上）【视频播客】",
+  "link": "https://youtu.be/4hi93cDfVls",
+  "date": "2026-06-11T00:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/4hi93cDfVls.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/4hi93cDfVls.transcript.txt"
+   }
+  ]
+ },
+ {
+  "id": "kBsqirnWTpI",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Anker Steven Yang Consumer Electronics Death & birth, The Third Category, Product Philosophy",
+  "link": "https://www.youtube.com/watch?v=kBsqirnWTpI",
+  "date": "2026-06-08T08:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/kBsqirnWTpI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/kBsqirnWTpI.transcript.txt"
+   }
+  ],
+  "title_zh": "Anker Steven Yang消费电子生死，第三类，产品理念"
+ },
+ {
+  "id": "VAuDJ3yrhDM",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "“I’ve seen how governments suppress freedom” Telegram founder Pavel Durov at Oslo Freedom Forum",
+  "link": "https://youtu.be/VAuDJ3yrhDM",
+  "date": "2026-06-02T18:18+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/VAuDJ3yrhDM.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/VAuDJ3yrhDM.transcript.txt"
+   }
+  ],
+  "title_zh": "“我见过政府如何压制自由” ， Telegram创始人帕维尔·杜罗夫在奥斯陆自由论坛上"
+ },
+ {
+  "id": "I-A_yaUXK2E",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "与SGLang聊聊DeepSeek V4",
+  "link": "https://www.youtube.com/watch?v=I-A_yaUXK2E",
+  "date": "2026-05-01T15:51+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/I-A_yaUXK2E.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/I-A_yaUXK2E.transcript.txt"
+   }
+  ]
+ },
+ {
   "id": "cur-2a8737247b26",
   "kind": "curated",
   "type": "article",
@@ -1751,6 +1371,25 @@
   ],
   "title_zh": "712 ：斯科特杰尔懒洋洋地上网",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f00d750dd07e.m4a"
+ },
+ {
+  "id": "V9eI-t3TApE",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Luo Fuli OpenClaw, Agent Frameworks — The AI Paradigm Has Already Changed Dramatically!",
+  "link": "https://www.youtube.com/watch?v=V9eI-t3TApE",
+  "date": "2026-04-24T11:30+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/V9eI-t3TApE.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/V9eI-t3TApE.transcript.txt"
+   }
+  ],
+  "title_zh": "Luo Fuli OpenClaw ， Agent框架— AI范式已经发生了巨大变化！"
  },
  {
   "id": "cur-cad5bdded1ef",
@@ -1816,6 +1455,26 @@
   "title_zh": "编码代理的组成部分"
  },
  {
+  "id": "OmfP9WcGjBE",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "UCLA Film Professor Shows You How to Become an Excellent Storyteller",
+  "link": "https://youtu.be/OmfP9WcGjBE",
+  "date": "2026-04-03T23:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/OmfP9WcGjBE.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/OmfP9WcGjBE.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/OmfP9WcGjBE.m4a",
+  "title_zh": "加州大学洛杉矶分校电影教授向您展示如何成为一名优秀的讲故事者"
+ },
+ {
   "id": "cur-1ea34ba04923",
   "kind": "curated",
   "type": "article",
@@ -1835,6 +1494,25 @@
    }
   ],
   "title_zh": "现代LLM中的注意力变体视觉指南"
+ },
+ {
+  "id": "rIwgZWzUKm8",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "A 7-hour marathon interview with Saining Xie World Models, AMI Labs, Yann LeCun, Fei-Fei Li, and 42",
+  "link": "https://www.youtube.com/watch?v=rIwgZWzUKm8",
+  "date": "2026-03-16T11:30+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/rIwgZWzUKm8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/rIwgZWzUKm8.transcript.txt"
+   }
+  ],
+  "title_zh": "Saining Xie World Models、AMI Labs、Yann LeCun、Fei-Fei Li和42的7小时马拉松访谈"
  },
  {
   "id": "cur-a4ec18135cb6",
@@ -1858,6 +1536,47 @@
   "title_zh": "幕后花絮： GitHub Agentic Workflows的安全架构"
  },
  {
+  "id": "cur-13a6bc139eee",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Radio",
+  "title": "SE Radio 710: Marc Brooker on Spec-Driven AI Dev",
+  "link": "https://se-radio.net/2026/03/se-radio-710-marc-brooker-on-spec-driven-ai-dev/",
+  "date": "2026-03-04",
+  "audio_url": "https://traffic.libsyn.com/secure/seradio/710-marc-brooker-spec-driven-ai-dev.mp3?dest-id=23379",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-13a6bc139eee.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-13a6bc139eee.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-13a6bc139eee.m4a",
+  "title_zh": "SE Radio 710 ： Marc Brooker谈规范驱动的AI开发"
+ },
+ {
+  "id": "moXqSeVQ1Fk",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "How to Turn ADHD Into a Genius-Level Advantage",
+  "link": "https://www.youtube.com/watch?v=moXqSeVQ1Fk",
+  "date": "2026-02-27T07:01+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/moXqSeVQ1Fk.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/moXqSeVQ1Fk.transcript.txt"
+   }
+  ],
+  "title_zh": "如何将多动症转化为天才级的优势"
+ },
+ {
   "id": "cur-d1eea80cb6dc",
   "kind": "curated",
   "type": "article",
@@ -1877,6 +1596,25 @@
    }
   ],
   "title_zh": "代理架构中的安全边界"
+ },
+ {
+  "id": "c-ZVu-Cr1FQ",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "GALAXEA Founder Gao Jiyang Catfish Effect, Zeng Guofan, Waymo vs. Momenta, and Why Xu Huazhe Left",
+  "link": "https://www.youtube.com/watch?v=c-ZVu-Cr1FQ",
+  "date": "2026-02-13T18:01+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/c-ZVu-Cr1FQ.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/c-ZVu-Cr1FQ.transcript.txt"
+   }
+  ],
+  "title_zh": "GALAXEA创始人高继阳鲶鱼效应、曾国帆、Waymo vs. Momenta ，以及徐华哲为何离开"
  },
  {
   "id": "cur-989e332f832c",
@@ -1900,6 +1638,64 @@
   "title_zh": "线束工程：在代理优先的世界中充分利用Codex"
  },
  {
+  "id": "gWmyu3x5rXY",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Yin Qi On Chairing StepFun, the Seduction of Intelligence, and a Brutal Long-Horizon Game",
+  "link": "https://www.youtube.com/watch?v=gWmyu3x5rXY",
+  "date": "2026-01-27T23:10+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/gWmyu3x5rXY.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/gWmyu3x5rXY.transcript.txt"
+   }
+  ],
+  "title_zh": "尹启主持StepFun ，智力的诱惑，残酷的长视野游戏"
+ },
+ {
+  "id": "Ty5ZoD37xus",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "The Courage to be Disliked Summary + my honest review",
+  "link": "https://youtu.be/Ty5ZoD37xus",
+  "date": "2026-01-02T10:08+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/Ty5ZoD37xus.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/Ty5ZoD37xus.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Ty5ZoD37xus.m4a",
+  "title_zh": "被讨厌的勇气摘要+我诚实的评价"
+ },
+ {
+  "id": "UqMtkgQe-kI",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Manus' Final Interview Before the Acquisition Oh, the Surreal Odyssey of 2025…",
+  "link": "https://www.youtube.com/watch?v=UqMtkgQe-kI",
+  "date": "2025-12-30T22:08+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/UqMtkgQe-kI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/UqMtkgQe-kI.transcript.txt"
+   }
+  ],
+  "title_zh": "Manus在收购前的最后一次采访哦， 2025年的超现实奥德赛……"
+ },
+ {
   "id": "cur-b1581a551bbc",
   "kind": "curated",
   "type": "article",
@@ -1921,6 +1717,26 @@
   "title_zh": "法学硕士2025年现状：进展、问题和预测"
  },
  {
+  "id": "hS9BOev_u5U",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "25 things I learned at 25 (i wish i knew earlier)",
+  "link": "https://youtu.be/hS9BOev_u5U",
+  "date": "2025-12-27T21:03+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/hS9BOev_u5U.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/hS9BOev_u5U.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/hS9BOev_u5U.m4a",
+  "title_zh": "我在25岁时学到的25件事（我希望我能更早知道）"
+ },
+ {
   "id": "cur-a5f012fc82c1",
   "kind": "curated",
   "type": "article",
@@ -1940,6 +1756,25 @@
    }
   ],
   "title_zh": "2025年法学硕士年度回顾"
+ },
+ {
+  "id": "-sowOoOeQz4",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Xiaohu Zhu Realism, the AI Feast and Its Bubbles, and a Fifteen-Degree Shift from Consensus",
+  "link": "https://www.youtube.com/watch?v=-sowOoOeQz4",
+  "date": "2025-12-10T02:06+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/-sowOoOeQz4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/-sowOoOeQz4.transcript.txt"
+   }
+  ],
+  "title_zh": "朱小虎现实主义，人工智能盛宴及其泡沫，与共识的十五度转变"
  },
  {
   "id": "cur-cce64b2db70f",
@@ -1984,6 +1819,25 @@
   "title_zh": "可核查性"
  },
  {
+  "id": "HvMANU1yc0U",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Li Auto Founder Li Xiang MoE, Liang Wenfeng, VLA, Energy, Memory, Intimacy & Human Intelligence",
+  "link": "https://www.youtube.com/watch?v=HvMANU1yc0U",
+  "date": "2025-10-31T19:20+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/HvMANU1yc0U.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/HvMANU1yc0U.transcript.txt"
+   }
+  ],
+  "title_zh": "Li Auto创始人Li Xiang MoE、Liang Wenfeng、VLA、Energy、Memory、Intimacy & Human Intelligence"
+ },
+ {
   "id": "cur-e870210a6260",
   "kind": "curated",
   "type": "article",
@@ -2003,6 +1857,24 @@
    }
   ],
   "title_zh": "紫外线是十年来Python生态系统中最好的事情"
+ },
+ {
+  "id": "RUfeYhsundg",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Let’s Dive into Papers Together 干货！开源一段论文探索之旅",
+  "link": "https://www.youtube.com/watch?v=RUfeYhsundg",
+  "date": "2025-10-28T13:42+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/RUfeYhsundg.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/RUfeYhsundg.transcript.txt"
+   }
+  ]
  },
  {
   "id": "cur-7bf82b8dcead",
@@ -2107,8 +1979,27 @@
     "url": "txt/cur-c1256801dc58.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c1256801dc58.m4a",
-  "title_zh": "被围困的npm （该怎么办） （朋友）"
+  "title_zh": "被围困的npm （该怎么办） （朋友）",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c1256801dc58.m4a"
+ },
+ {
+  "id": "qjPH9njnaVU",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Pavel Durov Telegram, Freedom, Censorship, Money, Power & Human Nature Lex Fridman Podcast #482",
+  "link": "https://youtu.be/qjPH9njnaVU",
+  "date": "2025-10-01T03:27+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/qjPH9njnaVU.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/qjPH9njnaVU.transcript.txt"
+   }
+  ],
+  "title_zh": "Pavel Durov电报，自由、审查、金钱、权力和人性Lex Fridman播客# 482"
  },
  {
   "id": "cur-d006fe49e0b0",
@@ -2196,6 +2087,25 @@
   "title_zh": "认知： Devin在细节中"
  },
  {
+  "id": "91fmhAnECVc",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "Kimi Founder Yang Zhilin K2, Agentic LLMs, Brains in Vats, and the Beginning of Infinity",
+  "link": "https://www.youtube.com/watch?v=91fmhAnECVc",
+  "date": "2025-08-30T20:57+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/91fmhAnECVc.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/91fmhAnECVc.transcript.txt"
+   }
+  ],
+  "title_zh": "Kimi创始人Yang Zhilin K2 ， Agentic LLM ，大桶中的大脑，以及无限的开始"
+ },
+ {
   "id": "cur-6d3011a0c9c8",
   "kind": "curated",
   "type": "article",
@@ -2279,6 +2189,24 @@
    }
   ],
   "title_zh": "大型法学硕士体系结构比较"
+ },
+ {
+  "id": "g_Pf6R95SiI",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "余凯口述30年史（视频）：世界不止刀光剑影，是一部人来人往的江湖故事",
+  "link": "https://www.youtube.com/watch?v=g_Pf6R95SiI",
+  "date": "2025-07-12T01:52+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/g_Pf6R95SiI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/g_Pf6R95SiI.transcript.txt"
+   }
+  ]
  },
  {
   "id": "cur-c9d8040bdb31",
@@ -2449,6 +2377,24 @@
    }
   ],
   "title_zh": "我们认为"
+ },
+ {
+  "id": "2Qs4MfEzCO0",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "【独家对话奔驰全球CEO康林松】转型之中的139岁奔驰",
+  "link": "https://www.youtube.com/watch?v=2Qs4MfEzCO0",
+  "date": "2025-04-26T10:59+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2Qs4MfEzCO0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2Qs4MfEzCO0.transcript.txt"
+   }
+  ]
  },
  {
   "id": "cur-14116eca0eb9",
@@ -2639,6 +2585,25 @@
   "title_zh": "了解推理LLM"
  },
  {
+  "id": "2nVmKcITs7k",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "social life, success, and sleep",
+  "link": "https://youtu.be/2nVmKcITs7k",
+  "date": "2025-01-23T13:55+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2nVmKcITs7k.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2nVmKcITs7k.transcript.txt"
+   }
+  ],
+  "title_zh": "社交生活、成功和睡眠"
+ },
+ {
   "id": "cur-8b57107d8c76",
   "kind": "curated",
   "type": "article",
@@ -2679,6 +2644,24 @@
    }
   ],
   "title_zh": "代理"
+ },
+ {
+  "id": "4ZWJj0D_FSA",
+  "kind": "summary",
+  "source": "张小珺",
+  "title": "【李想2024唯一深度对谈（纯享版）】张小珺对话李想",
+  "link": "https://www.youtube.com/watch?v=4ZWJj0D_FSA",
+  "date": "2024-12-29T20:19+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/4ZWJj0D_FSA.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/4ZWJj0D_FSA.transcript.txt"
+   }
+  ]
  },
  {
   "id": "cur-3ced6251d95e",
@@ -2869,8 +2852,8 @@
     "url": "txt/cur-1198e993d447.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1198e993d447.m4a",
-  "title_zh": "这一切都始于Postgres （面试）"
+  "title_zh": "这一切都始于Postgres （面试）",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1198e993d447.m4a"
  },
  {
   "id": "cur-56a43a86fa41",
@@ -3081,8 +3064,8 @@
     "url": "txt/cur-0435aec0d892.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0435aec0d892.m4a",
-  "title_zh": "SE Radio 596 ：马克西姆·法蒂耶夫（ Maxim Fateev ）关于与时间的持久执行"
+  "title_zh": "SE Radio 596 ：马克西姆·法蒂耶夫（ Maxim Fateev ）关于与时间的持久执行",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0435aec0d892.m4a"
  },
  {
   "id": "cur-149072c1ad65",
@@ -3147,6 +3130,26 @@
    }
   ],
   "title_zh": "对LLM的对抗性攻击"
+ },
+ {
+  "id": "5RnKD4vekF0",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Wei Li - Become Replaceable and Elevate Others",
+  "link": "https://youtu.be/5RnKD4vekF0",
+  "date": "2023-10-03T22:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/5RnKD4vekF0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/5RnKD4vekF0.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/5RnKD4vekF0.m4a",
+  "title_zh": "Wei Li -成为可替代者并提升他人"
  },
  {
   "id": "cur-a899677de73f",
@@ -3357,8 +3360,8 @@
     "url": "txt/cur-afb42041661b.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-afb42041661b.m4a",
-  "title_zh": "Web开发失去的十年"
+  "title_zh": "Web开发失去的十年",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-afb42041661b.m4a"
  },
  {
   "id": "cur-463897804367",
@@ -4519,6 +4522,25 @@
    }
   ],
   "title_zh": "Firefox如何再次变快"
+ },
+ {
+  "id": "YM4If6YHN3s",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "steve jobs most innovative speech",
+  "link": "https://www.youtube.com/watch?v=YM4If6YHN3s",
+  "date": "2015-05-07T20:17+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/YM4If6YHN3s.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/YM4If6YHN3s.transcript.txt"
+   }
+  ],
+  "title_zh": "steve Jobs最具创新性的演讲"
  },
  {
   "id": "cur-4e8227e28349",

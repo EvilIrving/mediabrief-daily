@@ -1,7 +1,9 @@
 https://www.joshwcomeau.com/css/custom-css-reset/
 
-一套现代 CSS Reset（A Modern CSS Reset） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/custom-css-reset/
-
 Josh W. Comeau 讲解自己那套短小的自定义 CSS reset：不碰外观审美，只磨平语言毛边，替代他用了很久、已十多年未更新的 Eric Meyer reset。十条规则逐条说明理由。
 
 1）全体与伪元素 box-sizing: border-box，百分比按边框盒算，避免 width:100% 加 padding/border 溢出（Paul Irish 也论证过这不伤性能）。2）几乎清零默认 margin（设计间距自己管），dialog 除外以保留 margin:auto 居中（感谢 Oriol 提醒）。3）在 prefers-reduced-motion: no-preference 下给 html 设 interpolate-size: allow-keywords，让 height 在 0 与 auto 等关键字之间可过渡（当时主要 Chrome/Edge）。4）body line-height: 1.5，比默认约 1.2 更利阅读与阅读障碍者。5）-webkit-font-smoothing: antialiased，关掉 macOS 浏览器仍默认的次像素抗锯齿。6）img/picture/video/canvas/svg 设 display:block 与 max-width:100%，去掉行内空隙并防撑破容器。7）表单控件 font: inherit，不再用浏览器那套怪异独立字体。8）段落与标题 overflow-wrap: break-word，防长词撑破。9）p 用 text-wrap: pretty，标题用 balance，改善断行。10）#root / #__next 设 isolation: isolate，给 React/Next 根建独立层叠上下文，少被第三方 z-index 搅局。
+
+几处细节值得记住：box-sizing 的例子里，200px 父元素中 width:100% 加 20px 内边距和 2px 边框会得到 244px 的盒子，改成 border-box 后内容盒缩到 156px。行高 1.5 用在大标题上会显得过松，作者通常给标题单独设更小的值，但因随设计而定没放进 reset。次像素抗锯齿一条他坦言有争议：反对意见来自 2012 年、视网膜屏之前，而苹果自 macOS Mojave（2018）起已在系统层面关闭它，只有 macOS 浏览器仍默认开启。图片属于"替换元素"，原生 800px 宽的图放进 500px 容器仍是 800px，所以要加 max-width。表单控件默认字号只有 13.333px，移动端聚焦会触发自动放大，设 font-size: 1rem 只是权宜，font: inherit 才是根治。overflow-wrap 可再配 hyphens: auto，但作者觉得容易分散注意力，未纳入。text-wrap 的 pretty 保证段末至少两个词，balance 让标题各行长度接近，写作时支持率分别约 72% 和 87%，作为渐进增强不必在意。
+
+作者把这套 reset 放进公有领域，但刻意不发 NPM 包，主张"你应该拥有自己的 reset"，随经验不断修改；文中也致谢 Andy Bell 的 Modern CSS Reset 和 Sophie Alpert 的建议。更新记录显示：2023 年因动态视口单位普及删去了 html/body 的 height:100%，2024 年加入 text-wrap，2025 年加入 interpolate-size 并把 dialog 排除在清零外边距之外。

@@ -1,57 +1,483 @@
 https://www.joshwcomeau.com/react/why-react-re-renders/
 
-为什么 React 会重新渲染
+# React 为什么会重新渲染
 
-坦白说，我用 React 做专业开发好几年，却一直没真正搞懂重渲染过程。😅 很多 React 开发者也一样：够用就行，但若问「什么会触发 React 重渲染？」往往得到一堆含糊答案。误解很多，带来不确定：不理解渲染循环，怎能懂得何时用 React.memo、何时用 useCallback？
+[引言](https://www.joshwcomeau.com/react/why-react-re-renders/)
+好吧，我坦白。我曾经以 React 为职业工作了*好多年*，却始终没有真正理解 React 的重新渲染过程是怎么运作的。😅
 
-本教程建立「何时、为何」重渲染的心智模型，并用 React DevTools 判断某个组件为何重渲。
+我觉得很多 React 开发者都是这样。我们懂得够用就行，但如果你问一群 React 开发者“是什么触发了 React 中的重新渲染？”这样的问题，你很可能会得到好几个含糊其辞、各不相同的答案。
 
-核心 React 循环
+关于这个话题，外面有很多误解，这会带来大量的不确定性。如果我们不理解 React 的渲染周期，又怎么能理解该如何使用 `React.memo`，或者什么时候应该用 `useCallback` 包裹函数呢？？
 
-基本事实：每次重渲染都始于状态变更。这是组件重渲的唯一「扳机」（过去的 forceUpdate 已不存在）。
+在这篇教程里，我们将建立一个关于 React 何时以及为何重新渲染的心智模型。我们还将学习如何使用 React 开发者工具，弄清楚某个特定组件*为什么*会重新渲染。
 
-你可能觉得不对——props 变了呢？Context 呢？关键在于：组件重渲时，也会重渲它的全部后代。
+## React 的核心循环
 
-例子：App 渲染 Counter，Counter 渲染 BigCountNumber。状态变量挂在特定组件实例上；这里 count 属于 Counter。count 变则 Counter 重渲，BigCountNumber 作为其子也会重渲。交互图里点 Increment 可看绿闪表示重渲。
+那么，让我们从一个基本事实开始：**React 中的每一次重新渲染都始于一次状态变化。** 这是 React 中让组件重新渲染的唯一“触发器”。（过去还有一个 “forceUpdate()” 方法也能触发重新渲染，但它已经不存在了。）
 
-清除大误解 #1：状态一变整应用都重渲。——不是。重渲只影响拥有该状态的组件及其后代。本例 App 不必因 count 变化而重渲。
+这听起来可能不太对……毕竟，组件不是会在 props 变化时重新渲染吗？那 context 呢？？
 
-别死记规则，看「为什么」。React 的主职是让 UI 与状态同步；重渲是为了弄清该改什么。首次挂载时 React 渲出 DOM「草图」；用户点击后 count 从 0 到 1，再跑 Counter 与 BigCountNumber，得到新草图，再玩「找不同」——段落文本从 0 改成 1——然后等待下一次状态变更。这就是核心循环。
+关键在于：当一个组件重新渲染时，**它也会重新渲染它所有的后代组件。**
 
-count 挂在 Counter 上，数据不能向上流，故不可能影响 App，无需重渲 App。但必须重渲显示 count 的子组件 BigCountNumber，否则快照里不知道文本该变。重渲是为了弄清状态变化如何影响 UI，故须重渲所有可能受影响的组件以得到准确快照。
+我们来看一个例子：
 
-与 props 无关
+代码演练场（Code Playground）
 
-大误解 #2：组件因 props 变化而重渲。——我们给 Counter 加一个不依赖 count 的 Decoration（帆船装饰）。直觉以为它不会随 count 重渲——其实会。组件重渲时会尝试重渲全部后代，不论是否通过 props 传入该状态。
+在这个例子中，我们有 3 个组件：最顶层的 `App`，它渲染 `Counter`，`Counter` 又渲染 `BigCountNumber`。
 
-为何？React 很难 100% 确定 Decoration 是否直接或间接依赖 count。理想世界组件总是「纯」的：同样 props 总产出同样 UI。现实里很多不纯，例如读 new Date() 的 CurrentTime，每次渲染显示不同；更隐蔽的是把 ref 当 prop——React 不知上次渲染后是否突变过，于是为安全起见选择重渲。React 第一目标是 UI 与状态同步，宁可偏多渲染，也不愿给用户过期 UI。
+在 React 中，每个状态变量都依附于某个特定的组件实例。在这个例子里，我们只有一个状态 `count`，它与 `Counter` 组件相关联。
 
-所以：props 与「是否触发重渲」无关。BigCountNumber 不是因为 count prop 变了才重渲；而是拥有状态的祖先重渲后，重渲沿树向下级联，以便填满新快照。标准流程如此，但可以微调。
+每当这个状态变化时，`Counter` 就会重新渲染。又因为 `BigCountNumber` 是由 `Counter` 渲染的，所以它也会重新渲染。
 
-创建纯组件
+下面是一个展示这一机制的*交互式图表*。点击 “Increment” 按钮来触发一次状态变化：
 
-React.memo（或类组件 PureComponent）让我们忽略某些重渲请求。用 memo 包住 Decoration，等于告诉 React：「我知道它纯，除非 props 变否则不必重渲。」这是记忆化：记住上一张快照，props 未变就复用，不重新生成。若 BigCountNumber 与 Decoration 都 memo：count 变时 Counter 重渲；BigCountNumber 因 count prop 变而重渲；Decoration 无 props 变化则复用旧快照。可把 memo 想成懒摄影师：连拍五张完全一样的东西，它只拍一张然后交五份复印件。对后代很多或内部很重的组件，这招很有用。
+App
 
-那 Context 呢？
+Counter
 
-默认上，组件状态变则其全部后代重渲；用 Context 把状态提供给后代，并不改变这一点——反正都会重渲。对纯组件而言，Context 有点像「隐形 props」或「内部 props」。例如 memo 包着的 GreetUser 用 useContext(UserContext)：无显式 props，但有对 context 里 user 的隐形依赖；user 变时它会生成新快照而非复用旧图。React 能察觉它在消费该 Context，于是当 prop 对待。等价于把 user 当普通 prop 传入的 memo 组件。注意：只有真正用 useContext 消费的纯组件才会如此；不必担心 Context「弄坏」一堆并未消费它的纯组件。
+count: 0
 
-用 React DevTools 做性能分析
+BigCountNumber
 
-真实项目里某个组件为何重渲往往并不明显。装 Chrome/Firefox 的 React DevTools，打开 DevTools 可见 Components 与 Profiler。在 Profiler 齿轮里勾选「Record why each component rendered while profiling」。流程：点蓝圆开始录 → 在应用里操作 → 停止 → 用箭头浏览各次快照；侧栏显示某组件因何重渲；纯组件还会标出是哪些 prop 导致更新。他本人不常用，但用时往往救命。
+Props: { count }
 
-还可开「Highlight updates when components render」，重渲的组件周围会闪绿框，便于看状态更新波及多远、纯组件是否成功躲过。
+（绿色闪烁表示组件正在*重新渲染*。）
 
-更深入
+好，我们先来破除*第一大误解*：**每当一个状态变量变化时，整个应用都会重新渲染。**
 
-开始用 Profiler 后会发现：有时纯组件在「看起来什么都没变」时仍重渲。微妙之处：组件是 JavaScript 函数，渲染即调用函数；组件内部定义的一切每次渲染都重新创建。例如 App 里每次 new 一个 dog 对象再传给 DogProfile——即便包了 memo，子组件仍会因「新对象」引用不等而重渲。续篇《Understanding useMemo and useCallback》继续展开记忆化与优化；这些教程也摘自课程 The Joy of React。
+我知道有些开发者认为 React 中的每一次状态变化都会强制整个应用重新渲染，但事实并非如此。重新渲染只影响拥有该状态的组件及其后代（如果有的话）。在这个例子中，当 `count` 状态变量变化时，`App` 组件并不需要重新渲染。
 
-附赠：性能建议
+不过，与其把这当作一条规则死记硬背，不如退一步，看看我们能否弄明白它*为什么*会这样运作。
 
-- Profiler 显示的毫秒数在开发模式下不可信；React 生产模式快得多。要真正了解表现，用已部署的生产应用 + 浏览器 Performance 面板，看真实重渲以及 layout/paint。
-- 强烈建议在低端硬件上测（他为本站偶尔用几年前印度流行的红米 8），感受第 90 百分位体验。
-- Lighthouse 分数不是真实体验的准确反映；他更信任亲手用应用的质性感受。
-- 几年前在 React Europe 谈过后加载体验（常被忽视），可在 YouTube 观看。
-- 别过度优化！学了 Profiler 容易陷入「尽量减少渲染次数」的狂欢；React 开箱已经很快。这些工具最好在感觉卡顿、真有性能问题后再用。
+React 的“主要工作”是让应用的 UI 与 React 状态保持同步。重新渲染的意义在于**弄清楚需要改变什么。**
 
-最后更新：2025 年 12 月 3 日。
+我们来看上面的 “Counter” 例子。应用首次挂载时，React 会渲染我们所有的组件，并得出一份 DOM 应该是什么样子的草图：
+
+```
+<main>
+  <p>
+    <span class="prefix">Count:</span>
+    0
+  </p>
+  <button>
+    Increment
+  </button>
+</main>
+<footer>
+  <p>Copyright 2022 Big Count Inc.</p>
+</footer>
+```
+
+当用户点击按钮时，`count` 状态变量从 `0` 变为 `1`。这会如何影响 UI？嗯，这正是我们希望通过再渲染一次来弄清楚的！
+
+React 重新运行 `Counter` 和 `BigCountNumber` 组件的代码，我们就生成了一份新的、我们想要的 DOM 草图：
+
+```
+<main>
+  <p>
+    <span class="prefix">Count:</span>
+    1
+  </p>
+  <button>
+    Increment
+  </button>
+</main>
+<footer>
+  <p>Copyright 2022 Big Count Inc.</p>
+</footer>
+```
+
+每次渲染都是一张快照，就像相机拍下的照片，它根据当前的应用状态展示 UI *应该*是什么样子。
+
+React 会玩一个“找不同”的游戏，找出这两张快照之间有什么变化。在这个例子中，它发现我们的段落里有一个文本节点从 `0` 变成了 `1`，于是它编辑这个文本节点，使之与快照一致。确认工作完成后，React 便安顿下来，等待下一次状态变化。
+
+**这就是 React 的核心循环。**
+
+带着这个框架，我们再来看一下渲染图：
+
+App
+
+Counter
+
+count: 0
+
+BigCountNumber
+
+Props: { count }
+
+我们的 `count` 状态与 `Counter` 组件相关联。因为在 React 应用中数据不能“向上”流动，所以我们知道这次状态变化不可能影响到 `<App />`。因此，我们不需要重新渲染那个组件。
+
+但我们*确实*需要重新渲染 `Counter` 的子组件 `BigCountNumber`。它才是真正显示 `count` 状态的组件。如果我们*不*渲染它，就不会知道段落的文本节点应该从 `0` 变成 `1`。我们需要把这个组件纳入草图。
+
+重新渲染的意义在于弄清楚一次状态变化应该如何影响用户界面。因此，我们需要重新渲染所有可能受影响的组件，以得到一张准确的快照。
+
+## 这与 props 无关
+
+好，我们来谈谈*第二大误解*：**组件会因为它的 props 发生变化而重新渲染。**
+
+我们用一个更新后的例子来探究一下。
+
+在下面的代码中，我们的 “Counter” 应用新增了一个组件 `Decoration`：
+
+代码演练场（Code Playground）
+
+```
+import React from 'react';
+
+import Decoration from './Decoration';
+import BigCountNumber from './BigCountNumber';
+
+function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <main>
+      <BigCountNumber count={count} />
+      <button
+        onClick={() => setCount(count + 1)}
+      >
+        Increment
+      </button>
+
+      {/* 👇 这家伙是新来的 👇 */}
+      <Decoration />
+    </main>
+  );
+}
+
+export default Counter;
+```
+
+（把所有组件都放在一个大文件里有点拥挤了，所以我擅自重新组织了一下。不过除了新增的 `Decoration` 组件之外，整体组件结构是一样的。）
+
+现在我们的计数器角落里有了一艘可爱的小帆船，由 `Decoration` 组件渲染。它不依赖 `count`，所以当 `count` 变化时它大概不会重新渲染，对吧？
+
+嗯，呃，不完全是。
+
+App
+
+Counter
+
+count: 0
+
+BigCountNumber
+
+Props: { count }
+
+Decoration
+
+当一个组件重新渲染时，它会尝试重新渲染*所有*后代组件，不管它们是否通过 props 接收了某个特定的状态变量。
+
+这看起来有违直觉……如果我们没有把 `count` 作为 prop 传给 `<Decoration>`，它为什么需要重新渲染呢？？
+
+答案是：React 很难百分之百确定 `<Decoration>` 是否直接或间接地依赖于 `count` 状态变量。
+
+在理想世界里，React 组件总是“纯”的。纯组件是指在给定相同 props 时**总是**产生相同 UI 的组件。
+
+在现实世界里，我们的很多组件都是不纯的。创建一个不纯的组件出乎意料地容易：
+
+```
+function CurrentTime() {
+  const now = new Date();
+
+  return (
+    <p>It is currently {now.toString()}</p>
+  );
+}
+```
+
+这个组件每次渲染都会显示不同的值，因为它依赖于当前时间！
+
+这个问题还有一个更隐蔽的版本，与 ref 有关。如果我们把一个 ref 作为 prop 传递，React 就无法判断自上次渲染以来我们是否修改过它。所以为了保险起见，它选择重新渲染。
+
+React 的头号目标是确保用户看到的 UI 与应用状态保持“同步”。因此，React 宁可渲染*过多*。它不想冒险向用户展示过时的 UI。
+
+所以，回到我们的误解：**props 与重新渲染毫无关系。** 我们的 `<BigCountNumber>` 组件并不是因为 `count` prop 变了才重新渲染的。
+
+当一个组件因为其某个状态变量被更新而重新渲染时，这次重新渲染会沿着组件树一路级联下去，以便 React 填充这份新草图的细节，捕获一张新的快照。
+
+这是标准的运作流程，但*确实*有办法稍微调整一下。
+
+### 创建纯组件
+
+你可能熟悉 `React.memo`，或者类组件 `React.PureComponent`。这两个工具让我们可以*忽略某些重新渲染请求。*
+
+用法如下：
+
+```
+function Decoration() {
+  return (
+    <div className="decoration">
+      ⛵️
+    </div>
+  );
+}
+
+export default React.memo(Decoration);
+```
+
+通过用 `React.memo` 包裹 `Decoration` 组件，我们是在告诉 React：“嘿，我*知道*这个组件是纯的。除非它的 props 变了，否则你不需要重新渲染它。”
+
+这用到了一种叫作*记忆化*（memoization）的技术。
+
+它少了个 R，但我们可以大致把它理解为 “memo**r**ization”（记忆）。其思路是 React 会记住上一张快照。如果所有 props 都没有变化，React 就会复用那张旧快照，而不是费力去生成一张全新的。
+
+假设我用 `React.memo` 辅助函数同时包裹 `BigCountNumber` 和 `Decoration`。这会对重新渲染产生如下影响：
+
+App
+
+Counter
+
+count: 0
+
+BigCountNumber
+
+Props: { count }
+
+纯组件
+
+Decoration
+
+纯组件
+
+当 `count` 变化时，我们重新渲染 `Counter`，React 会尝试渲染两个后代组件。
+
+因为 `BigCountNumber` 接收 `count` 作为 prop，而这个 prop 变了，所以 `BigCountNumber` 会重新渲染。但因为 `Decoration` 的 props 没有变化（毕竟它根本没有 props），所以会改用*原来的*快照。
+
+我喜欢把 `React.memo` 想象成一个有点偷懒的摄影师。如果你让它给同一个东西拍 5 张照片，它会只拍 1 张，然后给你 5 份拷贝。只有当你的指示变了，这位摄影师才会拍一张新照片。
+
+如果你想自己动手试试，下面是一个可实时编辑的版本。每个经过记忆化的组件都加了一个 `console.info` 调用，这样你就能在控制台里准确看到每个组件何时渲染：
+
+代码演练场（Code Playground）
+
+```
+import React from 'react';
+
+function Decoration() {
+  console.info('Decoration render');
+  
+  return (
+    <div className="decoration">
+      ⛵️
+    </div>
+  );
+}
+
+export default React.memo(Decoration);
+```
+
+result（结果）
+
+console（控制台）
+
+1.   BigCountNumber render
+
+2.   Decoration render
+
+你可能会想：**为什么这不是默认行为？？** 大多数时候这不正是我们想要的吗？跳过渲染那些不需要渲染的组件，肯定能提升性能吧？
+
+我认为作为开发者，我们往往高估了重新渲染的开销。就我们的 `Decoration` 组件而言，重新渲染快如闪电。
+
+如果一个组件有一大堆 props 而后代不多，那么检查是否有 prop 发生变化，实际上可能比直接重新渲染这个组件还*慢*。（这个说法我没有出处，但我见过 Dan Abramov 等知名开发者在社交媒体上这样论证。）
+
+因此，把我们创建的每一个组件都记忆化会适得其反。React 本来就是为了非常快速地捕获这些快照而设计的！但在特定情况下，对于后代很多的组件，*或者*内部要做大量工作的组件，这个辅助函数能帮上大忙。
+
+### 那 context 呢？
+
+我们还完全没谈到 context，不过幸运的是，它并不会让这些东西变得太复杂。
+
+默认情况下，如果一个组件的状态变化，它的所有后代都会重新渲染。所以，就算我们通过 context 把这个状态提供给所有后代，也不会真正改变什么；无论哪种方式，那些组件都会重新渲染！
+
+而就*纯*组件而言，context 有点像“隐形的 props”，或者说“内部的 props”。
+
+我们来看一个例子。这里有一个消费 `UserContext` context 的纯组件：
+
+```
+const GreetUser = React.memo(() => {
+  const user = React.useContext(UserContext);
+
+  if (!user) {
+    return "Hi there!";
+  }
+
+  return `Hello ${user.name}!`;
+});
+```
+
+在这个例子中，`GreetUser` 是一个没有 props 的纯组件，但它有一个“隐形”或“内部”的依赖：存储在 React 状态中、通过 context 传递的 `user`。
+
+如果这个 `user` 状态变量变化，就会发生重新渲染，`GreetUser` 会生成一张新的快照，而不是依赖一张过时的图片。React 能够知道这个组件正在消费这个特定的 context，所以会把它当作一个 prop 来对待。
+
+它大致等价于这样：
+
+```
+const GreetUser = React.memo(({ user }) => {
+  if (!user) {
+    return "Hi there!";
+  }
+
+  return `Hello ${user.name}!`;
+});
+```
+
+来玩一个实时示例：
+
+代码演练场（Code Playground）
+
+```
+import React from 'react';
+
+const UserContext = React.createContext();
+
+function UserProvider({ children }) {
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    // 假装这是一个网络请求，
+    // 从后端获取用户数据。
+    window.setTimeout(() => {
+      setUser({ name: 'Kiara' });
+    }, 1000)
+  }, [])
+
+  return (
+    <UserContext.Provider value={user}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <UserProvider>
+      <GreetUser />
+    </UserProvider>
+  );
+}
+
+const GreetUser = React.memo(() => {
+  const user = React.useContext(UserContext);
+  console.log('Render with user', user);
+
+  if (!user) {
+    return "Hi there!";
+  }
+
+  return `Hello ${user.name}!`;
+});
+
+export default App;
+```
+
+result（结果）
+
+console（控制台）
+
+1.   Render with user null
+
+2.   Render with user{
+  "name": "Kiara"
+}
+
+注意，只有当纯组件使用 `React.useContext` 这个 hook *消费该 context* 时，才会出现这种情况。你不必担心 context 会破坏一大堆并不尝试消费它的纯组件。
+
+## 用 React 开发者工具做性能分析
+
+如果你用 React 有一段时间了，很可能有过这种令人沮丧的经历：想弄清楚某个组件*为什么*在重新渲染。在真实场景中，原因往往一点都不明显！幸运的是，React 开发者工具能帮上忙。
+
+首先，你需要下载 React Devtools 浏览器扩展。它目前支持 [Chrome（在新标签页打开）](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) 和 [Firefox（在新标签页打开）](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)。在本教程中，我假设你使用的是 Chrome，不过操作步骤不会有太大差别。
+
+用 `Ctrl` + `Shift` + `I`（在 MacOS 上是 `⌘` + `Option` + `I`）打开开发者工具。你应该会看到出现了两个新标签页：
+
+![图 1：截图显示 Chrome 开发者工具中的两个新标签页，“Components”和“Profiler”](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fwhy-react-re-renders%2Freact-devtools-in-menu.png&w=3840&q=75)
+
+我们感兴趣的是 “Profiler”。选中这个标签页。
+
+点击那个小齿轮图标，启用标为 *“Record why each component rendered while profiling”*（分析时记录每个组件渲染的原因）的选项：
+
+大致流程如下：
+
+1.   点击蓝色的小“录制”圆点，开始录制。
+
+2.   在你的应用中执行一些操作。
+
+3.   停止录制。
+
+4.   查看录制下来的快照，进一步了解发生了什么。
+
+每次渲染都会被捕获为一张单独的快照，你可以用箭头在它们之间浏览。关于组件为什么渲染的信息显示在侧边栏中：
+
+点进你感兴趣的组件，就能准确看到它为什么重新渲染。如果是纯组件，它会告诉我们是哪个（或哪些）prop 导致了这次更新。
+
+我个人并不常用这个工具，但每次用到时，它都是救命稻草！
+
+### 高亮重新渲染
+
+再来一个小技巧：React profiler 有一个选项，可以高亮重新渲染的组件。
+
+就是这个设置：
+
+![图 2：React profiler 设置的截图，展示了一项名为 “Highlight updates when components render”（组件渲染时高亮更新）的设置](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fwhy-react-re-renders%2Fprofiler-setting-highlight-updates.png&w=1080&q=75)
+
+启用这个设置后，你应该会看到重新渲染的组件周围闪烁出绿色矩形：
+
+这能帮助我们准确理解状态更新的影响范围有多大，并测试我们的纯组件是否成功避免了重新渲染！
+
+## 更深入一步
+
+当你开始使用 profiler 时，你会注意到一件事：有时候，即使*看起来*什么都没变，纯组件还是会重新渲染！
+
+React 有一个微妙而烧脑的地方：组件就是 JavaScript 函数。当我们渲染一个组件时，就是在调用这个函数。（对于类组件，我们调用的是该类关联的 render 方法，所以道理相同。）
+
+这意味着，在 React 组件内部定义的任何东西，在每一次渲染时都会被重新创建。
+
+举个简单的例子：
+
+```
+function App() {
+  const dog = {
+    name: 'Spot',
+    breed: 'Jack Russell Terrier'
+  };
+
+  return (
+    <DogProfile dog={dog} />
+  );
+}
+```
+
+每次渲染这个 `App` 组件，我们都会生成一个全新的对象。这会对纯组件造成严重破坏；不管我们是否用 `React.memo` 包裹，这个 `DogProfile` 子组件都会重新渲染！
+
+**想继续学习吗？** 我发表了第二篇博客文章《[理解 useMemo 和 useCallback](https://www.joshwcomeau.com/react/usememo-and-usecallback/)》，更深入地探讨了记忆化和优化的概念。我们会扩展本文建立的心智模型，并学习如何使用 React 中最难以捉摸的两个 hook。
+
+**我还要坦白一件事：** 这些教程直接摘自我的全新课程 [“The Joy of React”（在新标签页打开）](https://joyofreact.com/)。
+
+[![图 3：访问 “Joy of React” 主页](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fjoy-of-react.png&w=3840&q=75)](https://www.joyofreact.com/)
+
+我用 React 做开发已经超过十年了，关于如何有效地使用它，我学到了很多。我非常喜欢用 React 工作；我几乎试过所有的前端框架，没有哪个能像 React 一样让我感觉如此高效。
+
+在 *The Joy of React* 中，我们会建立一个关于 React 真正如何运作的心智模型，像本教程这样深入挖掘各种概念。不过与这个博客上的文章不同，我的课程采用“多模态”方式，把这样的文字内容与视频内容、练习、交互式探索，甚至一些小游戏结合在一起！
+
+你可以在这里进一步了解这门课程：
+
+*   [The Joy of React（在新标签页打开）](https://joyofreact.com/)
+
+## 附赠：性能小贴士
+
+React 中的性能优化是一个很大的话题，我可以轻松地写好几篇博客来讲。希望这篇教程帮你打下了坚实的基础，让你可以在此之上学习 React 性能！
+
+话虽如此，我还是分享几条我学到的关于 React 性能优化的小贴士：
+
+*   React Profiler 会显示一次渲染花了多少毫秒，但**这个数字并不可信。** 我们通常是在“开发模式”下做性能分析的，而 React 在“生产模式”下要*快得多得多*。要*真正*了解你的应用性能如何，你应该用 “Performance” 标签页针对已部署的生产应用进行测量。这会向你展示真实世界的数据，不仅包括重新渲染，还包括布局/绘制的变化。
+
+*   我强烈建议在低端硬件上测试你的应用，看看第 90 百分位的体验是什么样的。这取决于你在做的产品，但对于这个博客，我会定期在小米红米 8（Xiaomi Redmi 8）上测试，这是几年前在印度很流行的一款廉价智能手机。
+
+*   Lighthouse 性能评分*并不能*准确反映真实的用户体验。比起任何自动化工具给出的统计数据，我更相信实际使用应用时的定性体验。
+
+*   几年前我在 *React Europe* 上做过一场专门讲 React 性能的演讲！它更侧重于“加载后”的体验，这是很多开发者忽视的一个领域。你可以[在 YouTube 上观看（在新标签页打开）](https://www.youtube.com/watch?v=viPhwbusWuE)。
+
+*   **不要过度优化！** 在了解了 React profiler 之后，你很容易陷入一场优化狂欢，目标是尽可能减少渲染次数……但说实话，React 开箱即用就已经非常优化了。这些工具最好是在*出现性能问题时*再用，也就是当一切开始感觉有点卡顿的时候。
+
+### 最后更新于
+
+2025 年 12 月 3 日

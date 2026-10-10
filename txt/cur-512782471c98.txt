@@ -1,7 +1,5 @@
 https://overreacted.io/npm-audit-broken-by-design/
 
-npm audit：设计上就是坏的（npm audit: Broken by Design） ｜ Overreacted, Dan Abramov ｜ 文章 ｜ https://overreacted.io/npm-audit-broken-by-design/
-
 React 核心成员、Create React App 维护者 Dan Abramov 2021 年的一篇檄文，矛头指向 npm 默认开启的 npm audit：它在大量场景里产生 99% 以上的误报，是一场"安全表演"。
 
 他拿一个新建的 Create React App 项目演示：npm audit 报了几个"中危""高危"漏洞，他一个个看。browserslist 的正则拒绝服务，前提是攻击者能改你机器上的配置文件，而你的应用最后只是一堆静态 HTML、CSS、JS，用户根本碰不到配置。webpack-dev-server 依赖链里 glob-parent 的问题，只在你本地开发服务器上处理你自己的文件路径时才可能变慢，真能登录你机器的攻击者只会去偷密钥。被标红的"高危" css-what，前提是攻击者能往你源码里塞一个特制 SVG 让构建变慢，那他还不如直接塞个挖矿程序。另外两条是同一问题换了依赖路径。五条全是"狼来了"，而且这样的报告有好几百条，他花了几个小时翻了几个月来收到的所有 audit 问题，在构建工具场景下全是误报。
