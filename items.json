@@ -1,5 +1,24 @@
 [
  {
+  "id": "kK1TOpI948o",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "视觉层级新手指南",
+  "link": "https://youtu.be/kK1TOpI948o",
+  "date": "2026-10-11T22:08",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/kK1TOpI948o.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/kK1TOpI948o.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kK1TOpI948o.m4a"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -720,8 +739,8 @@
     "url": "txt/cur-5a6e0cf4629c.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5a6e0cf4629c.m4a",
-  "title_zh": "TypeScript 7 及其之后"
+  "title_zh": "TypeScript 7 及其之后",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5a6e0cf4629c.m4a"
  },
  {
   "id": "Cmoh-yR-usA",
@@ -1579,8 +1598,8 @@
     "url": "txt/cur-0a061b050aa5.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0a061b050aa5.m4a",
-  "title_zh": "Cat Wu 谈 Anthropic 产品团队为何比谁都快"
+  "title_zh": "Cat Wu 谈 Anthropic 产品团队为何比谁都快",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0a061b050aa5.m4a"
  },
  {
   "id": "cur-cad5bdded1ef",
@@ -1847,8 +1866,8 @@
     "url": "txt/cur-4eb3668befb7.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4eb3668befb7.m4a",
-  "title_zh": "Steve Yegge 谈 Gas Town、Beads 与 Agent 式开发的兴起"
+  "title_zh": "Steve Yegge 谈 Gas Town、Beads 与 Agent 式开发的兴起",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4eb3668befb7.m4a"
  },
  {
   "id": "cur-989e332f832c",
@@ -1890,8 +1909,8 @@
     "url": "txt/cur-55f06cf70928.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55f06cf70928.m4a",
-  "title_zh": "Thibault Sottiaux 与 Ed Bayes 谈 OpenAI 和 Codex"
+  "title_zh": "Thibault Sottiaux 与 Ed Bayes 谈 OpenAI 和 Codex",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55f06cf70928.m4a"
  },
  {
   "id": "gWmyu3x5rXY",
@@ -2214,8 +2233,8 @@
     "url": "txt/cur-3911edc802c7.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3911edc802c7.m4a",
-  "title_zh": "Nicole Forsgren 谈 2025 年如何衡量 AI 时代的开发者效率"
+  "title_zh": "Nicole Forsgren 谈 2025 年如何衡量 AI 时代的开发者效率",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3911edc802c7.m4a"
  },
  {
   "id": "cur-864e807db47b",
@@ -2282,6 +2301,25 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c1256801dc58.m4a"
  },
  {
+  "id": "BV15oHwzBEYK",
+  "kind": "summary",
+  "source": "广场协议并非日本经济陷入停滞的罪魁祸首",
+  "title": "1985 年广场协议的真相：它并非日本经济停滞的罪魁祸首",
+  "link": "https://www.bilibili.com/video/BV15oHwzBEYK",
+  "date": "2025-10-02T12:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/BV15oHwzBEYK.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/BV15oHwzBEYK.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV15oHwzBEYK.m4a"
+ },
+ {
   "id": "qjPH9njnaVU",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -2340,8 +2378,8 @@
     "url": "txt/cur-70a9fe1c79b3.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-70a9fe1c79b3.m4a",
-  "title_zh": "Daniel Stenberg 谈为什么把 Rust 从 curl 里移除"
+  "title_zh": "Daniel Stenberg 谈为什么把 Rust 从 curl 里移除",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-70a9fe1c79b3.m4a"
  },
  {
   "id": "cur-66b3f5f3f7a3",
@@ -2800,8 +2838,8 @@
     "url": "txt/cur-f6ee0a5e0fa6.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f6ee0a5e0fa6.m4a",
-  "title_zh": "Varun Mohan 讲 Windsurf：四个月做出百万开发者在用的 AI 代码编辑器"
+  "title_zh": "Varun Mohan 讲 Windsurf：四个月做出百万开发者在用的 AI 代码编辑器",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f6ee0a5e0fa6.m4a"
  },
  {
   "id": "cur-7b05b9b64a58",
@@ -3221,6 +3259,25 @@
   "title_zh": "One Million Checkboxes 里的秘密"
  },
  {
+  "id": "BV1dU411U7f5",
+  "kind": "summary",
+  "source": "《以利为利》导读",
+  "title": "土地财政的运作逻辑及其影响：《以利为利》导读",
+  "link": "https://www.bilibili.com/video/BV1dU411U7f5",
+  "date": "2024-08-16T12:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/BV1dU411U7f5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/BV1dU411U7f5.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1dU411U7f5.m4a"
+ },
+ {
   "id": "cur-c79cf86df951",
   "kind": "curated",
   "type": "article",
@@ -3557,8 +3614,8 @@
     "url": "txt/cur-d5e6bf97efd1.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d5e6bf97efd1.m4a",
-  "title_zh": "Richard Rumelt 谈好战略与坏战略"
+  "title_zh": "Richard Rumelt 谈好战略与坏战略",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d5e6bf97efd1.m4a"
  },
  {
   "id": "cur-b27f388466fb",
@@ -3579,8 +3636,8 @@
     "url": "txt/cur-b27f388466fb.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-b27f388466fb.m4a",
-  "title_zh": "Will Larson 谈工程师思维"
+  "title_zh": "Will Larson 谈工程师思维",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-b27f388466fb.m4a"
  },
  {
   "id": "cur-3e93bd0576c9",
@@ -3731,6 +3788,25 @@
   "title_zh": "Wei Li：让自己可被替代，成就他人"
  },
  {
+  "id": "BV1Cu411P7We",
+  "kind": "summary",
+  "source": "货币法则研习社",
+  "title": "央行是怎样印钱的（下）：M2 从何而来？派生货币与贷款、存款的关系",
+  "link": "https://www.bilibili.com/video/BV1Cu411P7We",
+  "date": "2023-09-06T12:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/BV1Cu411P7We.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/BV1Cu411P7We.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1Cu411P7We.m4a"
+ },
+ {
   "id": "cur-a899677de73f",
   "kind": "curated",
   "type": "article",
@@ -3773,6 +3849,25 @@
   "title_zh": "Shadow DOM 与样式封装的利弊"
  },
  {
+  "id": "BV1bN4y1d7he",
+  "kind": "summary",
+  "source": "货币法则研习社",
+  "title": "央行到底印了多少钱？拆解 M0、M1、M2 货币供应三兄弟",
+  "link": "https://www.bilibili.com/video/BV1bN4y1d7he",
+  "date": "2023-08-18T12:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/BV1bN4y1d7he.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/BV1bN4y1d7he.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1bN4y1d7he.m4a"
+ },
+ {
   "id": "cur-d184c9211eb8",
   "kind": "curated",
   "type": "article",
@@ -3792,6 +3887,25 @@
    }
   ],
   "title_zh": "LLM 研究中的开放挑战"
+ },
+ {
+  "id": "BV1y14y1Q7Cd",
+  "kind": "summary",
+  "source": "货币法则研习社",
+  "title": "央行是怎样印钱的（上）：从金本位到信用货币，货币的本质",
+  "link": "https://www.bilibili.com/video/BV1y14y1Q7Cd",
+  "date": "2023-07-21T12:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/BV1y14y1Q7Cd.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/BV1y14y1Q7Cd.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1y14y1Q7Cd.m4a"
  },
  {
   "id": "cur-e53f5f1de63e",
@@ -4637,8 +4751,8 @@
     "url": "txt/cur-2e8b186c4b37.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2e8b186c4b37.m4a",
-  "title_zh": "Alex Petrov 谈数据库存储引擎"
+  "title_zh": "Alex Petrov 谈数据库存储引擎",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2e8b186c4b37.m4a"
  },
  {
   "id": "cur-51d8a6bc7159",
@@ -5210,8 +5324,8 @@
     "url": "txt/cur-66d963ce2471.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-66d963ce2471.m4a",
-  "title_zh": "John Allspaw 谈系统故障：预防、响应与复盘"
+  "title_zh": "John Allspaw 谈系统故障：预防、响应与复盘",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-66d963ce2471.m4a"
  },
  {
   "id": "cur-bc8809708ee2",
@@ -5232,8 +5346,8 @@
     "url": "txt/cur-bc8809708ee2.transcript.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc8809708ee2.m4a",
-  "title_zh": "Mike Barker 谈 LMAX 架构"
+  "title_zh": "Mike Barker 谈 LMAX 架构",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc8809708ee2.m4a"
  },
  {
   "id": "YM4If6YHN3s",
