@@ -1,0 +1,15 @@
+https://softwareengineeringdaily.com/podcasts/typescript-7-and-what-comes-next/
+
+TypeScript 7 and What Comes Next ｜ Software Engineering Daily ｜ 57分钟 ｜ https://softwareengineeringdaily.com/podcasts/typescript-7-and-what-comes-next/
+
+本期由 typescript-eslint 维护者、独立开源开发者 Josh Goldberg 主持，嘉宾是微软 TypeScript 首席产品经理 Daniel Rosenwasser。Daniel 在 TypeScript 1.0 发布三四周后以工程师身份入队，节目从他的经历谈起，一路聊到刚发布的 Go 原生版 TypeScript 7、7.1 的 API，以及大语言模型时代类型系统的走向。
+
+Daniel 少年时在游戏论坛上发现一群青少年自己运营网站，由此从 HTML、QBasic、PHP 和 LAMP 栈一路学到编译器和程序语言理论课，认定自己要做开发者工具。他实习时被分到 Azure，但不断“烦”协调人，最终进了 TypeScript 团队。他认为做开发者工具的核心心态是共情：自己踩过的坑最清楚，比如他曾专门为旧版 Visual Studio 补做一层语法着色，只因知道没有它开发者会多沮丧。他也回忆，早年社区普遍不信任微软做开源，团队只能靠坚持原则来证明自己。
+
+谈到 TypeScript 与 JavaScript 的关系，Daniel 解释 TypeScript 本质上是“带类型语法和强大工具的 JavaScript”，难点在于内层语言有自己的演进轨道。早期 TypeScript 在 class、模块标准化之前就实现了它们，用户因此被迫多次改代码。装饰器是典型：2014 年前后 Flow 登场、Angular 团队提出 AtScript，TypeScript 团队主动与谷歌合作，把装饰器推进 TC39，但提案后来语义和 API 都被重做，至今方向仍不明朗。Daniel 不愿说“后悔”，因为它确实让 TypeScript 和 Angular 社区壮大了。这段教训形成了今天的政策：JavaScript 特性到 Stage 3 才实现，自家新增的只限“可擦除语法”，剥掉类型就应得到等价可读的 JavaScript；超出范围又值得做的，就去 TC39 当倡导者，可选链和空值合并就是他参与推动的成果。
+
+TypeScript 7 用 Go 逐行移植，加上共享内存并行，在很多代码库上提速约 10 倍，还更少崩溃。旧编译器单线程，大项目常内存溢出、编辑器加载要等几分钟。真正的难点是 API：旧 API 是有机生长出来的，而 Go 运行时对内存归属有自己的约束，于是团队设计了与语言无关的 IPC 边界，允许多个客户端共享同一项目会话，这套 API 定在 7.1。他特别提到，大量使用 Vue、Angular 等嵌入式模板语言的用户在等它。Josh 则提到 Rust 写的 Oxlint 借 tsgolint“伸手”进 TypeScript 内部的现状，Daniel 表示不劝阻这类尝试，但希望共享会话能减少重复。
+
+Daniel 还补充了几处细节。关于为什么选 Go：它让一一对应的移植容易得多，同时能拿到原生速度，但团队刻意不让语言选择变成 API 的实现细节，所以消费方需要通过进程间通信按需请求数据，而不是把整个地址空间镜像过去，这样 JavaScript、Rust 等任何语言的工具都能平等接入。关于 TC39，他介绍委员会一年大约开六次会，浏览器引擎和 Node、Deno、Bun 等运行时的代表在会上推动语言改进，TypeScript 团队在其中的作用是提前判断提案能否得到良好的类型检查和编辑体验，并提醒容易踩的坑。关于否定类型，他用构造主义逻辑举例：字符串和数字确实不相交，但 unknown 涵盖一切值，从技术上讲数字也属于 unknown，因此必须拒绝把它赋给“非数字”，而一旦涉及对象类型，这类规则就会在数学上和直觉上都难以推理。他也坦言，过去一年半团队把精力全押在性能上，像更顺手地拆分字符串字面量类型这类改善体验的小功能都被搁置，现在终于有余力重新考虑。
+
+展望 8.0，Daniel 认为最大变量是大语言模型：它可能改变可靠性与完备性、表达力与冗长之间的权衡，也会让团队特定的 lint 规则变得容易编写，从而让 API 更重要。至于更严格的 this 类型、否定类型等特性，他说主要障碍往往不是性能而是复杂度，比如 unknown 能否赋给“非数字”这类问题在对象类型上会极其纠缠；每个特性都从负分起步，这条原则在 LLM 时代同样适用。他的建议是：不依赖编辑器插件的 6.0 用户今天就可以试 TypeScript 7，也可与 6 并存，ts-loader 已借早期 API 跑通 webpack。节目最后聊到他家“寄养失败”而留下的猫 Pablo，他们已寄养过十几只猫。

@@ -1,0 +1,9 @@
+https://www.ximalaya.com/sound/740498034
+
+EP39 Server Rendering 升职加薪的好路子 ｜ AsyncTalk ｜ 19分钟 ｜ https://www.ximalaya.com/sound/740498034
+
+这期 AsyncTalk 是主播的单人节目，主张前端工程师升职加薪最明确、最通用的方向，是把应用挪到服务端做性能优化。他认为 HTTP/2、雪碧图、minify、prefetch 等传统手段只能压低网络延迟，省不掉 round trip；而在服务端完成重逻辑和数据请求再返回 HTML，用户几乎不用执行 JavaScript，效果远超前者。React 19 全面接纳 Server Component，说明这个方向已经稳定，Node 也因此和前端业务分不开了。
+
+他梳理了渲染的演变：20 年前的后端渲染（Rails 把模板做到极致）受限于模板，交互和规模都做不大；前端渲染让后端退为 API、前端独立成团队；后来为了性能回到以前端为主导的 Node SSR，但写法仍要遵守"数据从上层传入"；React Server Component 则允许在组件里直接取数据。客户端渲染至少两次 round trip，SSR 只要一次，RSC 还能先吐出 HTML 开头、再以 streaming 持续推送，像当年 Facebook 难以实现的 BigPipe，如今升级 React 即可做到。落地上，小项目建议迁移 Next.js，但要提防它 bug 很多；大项目自建 RSC 太难，放弃不丢人，可以自己实现一个粗糙版 SSR。
+
+他还比较了两种 API server 思路：Spring-like 的 MVC 概念繁多、测试和学习成本高、代码膨胀；Node 式回调入门简单但要自己处理 DB、缓存、限流，他偏爱后者的少限制。最后他建议前端多学 Node，重点理解请求进、响应出的 HTTP 模型（区别于 PHP、Python 的 CGI 脚本模型）和像 AI 逐字输出那样的 streaming 概念，借后端知识突破纯前端的天花板。

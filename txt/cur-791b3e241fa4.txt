@@ -1,0 +1,9 @@
+https://pythonhunter.org/episodes/ep59
+
+Ep 59. 2026 Agent 编程新趋势 ｜ 捕蛇者说 ｜ 32分钟 ｜ https://pythonhunter.org/episodes/ep59
+
+这期捕蛇者说由在 Google 做 coding agent 的主播 laike9m 主讲，某大厂 AI 产品组工程师小 A 参与讨论，围绕 laike9m 新写的一篇文章，谈 AI 编程工具的演进和下一步方向。两人都说自己工作中几乎不再手写代码，小 A 公司用 Claude API 搭的 coding agent，laike9m 在 Google 用 Antigravity 自带的 agent。
+
+laike9m 把工具发展分成两个阶段。2023 到 2025 年是从手写到 AI 写的过渡期，代表是 VS Code 加 AI 侧边栏、早期 Cursor 和 Claude Code 这类命令行工具；他引用 Boris 的说法，CLI 只是验证可行性的最简方案，交互太受限。小 A 追问为何把仍是主流的 CLI 归入过渡期，他解释阶段指的是产品形态出现的时间，而非用户是否还在用。2025 年下半年起出现 agent native 形态：一类是 OpenClaw 这样嵌在聊天软件里的 AI coworker；另一类是 2026 年才出现的"agent 指令中心"，Cursor 3、Codex、Antigravity 2.0 界面几乎一样，以 agent 会话而非代码编辑为中心，可以一行代码不读不写。小 A 认为这弱化了看代码的能力，但目的是让 PM、设计师也能成为 software builder。laike9m 认为三家领军公司不会无据重做数百万人在用的产品，这会是一段时间内的主流模式。
+
+他提出四个进化方向。一是更好的 harness：用 compaction、memory、动态上下文对付上下文爆炸，还有安全沙箱、记忆与 skill 的生命周期管理、sub agent。他把 Anthropic 从"只写 skill"回到多 agent 和动态工作流看作训练数据与 harness 之间的循环，小 A 补充说用户数据会把 harness 能力反哺进预训练。二是主动式 AI：Jules 会扫描 TODO 和性能瓶颈并主动提 PR，他已合并不少；小 A 指出这仍是把人类已有的 workflow 标准化，真正无外部输入的创造性修改还缺高质量案例。三是团队协作：提交量暴增而各人的 agent 记忆互不相通，同事的修改会在编译时查不出的地方弄坏别人的测试。他主张做无感的 team memory 层，并认同"IM 是增长上下文最自然的界面"，希望把聊天软件的共享上下文和编辑器结合起来。四是可验证性：简单的 HTTP 自测已经普及，瓶颈在测试环境，前端需要浏览器自动化加模型评估，Android 需要远程沙箱。他引用前老板的话，能自我验证的 agent 几乎什么都能做，验证决定了 agent 的上限。小 A 补充，对目标清晰的工作应先搭好验证系统，再让 agent 开工。

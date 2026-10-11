@@ -499,6 +499,27 @@
   "title_zh": "AI 新时代如何打造能卖货的品牌：营销三定律"
  },
  {
+  "id": "cur-d705870948e8",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "AsyncTalk",
+  "title": "TypeScript 7：十倍性能之外，为什么选 Go？",
+  "link": "https://www.ximalaya.com/sound/1014896982",
+  "date": "2026-09-15",
+  "audio_url": "https://jt.ximalaya.com//GKwRIaIOfdtKAGCPQwTXgt6b.m4a?channel=rss&album_id=53875103&track_id=1014896982&uid=372148060&jt=https://aod.cos.tx.xmcdn.com/storages/f660-audiofreehighqps/48/47/GKwRIaIOfdtKAGCPQwTXgt6b.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d705870948e8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d705870948e8.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d705870948e8.m4a"
+ },
+ {
   "id": "cur-fccabe30e41d",
   "kind": "curated",
   "type": "article",
@@ -640,6 +661,27 @@
   "title_zh": "最好的深色模式开关，可能就是没有开关"
  },
  {
+  "id": "cur-6eadb1839b73",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "AsyncTalk",
+  "title": "64 个 Claude：Bun 的 11 天重写",
+  "link": "https://www.ximalaya.com/sound/1010621163",
+  "date": "2026-09-02",
+  "audio_url": "https://jt.ximalaya.com//GKwRIJEObME4AGC4dQTQmbzE.m4a?channel=rss&album_id=53875103&track_id=1010621163&uid=372148060&jt=https://aod.cos.tx.xmcdn.com/storages/f61f-audiofreehighqps/79/FC/GKwRIJEObME4AGC4dQTQmbzE.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-6eadb1839b73.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-6eadb1839b73.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6eadb1839b73.m4a"
+ },
+ {
   "id": "JFFmp-oTHdM",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -658,6 +700,28 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/JFFmp-oTHdM.m4a",
   "title_zh": "贝莱德 Wei Li：AI 有泡沫吗？"
+ },
+ {
+  "id": "cur-5a6e0cf4629c",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Daily",
+  "title": "TypeScript 7 and What Comes Next",
+  "link": "https://softwareengineeringdaily.com/podcasts/typescript-7-and-what-comes-next/",
+  "date": "2026-08-27",
+  "audio_url": "https://media.transistor.fm/f6ab72dc/b084152d.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5a6e0cf4629c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5a6e0cf4629c.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5a6e0cf4629c.m4a",
+  "title_zh": "TypeScript 7 及其之后"
  },
  {
   "id": "Cmoh-yR-usA",
@@ -1238,6 +1302,27 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-924729b6849e.m4a"
  },
  {
+  "id": "cur-791b3e241fa4",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "捕蛇者说",
+  "title": "2026 年 Agent 编程新趋势",
+  "link": "https://pythonhunter.org/episodes/ep59",
+  "date": "2026-06-15",
+  "audio_url": "https://chrt.fm/track/6AGABB/r.typlog.com/eyJzIjozNTIsImUiOjg3ODQzLCJ0IjoxfQ.hsFQ5ET1ZcReTWPGfNvz30RF1mA/pythonhunter/8218230840_466252.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-791b3e241fa4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-791b3e241fa4.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-791b3e241fa4.m4a"
+ },
+ {
   "id": "a93FT2340c0",
   "kind": "summary",
   "source": "张小珺",
@@ -1333,6 +1418,69 @@
   ]
  },
  {
+  "id": "cur-cd7321599382",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硅谷101",
+  "title": "Harness 时代的 AI-First 组织：从信任人到信任 AI",
+  "link": "https://sv101.fireside.fm/251",
+  "date": "2026-05-25",
+  "audio_url": "https://aphid.fireside.fm/d/1437767933/f0f20376-8faf-4940-b920-84af6c734e2d/51260de8-60ef-4b76-b3e5-2e559c4a0923.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-cd7321599382.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-cd7321599382.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-cd7321599382.m4a"
+ },
+ {
+  "id": "cur-0df73b10c6b6",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "AsyncTalk",
+  "title": "用了 10 年 AntD 之后，聊聊 UI 库的下一个十年",
+  "link": "https://www.ximalaya.com/sound/976830930",
+  "date": "2026-05-15",
+  "audio_url": "https://jt.ximalaya.com//GKwRIMAN3NDbAGabowSZnyRa.m4a?channel=rss&album_id=53875103&track_id=976830930&uid=372148060&jt=https://aod.cos.tx.xmcdn.com/storages/e347-audiofreehighqps/8F/74/GKwRIMAN3NDbAGabowSZnyRa.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0df73b10c6b6.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0df73b10c6b6.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0df73b10c6b6.m4a"
+ },
+ {
+  "id": "cur-c63697a281da",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硬地骇客",
+  "title": "Agent Harness：给 Agent 套上缰绳",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6a0358b3e1eb34a939468885?utm_source=rss",
+  "date": "2026-05-12",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/640ee2438be5d40013fe4a87/6a0358b3e1eb34a939468885/media.xyzcdn.net/640ee2438be5d40013fe4a87/lhpMa_yS1MT_xSaVbgKgRH-95FGu.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-c63697a281da.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c63697a281da.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c63697a281da.m4a"
+ },
+ {
   "id": "I-A_yaUXK2E",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -1411,6 +1559,28 @@
    }
   ],
   "title_zh": "罗福莉：OpenClaw、Agent 框架，AI 范式已经剧变"
+ },
+ {
+  "id": "cur-0a061b050aa5",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Lenny's Podcast",
+  "title": "Cat Wu on How Anthropic’s Product Team Moves Faster Than Anyone Else",
+  "link": "https://www.lennysnewsletter.com/p/how-anthropics-product-team-moves",
+  "date": "2026-04-23",
+  "audio_url": "https://pscrb.fm/rss/p/api.substack.com/feed/podcast/194236002/e890cbebc9a0dfc2b20f737f83a5ef00.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0a061b050aa5.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0a061b050aa5.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0a061b050aa5.m4a",
+  "title_zh": "Cat Wu 谈 Anthropic 产品团队为何比谁都快"
  },
  {
   "id": "cur-cad5bdded1ef",
@@ -1494,6 +1664,27 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/OmfP9WcGjBE.m4a",
   "title_zh": "UCLA 电影教授教你成为会讲故事的人"
+ },
+ {
+  "id": "cur-29cd7b5f8d57",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硬地骇客",
+  "title": "为什么在 Agent 时代，CLI 反而成了最优解？",
+  "link": "https://www.xiaoyuzhoufm.com/episode/69caa449e2c8be3155f03013?utm_source=rss",
+  "date": "2026-03-30",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/640ee2438be5d40013fe4a87/69caa449e2c8be3155f03013/media.xyzcdn.net/640ee2438be5d40013fe4a87/luFh0-OXXXQTHJ_GUC7o_1MexUax.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-29cd7b5f8d57.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-29cd7b5f8d57.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-29cd7b5f8d57.m4a"
  },
  {
   "id": "cur-1ea34ba04923",
@@ -1638,6 +1829,28 @@
   "title_zh": "星海图创始人高继扬：鲶鱼效应、曾国藩、Waymo 与 Momenta，以及许华哲为何离开"
  },
  {
+  "id": "cur-4eb3668befb7",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Daily",
+  "title": "Gas Town, Beads, and the Rise of Agentic Development with Steve Yegge",
+  "link": "https://softwareengineeringdaily.com/podcasts/gas-town-beads-and-the-rise-of-agentic-development-with-steve-yegge/",
+  "date": "2026-02-12",
+  "audio_url": "https://media.transistor.fm/0fe41fef/64f81b4f.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-4eb3668befb7.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-4eb3668befb7.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4eb3668befb7.m4a",
+  "title_zh": "Steve Yegge 谈 Gas Town、Beads 与 Agent 式开发的兴起"
+ },
+ {
   "id": "cur-989e332f832c",
   "kind": "curated",
   "type": "article",
@@ -1657,6 +1870,28 @@
    }
   ],
   "title_zh": "Harness 工程：在 Agent 优先的世界里用好 Codex"
+ },
+ {
+  "id": "cur-55f06cf70928",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Daily",
+  "title": "Thibault Sottiaux and Ed Bayes on OpenAI and Codex",
+  "link": "https://softwareengineeringdaily.com/podcasts/openai-and-codex-with-thibault-sottiaux-and-ed-bayes/",
+  "date": "2026-01-29",
+  "audio_url": "https://media.transistor.fm/17a19249/634b69d4.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-55f06cf70928.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-55f06cf70928.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55f06cf70928.m4a",
+  "title_zh": "Thibault Sottiaux 与 Ed Bayes 谈 OpenAI 和 Codex"
  },
  {
   "id": "gWmyu3x5rXY",
@@ -1756,6 +1991,27 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/hS9BOev_u5U.m4a",
   "title_zh": "我在 25 岁学到的 25 件事"
+ },
+ {
+  "id": "cur-2b898fcfc59d",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "起朱楼宴宾客",
+  "title": "私募信贷：加速 AI 建设的“天使”，还是诱发金融危机的“恶魔”？",
+  "link": "https://www.xiaoyuzhoufm.com/episode/694961540f2ae6a867947bf4?utm_source=rss",
+  "date": "2025-12-23",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/61dd99a47b29652ff572257b/694961540f2ae6a867947bf4/media.xyzcdn.net/nlAHYbjWcrIMit8DfF7YhZPbUpm1.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-2b898fcfc59d.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-2b898fcfc59d.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2b898fcfc59d.m4a"
  },
  {
   "id": "cur-a5f012fc82c1",
@@ -1940,6 +2196,28 @@
   "title_zh": "如何修好任何 Bug"
  },
  {
+  "id": "cur-3911edc802c7",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Lenny's Podcast",
+  "title": "Nicole Forsgren on Measuring AI Developer Productivity in 2025",
+  "link": "https://www.lennysnewsletter.com/p/how-to-measure-ai-developer-productivity",
+  "date": "2025-10-19",
+  "audio_url": "https://pscrb.fm/rss/p/api.substack.com/feed/podcast/175998086/98e4383560cb788fb2e142ca5f575146.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3911edc802c7.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3911edc802c7.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3911edc802c7.m4a",
+  "title_zh": "Nicole Forsgren 谈 2025 年如何衡量 AI 时代的开发者效率"
+ },
+ {
   "id": "cur-864e807db47b",
   "kind": "curated",
   "type": "article",
@@ -2042,6 +2320,28 @@
    }
   ],
   "title_zh": "动物与幽灵"
+ },
+ {
+  "id": "cur-70a9fe1c79b3",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Radio",
+  "title": "Daniel Stenberg on Removing Rust from Curl",
+  "link": "https://se-radio.net/2025/10/se-radio-688-daniel-stenberg-on-removing-rust-from-curl/",
+  "date": "2025-10-01",
+  "audio_url": "https://traffic.libsyn.com/secure/seradio/688-daniel-stenberg-removing-rust-from-curl.mp3?dest-id=23379",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-70a9fe1c79b3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-70a9fe1c79b3.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-70a9fe1c79b3.m4a",
+  "title_zh": "Daniel Stenberg 谈为什么把 Rust 从 curl 里移除"
  },
  {
   "id": "cur-66b3f5f3f7a3",
@@ -2273,6 +2573,27 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f0762e98ea80.m4a"
  },
  {
+  "id": "cur-c0b286a36bcb",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硬地骇客",
+  "title": "再聊 Vibe Coding：复杂项目、长期维护，以及 AI 能否取代程序员",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6846c26779e285b9b8081905?utm_source=rss",
+  "date": "2025-06-09",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/640ee2438be5d40013fe4a87/6846c26779e285b9b8081905/media.xyzcdn.net/640ee2438be5d40013fe4a87/lkv5_tOYlKtxIcvipJ4ih-_mgZP3.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-c0b286a36bcb.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c0b286a36bcb.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c0b286a36bcb.m4a"
+ },
+ {
   "id": "cur-c4fd1b473658",
   "kind": "curated",
   "type": "article",
@@ -2461,6 +2782,28 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3662739770cb.m4a"
  },
  {
+  "id": "cur-f6ee0a5e0fa6",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Lenny's Podcast",
+  "title": "Varun Mohan on Windsurf: Building a Magical AI Code Editor for 1 Million Developers in Four Months",
+  "link": "https://www.lennysnewsletter.com/p/the-untold-story-of-windsurf-varun-mohan",
+  "date": "2025-04-20",
+  "audio_url": "https://pscrb.fm/rss/p/api.substack.com/feed/podcast/160891886/f54b1530ae768ee231e0fef55629b4c8.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f6ee0a5e0fa6.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f6ee0a5e0fa6.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f6ee0a5e0fa6.m4a",
+  "title_zh": "Varun Mohan 讲 Windsurf：四个月做出百万开发者在用的 AI 代码编辑器"
+ },
+ {
   "id": "cur-7b05b9b64a58",
   "kind": "curated",
   "type": "article",
@@ -2587,6 +2930,48 @@
   "title_zh": "LLM 推理模型的推理阶段现状"
  },
  {
+  "id": "cur-4fa1607ca7c7",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硬地骇客",
+  "title": "对话字节 Trae 团队：AI IDE 的演进之路",
+  "link": "https://www.xiaoyuzhoufm.com/episode/67c5744abf52a16cd1357d2d?utm_source=rss",
+  "date": "2025-03-03",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/640ee2438be5d40013fe4a87/67c5744abf52a16cd1357d2d/media.xyzcdn.net/640ee2438be5d40013fe4a87/lj8nIV8bwkEij0FkGoXRmpzMlMX8.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-4fa1607ca7c7.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-4fa1607ca7c7.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4fa1607ca7c7.m4a"
+ },
+ {
+  "id": "cur-55bc79ce049c",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硅谷101",
+  "title": "DeepSeek 技术解析：为何引发英伟达股价下跌？",
+  "link": "https://sv101.fireside.fm/186",
+  "date": "2025-02-06",
+  "audio_url": "https://aphid.fireside.fm/d/1437767933/f0f20376-8faf-4940-b920-84af6c734e2d/b2d7084b-daab-4fc8-9ce3-21380dd6c638.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-55bc79ce049c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-55bc79ce049c.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55bc79ce049c.m4a"
+ },
+ {
   "id": "cur-de8a882fa9b3",
   "kind": "curated",
   "type": "article",
@@ -2606,6 +2991,27 @@
    }
   ],
   "title_zh": "理解推理型 LLM"
+ },
+ {
+  "id": "cur-0cdfa6c0191d",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "起朱楼宴宾客",
+  "title": "AI 的 2025 与 DeepSeek 们的未来：对谈复旦张奇教授",
+  "link": "https://www.xiaoyuzhoufm.com/episode/679a199e247d51713cd558b1?utm_source=rss",
+  "date": "2025-01-29",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/61dd99a47b29652ff572257b/679a199e247d51713cd558b1/media.xyzcdn.net/61dd99a47b29652ff572257b/lhVhnvQTVuV4Ln_cCKcpedgldolo.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0cdfa6c0191d.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0cdfa6c0191d.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0cdfa6c0191d.m4a"
  },
  {
   "id": "2nVmKcITs7k",
@@ -2836,6 +3242,69 @@
   "title_zh": "微基准测试谬误"
  },
  {
+  "id": "cur-aab51f0b0545",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "AsyncTalk",
+  "title": "状态机自古以来是前端不可分割的一部分",
+  "link": "https://www.ximalaya.com/sound/746444251",
+  "date": "2024-08-05",
+  "audio_url": "https://jt.ximalaya.com//GKwRIDoKht0hAFe19gL7tAHZ.m4a?channel=rss&album_id=53875103&track_id=746444251&uid=372148060&jt=https://aod.cos.tx.xmcdn.com/storages/e371-audiofreehighqps/3A/D3/GKwRIDoKht0hAFe19gL7tAHZ.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-aab51f0b0545.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-aab51f0b0545.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aab51f0b0545.m4a"
+ },
+ {
+  "id": "cur-6dfa58b6019a",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "捕蛇者说",
+  "title": "专访高天：为了当好 B 站 up 主，我成了 Python 核心开发者",
+  "link": "https://pythonhunter.org/episodes/ep48",
+  "date": "2024-08-03",
+  "audio_url": "https://chrt.fm/track/6AGABB/r.typlog.com/eyJzIjozNTIsImUiOjc3MjYwLCJ0IjoxfQ.FDUNoNh9v4CvlhrksUXzqFM5NZk/pythonhunter/8277331808_494108.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-6dfa58b6019a.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-6dfa58b6019a.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6dfa58b6019a.m4a"
+ },
+ {
+  "id": "cur-307d4a6462c1",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硅谷101",
+  "title": "聊聊大模型如何思考：对谈深度学习科学家 Yann LeCun",
+  "link": "https://sv101.fireside.fm/167",
+  "date": "2024-07-29",
+  "audio_url": "https://aphid.fireside.fm/d/1437767933/f0f20376-8faf-4940-b920-84af6c734e2d/254c28f3-cfcd-4fe7-b3de-0f8392c5d386.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-307d4a6462c1.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-307d4a6462c1.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-307d4a6462c1.m4a"
+ },
+ {
   "id": "cur-21fea981794b",
   "kind": "curated",
   "type": "article",
@@ -2877,6 +3346,27 @@
   ],
   "title_zh": "一切从 Postgres 开始",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1198e993d447.m4a"
+ },
+ {
+  "id": "cur-f7e8c46dcd44",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "AsyncTalk",
+  "title": "Server Rendering：升职加薪的好路子",
+  "link": "https://www.ximalaya.com/sound/740498034",
+  "date": "2024-07-10",
+  "audio_url": "https://jt.ximalaya.com//GKwRINsKZKZ-AGrFEgLvHShf.m4a?channel=rss&album_id=53875103&track_id=740498034&uid=372148060&jt=https://aod.cos.tx.xmcdn.com/storages/d58c-audiofreehighqps/CE/5D/GKwRINsKZKZ-AGrFEgLvHShf.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f7e8c46dcd44.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f7e8c46dcd44.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f7e8c46dcd44.m4a"
  },
  {
   "id": "cur-56a43a86fa41",
@@ -3049,6 +3539,50 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7af6c18a0984.m4a"
  },
  {
+  "id": "cur-d5e6bf97efd1",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Lenny's Podcast",
+  "title": "Richard Rumelt on Good Strategy, Bad Strategy",
+  "link": "https://www.lennysnewsletter.com/p/good-strategy-bad-strategy-richard",
+  "date": "2024-01-21",
+  "audio_url": "https://pscrb.fm/rss/p/api.substack.com/feed/podcast/140560332/2779ccda5fd244bb73823c71100e8818.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d5e6bf97efd1.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d5e6bf97efd1.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d5e6bf97efd1.m4a",
+  "title_zh": "Richard Rumelt 谈好战略与坏战略"
+ },
+ {
+  "id": "cur-b27f388466fb",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Lenny's Podcast",
+  "title": "Will Larson on the Engineering Mindset",
+  "link": "https://www.lennysnewsletter.com/p/the-engineering-mindset-will-larson",
+  "date": "2024-01-07",
+  "audio_url": "https://pscrb.fm/rss/p/api.substack.com/feed/podcast/139739689/f055f9d4eb1ea02bd5519b3dbe1d729e.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b27f388466fb.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b27f388466fb.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-b27f388466fb.m4a",
+  "title_zh": "Will Larson 谈工程师思维"
+ },
+ {
   "id": "cur-3e93bd0576c9",
   "kind": "curated",
   "type": "article",
@@ -3112,6 +3646,27 @@
   ],
   "title_zh": "从 WebGL 到 WebGPU",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-149072c1ad65.m4a"
+ },
+ {
+  "id": "cur-ab61ff083285",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "硅谷101",
+  "title": "OpenAI 动荡始末：两股硅谷势力的角逐与“执剑人” Ilya",
+  "link": "https://sv101.fireside.fm/136",
+  "date": "2023-11-23",
+  "audio_url": "https://aphid.fireside.fm/d/1437767933/f0f20376-8faf-4940-b920-84af6c734e2d/63f1f1be-2eda-4f18-b793-54088db03510.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-ab61ff083285.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ab61ff083285.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-ab61ff083285.m4a"
  },
  {
   "id": "cur-fa4c575e2aa9",
@@ -3239,6 +3794,27 @@
   "title_zh": "LLM 研究中的开放挑战"
  },
  {
+  "id": "cur-e53f5f1de63e",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "捕蛇者说",
+  "title": "和 Penguin 聊 CPython 优化与大厂编译器组的工作",
+  "link": "https://pythonhunter.org/episodes/ep41",
+  "date": "2023-07-18",
+  "audio_url": "https://chrt.fm/track/6AGABB/r.typlog.com/eyJzIjozNTIsImUiOjY4ODU5LCJ0IjoxfQ.nzAAIcxGRRbXxBIlRBWsX-YVamo/pythonhunter/8310339124_4658985.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-e53f5f1de63e.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e53f5f1de63e.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-e53f5f1de63e.m4a"
+ },
+ {
   "id": "cur-ad388d074085",
   "kind": "curated",
   "type": "article",
@@ -3301,6 +3877,27 @@
   ],
   "title_zh": "node_modules 为什么这么大？",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1f142b98463c.m4a"
+ },
+ {
+  "id": "cur-71f3a4102da2",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "捕蛇者说",
+  "title": "Rust 和 PyO3：让 Python 再次伟大",
+  "link": "https://pythonhunter.org/episodes/ep40",
+  "date": "2023-05-13",
+  "audio_url": "https://chrt.fm/track/6AGABB/r.typlog.com/eyJzIjozNTIsImUiOjY3ODcyLCJ0IjoxfQ.dVLWYMPcJq-zBA-vLsZQ2JASjrw/pythonhunter/8316041946_810649.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-71f3a4102da2.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-71f3a4102da2.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-71f3a4102da2.m4a"
  },
  {
   "id": "cur-e3fa9e6175a1",
@@ -4022,6 +4619,28 @@
   "title_zh": "用 React 管理应用状态"
  },
  {
+  "id": "cur-2e8b186c4b37",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Radio",
+  "title": "Alex Petrov on Database Storage Engines",
+  "link": "https://se-radio.net/2020/07/episode-417-alex-petrov-on-database-storage-engines/",
+  "date": "2020-07-16",
+  "audio_url": "https://traffic.libsyn.com/secure/seradio/Episode-417-Alex-Petrov-on-Database-Storage-Engines.mp3?dest-id=23379",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-2e8b186c4b37.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-2e8b186c4b37.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2e8b186c4b37.m4a",
+  "title_zh": "Alex Petrov 谈数据库存储引擎"
+ },
+ {
   "id": "cur-51d8a6bc7159",
   "kind": "curated",
   "type": "article",
@@ -4571,6 +5190,50 @@
    }
   ],
   "title_zh": "Firefox 如何重新变快"
+ },
+ {
+  "id": "cur-66d963ce2471",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Radio",
+  "title": "John Allspaw on System Failures: Preventing, Responding, and Learning",
+  "link": "https://se-radio.net/2017/03/se-radio-episode-284-john-allspaw-on-system-failures-preventing-responding-and-learning-from/",
+  "date": "2017-03-07",
+  "audio_url": "https://traffic.libsyn.com/secure/seradio/SE-Radio-Episode-284-John-Allspaw-System-Failures.mp3?dest-id=23379",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-66d963ce2471.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-66d963ce2471.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-66d963ce2471.m4a",
+  "title_zh": "John Allspaw 谈系统故障：预防、响应与复盘"
+ },
+ {
+  "id": "cur-bc8809708ee2",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Software Engineering Radio",
+  "title": "Mike Barker on the LMAX Architecture",
+  "link": "https://se-radio.net/2016/04/se-radio-episode-254-mike-barker-on-the-lmax-architecture/",
+  "date": "2016-04-11",
+  "audio_url": "https://traffic.libsyn.com/secure/seradio/SE-Radio-Episode-254-Mike-Barker-on-the-LMAX-Architecture.mp3?dest-id=23379",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-bc8809708ee2.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-bc8809708ee2.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc8809708ee2.m4a",
+  "title_zh": "Mike Barker 谈 LMAX 架构"
  },
  {
   "id": "YM4If6YHN3s",

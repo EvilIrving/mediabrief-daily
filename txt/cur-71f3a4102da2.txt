@@ -1,0 +1,15 @@
+https://pythonhunter.org/episodes/ep40
+
+Ep 40. Rust 和 PyO3：让 Python 再次伟大 🦀 ❤️ 🐍 ｜ 捕蛇者说 ｜ 77分钟 ｜ https://pythonhunter.org/episodes/ep40
+
+这期《捕蛇者说》由 laike9m 主持，赖信涛、小白和 Adam 一同参与，嘉宾是 PyO3 和 maturin 的维护者 messense。他曾在玻森数据和蚂蚁集团工作，现在在香港一家对冲基金。节目从 Python 圈里越来越常见的做法谈起：用 Rust 写库的核心，再提供给 Python 调用，换取性能和类型安全。
+
+messense 讲了自己的入门经历。2017 年他在玻森数据遇到一个 C++ 写的 CRFsuite 扩展，它不支持多线程推理，他就用 Rust 重新包装了一层，大幅提升了数据处理速度，从此开始用 Rust 配合 Python。他介绍说，PyO3 是对 CPython C API 的封装。它用过程宏生成代码，让开发者写安全的 Rust，不必满篇 unsafe。它从 rust-cpython fork 而来，创建者 Nikolay Kim 想做一个 Rust 版的 uvloop。rust-cpython 用声明宏，写出来既不像 Rust 也不像 Python，维护者又不活跃，他就改用过程宏另起炉灶。PyO3 有两种用法：一是写 Python 扩展模块，Polars、Pydantic v2、cryptography、orjson 都是例子；二是把 Python 解释器嵌入 Rust 程序，GreptimeDB 就靠这种方式支持 Python UDF。名字取自"生锈的 Python"，类比氧化铁 Fe₂O₃。
+
+讲到原理，messense 纠正了"PyO3 生成 C 扩展"的说法。它的产物和 C 扩展本质上一样，是一个动态库，通过 #[pymodule]、#[pyclass]、#[pyfunction] 等宏去调用 C API，完成初始化和注册。性能提升主要来自 Rust 代码本身更高效，PyO3 本身并不提速。Rust 和 Python 之间的对象转换反而开销不小，所以很小的函数如果传入复杂对象，跑起来未必比纯 Python 快。引用计数和 GC 协议都由 PyO3 封装，用户基本不用操心。释放 GIL 用的是 allow_threads 闭包，离开作用域后 GIL 会自动拿回。生命周期的设计还能保证，在没有 GIL 的代码里误用 Python 对象会直接编译失败。他举了图像识别的例子：拿到字节数据后就可以释放 GIL，并发处理几十张图。
+
+maturin 是一个 PEP 517 构建后端，它把构建和分发 wheel 的过程大大简化了。用户安装时只需要下载 wheel，不必装 Rust 或 maturin。Ruff 和 typos 这类不用 PyO3 的纯 Rust 二进制，也靠它发布到 PyPI，但这样发布的包不能 import。小白追问，Rust 相比 Cython 有什么不可替代性。messense 回答，一靠语言设计和生态，二靠构建发布方面的投入。Rust 不需要头文件，又可以构建 abi3 wheel，所以交叉编译时不需要目标平台的 Python。他们还通过 python3-dll-a 生成导入库，在 Linux 或 Mac 上也能构建 Windows wheel，并支持用 Zig 当交叉编译器。Cython 和 pybind11 做交叉编译，则需要目标平台的 Python 和 crossenv 等一整套东西。laike9m 总结说，PyO3 比前辈们火，一是因为 Rust 本身受欢迎，二是因为工具的可用性好，这也离不开维护者个人的投入。
+
+谈到开源经历，messense 说 Nikolay Kim 很早就邀请早期贡献者加入组织。2021 年他给 maturin 加了 universal2 wheel 支持，之后原维护者 konstin 把项目交给了他，konstin 现在在做 Ruff 的那家公司。他现在的雇主原本是他的 GitHub Sponsor，这份工作也缓解了他离开蚂蚁后的焦虑。在蚂蚁转做管理后，他反而有更多时间做开源，主持人调侃"搞开源要先当 manager"。他平衡工作和开源的办法，是按优先级处理问题，坚持 upstream first，信息不全的 issue 就不看。wechatpy 因为缺少测试账号，现在只是部分维护。他认为支持维护者的办法有两个：提 issue 时把信息写全，个人和企业有余力就出钱赞助。
+
+推荐环节里，messense 推荐了 OrbStack 和 Windows 平铺窗口管理器 FancyWM。小白分享了把 CSAPP、APUE 按章裁成小册子来读的办法，能对付拖延，跨章查阅也方便。Adam 推荐吴恩达的 prompt engineering 课程，laike9m 推荐能装 Chrome 扩展的手机浏览器 Kiwi。节目最后再次呼吁听众试用 PyO3 和 maturin，并赞助维护者。
