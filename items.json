@@ -1,24 +1,5 @@
 [
  {
-  "id": "kK1TOpI948o",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "视觉层级新手指南",
-  "link": "https://youtu.be/kK1TOpI948o",
-  "date": "2026-10-11T22:08",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/kK1TOpI948o.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/kK1TOpI948o.transcript.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kK1TOpI948o.m4a"
- },
- {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -1602,6 +1583,25 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0a061b050aa5.m4a"
  },
  {
+  "id": "kK1TOpI948o",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "视觉层级新手指南",
+  "link": "https://youtu.be/kK1TOpI948o",
+  "date": "2026-04-22T22:30+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/kK1TOpI948o.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/kK1TOpI948o.transcript.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kK1TOpI948o.m4a"
+ },
+ {
   "id": "cur-cad5bdded1ef",
   "kind": "curated",
   "type": "article",
@@ -2303,7 +2303,7 @@
  {
   "id": "BV15oHwzBEYK",
   "kind": "summary",
-  "source": "广场协议并非日本经济陷入停滞的罪魁祸首",
+  "source": "货币法则研习社",
   "title": "1985 年广场协议的真相：它并非日本经济停滞的罪魁祸首",
   "link": "https://www.bilibili.com/video/BV15oHwzBEYK",
   "date": "2025-10-02T12:00+08:00",
@@ -3261,7 +3261,7 @@
  {
   "id": "BV1dU411U7f5",
   "kind": "summary",
-  "source": "《以利为利》导读",
+  "source": "货币法则研习社",
   "title": "土地财政的运作逻辑及其影响：《以利为利》导读",
   "link": "https://www.bilibili.com/video/BV1dU411U7f5",
   "date": "2024-08-16T12:00+08:00",
