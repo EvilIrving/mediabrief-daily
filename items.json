@@ -5094,6 +5094,10 @@
     "url": "txt/cur-8b88a5ec86c5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-8b88a5ec86c5.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/cur-8b88a5ec86c5.orig.txt"
    }
@@ -5532,6 +5536,10 @@
    {
     "label": "总结",
     "url": "txt/cur-93e53a97f2e3.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-93e53a97f2e3.zh.txt"
    },
    {
     "label": "原文",
@@ -6081,6 +6089,10 @@
    {
     "label": "总结",
     "url": "txt/cur-5e8f73181152.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-5e8f73181152.zh.txt"
    },
    {
     "label": "原文",

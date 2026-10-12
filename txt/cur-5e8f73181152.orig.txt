@@ -1,12 +1,23 @@
-https://kentcdodds.com/blog/dont-sync-state-derive-it
+In my Learn React Hooks workshop material, we
+have an exercise where we build a tic-tac-toe game using React's `useState` hook
+(based on the official React tutorial).
+Here's the Github file for the finished version of that exercise
 
-在我的 Learn React Hooks 工作坊材料里，有一个练习是用 React 的 `useState` hook 做一个井字棋游戏（基于 React 官方教程）。这里是该练习完成版的 GitHub 文件。
+We have a few variables of state. There's a `squares` state variable via
+`React.useState`. There's also `nextValue`, `winner`, and `status` are each
+determined by calling the functions `calculateNextValue`, `calculateWinner`, and
+`calculateStatus`. `squares` is regular component state, but `nextValue`,
+`winner`, and `status` are what are called "derived state." That means that
+their value can be derived (or calculated) based on other values rather than
+managed on their own.
 
-我们有几个状态变量。有一个通过 `React.useState` 得到的 `squares` 状态变量。还有 `nextValue`、`winner` 和 `status`，它们分别通过调用 `calculateNextValue`、`calculateWinner` 和 `calculateStatus` 函数来确定。`squares` 是普通的组件状态，而 `nextValue`、`winner` 和 `status` 就是所谓的"派生状态"（derived state）。意思是，它们的值可以根据其他值推导（或计算）出来，而不需要单独管理。
+There's a good reason that I wrote it the way I did. Let's find out the benefits
+of derived state over state synchronization by reimplementing this with a more
+naive approach. The fact is that all four variables are technically state so you
+may automatically think that you need to use `useState` or `useReducer` for
+them.
 
-我这样写是有充分理由的。我们用一种更天真的做法重新实现一遍，看看派生状态相比状态同步有哪些好处。事实上，这四个变量从技术上说都是状态，所以你可能会下意识地认为需要对它们用 `useState` 或 `useReducer`。
-
-我们先从 `useState` 开始：
+Let's start with `useState`:
 
 ```
 function Board() {
@@ -28,10 +39,10 @@ function Board() {
 		setWinner(newWinner)
 		setStatus(newStatus)
 	}
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-看起来也没那么糟。真正成问题的是：如果我们给井字棋加一个功能，允许一次选两个格子呢？要实现它我们得做什么？
+So that's not all that bad. Where it becomes a real problem is what if we added a feature to our tic-tac-toe game where you could select two squares at once? What would we have to do to make that happen?
 
 ```
 function Board() {
@@ -68,12 +79,17 @@ function Board() {
 		setWinner(newWinner)
 		setStatus(newStatus)
 	}
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-这样做最大的问题是，其中一些状态可能会和真正的组件状态（`squares`）不同步。比如，在一串复杂的交互里我们忘了更新它，它就会不同步。如果你写 React 应用有一段时间了，你就知道我在说什么。状态不同步可一点都不好玩。
+The biggest problem with this is some of that state may fall out of sync with
+the true component state (`squares`). It could fall out of sync because we
+forget to update it for a complex sequence of interactions for example. If
+you've been building React apps for a while, you know what I'm talking about.
+It's no fun to have things fall out of sync.
 
-有一个办法*能*有所帮助：减少重复，让所有相关的状态更新都发生在同一个地方：
+One thing that *can* help is to reduce duplication so that all relevant state
+updates happen in one place:
 
 ```
 function Board() {
@@ -107,14 +123,14 @@ function Board() {
 		squaresCopy[square2] = nextValue
 		setNewState(squaresCopy)
 	}
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-这确实大大改善了代码重复，老实说也没费多大事。但这只是一个相当简单的例子。有时候派生状态依赖于多个状态变量，而这些变量又在不同情况下被更新，我们就得确保每当源状态更新时，所有状态都跟着更新。
+That's really improved our code duplication, and it wasn't that big of a deal honestly. But this is a pretty simple example. Sometimes the derived state is based on multiple variables of state that are updated in different situations and we need to make sure that all our state is updated whenever the source state is updated.
 
-## 解决方案
+## The solution
 
-如果我告诉你有更好的办法呢？如果你已经看过上面 codesandbox 里的实现，就知道答案是什么了，不过我们还是把它直接放在这里：
+What if I told you there's something better? If you've already read through the codesandbox implementation above, you know what that solution is, but let's put it right here now:
 
 ```
 function Board() {
@@ -130,10 +146,10 @@ function Board() {
 		squaresCopy[square] = nextValue
 		setSquares(squaresCopy)
 	}
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-不错！我们不用再操心更新派生状态的值，因为它们在每次渲染时直接算出来。很好。我们来加上那个一次选两格的功能：
+Nice! We don't need to worry about updating the derived state values because they're simply calculated every render. Cool. Let's add that two squares at a time feature:
 
 ```
 function Board() {
@@ -158,14 +174,19 @@ function Board() {
 		squaresCopy[square2] = nextValue
 		setSquares(squaresCopy)
 	}
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-太棒了！以前每次更新 `squares` 状态时，我们都得操心是否也正确更新了其他所有状态。现在完全不用担心了。它就是能用。不需要什么花哨的函数来处理所有派生状态的更新，我们直接当场计算就行。
+Sweet! Before we had to concern ourselves with every single time we updated the
+`squares` state to ensure we updated all of the other state properly as well.
+But now we don't need to worry about it at all. It just works. No need for a
+fancy function to handle updating all the derived state. We just calculate it on
+the fly.
 
-## 那 `useReducer` 呢？
+## What about `useReducer`?
 
-`useReducer` 受这些问题的影响没那么严重。下面是我可能会用 `useReducer` 实现的方式：
+`useReducer` doesn't suffer as badly from these problems. Here's how I might
+implement this using `useReducer`:
 
 ```
 function calculateDerivedState(squares) {
@@ -176,8 +197,8 @@ function calculateDerivedState(squares) {
 }
 function ticTacToeReducer(state, square) {
 	if (state.winner || state.squares[square]) {
-		// 不需要改变状态。
-		// （返回同一个对象可以让 React 跳过这次重新渲染）
+		// no state change needed.
+		// (returning the same object allows React to bail out of a re-render)
 		return state
 	}
 	const squaresCopy = [...state.squares]
@@ -190,59 +211,75 @@ function Board() {
 		Array(9).fill(null),
 		calculateDerivedState,
 	)
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-这不是唯一的写法，但重点在于：虽然我们仍然为 `winner`、`nextValue` 和 `status` "派生"状态，但这些都在 reducer 里统一管理，而 reducer 是唯一能发生状态更新的地方，所以不同步的可能性就小一些。
+This isn't the only way to do this, but the point here is that while we do still
+"derive" state for `winner`, `nextValue`, and `status`, we're managing all of
+that within the reducer which is the only place state updates can happen, so
+falling out of sync is less likely.
 
-话虽如此，我觉得这比我们的另一种方案要复杂一点（尤其是如果我们想加上"一次选两格"的功能）。所以如果我要在生产应用里构建并发布它，我会选用 codesandbox 里的那种写法。
+That said, I find this to be a little more complex than our other solution (especially if we want to add that "two squares at a time" feature). So if I were building and shipping this in a production app, I'd go with what I've got in that codesandbox.
 
-## 通过 props 得到的派生状态
+## Derived state via props
 
-状态不一定非得是组件内部管理的，才会遇到状态同步问题。如果 `squares` 状态来自父组件呢？我们要怎么同步这个状态？
+State doesn't have to be managed internally to suffer from the state
+synchronization problems. What if we had the `squares` state coming from a
+parent component? How would we synchronize that state?
 
 ```
 function Board({ squares, onSelectSquare }) {
 	const [nextValue, setNextValue] = React.useState(calculateNextValue(squares))
 	const [winner, setWinner] = React.useState(calculateWinner(squares))
 	const [status, setStatus] = React.useState(calculateStatus(squares))
-	// ……嗯……squares 状态的更新已经不归我们管了，那该怎么
-	// 让这些变量保持最新？useEffect？useLayoutEffect？
+	// ... hmmm... we're no longer managing updating the squares state, so how
+	// do we keep these variables up to date? useEffect? useLayoutEffect?
 	// React.useEffect(() => {
-	//   setNextValue……等等……呃……
+	//   setNextValue... etc... eh...
 	// }, [squares])
 	//
-	// 在 squares 变化时直接调用状态更新函数，
-	// 就写在渲染方法里？
+	// Just call the state updaters when squares change
+	// right in the render method?
 	// if (prevSquares !== squares) {
-	//   setNextValue……等等……唉……
+	//   setNextValue... etc... ugh...
 	// }
 	//
-	// 这些做法我都见人用过……没有一个是好的。
-	// 返回漂亮的 JSX
+	// I've seen people do all of these things... And none of them are great.
+	// return beautiful JSX
 }
 ```
-更好的办法就是当场计算：
+The better way to do this is just to calculate it on the fly:
 
 ```
 function Board({ squares, onSelectSquare }) {
 	const nextValue = calculateNextValue(squares)
 	const winner = calculateWinner(squares)
 	const status = calculateStatus(squares)
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-这样*简单得多*，而且效果非常好。
+It's *way* simpler, and it works really well.
 
-附注：还记得 `getDerivedStateFromProps` 吗？嗯，你多半用不着它，但如果你确实需要，并且想用 hooks 来实现，那么在渲染期间调用状态更新函数其实才是正确的做法。详见 React Hooks FAQ。
+P.S. Remember `getDerivedStateFromProps`? Well
+you probably don't need it
+but if you do and you want to do so with hooks, then calling the state updater
+function during render is actually the correct way to do it.
+Learn more from the React Hooks FAQ.
 
-## 那性能呢？
+## What about performance?
 
-我知道你一直在等我谈这个……情况是这样的：JavaScript 真的很快。我对 `calculateWinner` 函数做了基准测试，结果是每秒 1500 万次操作。所以除非你的井字棋玩家点击速度快得离谱，否则这绝不可能成为性能问题（就算他们真能玩那么快，我保证你还会有其他更容易解决的性能问题）。
+I know you've been waiting for me to address this... Here's the deal. JavaScript
+is really fast. I ran a benchmark on the `calculateWinner` function and this
+resulted in 15 MILLION operations per second. So unless your tic-tac-toe players
+are extremely fast at clicking around, there's no way this is going to be a
+performance problem (and even if they could play that fast, I assure you that
+you'll have other performance problems that will be lower hanging fruit for
+you).
 
-好吧好吧，我在手机上试了一下，每秒只有 430 万次操作。然后我又在笔记本上开了 6 倍 CPU 降速，只有 200 万次……我觉得还是没问题。
+Ok ok, I tried it on my phone and only got 4.3 million operations per second. And then I tried with a CPU 6x slowdown on my laptop and only got 2 million... I think we're still good.
 
-话虽如此，如果你*确实*有一个计算开销很大的函数，那正是 `useMemo` 的用武之地！
+That said, if you *do* happen to have a function which *is* computationally
+expensive, then that's what `useMemo` is for!
 
 ```
 function Board() {
@@ -253,18 +290,30 @@ function Board() {
 		() => calculateStatus(winner, squares, nextValue),
 		[winner, squares, nextValue],
 	)
-	// 返回漂亮的 JSX
+	// return beautiful JSX
 }
 ```
-就是这样。这是一个逃生舱，等你确定某段代码对用户来说确实计算开销很大时再用。注意，它并不会神奇地让这些函数跑得更快，它所做的只是确保它们不会被不必要地调用。如果这就是我们的整个应用，那么应用重新渲染的唯一途径就是 `squares` 发生变化，而这种情况下所有这些函数无论如何都会运行，所以这个"优化"其实没起多大作用。这就是为什么我说："先测量！"
+So there you go. An escape hatch for you to use once you've determined that some
+code is actually computationally expensive for your users to run. Note that this
+doesn't magically make those functions run faster. All it does is ensure that
+they're not called unnecessarily. If this were our whole app, the only way for
+the app to re-render is if `squares` changes in which case all of those
+functions will be run anyway, so we've actually not accomplished much with this
+"optimization." That's why I say: "Measure first!"
 
-哦，还想提一下：派生状态有时甚至比状态同步更快，因为它会带来更少的不必要重新渲染，而那有时会是个问题。
+Oh, and I'd like to mention that derived state can sometimes be even faster than state synchronization because it will result in fewer unnecessary re-renders, which can be a problem sometimes.
 
-## 那 MobX/Reselect 呢？
+## What about MobX/Reselect?
 
-Reselect（如果你在用 Redux，你*绝对*应该用它）内置了记忆化（memoization），这很棒。MobX 也有，而且更进一步，提供了"计算值"（computed values），基本上就是一个给你记忆化、优化过的派生状态值的 API。比我们现有方案更好的一点是：只有在被访问时才会进行计算。
+Reselect (which you should *absolutely*
+be using if you're using Redux) has memoization built-in which is cool. MobX has
+this as well, but they also take it a step further with
+"computed values" which is basically an
+API to give you memoized and optimized derived state values. What makes it even
+better than what we already have is that the computation is only processed when
+it's accessed.
 
-举个（刻意构造的）例子：
+For (contrived) example:
 
 ```
 function FavoriteNumber() {
@@ -294,9 +343,13 @@ function FavoriteNumber() {
 	)
 }
 ```
-注意我们调用了 `getNumberWarning`，但只有在数字太大或太小时才会用到它的结果，所以我们可能根本不需要调用这个函数。当然，这不太可能造成问题，但为了论证，假设调用 `getNumberWarning` 是应用的瓶颈。这就是计算值功能派上用场的地方。
+Notice that we're calling `getNumberWarning`, but we're only using the result if
+the number is too high or too low, so we may not actually need to call that
+function at all. Now, it's unlikely this is problematic, but let's say for the
+sake of argument that calling `getNumberWarning` is an application bottleneck.
+This is where the computed values feature comes in handy.
 
-如果你的应用里经常遇到这种情况，我建议你直接上 MobX（MobX 的人会告诉你还有很多其他理由用它），不过这个具体情况我们自己就能很轻松地解决：
+If you're experiencing this a lot in your app, then I suggest you just jump into using MobX (MobX folks will tell you there are a lot of other reasons to use it as well), but we can solve this specific situation pretty easily ourselves:
 
 ```
 function FavoriteNumber() {
@@ -329,11 +382,15 @@ function FavoriteNumber() {
 	)
 }
 ```
-很好！现在不需要时我们就不用调用 `numberWarning` 了。但如果这不适合你的情况，我们也可以写一个自定义 hook 来替我们施展这个魔法。它并不简单，而且有点 hack（老实说可能有更好的写法），所以我就把它放在一个 codesandbox 里，你想研究的话可以去看看：
+Great! Now we don't need to worry about calling `numberWarning` when it's not
+needed. But if that doesn't work well for your situation, then we could make a
+custom hook do this magic for us. It's not exactly simple and it's a bit of a
+hack (there's probably a better way to do it honestly), so I'm just going to put
+this in a codesandbox and let you explore it if you want:
 
-（嵌入失败：https://codesandbox.io/s/usecomputedvalue-custom-hook-mo5b4）
+Error embedding https://codesandbox.io/s/usecomputedvalue-custom-hook-mo5b4
 
-只需说明，这个自定义 hook 让我们可以这样写：
+It's sufficient to say that the custom hook allows us to do this:
 
 ```
 function FavoriteNumber() {
@@ -366,14 +423,18 @@ function FavoriteNumber() {
 	)
 }
 ```
-这样我们的 `getNumberWarning` 函数只有在 `result` 真正被使用时才会被调用。可以把它想象成一个只有在返回值被渲染时才运行回调的 `useMemo`。
+And our `getNumberWarning` function is only called when the `result` is actually
+used. Think of it like a `useMemo` that only runs the callback when the return
+value is rendered.
 
-我觉得这东西还有完善并开源的空间。欢迎你去做，然后给这篇博文提个 PR，加上你发布的包的链接 😉
+I think there may be room to perfect and open source that. Feel free to do so and then make a PR to this blog post to add a link to your published package 😉
 
-再说一遍，正常情况下真没什么理由为这类事操心。但如果你确实有性能瓶颈，而 `useMemo` 又不够用，那就考虑这样做，或者用 MobX。
+Again, there's really not much reason to worry yourself over this kind of thing
+in a normal scenario. But if you do have perf bottlenecks around and `useMemo`
+isn't enough for you, then consider doing something like this or use MobX.
 
-## 结论
+## Conclusion
 
-好吧，刚才我们有点跑题，在性能上想得太多了。事实是，只要考虑清楚某个状态是需要单独管理，还是可以派生出来，你就能大大简化应用的状态。我们了解到，派生状态可以来自单个状态变量，也可以由多个状态变量推导出来（其中有些本身也可以是派生状态）。
+Ok, so we got a little distracted overthinking performance for a second there. The fact is that you can really simplify your app's state by considering whether the state needs to be managed by itself or if it can be derived. We learned that derived state can be the result of a single variable of state, or it can be derived from multiple variables of state (some of which can also be derived state itself).
 
-所以下次你在维护应用状态、试图排查同步 bug 时，想一想怎样把它改成当场派生。而在少数遇到性能问题的情况下，你可以借助几种优化策略来缓解一些痛苦。祝你好运！
+So next time you're maintaining the state of your app and trying to figure out a synchronization bug, think about how you could make it derived on the fly instead. And in the few instances you bump into performance issues you can reach to a few optimization strategies to help alleviate some of that pain. Good luck!

@@ -1,0 +1,379 @@
+https://kentcdodds.com/blog/dont-sync-state-derive-it
+
+在我的 Learn React Hooks 工作坊材料里，有一个练习是用 React 的 `useState` hook 做一个井字棋游戏（基于 React 官方教程）。这里是该练习完成版的 GitHub 文件。
+
+我们有几个状态变量。有一个通过 `React.useState` 得到的 `squares` 状态变量。还有 `nextValue`、`winner` 和 `status`，它们分别通过调用 `calculateNextValue`、`calculateWinner` 和 `calculateStatus` 函数来确定。`squares` 是普通的组件状态，而 `nextValue`、`winner` 和 `status` 就是所谓的"派生状态"（derived state）。意思是，它们的值可以根据其他值推导（或计算）出来，而不需要单独管理。
+
+我这样写是有充分理由的。我们用一种更天真的做法重新实现一遍，看看派生状态相比状态同步有哪些好处。事实上，这四个变量从技术上说都是状态，所以你可能会下意识地认为需要对它们用 `useState` 或 `useReducer`。
+
+我们先从 `useState` 开始：
+
+```
+function Board() {
+	const [squares, setSquares] = React.useState(Array(9).fill(null))
+	const [nextValue, setNextValue] = React.useState(calculateNextValue(squares))
+	const [winner, setWinner] = React.useState(calculateWinner(squares))
+	const [status, setStatus] = React.useState(calculateStatus(squares))
+	function selectSquare(square) {
+		if (winner || squares[square]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square] = nextValue
+		const newNextValue = calculateNextValue(squaresCopy)
+		const newWinner = calculateWinner(squaresCopy)
+		const newStatus = calculateStatus(newWinner, squaresCopy, newNextValue)
+		setSquares(squaresCopy)
+		setNextValue(newNextValue)
+		setWinner(newWinner)
+		setStatus(newStatus)
+	}
+	// 返回漂亮的 JSX
+}
+```
+看起来也没那么糟。真正成问题的是：如果我们给井字棋加一个功能，允许一次选两个格子呢？要实现它我们得做什么？
+
+```
+function Board() {
+	const [squares, setSquares] = React.useState(Array(9).fill(null))
+	const [nextValue, setNextValue] = React.useState(calculateNextValue(squares))
+	const [winner, setWinner] = React.useState(calculateWinner(squares))
+	const [status, setStatus] = React.useState(calculateStatus(squares))
+	function selectSquare(square) {
+		if (winner || squares[square]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square] = nextValue
+		const newNextValue = calculateNextValue(squaresCopy)
+		const newWinner = calculateWinner(squaresCopy)
+		const newStatus = calculateStatus(newWinner, squaresCopy, newNextValue)
+		setSquares(squaresCopy)
+		setNextValue(newNextValue)
+		setWinner(newWinner)
+		setStatus(newStatus)
+	}
+	function selectTwoSquares(square1, square2) {
+		if (winner || squares[square1] || squares[square2]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square1] = nextValue
+		squaresCopy[square2] = nextValue
+		const newNextValue = calculateNextValue(squaresCopy)
+		const newWinner = calculateWinner(squaresCopy)
+		const newStatus = calculateStatus(newWinner, squaresCopy, newNextValue)
+		setSquares(squaresCopy)
+		setNextValue(newNextValue)
+		setWinner(newWinner)
+		setStatus(newStatus)
+	}
+	// 返回漂亮的 JSX
+}
+```
+这样做最大的问题是，其中一些状态可能会和真正的组件状态（`squares`）不同步。比如，在一串复杂的交互里我们忘了更新它，它就会不同步。如果你写 React 应用有一段时间了，你就知道我在说什么。状态不同步可一点都不好玩。
+
+有一个办法*能*有所帮助：减少重复，让所有相关的状态更新都发生在同一个地方：
+
+```
+function Board() {
+	const [squares, setSquares] = React.useState(Array(9).fill(null))
+	const [nextValue, setNextValue] = React.useState(calculateNextValue(squares))
+	const [winner, setWinner] = React.useState(calculateWinner(squares))
+	const [status, setStatus] = React.useState(calculateStatus(squares))
+	function setNewState(newSquares) {
+		const newNextValue = calculateNextValue(newSquares)
+		const newWinner = calculateWinner(newSquares)
+		const newStatus = calculateStatus(newWinner, newSquares, newNextValue)
+		setSquares(newSquares)
+		setNextValue(newNextValue)
+		setWinner(newWinner)
+		setStatus(newStatus)
+	}
+	function selectSquare(square) {
+		if (winner || squares[square]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square] = nextValue
+		setNewState(squaresCopy)
+	}
+	function selectTwoSquares(square1, square2) {
+		if (winner || squares[square1] || squares[square2]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square1] = nextValue
+		squaresCopy[square2] = nextValue
+		setNewState(squaresCopy)
+	}
+	// 返回漂亮的 JSX
+}
+```
+这确实大大改善了代码重复，老实说也没费多大事。但这只是一个相当简单的例子。有时候派生状态依赖于多个状态变量，而这些变量又在不同情况下被更新，我们就得确保每当源状态更新时，所有状态都跟着更新。
+
+## 解决方案
+
+如果我告诉你有更好的办法呢？如果你已经看过上面 codesandbox 里的实现，就知道答案是什么了，不过我们还是把它直接放在这里：
+
+```
+function Board() {
+	const [squares, setSquares] = React.useState(Array(9).fill(null))
+	const nextValue = calculateNextValue(squares)
+	const winner = calculateWinner(squares)
+	const status = calculateStatus(winner, squares, nextValue)
+	function selectSquare(square) {
+		if (winner || squares[square]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square] = nextValue
+		setSquares(squaresCopy)
+	}
+	// 返回漂亮的 JSX
+}
+```
+不错！我们不用再操心更新派生状态的值，因为它们在每次渲染时直接算出来。很好。我们来加上那个一次选两格的功能：
+
+```
+function Board() {
+	const [squares, setSquares] = React.useState(Array(9).fill(null))
+	const nextValue = calculateNextValue(squares)
+	const winner = calculateWinner(squares)
+	const status = calculateStatus(winner, squares, nextValue)
+	function selectSquare(square) {
+		if (winner || squares[square]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square] = nextValue
+		setSquares(squaresCopy)
+	}
+	function selectTwoSquares(square1, square2) {
+		if (winner || squares[square1] || squares[square2]) {
+			return
+		}
+		const squaresCopy = [...squares]
+		squaresCopy[square1] = nextValue
+		squaresCopy[square2] = nextValue
+		setSquares(squaresCopy)
+	}
+	// 返回漂亮的 JSX
+}
+```
+太棒了！以前每次更新 `squares` 状态时，我们都得操心是否也正确更新了其他所有状态。现在完全不用担心了。它就是能用。不需要什么花哨的函数来处理所有派生状态的更新，我们直接当场计算就行。
+
+## 那 `useReducer` 呢？
+
+`useReducer` 受这些问题的影响没那么严重。下面是我可能会用 `useReducer` 实现的方式：
+
+```
+function calculateDerivedState(squares) {
+	const winner = calculateWinner(squares)
+	const nextValue = calculateNextValue(squares)
+	const status = calculateStatus(winner, squares, nextValue)
+	return { squares, nextValue, winner, status }
+}
+function ticTacToeReducer(state, square) {
+	if (state.winner || state.squares[square]) {
+		// 不需要改变状态。
+		// （返回同一个对象可以让 React 跳过这次重新渲染）
+		return state
+	}
+	const squaresCopy = [...state.squares]
+	squaresCopy[square] = state.nextValue
+	return { ...calculateDerivedState(squaresCopy), squares: squaresCopy }
+}
+function Board() {
+	const [{ squares, status }, selectSquare] = React.useReducer(
+		ticTacToeReducer,
+		Array(9).fill(null),
+		calculateDerivedState,
+	)
+	// 返回漂亮的 JSX
+}
+```
+这不是唯一的写法，但重点在于：虽然我们仍然为 `winner`、`nextValue` 和 `status` "派生"状态，但这些都在 reducer 里统一管理，而 reducer 是唯一能发生状态更新的地方，所以不同步的可能性就小一些。
+
+话虽如此，我觉得这比我们的另一种方案要复杂一点（尤其是如果我们想加上"一次选两格"的功能）。所以如果我要在生产应用里构建并发布它，我会选用 codesandbox 里的那种写法。
+
+## 通过 props 得到的派生状态
+
+状态不一定非得是组件内部管理的，才会遇到状态同步问题。如果 `squares` 状态来自父组件呢？我们要怎么同步这个状态？
+
+```
+function Board({ squares, onSelectSquare }) {
+	const [nextValue, setNextValue] = React.useState(calculateNextValue(squares))
+	const [winner, setWinner] = React.useState(calculateWinner(squares))
+	const [status, setStatus] = React.useState(calculateStatus(squares))
+	// ……嗯……squares 状态的更新已经不归我们管了，那该怎么
+	// 让这些变量保持最新？useEffect？useLayoutEffect？
+	// React.useEffect(() => {
+	//   setNextValue……等等……呃……
+	// }, [squares])
+	//
+	// 在 squares 变化时直接调用状态更新函数，
+	// 就写在渲染方法里？
+	// if (prevSquares !== squares) {
+	//   setNextValue……等等……唉……
+	// }
+	//
+	// 这些做法我都见人用过……没有一个是好的。
+	// 返回漂亮的 JSX
+}
+```
+更好的办法就是当场计算：
+
+```
+function Board({ squares, onSelectSquare }) {
+	const nextValue = calculateNextValue(squares)
+	const winner = calculateWinner(squares)
+	const status = calculateStatus(squares)
+	// 返回漂亮的 JSX
+}
+```
+这样*简单得多*，而且效果非常好。
+
+附注：还记得 `getDerivedStateFromProps` 吗？嗯，你多半用不着它，但如果你确实需要，并且想用 hooks 来实现，那么在渲染期间调用状态更新函数其实才是正确的做法。详见 React Hooks FAQ。
+
+## 那性能呢？
+
+我知道你一直在等我谈这个……情况是这样的：JavaScript 真的很快。我对 `calculateWinner` 函数做了基准测试，结果是每秒 1500 万次操作。所以除非你的井字棋玩家点击速度快得离谱，否则这绝不可能成为性能问题（就算他们真能玩那么快，我保证你还会有其他更容易解决的性能问题）。
+
+好吧好吧，我在手机上试了一下，每秒只有 430 万次操作。然后我又在笔记本上开了 6 倍 CPU 降速，只有 200 万次……我觉得还是没问题。
+
+话虽如此，如果你*确实*有一个计算开销很大的函数，那正是 `useMemo` 的用武之地！
+
+```
+function Board() {
+	const [squares, setSquares] = React.useState(Array(9).fill(null))
+	const nextValue = React.useMemo(() => calculateNextValue(squares), [squares])
+	const winner = React.useMemo(() => calculateWinner(squares), [squares])
+	const status = React.useMemo(
+		() => calculateStatus(winner, squares, nextValue),
+		[winner, squares, nextValue],
+	)
+	// 返回漂亮的 JSX
+}
+```
+就是这样。这是一个逃生舱，等你确定某段代码对用户来说确实计算开销很大时再用。注意，它并不会神奇地让这些函数跑得更快，它所做的只是确保它们不会被不必要地调用。如果这就是我们的整个应用，那么应用重新渲染的唯一途径就是 `squares` 发生变化，而这种情况下所有这些函数无论如何都会运行，所以这个"优化"其实没起多大作用。这就是为什么我说："先测量！"
+
+哦，还想提一下：派生状态有时甚至比状态同步更快，因为它会带来更少的不必要重新渲染，而那有时会是个问题。
+
+## 那 MobX/Reselect 呢？
+
+Reselect（如果你在用 Redux，你*绝对*应该用它）内置了记忆化（memoization），这很棒。MobX 也有，而且更进一步，提供了"计算值"（computed values），基本上就是一个给你记忆化、优化过的派生状态值的 API。比我们现有方案更好的一点是：只有在被访问时才会进行计算。
+
+举个（刻意构造的）例子：
+
+```
+function FavoriteNumber() {
+	const [name, setName] = React.useState('')
+	const [number, setNumber] = React.useState(0)
+	const numberWarning = getNumberWarning(number)
+	return (
+		<div>
+			<label>
+				Your name: <input onChange={(e) => setName(e.target.value)} />
+			</label>
+			<label>
+				Your favorite number:{' '}
+				<input
+					type="number"
+					onChange={(e) => setNumber(Number(e.target.value))}
+				/>
+			</label>
+			<div>
+				{name
+					? `${name}'s favorite number is ${number}`
+					: 'Please type your name'}
+			</div>
+			<div>{number > 10 ? numberWarning : null}</div>
+			<div>{number < 0 ? numberWarning : null}</div>
+		</div>
+	)
+}
+```
+注意我们调用了 `getNumberWarning`，但只有在数字太大或太小时才会用到它的结果，所以我们可能根本不需要调用这个函数。当然，这不太可能造成问题，但为了论证，假设调用 `getNumberWarning` 是应用的瓶颈。这就是计算值功能派上用场的地方。
+
+如果你的应用里经常遇到这种情况，我建议你直接上 MobX（MobX 的人会告诉你还有很多其他理由用它），不过这个具体情况我们自己就能很轻松地解决：
+
+```
+function FavoriteNumber() {
+	const [name, setName] = React.useState('')
+	const [number, setNumber] = React.useState(0)
+	const numberIsTooHigh = number > 10
+	const numberIsTooLow = number < 0
+	const numberWarning =
+		numberIsTooHigh || numberIsTooLow ? getNumberWarning(number) : null
+	return (
+		<div>
+			<label>
+				Your name: <input onChange={(e) => setName(e.target.value)} />
+			</label>
+			<label>
+				Your favorite number:{' '}
+				<input
+					type="number"
+					onChange={(e) => setNumber(Number(e.target.value))}
+				/>
+			</label>
+			<div>
+				{name
+					? `${name}'s favorite number is ${number}`
+					: 'Please type your name'}
+			</div>
+			<div>{numberIsTooHigh ? numberWarning : null}</div>
+			<div>{numberIsTooLow ? numberWarning : null}</div>
+		</div>
+	)
+}
+```
+很好！现在不需要时我们就不用调用 `numberWarning` 了。但如果这不适合你的情况，我们也可以写一个自定义 hook 来替我们施展这个魔法。它并不简单，而且有点 hack（老实说可能有更好的写法），所以我就把它放在一个 codesandbox 里，你想研究的话可以去看看：
+
+（嵌入失败：https://codesandbox.io/s/usecomputedvalue-custom-hook-mo5b4）
+
+只需说明，这个自定义 hook 让我们可以这样写：
+
+```
+function FavoriteNumber() {
+	const [name, setName] = React.useState('')
+	const [number, setNumber] = React.useState(0)
+	const numberWarning = useComputedValue(
+		() => getNumberWarning(number),
+		[number],
+	)
+	return (
+		<div>
+			<label>
+				Your name: <input onChange={(e) => setName(e.target.value)} />
+			</label>
+			<label>
+				Your favorite number:{' '}
+				<input
+					type="number"
+					onChange={(e) => setNumber(Number(e.target.value))}
+				/>
+			</label>
+			<div>
+				{name
+					? `${name}'s favorite number is ${number}`
+					: 'Please type your name'}
+			</div>
+			<div>{number > 10 ? numberWarning.result : null}</div>
+			<div>{number < 0 ? numberWarning.result : null}</div>
+		</div>
+	)
+}
+```
+这样我们的 `getNumberWarning` 函数只有在 `result` 真正被使用时才会被调用。可以把它想象成一个只有在返回值被渲染时才运行回调的 `useMemo`。
+
+我觉得这东西还有完善并开源的空间。欢迎你去做，然后给这篇博文提个 PR，加上你发布的包的链接 😉
+
+再说一遍，正常情况下真没什么理由为这类事操心。但如果你确实有性能瓶颈，而 `useMemo` 又不够用，那就考虑这样做，或者用 MobX。
+
+## 结论
+
+好吧，刚才我们有点跑题，在性能上想得太多了。事实是，只要考虑清楚某个状态是需要单独管理，还是可以派生出来，你就能大大简化应用的状态。我们了解到，派生状态可以来自单个状态变量，也可以由多个状态变量推导出来（其中有些本身也可以是派生状态）。
+
+所以下次你在维护应用状态、试图排查同步 bug 时，想一想怎样把它改成当场派生。而在少数遇到性能问题的情况下，你可以借助几种优化策略来缓解一些痛苦。祝你好运！

@@ -1,500 +1,266 @@
-https://lilianweng.github.io/posts/2021-07-11-diffusion-models/
+\[Updated on 2021-09-19: Highly recommend this blog post on score-based generative modeling by Yang Song (author of several key papers in the references)\].
 
-[2021-09-19 更新：强烈推荐宋飏（Yang Song，参考文献中多篇关键论文的作者）关于基于分数的生成建模的博文。]
+\[Updated on 2022-08-27: Added classifier-free guidance, GLIDE, unCLIP and Imagen.
 
-[2022-08-27 更新：新增无分类器引导、GLIDE、unCLIP 和 Imagen。]
+\[Updated on 2022-08-31: Added latent diffusion model.
 
-[2022-08-31 更新：新增潜在扩散模型。]
+\[Updated on 2024-04-13: Added progressive distillation, consistency models, and the Model Architecture section.
 
-[2024-04-13 更新：新增渐进式蒸馏、一致性模型以及"模型架构"一节。]
+So far, I’ve written about three types of generative models, GAN, VAE, and Flow-based models. They have shown great success in generating high-quality samples, but each has some limitations of its own. GAN models are known for potentially unstable training and less diversity in generation due to their adversarial training nature. VAE relies on a surrogate loss. Flow models have to use specialized architectures to construct reversible transform.
 
-到目前为止，我已经写过三类生成模型：GAN、VAE 和基于流的模型。它们在生成高质量样本方面都取得了巨大成功，但各自都有局限。GAN 由于对抗训练的本质，以训练可能不稳定、生成多样性较差而著称。VAE 依赖替代损失。流模型则必须使用专门的架构来构造可逆变换。
+Diffusion models are inspired by non-equilibrium thermodynamics. They define a Markov chain of diffusion steps to slowly add random noise to data and then learn to reverse the diffusion process to construct desired data samples from the noise. Unlike VAE or flow models, diffusion models are learned with a fixed procedure and the latent variable has high dimensionality (same as the original data).
 
-扩散模型的灵感来自非平衡热力学。它们定义一条由扩散步骤组成的马尔可夫链，逐步向数据中加入随机噪声，然后学习逆转这一扩散过程，从噪声中构造出想要的数据样本。与 VAE 或流模型不同，扩散模型通过固定的过程学习，而且隐变量是高维的（与原始数据维度相同）。
+# What are Diffusion Models?
 
-# 什么是扩散模型？
+Several diffusion-based generative models have been proposed with similar ideas underneath, including *diffusion probabilistic models* (Sohl-Dickstein et al., 2015), *noise-conditioned score network* (**NCSN**; Yang & Ermon, 2019), and *denoising diffusion probabilistic models* (**DDPM**; Ho et al. 2020).
 
-已经有若干基于扩散的生成模型被提出，其底层思想相近，包括*扩散概率模型*（Sohl-Dickstein 等，2015）、*噪声条件分数网络*（**NCSN**；Song & Ermon，2019）和*去噪扩散概率模型*（**DDPM**；Ho 等，2020）。
+## Forward diffusion process
 
-## 前向扩散过程
+Given a data point sampled from a real data distribution $\mathbf{x}\_0 \sim q(\mathbf{x})$, let us define a *forward diffusion process* in which we add small amount of Gaussian noise to the sample in $T$ steps, producing a sequence of noisy samples $\mathbf{x}\_1, \dots, \mathbf{x}\_T$. The step sizes are controlled by a variance schedule $\{\beta\_t \in (0, 1)\}\_{t=1}^T$.
 
-给定从真实数据分布中采样的数据点 $\mathbf{x}_0 \sim q(\mathbf{x})$，我们定义一个*前向扩散过程*：分 $T$ 步向样本中加入少量高斯噪声，得到一系列带噪样本 $\mathbf{x}_1, \dots, \mathbf{x}_T$。步长由方差调度 $\{\beta_t \in (0, 1)\}_{t=1}^T$ 控制：
+The data sample $\mathbf{x}\_0$ gradually loses its distinguishable features as the step $t$ becomes larger. Eventually when $T \to \infty$, $\mathbf{x}\_T$ is equivalent to an isotropic Gaussian distribution.
 
-$$
-q(\mathbf{x}_t \vert \mathbf{x}_{t-1}) = \mathcal{N}(\mathbf{x}_t; \sqrt{1 - \beta_t} \mathbf{x}_{t-1}, \beta_t\mathbf{I}) \quad
-q(\mathbf{x}_{1:T} \vert \mathbf{x}_0) = \prod^T_{t=1} q(\mathbf{x}_t \vert \mathbf{x}_{t-1})
-$$
+A nice property of the above process is that we can sample $\mathbf{x}\_t$ at any arbitrary time step $t$ in a closed form using reparameterization trick. Let $\alpha\_t = 1 - \beta\_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$:
 
-随着步数 $t$ 增大，数据样本 $\mathbf{x}_0$ 逐渐失去可辨识的特征。最终当 $T \to \infty$ 时，$\mathbf{x}_T$ 等价于一个各向同性的高斯分布。
+(\*) Recall that when we merge two Gaussians with different variance, $\mathcal{N}(\mathbf{0}, \sigma\_1^2\mathbf{I})$ and $\mathcal{N}(\mathbf{0}, \sigma\_2^2\mathbf{I})$, the new distribution is $\mathcal{N}(\mathbf{0}, (\sigma\_1^2 + \sigma\_2^2)\mathbf{I})$. Here the merged standard deviation is $\sqrt{(1 - \alpha\_t) + \alpha\_t (1-\alpha\_{t-1})} = \sqrt{1 - \alpha\_t\alpha\_{t-1}}$.
 
-上述过程有一个很好的性质：借助重参数化技巧，我们可以以闭式在任意时间步 $t$ 采样 $\mathbf{x}_t$。令 $\alpha_t = 1 - \beta_t$，$\bar{\alpha}_t = \prod_{i=1}^t \alpha_i$：
+Usually, we can afford a larger update step when the sample gets noisier, so $\beta\_1 \< \beta\_2 \< \dots \< \beta\_T$ and therefore $\bar{\alpha}\_1 > \dots > \bar{\alpha}\_T$.
 
-$$
-\begin{aligned}
-\mathbf{x}_t 
-&= \sqrt{\alpha_t}\mathbf{x}_{t-1} + \sqrt{1 - \alpha_t}\boldsymbol{\epsilon}_{t-1} & \text{ ；其中 } \boldsymbol{\epsilon}_{t-1}, \boldsymbol{\epsilon}_{t-2}, \dots \sim \mathcal{N}(\mathbf{0}, \mathbf{I}) \\
-&= \sqrt{\alpha_t \alpha_{t-1}} \mathbf{x}_{t-2} + \sqrt{1 - \alpha_t \alpha_{t-1}} \bar{\boldsymbol{\epsilon}}_{t-2} & \text{ ；其中 } \bar{\boldsymbol{\epsilon}}_{t-2} \text{ 合并了两个高斯 (*)。} \\
-&= \dots \\
-&= \sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon} \\
-q(\mathbf{x}_t \vert \mathbf{x}_0) &= \mathcal{N}(\mathbf{x}_t; \sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I})
-\end{aligned}
-$$
+### Connection with stochastic gradient Langevin dynamics
 
-(*) 回忆一下：合并两个方差不同的高斯分布 $\mathcal{N}(\mathbf{0}, \sigma_1^2\mathbf{I})$ 和 $\mathcal{N}(\mathbf{0}, \sigma_2^2\mathbf{I})$，得到的新分布是 $\mathcal{N}(\mathbf{0}, (\sigma_1^2 + \sigma_2^2)\mathbf{I})$。这里合并后的标准差为 $\sqrt{(1 - \alpha_t) + \alpha_t (1-\alpha_{t-1})} = \sqrt{1 - \alpha_t\alpha_{t-1}}$。
+Langevin dynamics is a concept from physics, developed for statistically modeling molecular systems. Combined with stochastic gradient descent, *stochastic gradient Langevin dynamics* (Welling & Teh 2011) can produce samples from a probability density $p(\mathbf{x})$ using only the gradients $\nabla\_\mathbf{x} \log p(\mathbf{x})$ in a Markov chain of updates:
 
-通常，样本越嘈杂，我们越能承受更大的更新步长，因此 $\beta_1 < \beta_2 < \dots < \beta_T$，从而 $\bar{\alpha}_1 > \dots > \bar{\alpha}_T$。
+where $\delta$ is the step size. When $T \to \infty, \epsilon \to 0$, $\mathbf{x}\_T$ equals to the true probability density $p(\mathbf{x})$.
 
-### 与随机梯度朗之万动力学的联系
+Compared to standard SGD, stochastic gradient Langevin dynamics injects Gaussian noise into the parameter updates to avoid collapses into local minima.
 
-朗之万动力学是物理学中的概念，用于对分子系统进行统计建模。与随机梯度下降结合后，*随机梯度朗之万动力学*（Welling & Teh，2011）只需利用梯度 $\nabla_\mathbf{x} \log p(\mathbf{x})$，就能通过一条马尔可夫更新链从概率密度 $p(\mathbf{x})$ 中采样：
+## Reverse diffusion process
 
-$$
-\mathbf{x}_t = \mathbf{x}_{t-1} + \frac{\delta}{2} \nabla_\mathbf{x} \log p(\mathbf{x}_{t-1}) + \sqrt{\delta} \boldsymbol{\epsilon}_t
-,\quad\text{其中 }
-\boldsymbol{\epsilon}_t \sim \mathcal{N}(\mathbf{0}, \mathbf{I})
-$$
-
-其中 $\delta$ 是步长。当 $T \to \infty$、$\delta \to 0$ 时，$\mathbf{x}_T$ 服从真实概率密度 $p(\mathbf{x})$。
-
-与标准 SGD 相比，随机梯度朗之万动力学在参数更新中注入高斯噪声，以避免陷入局部极小值。
+If we can reverse the above process and sample from $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$, we will be able to recreate the true sample from a Gaussian noise input, $\mathbf{x}\_T \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$. Note that if $\beta\_t$ is small enough, $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$ will also be Gaussian. Unfortunately, we cannot easily estimate $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$ because it needs to use the entire dataset and therefore we need to learn a model $p\_\theta$ to approximate these conditional probabilities in order to run the *reverse diffusion process*.
 
-## 逆向扩散过程
-
-如果我们能逆转上述过程，从 $q(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$ 中采样，就能从高斯噪声输入 $\mathbf{x}_T \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$ 重建出真实样本。注意，如果 $\beta_t$ 足够小，$q(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$ 也将是高斯分布。遗憾的是，我们无法轻易估计 $q(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$，因为这需要用到整个数据集，所以我们需要学习一个模型 $p_\theta$ 来近似这些条件概率，以便运行*逆向扩散过程*：
-
-$$
-p_\theta(\mathbf{x}_{0:T}) = p(\mathbf{x}_T) \prod^T_{t=1} p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) \quad
-p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
-$$
-
-值得注意的是，在以 $\mathbf{x}_0$ 为条件时，逆向条件概率是可解的：
-
-$$
-q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) = \mathcal{N}(\mathbf{x}_{t-1}; \color{blue}{\tilde{\boldsymbol{\mu}}}(\mathbf{x}_t, \mathbf{x}_0), \color{red}{\tilde{\beta}_t} \mathbf{I})
-$$
+It is noteworthy that the reverse conditional probability is tractable when conditioned on $\mathbf{x}\_0$:
 
-利用贝叶斯法则，有：
+Using Bayes’ rule, we have:
 
-$$
-\begin{aligned}
-q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) 
-&= q(\mathbf{x}_t \vert \mathbf{x}_{t-1}, \mathbf{x}_0) \frac{ q(\mathbf{x}_{t-1} \vert \mathbf{x}_0) }{ q(\mathbf{x}_t \vert \mathbf{x}_0) } \\
-&\propto \exp \Big(-\frac{1}{2} \big(\frac{(\mathbf{x}_t - \sqrt{\alpha_t} \mathbf{x}_{t-1})^2}{\beta_t} + \frac{(\mathbf{x}_{t-1} - \sqrt{\bar{\alpha}_{t-1}} \mathbf{x}_0)^2}{1-\bar{\alpha}_{t-1}} - \frac{(\mathbf{x}_t - \sqrt{\bar{\alpha}_t} \mathbf{x}_0)^2}{1-\bar{\alpha}_t} \big) \Big) \\
-&= \exp \Big(-\frac{1}{2} \big(\frac{\mathbf{x}_t^2 - 2\sqrt{\alpha_t} \mathbf{x}_t \color{blue}{\mathbf{x}_{t-1}} \color{black}{+ \alpha_t} \color{red}{\mathbf{x}_{t-1}^2} }{\beta_t} + \frac{ \color{red}{\mathbf{x}_{t-1}^2} \color{black}{- 2 \sqrt{\bar{\alpha}_{t-1}} \mathbf{x}_0} \color{blue}{\mathbf{x}_{t-1}} \color{black}{+ \bar{\alpha}_{t-1} \mathbf{x}_0^2}  }{1-\bar{\alpha}_{t-1}} - \frac{(\mathbf{x}_t - \sqrt{\bar{\alpha}_t} \mathbf{x}_0)^2}{1-\bar{\alpha}_t} \big) \Big) \\
-&= \exp\Big( -\frac{1}{2} \big( \color{red}{(\frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}})} \mathbf{x}_{t-1}^2 - \color{blue}{(\frac{2\sqrt{\alpha_t}}{\beta_t} \mathbf{x}_t + \frac{2\sqrt{\bar{\alpha}_{t-1}}}{1 - \bar{\alpha}_{t-1}} \mathbf{x}_0)} \mathbf{x}_{t-1} \color{black}{ + C(\mathbf{x}_t, \mathbf{x}_0) \big) \Big)}
-\end{aligned}
-$$
-
-其中 $C(\mathbf{x}_t, \mathbf{x}_0)$ 是某个不含 $\mathbf{x}_{t-1}$ 的函数，细节从略。按照标准高斯密度函数的形式，均值和方差可以参数化如下（回忆 $\alpha_t = 1 - \beta_t$，$\bar{\alpha}_t = \prod_{i=1}^t \alpha_i$）：
-
-$$
-\begin{aligned}
-\tilde{\beta}_t 
-&= 1/(\frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}}) 
-= 1/(\frac{\alpha_t - \bar{\alpha}_t + \beta_t}{\beta_t(1 - \bar{\alpha}_{t-1})})
-= \color{green}{\frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t} \\
-\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, \mathbf{x}_0)
-&= (\frac{\sqrt{\alpha_t}}{\beta_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1} }}{1 - \bar{\alpha}_{t-1}} \mathbf{x}_0)/(\frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}}) \\
-&= (\frac{\sqrt{\alpha_t}}{\beta_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1} }}{1 - \bar{\alpha}_{t-1}} \mathbf{x}_0) \color{green}{\frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t} \\
-&= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \mathbf{x}_0\\
-\end{aligned}
-$$
-
-借助前面那个好性质，可以把 $\mathbf{x}_0 = \frac{1}{\sqrt{\bar{\alpha}_t}}(\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}_t)$ 代入上式，得到：
-
-$$
-\begin{aligned}
-\tilde{\boldsymbol{\mu}}_t
-&= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\beta_t}{1 - \bar{\alpha}_t} \frac{1}{\sqrt{\bar{\alpha}_t}}(\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}_t) \\
-&= \color{cyan}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_t \Big)}
-\end{aligned}
-$$
-
-正如原文图 2 所示，这种设定与 VAE 非常相似，因此可以用变分下界来优化负对数似然：
-
-$$
-\begin{aligned}
-- \log p_\theta(\mathbf{x}_0) 
-&\leq - \log p_\theta(\mathbf{x}_0) + D_\text{KL}(q(\mathbf{x}_{1:T}\vert\mathbf{x}_0) \| p_\theta(\mathbf{x}_{1:T}\vert\mathbf{x}_0) ) & \small{\text{；KL 非负}}\\
-&= - \log p_\theta(\mathbf{x}_0) + \mathbb{E}_{\mathbf{x}_{1:T}\sim q(\mathbf{x}_{1:T} \vert \mathbf{x}_0)} \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T}) / p_\theta(\mathbf{x}_0)} \Big] \\
-&= - \log p_\theta(\mathbf{x}_0) + \mathbb{E}_q \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} + \log p_\theta(\mathbf{x}_0) \Big] \\
-&= \mathbb{E}_q \Big[ \log \frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} \Big] \\
-\text{令 }L_\text{VLB} 
-&= \mathbb{E}_{q(\mathbf{x}_{0:T})} \Big[ \log \frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} \Big] \geq - \mathbb{E}_{q(\mathbf{x}_0)} \log p_\theta(\mathbf{x}_0)
-\end{aligned}
-$$
-
-用詹森不等式也可以直接得到同样的结果。假设我们想以最小化交叉熵为学习目标：
-
-$$
-\begin{aligned}
-L_\text{CE}
-&= - \mathbb{E}_{q(\mathbf{x}_0)} \log p_\theta(\mathbf{x}_0) \\
-&= - \mathbb{E}_{q(\mathbf{x}_0)} \log \Big( \int p_\theta(\mathbf{x}_{0:T}) d\mathbf{x}_{1:T} \Big) \\
-&= - \mathbb{E}_{q(\mathbf{x}_0)} \log \Big( \int q(\mathbf{x}_{1:T} \vert \mathbf{x}_0) \frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T} \vert \mathbf{x}_{0})} d\mathbf{x}_{1:T} \Big) \\
-&= - \mathbb{E}_{q(\mathbf{x}_0)} \log \Big( \mathbb{E}_{q(\mathbf{x}_{1:T} \vert \mathbf{x}_0)} \frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T} \vert \mathbf{x}_{0})} \Big) \\
-&\leq - \mathbb{E}_{q(\mathbf{x}_{0:T})} \log \frac{p_\theta(\mathbf{x}_{0:T})}{q(\mathbf{x}_{1:T} \vert \mathbf{x}_{0})} \\
-&= \mathbb{E}_{q(\mathbf{x}_{0:T})}\Big[\log \frac{q(\mathbf{x}_{1:T} \vert \mathbf{x}_{0})}{p_\theta(\mathbf{x}_{0:T})} \Big] = L_\text{VLB}
-\end{aligned}
-$$
-
-为了让式中每一项都可以解析计算，目标可以进一步改写为若干 KL 散度项与熵项的组合（详细推导见 Sohl-Dickstein 等 2015 年论文的附录 B），结果为：
-
-$$
-\begin{aligned}
-L_\text{VLB} 
-&= \mathbb{E}_{q(\mathbf{x}_{0:T})} \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} \Big] \\
-&= \mathbb{E}_q \Big[ \log\frac{\prod_{t=1}^T q(\mathbf{x}_t\vert\mathbf{x}_{t-1})}{ p_\theta(\mathbf{x}_T) \prod_{t=1}^T p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t) } \Big] \\
-&= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=1}^T \log \frac{q(\mathbf{x}_t\vert\mathbf{x}_{t-1})}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} \Big] \\
-&= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \frac{q(\mathbf{x}_t\vert\mathbf{x}_{t-1})}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \log\frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big] \\
-&= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \Big( \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)}\cdot \frac{q(\mathbf{x}_t \vert \mathbf{x}_0)}{q(\mathbf{x}_{t-1}\vert\mathbf{x}_0)} \Big) + \log \frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big] \\
-&= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \sum_{t=2}^T \log \frac{q(\mathbf{x}_t \vert \mathbf{x}_0)}{q(\mathbf{x}_{t-1} \vert \mathbf{x}_0)} + \log\frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big] \\
-&= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \log\frac{q(\mathbf{x}_T \vert \mathbf{x}_0)}{q(\mathbf{x}_1 \vert \mathbf{x}_0)} + \log \frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big]\\
-&= \mathbb{E}_q \Big[ \log\frac{q(\mathbf{x}_T \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_T)} + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} - \log p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1) \Big] \\
-&= \mathbb{E}_q [\underbrace{D_\text{KL}(q(\mathbf{x}_T \vert \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_T))}_{L_T} + \sum_{t=2}^T \underbrace{D_\text{KL}(q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t))}_{L_{t-1}} \underbrace{- \log p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)}_{L_0} ]
-\end{aligned}
-$$
+where $C(\mathbf{x}\_t, \mathbf{x}\_0)$ is some function not involving $\mathbf{x}\_{t-1}$ and details are omitted. Following the standard Gaussian density function, the mean and variance can be parameterized as follows (recall that $\alpha\_t = 1 - \beta\_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$):
 
-我们把变分下界损失中的各个分量分别标记出来：
+Thanks to the nice property, we can represent $\mathbf{x}\_0 = \frac{1}{\sqrt{\bar{\alpha}\_t}}(\mathbf{x}\_t - \sqrt{1 - \bar{\alpha}\_t}\boldsymbol{\epsilon}\_t)$ and plug it into the above equation and obtain:
 
-$$
-\begin{aligned}
-L_\text{VLB} &= L_T + L_{T-1} + \dots + L_0 \\
-\text{其中 } L_T &= D_\text{KL}(q(\mathbf{x}_T \vert \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_T)) \\
-L_t &= D_\text{KL}(q(\mathbf{x}_t \vert \mathbf{x}_{t+1}, \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_t \vert\mathbf{x}_{t+1})) \text{，其中 }1 \leq t \leq T-1 \\
-L_0 &= - \log p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)
-\end{aligned}
-$$
+As demonstrated in Fig. 2., such a setup is very similar to VAE and thus we can use the variational lower bound to optimize the negative log-likelihood.
 
-$L_\text{VLB}$ 中的每个 KL 项（$L_0$ 除外）都是在比较两个高斯分布，因此都能以闭式计算。$L_T$ 是常数，训练时可以忽略，因为 $q$ 没有可学习参数，而 $\mathbf{x}_T$ 是高斯噪声。Ho 等（2020）用一个由 $\mathcal{N}(\mathbf{x}_0; \boldsymbol{\mu}_\theta(\mathbf{x}_1, 1), \boldsymbol{\Sigma}_\theta(\mathbf{x}_1, 1))$ 导出的独立离散解码器来建模 $L_0$。
+It is also straightforward to get the same result using Jensen’s inequality. Say we want to minimize the cross entropy as the learning objective,
 
-## 训练损失中 $L_t$ 的参数化
+To convert each term in the equation to be analytically computable, the objective can be further rewritten to be a combination of several KL-divergence and entropy terms (See the detailed step-by-step process in Appendix B in Sohl-Dickstein et al., 2015):
 
-回忆一下，我们需要学习一个神经网络来近似逆向扩散过程中的条件概率分布 $p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))$。我们希望训练 $\boldsymbol{\mu}_\theta$ 去预测 $\tilde{\boldsymbol{\mu}}_t = \frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_t \Big)$。由于训练时 $\mathbf{x}_t$ 是可用的输入，我们可以转而对高斯噪声项重参数化，让模型在时间步 $t$ 根据输入 $\mathbf{x}_t$ 预测 $\boldsymbol{\epsilon}_t$：
+Let’s label each component in the variational lower bound loss separately:
 
-$$
-\begin{aligned}
-\boldsymbol{\mu}_\theta(\mathbf{x}_t, t) &= \color{cyan}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) \Big)} \\
-\text{因此 }\mathbf{x}_{t-1} &= \mathcal{N}(\mathbf{x}_{t-1}; \frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) \Big), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
-\end{aligned}
-$$
+Every KL term in $L\_\text{VLB}$ (except for $L\_0$) compares two Gaussian distributions and therefore they can be computed in closed form. $L\_T$ is constant and can be ignored during training because $q$ has no learnable parameters and $\mathbf{x}\_T$ is a Gaussian noise. Ho et al. 2020 models $L\_0$ using a separate discrete decoder derived from $\mathcal{N}(\mathbf{x}\_0; \boldsymbol{\mu}\_\theta(\mathbf{x}\_1, 1), \boldsymbol{\Sigma}\_\theta(\mathbf{x}\_1, 1))$.
 
-损失项 $L_t$ 被参数化为最小化与 $\tilde{\boldsymbol{\mu}}$ 的差异：
+## Parameterization of $L\_t$ for Training Loss
 
-$$
-\begin{aligned}
-L_t 
-&= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2 \| \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t) \|^2_2} \| \color{blue}{\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0)} - \color{green}{\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)} \|^2 \Big] \\
-&= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2  \|\boldsymbol{\Sigma}_\theta \|^2_2} \| \color{blue}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_t \Big)} - \color{green}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t) \Big)} \|^2 \Big] \\
-&= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \| \boldsymbol{\Sigma}_\theta \|^2_2} \|\boldsymbol{\epsilon}_t - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\|^2 \Big] \\
-&= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \| \boldsymbol{\Sigma}_\theta \|^2_2} \|\boldsymbol{\epsilon}_t - \boldsymbol{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}_t, t)\|^2 \Big] 
-\end{aligned}
-$$
+Recall that we need to learn a neural network to approximate the conditioned probability distributions in the reverse diffusion process, $p\_\theta(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) = \mathcal{N}(\mathbf{x}\_{t-1}; \boldsymbol{\mu}\_\theta(\mathbf{x}\_t, t), \boldsymbol{\Sigma}\_\theta(\mathbf{x}\_t, t))$. We would like to train $\boldsymbol{\mu}\_\theta$ to predict $\tilde{\boldsymbol{\mu}}\_t = \frac{1}{\sqrt{\alpha\_t}} \Big( \mathbf{x}\_t - \frac{1 - \alpha\_t}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_t \Big)$. Because $\mathbf{x}\_t$ is available as input at training time, we can reparameterize the Gaussian noise term instead to make it predict $\boldsymbol{\epsilon}\_t$ from the input $\mathbf{x}\_t$ at time step $t$:
 
-### 简化
+The loss term $L\_t$ is parameterized to minimize the difference from $\tilde{\boldsymbol{\mu}}$ :
 
-Ho 等（2020）在实践中发现，用一个忽略权重项的简化目标来训练扩散模型效果更好：
+### Simplification
 
-$$
-\begin{aligned}
-L_t^\text{simple}
-&= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}_t} \Big[\|\boldsymbol{\epsilon}_t - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\|^2 \Big] \\
-&= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}_t} \Big[\|\boldsymbol{\epsilon}_t - \boldsymbol{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}_t, t)\|^2 \Big]
-\end{aligned}
-$$
+Empirically, Ho et al. (2020) found that training the diffusion model works better with a simplified objective that ignores the weighting term:
 
-最终的简单目标为：
+The final simple objective is:
 
-$$
-L_\text{simple} = L_t^\text{simple} + C
-$$
+where $C$ is a constant not depending on $\theta$.
 
-其中 $C$ 是与 $\theta$ 无关的常数。
+### Connection with noise-conditioned score networks (NCSN)
 
-### 与噪声条件分数网络（NCSN）的联系
+Song & Ermon (2019) proposed a score-based generative modeling method where samples are produced via Langevin dynamics using gradients of the data distribution estimated with score matching. The score of each sample $\mathbf{x}$’s density probability is defined as its gradient $\nabla\_{\mathbf{x}} \log q(\mathbf{x})$. A score network $\mathbf{s}\_\theta: \mathbb{R}^D \to \mathbb{R}^D$ is trained to estimate it, $\mathbf{s}\_\theta(\mathbf{x}) \approx \nabla\_{\mathbf{x}} \log q(\mathbf{x})$.
 
-Song & Ermon（2019）提出了一种基于分数的生成建模方法：用分数匹配估计数据分布的梯度，再借助朗之万动力学生成样本。每个样本 $\mathbf{x}$ 的概率密度的分数被定义为其梯度 $\nabla_{\mathbf{x}} \log q(\mathbf{x})$。训练一个分数网络 $\mathbf{s}_\theta: \mathbb{R}^D \to \mathbb{R}^D$ 来估计它，即 $\mathbf{s}_\theta(\mathbf{x}) \approx \nabla_{\mathbf{x}} \log q(\mathbf{x})$。
+To make it scalable with high-dimensional data in the deep learning setting, they proposed to use either *denoising score matching* (Vincent, 2011) or *sliced score matching* (use random projections; Song et al., 2019). Denosing score matching adds a pre-specified small noise to the data $q(\tilde{\mathbf{x}} \vert \mathbf{x})$ and estimates $q(\tilde{\mathbf{x}})$ with score matching.
 
-为了让该方法在深度学习场景中能扩展到高维数据，他们提出使用*去噪分数匹配*（Vincent，2011）或*切片分数匹配*（使用随机投影；Song 等，2019）。去噪分数匹配向数据加入预先指定的小噪声 $q(\tilde{\mathbf{x}} \vert \mathbf{x})$，并用分数匹配估计 $q(\tilde{\mathbf{x}})$。
+Recall that Langevin dynamics can sample data points from a probability density distribution using only the score $\nabla\_{\mathbf{x}} \log q(\mathbf{x})$ in an iterative process.
 
-回忆一下，朗之万动力学只需利用分数 $\nabla_{\mathbf{x}} \log q(\mathbf{x})$，就能通过迭代过程从概率密度分布中采样数据点。
+However, according to the manifold hypothesis, most of the data is expected to concentrate in a low dimensional manifold, even though the observed data might look only arbitrarily high-dimensional. It brings a negative effect on score estimation since the data points cannot cover the whole space. In regions where data density is low, the score estimation is less reliable. After adding a small Gaussian noise to make the perturbed data distribution cover the full space $\mathbb{R}^D$, the training of the score estimator network becomes more stable. Song & Ermon (2019) improved it by perturbing the data with the noise of *different levels* and train a noise-conditioned score network to *jointly* estimate the scores of all the perturbed data at different noise levels.
 
-然而根据流形假设，尽管观测数据看起来维度可以任意高，大部分数据预计会集中在一个低维流形上。这会对分数估计产生负面影响，因为数据点无法覆盖整个空间。在数据密度低的区域，分数估计不太可靠。加入少量高斯噪声、使扰动后的数据分布覆盖整个空间 $\mathbb{R}^D$ 之后，分数估计网络的训练会更稳定。Song & Ermon（2019）对此作了改进：用*不同强度*的噪声扰动数据，并训练一个噪声条件分数网络，*联合*估计各个噪声强度下所有扰动数据的分数。
+The schedule of increasing noise levels resembles the forward diffusion process. If we use the diffusion process annotation, the score approximates $\mathbf{s}\_\theta(\mathbf{x}\_t, t) \approx \nabla\_{\mathbf{x}\_t} \log q(\mathbf{x}\_t)$. Given a Gaussian distribution $\mathbf{x} \sim \mathcal{N}(\mathbf{\mu}, \sigma^2 \mathbf{I})$, we can write the derivative of the logarithm of its density function as $\nabla\_{\mathbf{x}}\log p(\mathbf{x}) = \nabla\_{\mathbf{x}} \Big(-\frac{1}{2\sigma^2}(\mathbf{x} - \boldsymbol{\mu})^2 \Big) = - \frac{\mathbf{x} - \boldsymbol{\mu}}{\sigma^2} = - \frac{\boldsymbol{\epsilon}}{\sigma}$ where $\boldsymbol{\epsilon} \sim \mathcal{N}(\boldsymbol{0}, \mathbf{I})$. Recall that $q(\mathbf{x}\_t \vert \mathbf{x}\_0) \sim \mathcal{N}(\sqrt{\bar{\alpha}\_t} \mathbf{x}\_0, (1 - \bar{\alpha}\_t)\mathbf{I})$ and therefore,
 
-逐步增大噪声强度的调度方式与前向扩散过程相似。如果使用扩散过程的记号，分数近似为 $\mathbf{s}_\theta(\mathbf{x}_t, t) \approx \nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)$。给定高斯分布 $\mathbf{x} \sim \mathcal{N}(\boldsymbol{\mu}, \sigma^2 \mathbf{I})$，其密度函数对数的导数可写为 $\nabla_{\mathbf{x}}\log p(\mathbf{x}) = \nabla_{\mathbf{x}} \Big(-\frac{1}{2\sigma^2}(\mathbf{x} - \boldsymbol{\mu})^2 \Big) = - \frac{\mathbf{x} - \boldsymbol{\mu}}{\sigma^2} = - \frac{\boldsymbol{\epsilon}}{\sigma}$，其中 $\boldsymbol{\epsilon} \sim \mathcal{N}(\boldsymbol{0}, \mathbf{I})$。回忆 $q(\mathbf{x}_t \vert \mathbf{x}_0) \sim \mathcal{N}(\sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I})$，因此：
+## Parameterization of $\beta\_t$
 
-$$
-\mathbf{s}_\theta(\mathbf{x}_t, t) 
-\approx \nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t)
-= \mathbb{E}_{q(\mathbf{x}_0)} [\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t \vert \mathbf{x}_0)]
-= \mathbb{E}_{q(\mathbf{x}_0)} \Big[ - \frac{\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)}{\sqrt{1 - \bar{\alpha}_t}} \Big]
-= - \frac{\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)}{\sqrt{1 - \bar{\alpha}_t}}
-$$
+The forward variances are set to be a sequence of linearly increasing constants in Ho et al. (2020), from $\beta\_1=10^{-4}$ to $\beta\_T=0.02$. They are relatively small compared to the normalized image pixel values between $\[-1, 1\]$. Diffusion models in their experiments showed high-quality samples but still could not achieve competitive model log-likelihood as other generative models.
 
-## $\beta_t$ 的参数化
+Nichol & Dhariwal (2021) proposed several improvement techniques to help diffusion models to obtain lower NLL. One of the improvements is to use a cosine-based variance schedule. The choice of the scheduling function can be arbitrary, as long as it provides a near-linear drop in the middle of the training process and subtle changes around $t=0$ and $t=T$.
 
-在 Ho 等（2020）中，前向方差被设为一列线性递增的常数，从 $\beta_1=10^{-4}$ 到 $\beta_T=0.02$。与归一化到 $[-1, 1]$ 的图像像素值相比，它们相对较小。他们实验中的扩散模型能生成高质量样本，但模型对数似然仍无法与其他生成模型竞争。
+where the small offset $s$ is to prevent $\beta\_t$ from being too small when close to $t=0$.
 
-Nichol & Dhariwal（2021）提出了几项改进技术，帮助扩散模型获得更低的负对数似然（NLL）。其中一项改进是使用基于余弦的方差调度。调度函数的选择可以是任意的，只要它在训练过程中段提供近似线性的下降，并在 $t=0$ 和 $t=T$ 附近变化平缓：
+## Parameterization of reverse process variance $\boldsymbol{\Sigma}\_\theta$
 
-$$
-\beta_t = \text{clip}(1-\frac{\bar{\alpha}_t}{\bar{\alpha}_{t-1}}, 0.999) \quad\bar{\alpha}_t = \frac{f(t)}{f(0)}\quad\text{其中 }f(t)=\cos\Big(\frac{t/T+s}{1+s}\cdot\frac{\pi}{2}\Big)^2
-$$
+Ho et al. (2020) chose to fix $\beta\_t$ as constants instead of making them learnable and set $\boldsymbol{\Sigma}\_\theta(\mathbf{x}\_t, t) = \sigma^2\_t \mathbf{I}$ , where $\sigma\_t$ is not learned but set to $\beta\_t$ or $\tilde{\beta}\_t = \frac{1 - \bar{\alpha}\_{t-1}}{1 - \bar{\alpha}\_t} \cdot \beta\_t$. Because they found that learning a diagonal variance $\boldsymbol{\Sigma}\_\theta$ leads to unstable training and poorer sample quality.
 
-其中小偏移量 $s$ 用于防止 $\beta_t$ 在接近 $t=0$ 时过小。
+Nichol & Dhariwal (2021) proposed to learn $\boldsymbol{\Sigma}\_\theta(\mathbf{x}\_t, t)$ as an interpolation between $\beta\_t$ and $\tilde{\beta}\_t$ by model predicting a mixing vector $\mathbf{v}$ :
 
-## 逆向过程方差 $\boldsymbol{\Sigma}_\theta$ 的参数化
+However, the simple objective $L\_\text{simple}$ does not depend on $\boldsymbol{\Sigma}\_\theta$ . To add the dependency, they constructed a hybrid objective $L\_\text{hybrid} = L\_\text{simple} + \lambda L\_\text{VLB}$ where $\lambda=0.001$ is small and stop gradient on $\boldsymbol{\mu}\_\theta$ in the $L\_\text{VLB}$ term such that $L\_\text{VLB}$ only guides the learning of $\boldsymbol{\Sigma}\_\theta$. Empirically they observed that $L\_\text{VLB}$ is pretty challenging to optimize likely due to noisy gradients, so they proposed to use a time-averaging smoothed version of $L\_\text{VLB}$ with importance sampling.
 
-Ho 等（2020）选择把 $\beta_t$ 固定为常数而非可学习参数，并设 $\boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t) = \sigma^2_t \mathbf{I}$，其中 $\sigma_t$ 不经学习，而是设为 $\beta_t$ 或 $\tilde{\beta}_t = \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t$。原因是他们发现，学习对角方差 $\boldsymbol{\Sigma}_\theta$ 会导致训练不稳定、样本质量更差。
+# Conditioned Generation
 
-Nichol & Dhariwal（2021）提出把 $\boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t)$ 学习为 $\beta_t$ 与 $\tilde{\beta}_t$ 之间的插值，由模型预测一个混合向量 $\mathbf{v}$：
+While training generative models on images with conditioning information such as ImageNet dataset, it is common to generate samples conditioned on class labels or a piece of descriptive text.
 
-$$
-\boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t) = \exp(\mathbf{v} \log \beta_t + (1-\mathbf{v}) \log \tilde{\beta}_t)
-$$
+## Classifier Guided Diffusion
 
-然而，简单目标 $L_\text{simple}$ 并不依赖 $\boldsymbol{\Sigma}_\theta$。为了引入这种依赖，他们构造了混合目标 $L_\text{hybrid} = L_\text{simple} + \lambda L_\text{VLB}$，其中 $\lambda=0.001$ 很小，并在 $L_\text{VLB}$ 项中对 $\boldsymbol{\mu}_\theta$ 停止梯度，使 $L_\text{VLB}$ 只引导 $\boldsymbol{\Sigma}_\theta$ 的学习。他们在实践中观察到 $L_\text{VLB}$ 很难优化，可能是梯度噪声较大所致，因此提出使用带重要性采样的、按时间平均平滑后的 $L_\text{VLB}$。
+To explicit incorporate class information into the diffusion process, Dhariwal & Nichol (2021) trained a classifier $f\_\phi(y \vert \mathbf{x}\_t, t)$ on noisy image $\mathbf{x}\_t$ and use gradients $\nabla\_\mathbf{x} \log f\_\phi(y \vert \mathbf{x}\_t)$ to guide the diffusion sampling process toward the conditioning information $y$ (e.g. a target class label) by altering the noise prediction. Recall that $\nabla\_{\mathbf{x}\_t} \log q(\mathbf{x}\_t) = - \frac{1}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_\theta(\mathbf{x}\_t, t)$ and we can write the score function for the joint distribution $q(\mathbf{x}\_t, y)$ as following,
 
-# 条件生成
+Thus, a new classifier-guided predictor $\bar{\boldsymbol{\epsilon}}\_\theta$ would take the form as following,
 
-在 ImageNet 这类带条件信息的图像数据上训练生成模型时，常见做法是以类别标签或一段描述文字为条件生成样本。
+To control the strength of the classifier guidance, we can add a weight $w$ to the delta part,
 
-## 分类器引导扩散
+The resulting *ablated diffusion model* (**ADM**) and the one with additional classifier guidance (**ADM-G**) are able to achieve better results than SOTA generative models (e.g. BigGAN).
 
-为了把类别信息显式地融入扩散过程，Dhariwal & Nichol（2021）在带噪图像 $\mathbf{x}_t$ 上训练了一个分类器 $f_\phi(y \vert \mathbf{x}_t, t)$，并通过修改噪声预测，用梯度 $\nabla_\mathbf{x} \log f_\phi(y \vert \mathbf{x}_t)$ 把扩散采样过程引向条件信息 $y$（例如目标类别标签）。回忆 $\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t) = - \frac{1}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$，于是联合分布 $q(\mathbf{x}_t, y)$ 的分数函数可以写成：
+Additionally with some modifications on the U-Net architecture, Dhariwal & Nichol (2021) showed performance better than GAN with diffusion models. The architecture modifications include larger model depth/width, more attention heads, multi-resolution attention, BigGAN residual blocks for up/downsampling, residual connection rescale by $1/\sqrt{2}$ and adaptive group normalization (AdaGN).
 
-$$
-\begin{aligned}
-\nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t, y)
-&= \nabla_{\mathbf{x}_t} \log q(\mathbf{x}_t) + \nabla_{\mathbf{x}_t} \log q(y \vert \mathbf{x}_t) \\
-&\approx - \frac{1}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) + \nabla_{\mathbf{x}_t} \log f_\phi(y \vert \mathbf{x}_t) \\
-&= - \frac{1}{\sqrt{1 - \bar{\alpha}_t}} (\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) - \sqrt{1 - \bar{\alpha}_t} \nabla_{\mathbf{x}_t} \log f_\phi(y \vert \mathbf{x}_t))
-\end{aligned}
-$$
+## Classifier-Free Guidance
 
-因此，新的分类器引导预测器 $\bar{\boldsymbol{\epsilon}}_\theta$ 形式如下：
+Without an independent classifier $f\_\phi$, it is still possible to run conditional diffusion steps by incorporating the scores from a conditional and an unconditional diffusion model (Ho & Salimans, 2021). Let unconditional denoising diffusion model $p\_\theta(\mathbf{x})$ parameterized through a score estimator $\boldsymbol{\epsilon}\_\theta(\mathbf{x}\_t, t)$ and the conditional model $p\_\theta(\mathbf{x} \vert y)$ parameterized through $\boldsymbol{\epsilon}\_\theta(\mathbf{x}\_t, t, y)$. These two models can be learned via a single neural network. Precisely, a conditional diffusion model $p\_\theta(\mathbf{x} \vert y)$ is trained on paired data $(\mathbf{x}, y)$, where the conditioning information $y$ gets discarded periodically at random such that the model knows how to generate images unconditionally as well, i.e. $\boldsymbol{\epsilon}\_\theta(\mathbf{x}\_t, t) = \boldsymbol{\epsilon}\_\theta(\mathbf{x}\_t, t, y=\varnothing)$.
 
-$$
-\bar{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t) = \boldsymbol{\epsilon}_\theta(x_t, t) - \sqrt{1 - \bar{\alpha}_t} \nabla_{\mathbf{x}_t} \log f_\phi(y \vert \mathbf{x}_t)
-$$
+The gradient of an implicit classifier can be represented with conditional and unconditional score estimators. Once plugged into the classifier-guided modified score, the score contains no dependency on a separate classifier.
 
-为了控制分类器引导的强度，可以给增量部分加一个权重 $w$：
+Their experiments showed that classifier-free guidance can achieve a good balance between FID (distinguish between synthetic and generated images) and IS (quality and diversity).
 
-$$
-\bar{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t) = \boldsymbol{\epsilon}_\theta(x_t, t) - \sqrt{1 - \bar{\alpha}_t} \; w \nabla_{\mathbf{x}_t} \log f_\phi(y \vert \mathbf{x}_t)
-$$
+The guided diffusion model, GLIDE (Nichol, Dhariwal & Ramesh, et al. 2022), explored both guiding strategies, CLIP guidance and classifier-free guidance, and found that the latter is more preferred. They hypothesized that it is because CLIP guidance exploits the model with adversarial examples towards the CLIP model, rather than optimize the better matched images generation.
 
-由此得到的*消融扩散模型*（**ADM**）以及加上分类器引导的版本（**ADM-G**），取得了优于当时最先进生成模型（例如 BigGAN）的结果。
+# Speed up Diffusion Models
 
-此外，通过对 U-Net 架构做一些修改，Dhariwal & Nichol（2021）展示了扩散模型优于 GAN 的性能。架构修改包括：更大的模型深度/宽度、更多注意力头、多分辨率注意力、用 BigGAN 残差块做上/下采样、残差连接按 $1/\sqrt{2}$ 缩放，以及自适应组归一化（AdaGN）。
+It is very slow to generate a sample from DDPM by following the Markov chain of the reverse diffusion process, as $T$ can be up to one or a few thousand steps. One data point from Song et al. (2020): “For example, it takes around 20 hours to sample 50k images of size 32 × 32 from a DDPM, but less than a minute to do so from a GAN on an Nvidia 2080 Ti GPU.”
 
-## 无分类器引导
+## Fewer Sampling Steps & Distillation
 
-即使没有独立的分类器 $f_\phi$，也仍然可以通过结合条件扩散模型与无条件扩散模型的分数来执行条件扩散步骤（Ho & Salimans，2021）。设无条件去噪扩散模型 $p_\theta(\mathbf{x})$ 由分数估计器 $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)$ 参数化，条件模型 $p_\theta(\mathbf{x} \vert y)$ 由 $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y)$ 参数化。这两个模型可以由同一个神经网络学习。具体来说，条件扩散模型 $p_\theta(\mathbf{x} \vert y)$ 在成对数据 $(\mathbf{x}, y)$ 上训练，条件信息 $y$ 会被周期性地随机丢弃，从而让模型也学会无条件生成图像，即 $\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) = \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y=\varnothing)$。
+One simple way is to run a strided sampling schedule (Nichol & Dhariwal, 2021) by taking the sampling update every $\lceil T/S \rceil$ steps to reduce the process from $T$ to $S$ steps. The new sampling schedule for generation is $\{\tau\_1, \dots, \tau\_S\}$ where $\tau\_1 \< \tau\_2 \< \dots \<\tau\_S \in \[1, T\]$ and $S \< T$.
 
-隐式分类器的梯度可以用条件和无条件分数估计器来表示。代入分类器引导修正后的分数后，该分数就不再依赖独立的分类器：
+For another approach, let’s rewrite $q\_\sigma(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0)$ to be parameterized by a desired standard deviation $\sigma\_t$ according to the nice property:
 
-$$
-\begin{aligned}
-\nabla_{\mathbf{x}_t} \log p(y \vert \mathbf{x}_t)
-&= \nabla_{\mathbf{x}_t} \log p(\mathbf{x}_t \vert y) - \nabla_{\mathbf{x}_t} \log p(\mathbf{x}_t) \\
-&= - \frac{1}{\sqrt{1 - \bar{\alpha}_t}}\Big( \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y) - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) \Big) \\
-\bar{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t, y)
-&= \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y) - \sqrt{1 - \bar{\alpha}_t} \; w \nabla_{\mathbf{x}_t} \log p(y \vert \mathbf{x}_t) \\
-&= \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y) + w \big(\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y) - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) \big) \\
-&= (w+1) \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t, y) - w \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)
-\end{aligned}
-$$
+where the model $\epsilon^{(t)}\_\theta(.)$ predicts the $\epsilon\_t$ from $\mathbf{x}\_t$.
 
-他们的实验表明，无分类器引导可以在 FID（衡量生成图像与真实图像的差距）和 IS（衡量质量与多样性）之间取得良好平衡。
+Recall that in $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}(\mathbf{x}\_{t-1}; \tilde{\boldsymbol{\mu}}(\mathbf{x}\_t, \mathbf{x}\_0), \tilde{\beta}\_t \mathbf{I})$, therefore we have:
 
-引导扩散模型 GLIDE（Nichol、Dhariwal、Ramesh 等，2022）探索了两种引导策略——CLIP 引导和无分类器引导——并发现后者更受青睐。他们推测，这是因为 CLIP 引导是在用针对 CLIP 模型的对抗样本"钻模型的空子"，而不是去优化生成更匹配的图像。
+Let $\sigma\_t^2 = \eta \cdot \tilde{\beta}\_t$ such that we can adjust $\eta \in \mathbb{R}^+$ as a hyperparameter to control the sampling stochasticity. The special case of $\eta = 0$ makes the sampling process *deterministic*. Such a model is named the *denoising diffusion implicit model* (**DDIM**; Song et al., 2020). DDIM has the same marginal noise distribution but deterministically maps noise back to the original data samples.
 
-# 加速扩散模型
+During generation, we don’t have to follow the whole chain $t=1,\dots,T$, but rather a subset of steps. Let’s denote $s \< t$ as two steps in this accelerated trajectory. The DDIM update step is:
 
-沿着逆向扩散过程的马尔可夫链从 DDPM 生成样本非常慢，因为 $T$ 可能多达一千到几千步。Song 等（2020）给出的一个数据点："例如，在一块 Nvidia 2080 Ti GPU 上，从 DDPM 采样 5 万张 32 × 32 的图像大约需要 20 小时，而用 GAN 只需不到一分钟。"
+While all the models are trained with $T=1000$ diffusion steps in the experiments, they observed that DDIM ($\eta=0$) can produce the best quality samples when $S$ is small, while DDPM ($\eta=1$) performs much worse on small $S$. DDPM does perform better when we can afford to run the full reverse Markov diffusion steps ($S=T=1000$). With DDIM, it is possible to train the diffusion model up to any arbitrary number of forward steps but only sample from a subset of steps in the generative process.
 
-## 更少的采样步数与蒸馏
+Compared to DDPM, DDIM is able to:
 
-一个简单方法是使用跨步采样调度（Nichol & Dhariwal，2021），每隔 $\lceil T/S \rceil$ 步执行一次采样更新，把过程从 $T$ 步缩减到 $S$ 步。新的生成采样调度为 $\{\tau_1, \dots, \tau_S\}$，其中 $\tau_1 < \tau_2 < \dots < \tau_S \in [1, T]$，且 $S < T$。
+1. Generate higher-quality samples using a much fewer number of steps.
+2. Have “consistency” property since the generative process is deterministic, meaning that multiple samples conditioned on the same latent variable should have similar high-level features.
+3. Because of the consistency, DDIM can do semantically meaningful interpolation in the latent variable.
 
-另一种方法是，根据前面那个好性质，把 $q_\sigma(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)$ 改写成由期望的标准差 $\sigma_t$ 参数化的形式：
+**Progressive Distillation** (Salimans & Ho, 2022) is a method for distilling trained deterministic samplers into new models of halved sampling steps. The student model is initialized from the teacher model and denoises towards a target where one student DDIM step matches 2 teacher steps, instead of using the original sample $\mathbf{x}\_0$ as the denoise target. In every progressive distillation iteration, we can half the sampling steps.
 
-$$
-\begin{aligned}
-\mathbf{x}_{t-1} 
-&= \sqrt{\bar{\alpha}_{t-1}}\mathbf{x}_0 +  \sqrt{1 - \bar{\alpha}_{t-1}}\boldsymbol{\epsilon}_{t-1} & \\
-&= \sqrt{\bar{\alpha}_{t-1}}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_{t-1} - \sigma_t^2} \boldsymbol{\epsilon}_t + \sigma_t\boldsymbol{\epsilon} & \\
-&= \sqrt{\bar{\alpha}_{t-1}} \Big( \frac{\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t} \epsilon^{(t)}_\theta(\mathbf{x}_t)}{\sqrt{\bar{\alpha}_t}} \Big) + \sqrt{1 - \bar{\alpha}_{t-1} - \sigma_t^2} \epsilon^{(t)}_\theta(\mathbf{x}_t) + \sigma_t\boldsymbol{\epsilon} \\
-q_\sigma(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)
-&= \mathcal{N}(\mathbf{x}_{t-1}; \sqrt{\bar{\alpha}_{t-1}} \Big( \frac{\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t} \epsilon^{(t)}_\theta(\mathbf{x}_t)}{\sqrt{\bar{\alpha}_t}} \Big) + \sqrt{1 - \bar{\alpha}_{t-1} - \sigma_t^2} \epsilon^{(t)}_\theta(\mathbf{x}_t), \sigma_t^2 \mathbf{I})
-\end{aligned}
-$$
+**Consistency Models** (Song et al. 2023) learns to map any intermediate noisy data points $\mathbf{x}\_t, t > 0$ on the diffusion sampling trajectory back to its origin $\mathbf{x}\_0$ directly. It is named as *consistency* model because of its *self-consistency* property as any data points on the same trajectory is mapped to the same origin.
 
-其中模型 $\epsilon^{(t)}_\theta(.)$ 根据 $\mathbf{x}_t$ 预测 $\epsilon_t$。
+Given a trajectory $\{\mathbf{x}\_t \vert t \in \[\epsilon, T\]\}$ , the *consistency function* $f$ is defined as $f: (\mathbf{x}\_t, t) \mapsto \mathbf{x}\_\epsilon$ and the equation $f(\mathbf{x}\_t, t) = f(\mathbf{x}\_{t’}, t’) = \mathbf{x}\_\epsilon$ holds true for all $t, t’ \in \[\epsilon, T\]$. When $t=\epsilon$, $f$ is an identify function. The model can be parameterized as follows, where $c\_\text{skip}(t)$ and $c\_\text{out}(t)$ functions are designed in a way that $c\_\text{skip}(\epsilon) = 1, c\_\text{out}(\epsilon) = 0$:
 
-回忆在 $q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) = \mathcal{N}(\mathbf{x}_{t-1}; \tilde{\boldsymbol{\mu}}(\mathbf{x}_t, \mathbf{x}_0), \tilde{\beta}_t \mathbf{I})$ 中，因此有：
+It is possible for the consistency model to generate samples in a single step, while still maintaining the flexibility of trading computation for better quality following a multi-step sampling process.
 
-$$
-\tilde{\beta}_t = \sigma_t^2 = \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t
-$$
+The paper introduced two ways to train consistency models:
 
-令 $\sigma_t^2 = \eta \cdot \tilde{\beta}_t$，这样就可以把 $\eta \in \mathbb{R}^+$ 作为超参数来调节采样的随机性。$\eta = 0$ 这一特例使采样过程变为*确定性*的。这样的模型被称为*去噪扩散隐式模型*（**DDIM**；Song 等，2020）。DDIM 的边缘噪声分布与 DDPM 相同，但会以确定性的方式把噪声映射回原始数据样本。
+1. **Consistency Distillation (CD)**: Distill a diffusion model into a consistency model by minimizing the difference between model outputs for pairs generated out of the same trajectory. This enables a much cheaper sampling evaluation. The consistency distillation loss is:
+$$ \begin{aligned} \mathcal{L}^N\_\text{CD} (\theta, \theta^-; \phi) &= \mathbb{E} \[\lambda(t\_n)d(f\_\theta(\mathbf{x}\_{t\_{n+1}}, t\_{n+1}), f\_{\theta^-}(\hat{\mathbf{x}}^\phi\_{t\_n}, t\_n)\] \\ \hat{\mathbf{x}}^\phi\_{t\_n} &= \mathbf{x}\_{t\_{n+1}} - (t\_n - t\_{n+1}) \Phi(\mathbf{x}\_{t\_{n+1}}, t\_{n+1}; \phi) \end{aligned} $$ where 
+  - $\Phi(.;\phi)$ is the update function of a one-step ODE solver;
+  - $n \sim \mathcal{U}\[1, N-1\]$, has an uniform distribution over $1, \dots, N-1$;
+  - The network parameters $\theta^-$ is EMA version of $\theta$ which greatly stabilizes the training (just like in DQN or momentum contrastive learning);
+  - $d(.,.)$ is a positive distance metric function that satisfies $\forall \mathbf{x}, \mathbf{y}: d(\mathbf{x}, \mathbf{y}) \geq 0$ and $d(\mathbf{x}, \mathbf{y}) = 0$ if and only if $\mathbf{x} = \mathbf{y}$ such as $\ell\_2$, $\ell\_1$ or LPIPS (learned perceptual image patch similarity) distance;
+  - $\lambda(.) \in \mathbb{R}^+$ is a positive weighting function and the paper sets $\lambda(t\_n)=1$.
+2. **Consistency Training (CT)**: The other option is to train a consistency model independently. Note that in CD, a pre-trained score model $s\_\phi(\mathbf{x}, t)$ is used to approximate the ground truth score $\nabla\log p\_t(\mathbf{x})$ but in CT we need a way to estimate this score function and it turns out an unbiased estimator of $\nabla\log p\_t(\mathbf{x})$ exists as $-\frac{\mathbf{x}\_t - \mathbf{x}}{t^2}$. The CT loss is defined as follows:
 
-生成时，我们不必走完整条链 $t=1,\dots,T$，只需走其中的一个子集。设 $s < t$ 为加速轨迹中的两步，DDIM 的更新步骤为：
+According to the experiments in the paper, they found,
 
-$$
-q_{\sigma, s < t}(\mathbf{x}_s \vert \mathbf{x}_t, \mathbf{x}_0)
-= \mathcal{N}(\mathbf{x}_s; \sqrt{\bar{\alpha}_s} \Big( \frac{\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t} \epsilon^{(t)}_\theta(\mathbf{x}_t)}{\sqrt{\bar{\alpha}_t}} \Big) + \sqrt{1 - \bar{\alpha}_s - \sigma_t^2} \epsilon^{(t)}_\theta(\mathbf{x}_t), \sigma_t^2 \mathbf{I})
-$$
+- Heun ODE solver works better than Euler’s first-order solver, since higher order ODE solvers have smaller estimation errors with the same $N$.
+- Among different options of the distance metric function $d(.)$, the LPIPS metric works better than $\ell\_1$ and $\ell\_2$ distance.
+- Smaller $N$ leads to faster convergence but worse samples, whereas larger $N$ leads to slower convergence but better samples upon convergence.
 
-虽然实验中所有模型都以 $T=1000$ 个扩散步训练，但他们观察到：当 $S$ 较小时，DDIM（$\eta=0$）能生成质量最好的样本，而 DDPM（$\eta=1$）在 $S$ 较小时表现差得多。当我们负担得起完整的逆向马尔可夫扩散步骤（$S=T=1000$）时，DDPM 确实表现更好。有了 DDIM，就可以用任意多的前向步数训练扩散模型，而在生成过程中只从其中一个子集采样。
+## Latent Variable Space
 
-与 DDPM 相比，DDIM 能够：
+*Latent diffusion model* (**LDM**; Rombach & Blattmann, et al. 2022) runs the diffusion process in the latent space instead of pixel space, making training cost lower and inference speed faster. It is motivated by the observation that most bits of an image contribute to perceptual details and the semantic and conceptual composition still remains after aggressive compression. LDM loosely decomposes the perceptual compression and semantic compression with generative modeling learning by first trimming off pixel-level redundancy with autoencoder and then manipulating / generating semantic concepts with diffusion process on learned latent.
 
-1. 用少得多的步数生成更高质量的样本。
-2. 由于生成过程是确定性的，具有"一致性"：以同一隐变量为条件的多个样本应当具有相似的高层特征。
-3. 得益于这种一致性，DDIM 可以在隐变量空间中做有语义意义的插值。
+The perceptual compression process relies on an autoencoder model. An encoder $\mathcal{E}$ is used to compress the input image $\mathbf{x} \in \mathbb{R}^{H \times W \times 3}$ to a smaller 2D latent vector $\mathbf{z} = \mathcal{E}(\mathbf{x}) \in \mathbb{R}^{h \times w \times c}$ , where the downsampling rate $f=H/h=W/w=2^m, m \in \mathbb{N}$. Then an decoder $\mathcal{D}$ reconstructs the images from the latent vector, $\tilde{\mathbf{x}} = \mathcal{D}(\mathbf{z})$. The paper explored two types of regularization in autoencoder training to avoid arbitrarily high-variance in the latent spaces.
 
-**渐进式蒸馏**（Progressive Distillation；Salimans & Ho，2022）是一种把训练好的确定性采样器蒸馏成采样步数减半的新模型的方法。学生模型由教师模型初始化，去噪目标不再是原始样本 $\mathbf{x}_0$，而是让学生的一步 DDIM 与教师的两步相匹配。每进行一轮渐进式蒸馏，采样步数就能减半。
+- *KL-reg*: A small KL penalty towards a standard normal distribution over the learned latent, similar to VAE.
+- *VQ-reg*: Uses a vector quantization layer within the decoder, like VQVAE but the quantization layer is absorbed by the decoder.
 
-**一致性模型**（Consistency Models；Song 等，2023）学习把扩散采样轨迹上任意中间带噪数据点 $\mathbf{x}_t, t > 0$ 直接映射回其起点 $\mathbf{x}_0$。它之所以叫*一致性*模型，是因为其*自一致性*：同一条轨迹上的任何数据点都被映射到同一个起点。
+The diffusion and denoising processes happen on the latent vector $\mathbf{z}$. The denoising model is a time-conditioned U-Net, augmented with the cross-attention mechanism to handle flexible conditioning information for image generation (e.g. class labels, semantic maps, blurred variants of an image). The design is equivalent to fuse representation of different modality into the model with a cross-attention mechanism. Each type of conditioning information is paired with a domain-specific encoder $\tau\_\theta$ to project the conditioning input $y$ to an intermediate representation that can be mapped into cross-attention component, $\tau\_\theta(y) \in \mathbb{R}^{M \times d\_\tau}$:
 
-给定一条轨迹 $\{\mathbf{x}_t \vert t \in [\epsilon, T]\}$，*一致性函数* $f$ 定义为 $f: (\mathbf{x}_t, t) \mapsto \mathbf{x}_\epsilon$，且对所有 $t, t' \in [\epsilon, T]$，等式 $f(\mathbf{x}_t, t) = f(\mathbf{x}_{t'}, t') = \mathbf{x}_\epsilon$ 成立。当 $t=\epsilon$ 时，$f$ 是恒等函数。模型可以如下参数化，其中函数 $c_\text{skip}(t)$ 和 $c_\text{out}(t)$ 的设计满足 $c_\text{skip}(\epsilon) = 1, c_\text{out}(\epsilon) = 0$：
+# Scale up Generation Resolution and Quality
 
-$$
-f_\theta(\mathbf{x}, t) = c_\text{skip}(t)\mathbf{x} + c_\text{out}(t) F_\theta(\mathbf{x}, t)
-$$
+To generate high-quality images at high resolution, Ho et al. (2021) proposed to use a pipeline of multiple diffusion models at increasing resolutions. *Noise conditioning augmentation* between pipeline models is crucial to the final image quality, which is to apply strong data augmentation to the conditioning input $\mathbf{z}$ of each super-resolution model $p\_\theta(\mathbf{x} \vert \mathbf{z})$. The conditioning noise helps reduce compounding error in the pipeline setup. *U-net* is a common choice of model architecture in diffusion modeling for high-resolution image generation.
 
-一致性模型可以一步生成样本，同时仍保留通过多步采样、以更多计算换取更好质量的灵活性。
+They found the most effective noise is to apply Gaussian noise at low resolution and Gaussian blur at high resolution. In addition, they also explored two forms of conditioning augmentation that require small modification to the training process. Note that conditioning noise is only applied to training but not at inference.
 
-论文介绍了两种训练一致性模型的方法：
+- Truncated conditioning augmentation stops the diffusion process early at step $t > 0$ for low resolution.
+- Non-truncated conditioning augmentation runs the full low resolution reverse process until step 0 but then corrupt it by $\mathbf{z}\_t \sim q(\mathbf{x}\_t \vert \mathbf{x}\_0)$ and then feeds the corrupted $\mathbf{z}\_t$ s into the super-resolution model.
 
-1. **一致性蒸馏（CD）**：通过最小化同一轨迹上生成的数据点对所对应的模型输出之间的差异，把扩散模型蒸馏成一致性模型。这使采样评估的代价大大降低。一致性蒸馏损失为：
-$$ \begin{aligned}
- \mathcal{L}^N_\text{CD} (\theta, \theta^-; \phi) &= \mathbb{E}
- [\lambda(t_n)d(f_\theta(\mathbf{x}_{t_{n+1}}, t_{n+1}), f_{\theta^-}(\hat{\mathbf{x}}^\phi_{t_n}, t_n)] \\
- \hat{\mathbf{x}}^\phi_{t_n} &= \mathbf{x}_{t_{n+1}} - (t_n - t_{n+1}) \Phi(\mathbf{x}_{t_{n+1}}, t_{n+1}; \phi)
- \end{aligned} $$ 其中：
-  - $\Phi(.;\phi)$ 是单步 ODE 求解器的更新函数；
-  - $n \sim \mathcal{U}[1, N-1]$，在 $1, \dots, N-1$ 上均匀分布；
-  - 网络参数 $\theta^-$ 是 $\theta$ 的 EMA（指数移动平均）版本，能大大稳定训练（就像 DQN 或动量对比学习中那样）；
-  - $d(.,.)$ 是一个正的距离度量函数，满足 $\forall \mathbf{x}, \mathbf{y}: d(\mathbf{x}, \mathbf{y}) \geq 0$，且当且仅当 $\mathbf{x} = \mathbf{y}$ 时 $d(\mathbf{x}, \mathbf{y}) = 0$，例如 $\ell_2$、$\ell_1$ 或 LPIPS（学习的感知图像块相似度）距离；
-  - $\lambda(.) \in \mathbb{R}^+$ 是正的权重函数，论文设 $\lambda(t_n)=1$。
-2. **一致性训练（CT）**：另一种选择是独立训练一致性模型。注意在 CD 中，用预训练的分数模型 $s_\phi(\mathbf{x}, t)$ 来近似真实分数 $\nabla\log p_t(\mathbf{x})$；而在 CT 中，我们需要另一种方式估计这个分数函数。事实证明 $\nabla\log p_t(\mathbf{x})$ 存在一个无偏估计量 $-\frac{\mathbf{x}_t - \mathbf{x}}{t^2}$。CT 损失定义如下：
-$$ \mathcal{L}^N_\text{CT} (\theta, \theta^-; \phi) = \mathbb{E}
-[\lambda(t_n)d(f_\theta(\mathbf{x} + t_{n+1} \mathbf{z},\;t_{n+1}), f_{\theta^-}(\mathbf{x} + t_n \mathbf{z},\;t_n)]
-\text{ 其中 }\mathbf{z} \in \mathcal{N}(\mathbf{0}, \mathbf{I}) $$
+The two-stage diffusion model **unCLIP** (Ramesh et al. 2022) heavily utilizes the CLIP text encoder to produce text-guided images at high quality. Given a pretrained CLIP model $\mathbf{c}$ and paired training data for the diffusion model, $(\mathbf{x}, y)$, where $x$ is an image and $y$ is the corresponding caption, we can compute the CLIP text and image embedding, $\mathbf{c}^t(y)$ and $\mathbf{c}^i(\mathbf{x})$, respectively. The unCLIP learns two models in parallel:
 
-根据论文中的实验，他们发现：
+- A prior model $P(\mathbf{c}^i \vert y)$: outputs CLIP image embedding $\mathbf{c}^i$ given the text $y$.
+- A decoder $P(\mathbf{x} \vert \mathbf{c}^i, \[y\])$: generates the image $\mathbf{x}$ given CLIP image embedding $\mathbf{c}^i$ and optionally the original text $y$.
 
-- Heun ODE 求解器比欧拉一阶求解器效果更好，因为在相同 $N$ 下，高阶 ODE 求解器的估计误差更小。
-- 在距离度量函数 $d(.)$ 的不同选项中，LPIPS 度量优于 $\ell_1$ 和 $\ell_2$ 距离。
-- $N$ 越小收敛越快但样本越差，$N$ 越大收敛越慢但收敛后样本越好。
+These two models enable conditional generation, because
 
-## 潜在变量空间
+unCLIP follows a two-stage image generation process:
 
-*潜在扩散模型*（**LDM**；Rombach & Blattmann 等，2022）在潜在空间而非像素空间中运行扩散过程，从而降低训练成本、加快推理速度。其动机在于观察到：图像中的大部分比特贡献的是感知细节，而经过激进压缩之后，语义和概念构成依然保留。LDM 把感知压缩与语义压缩大致分开处理：先用自编码器去除像素级冗余，再在学到的潜在空间上用扩散过程操作/生成语义概念。
+1. Given a text $y$, a CLIP model is first used to generate a text embedding $\mathbf{c}^t(y)$. Using CLIP latent space enables zero-shot image manipulation via text.
+2. A diffusion or autoregressive prior $P(\mathbf{c}^i \vert y)$ processes this CLIP text embedding to construct an image prior and then a diffusion decoder $P(\mathbf{x} \vert \mathbf{c}^i, \[y\])$ generates an image, conditioned on the prior. This decoder can also generate image variations conditioned on an image input, preserving its style and semantics.
 
-感知压缩过程依赖一个自编码器模型。编码器 $\mathcal{E}$ 把输入图像 $\mathbf{x} \in \mathbb{R}^{H \times W \times 3}$ 压缩为更小的二维潜在向量 $\mathbf{z} = \mathcal{E}(\mathbf{x}) \in \mathbb{R}^{h \times w \times c}$，下采样率为 $f=H/h=W/w=2^m, m \in \mathbb{N}$。然后解码器 $\mathcal{D}$ 从潜在向量重建图像 $\tilde{\mathbf{x}} = \mathcal{D}(\mathbf{z})$。论文探索了自编码器训练中的两种正则化，以避免潜在空间出现任意高的方差：
+Instead of CLIP model, **Imagen** (Saharia et al. 2022) uses a pre-trained large LM (i.e. a frozen T5-XXL text encoder) to encode text for image generation. There is a general trend that larger model size can lead to better image quality and text-image alignment. They found that T5-XXL and CLIP text encoder achieve similar performance on MS-COCO, but human evaluation prefers T5-XXL on DrawBench (a collection of prompts covering 11 categories).
 
-- *KL 正则*：对学到的潜在变量施加一个指向标准正态分布的小 KL 惩罚，类似于 VAE。
-- *VQ 正则*：在解码器中使用向量量化层，类似 VQVAE，但量化层被并入解码器。
+When applying classifier-free guidance, increasing $w$ may lead to better image-text alignment but worse image fidelity. They found that it is due to train-test mismatch, that is to say, because training data $\mathbf{x}$ stays within the range $\[-1, 1\]$, the test data should be so too. Two thresholding strategies are introduced:
 
-扩散和去噪过程都在潜在向量 $\mathbf{z}$ 上进行。去噪模型是一个以时间为条件的 U-Net，并加入交叉注意力机制，以处理图像生成中灵活多样的条件信息（例如类别标签、语义图、图像的模糊版本）。这一设计相当于用交叉注意力机制把不同模态的表示融合进模型。每种条件信息都配有一个特定领域的编码器 $\tau_\theta$，把条件输入 $y$ 投影为可映射到交叉注意力组件的中间表示 $\tau_\theta(y) \in \mathbb{R}^{M \times d_\tau}$：
+- Static thresholding: clip $\mathbf{x}$ prediction to $\[-1, 1\]$
+- Dynamic thresholding: at each sampling step, compute $s$ as a certain percentile absolute pixel value; if $s > 1$, clip the prediction to $\[-s, s\]$ and divide by $s$.
 
-$$
-\begin{aligned}
-&\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\Big(\frac{\mathbf{Q}\mathbf{K}^\top}{\sqrt{d}}\Big) \cdot \mathbf{V} \\
-&\text{其中 }\mathbf{Q} = \mathbf{W}^{(i)}_Q \cdot \varphi_i(\mathbf{z}_i),\;
-\mathbf{K} = \mathbf{W}^{(i)}_K \cdot \tau_\theta(y),\;
-\mathbf{V} = \mathbf{W}^{(i)}_V \cdot \tau_\theta(y) \\
-&\text{且 }
-\mathbf{W}^{(i)}_Q \in \mathbb{R}^{d \times d^i_\epsilon},\;
-\mathbf{W}^{(i)}_K, \mathbf{W}^{(i)}_V \in \mathbb{R}^{d \times d_\tau},\;
-\varphi_i(\mathbf{z}_i) \in \mathbb{R}^{N \times d^i_\epsilon},\;
-\tau_\theta(y) \in \mathbb{R}^{M \times d_\tau}
-\end{aligned}
-$$
+Imagen modifies several designs in U-net to make it *efficient U-Net*.
 
-# 提升生成分辨率与质量
+- Shift model parameters from high resolution blocks to low resolution by adding more residual locks for the lower resolutions;
+- Scale the skip connections by $1/\sqrt{2}$
+- Reverse the order of downsampling (move it before convolutions) and upsampling operations (move it after convolution) in order to improve the speed of forward pass.
 
-为了生成高分辨率的高质量图像，Ho 等（2021）提出使用由多个分辨率递增的扩散模型组成的级联管线。管线中各模型之间的*噪声条件增强*对最终图像质量至关重要，即对每个超分辨率模型 $p_\theta(\mathbf{x} \vert \mathbf{z})$ 的条件输入 $\mathbf{z}$ 施加强数据增强。条件噪声有助于减少级联设置中的误差累积。*U-Net* 是扩散模型中用于高分辨率图像生成的常见架构选择。
+They found that noise conditioning augmentation, dynamic thresholding and efficient U-Net are critical for image quality, but scaling text encoder size is more important than U-Net size.
 
-他们发现，最有效的噪声是在低分辨率时加高斯噪声、在高分辨率时加高斯模糊。此外，他们还探索了两种需要对训练过程稍作修改的条件增强形式。注意条件噪声只在训练时使用，推理时不用。
+# Model Architecture
 
-- 截断式条件增强：对低分辨率模型，在步骤 $t > 0$ 时提前停止扩散过程。
-- 非截断式条件增强：完整运行低分辨率的逆向过程直到第 0 步，然后用 $\mathbf{z}_t \sim q(\mathbf{x}_t \vert \mathbf{x}_0)$ 对其加噪破坏，再把破坏后的 $\mathbf{z}_t$ 输入超分辨率模型。
+There are two common backbone architecture choices for diffusion models: U-Net and Transformer.
 
-两阶段扩散模型 **unCLIP**（Ramesh 等，2022）大量利用 CLIP 文本编码器来生成高质量的文本引导图像。给定预训练的 CLIP 模型 $\mathbf{c}$ 和扩散模型的成对训练数据 $(\mathbf{x}, y)$——其中 $\mathbf{x}$ 是图像，$y$ 是对应的说明文字——我们可以分别计算 CLIP 文本嵌入 $\mathbf{c}^t(y)$ 和图像嵌入 $\mathbf{c}^i(\mathbf{x})$。unCLIP 并行学习两个模型：
+**U-Net** (Ronneberger, et al. 2015) consists of a downsampling stack and an upsampling stack.
 
-- 先验模型 $P(\mathbf{c}^i \vert y)$：给定文本 $y$，输出 CLIP 图像嵌入 $\mathbf{c}^i$。
-- 解码器 $P(\mathbf{x} \vert \mathbf{c}^i, [y])$：给定 CLIP 图像嵌入 $\mathbf{c}^i$ 以及可选的原始文本 $y$，生成图像 $\mathbf{x}$。
+- *Downsampling*: Each step consists of the repeated application of two 3x3 convolutions (unpadded convolutions), each followed by a ReLU and a 2x2 max pooling with stride 2. At each downsampling step, the number of feature channels is doubled.
+- *Upsampling*: Each step consists of an upsampling of the feature map followed by a 2x2 convolution and each halves the number of feature channels.
+- *Shortcuts*: Shortcut connections result in a concatenation with the corresponding layers of the downsampling stack and provide the essential high-resolution features to the upsampling process.
 
-这两个模型使条件生成成为可能，因为：
+To enable image generation conditioned on additional images for composition info like Canny edges, Hough lines, user scribbles, human post skeletons, segmentation maps, depths and normals, **ControlNet** (Zhang et al. 2023 introduces architectural changes via adding a “sandwiched” zero convolution layers of a trainable copy of the original model weights into each encoder layer of the U-Net. Precisely, given a neural network block $\mathcal{F}\_\theta(.)$, ControlNet does the following:
 
-$$
-\underbrace{P(\mathbf{x} \vert y) = P(\mathbf{x}, \mathbf{c}^i \vert y)}_{\mathbf{c}^i\text{ 由 }\mathbf{x}\text{ 确定}} = P(\mathbf{x} \vert \mathbf{c}^i, y)P(\mathbf{c}^i \vert y)
-$$
+1. First, freeze the original parameters $\theta$ of the original block
+2. Clone it to be a copy with trainable parameters $\theta\_c$ and an additional conditioning vector $\mathbf{c}$.
+3. Use two zero convolution layers, denoted as $\mathcal{Z}\_{\theta\_{z1}}(.;.)$ and $\mathcal{Z}\_{\theta\_{z2}}(.;.)$, which is 1x1 convo layers with both weights and biases initialized to be zeros, to connect these two blocks. Zero convolutions protect this back-bone by eliminating random noise as gradients in the initial training steps.
+4. The final output is: $\mathbf{y}\_c = \mathcal{F}\_\theta(\mathbf{x}) + \mathcal{Z}\_{\theta\_{z2}}(\mathcal{F}\_{\theta\_c}(\mathbf{x} + \mathcal{Z}\_{\theta\_{z1}}(\mathbf{c})))$
 
-unCLIP 遵循两阶段的图像生成过程：
+**Diffusion Transformer** (**DiT**; Peebles & Xie, 2023) for diffusion modeling operates on latent patches, using the same design space of LDM (Latent Diffusion Model)\]. DiT has the following setup:
 
-1. 给定文本 $y$，先用 CLIP 模型生成文本嵌入 $\mathbf{c}^t(y)$。使用 CLIP 潜在空间可以实现通过文本进行零样本图像编辑。
-2. 一个扩散或自回归先验 $P(\mathbf{c}^i \vert y)$ 处理这个 CLIP 文本嵌入，构造图像先验，然后扩散解码器 $P(\mathbf{x} \vert \mathbf{c}^i, [y])$ 以该先验为条件生成图像。这个解码器也可以以一张输入图像为条件生成其变体，保留原图的风格和语义。
+1. Take the latent representation of an input $\mathbf{z}$ as input to DiT.
+2. “Patchify” the noise latent of size $I \times I \times C$ into patches of size $p$ and convert it into a sequence of patches of size $(I/p)^2$.
+3. Then this sequence of tokens go through Transformer blocks. They are exploring three different designs for how to do generation conditioned on contextual information like timestep $t$ or class label $c$. Among three designs, *adaLN (Adaptive layer norm)-Zero* works out the best, better than in-context conditioning and cross-attention block. The scale and shift parameters, $\gamma$ and $\beta$, are regressed from the sum of the embedding vectors of $t$ and $c$. The dimension-wise scaling parameters $\alpha$ is also regressed and applied immediately prior to any residual connections within the DiT block.
+4. The transformer decoder outputs noise predictions and an output diagonal covariance prediction.
 
-**Imagen**（Saharia 等，2022）没有使用 CLIP 模型，而是用预训练的大型语言模型（即冻结的 T5-XXL 文本编码器）来编码文本以生成图像。总体趋势是：模型越大，图像质量和图文对齐就越好。他们发现 T5-XXL 和 CLIP 文本编码器在 MS-COCO 上表现相近，但在 DrawBench（覆盖 11 个类别的提示集合）上，人工评估更偏好 T5-XXL。
+Transformer architecture can be easily scaled up and it is well known for that. This is one of the biggest benefits of DiT as its performance scales up with more compute and larger DiT models are more compute efficient according to the experiments.
 
-在应用无分类器引导时，增大 $w$ 可能带来更好的图文对齐，但图像保真度会变差。他们发现这是训练与测试不匹配所致：训练数据 $\mathbf{x}$ 处于 $[-1, 1]$ 范围内，测试数据也应如此。为此引入了两种阈值策略：
+# Quick Summary
 
-- 静态阈值：把 $\mathbf{x}$ 的预测裁剪到 $[-1, 1]$。
-- 动态阈值：在每个采样步，把 $s$ 取为像素绝对值的某个百分位数；若 $s > 1$，则把预测裁剪到 $[-s, s]$ 并除以 $s$。
+- **Pros**: Tractability and flexibility are two conflicting objectives in generative modeling. Tractable models can be analytically evaluated and cheaply fit data (e.g. via a Gaussian or Laplace), but they cannot easily describe the structure in rich datasets. Flexible models can fit arbitrary structures in data, but evaluating, training, or sampling from these models is usually expensive. Diffusion models are both analytically tractable and flexible
+- **Cons**: Diffusion models rely on a long Markov chain of diffusion steps to generate samples, so it can be quite expensive in terms of time and compute. New methods have been proposed to make the process much faster, but the sampling is still slower than GAN.
 
-Imagen 修改了 U-Net 中的若干设计，使之成为*高效 U-Net*：
+# Citation
 
-- 为低分辨率层增加更多残差块，把模型参数从高分辨率块转移到低分辨率块；
-- 跳跃连接按 $1/\sqrt{2}$ 缩放；
-- 调换下采样（移到卷积之前）和上采样（移到卷积之后）的顺序，以提升前向传播速度。
+Cited as:
 
-他们发现，噪声条件增强、动态阈值和高效 U-Net 对图像质量至关重要，而扩大文本编码器的规模比扩大 U-Net 的规模更重要。
+Weng, Lilian. (Jul 2021). What are diffusion models? Lil’Log. https://lilianweng.github.io/posts/2021-07-11-diffusion-models/.
 
-# 模型架构
 
-扩散模型常见的骨干架构有两种：U-Net 和 Transformer。
-
-**U-Net**（Ronneberger 等，2015）由下采样栈和上采样栈组成。
-
-- *下采样*：每一步重复应用两个 3x3 卷积（无填充卷积），每个卷积后接 ReLU，然后是步长为 2 的 2x2 最大池化。每个下采样步骤中，特征通道数翻倍。
-- *上采样*：每一步先对特征图上采样，再接一个 2x2 卷积，每一步都使特征通道数减半。
-- *捷径连接*：捷径连接把上采样层与下采样栈中对应的层拼接起来，为上采样过程提供必要的高分辨率特征。
-
-为了支持以额外图像为条件生成图像，以提供构图信息，如 Canny 边缘、霍夫直线、用户涂鸦、人体姿态骨架、分割图、深度图和法线图，**ControlNet**（Zhang 等，2023）对架构作了修改：在 U-Net 的每个编码器层中，加入原模型权重的一个可训练副本，并用"夹心式"的零卷积层与之连接。具体来说，给定一个神经网络块 $\mathcal{F}_\theta(.)$，ControlNet 的做法是：
-
-1. 首先，冻结原始块的原始参数 $\theta$；
-2. 把它克隆为一个带可训练参数 $\theta_c$ 和额外条件向量 $\mathbf{c}$ 的副本；
-3. 用两个零卷积层 $\mathcal{Z}_{\theta_{z1}}(.;.)$ 和 $\mathcal{Z}_{\theta_{z2}}(.;.)$ 连接这两个块，它们是权重和偏置都初始化为零的 1x1 卷积层。零卷积在训练初期消除了作为梯度的随机噪声，从而保护骨干网络；
-4. 最终输出为：$\mathbf{y}_c = \mathcal{F}_\theta(\mathbf{x}) + \mathcal{Z}_{\theta_{z2}}(\mathcal{F}_{\theta_c}(\mathbf{x} + \mathcal{Z}_{\theta_{z1}}(\mathbf{c})))$
-
-**扩散 Transformer**（**DiT**；Peebles & Xie，2023）在潜在图块上进行扩散建模，沿用 LDM（潜在扩散模型）的设计空间。DiT 的设置如下：
-
-1. 以输入的潜在表示 $\mathbf{z}$ 作为 DiT 的输入；
-2. 把大小为 $I \times I \times C$ 的带噪潜在表示"图块化"（patchify）为大小为 $p$ 的图块，转换成长度为 $(I/p)^2$ 的图块序列；
-3. 然后这串 token 经过 Transformer 块。他们探索了三种以时间步 $t$ 或类别标签 $c$ 等上下文信息为条件进行生成的设计。在三种设计中，*adaLN（自适应层归一化）-Zero* 效果最好，优于上下文内条件化和交叉注意力块。缩放和平移参数 $\gamma$ 与 $\beta$ 由 $t$ 和 $c$ 的嵌入向量之和回归得到。按维度的缩放参数 $\alpha$ 也通过回归得到，并在 DiT 块内的每个残差连接之前立即施加；
-4. Transformer 解码器输出噪声预测和对角协方差预测。
-
-Transformer 架构很容易扩展，这一点广为人知。这是 DiT 最大的优势之一：根据实验，它的性能随计算量增加而提升，而且更大的 DiT 模型计算效率更高。
-
-# 快速总结
-
-- **优点**：可解性与灵活性是生成建模中两个相互冲突的目标。可解的模型可以被解析地评估，并能低成本地拟合数据（例如用高斯或拉普拉斯分布），但难以描述丰富数据集中的结构。灵活的模型可以拟合数据中的任意结构，但对这类模型进行评估、训练或采样通常代价高昂。扩散模型既在解析上可解，又足够灵活。
-- **缺点**：扩散模型依赖一条很长的扩散步骤马尔可夫链来生成样本，因此在时间和计算上都可能相当昂贵。已经有新方法被提出来大幅加速这一过程，但采样仍然比 GAN 慢。
-
-# 引用
-
-引用格式：
-
-Weng, Lilian. (Jul 2021). What are diffusion models? Lil'Log. https://lilianweng.github.io/posts/2021-07-11-diffusion-models/.
-
-或
+Or
 
 ```
 @article{weng2021diffusion,
@@ -506,44 +272,44 @@ Weng, Lilian. (Jul 2021). What are diffusion models? Lil'Log. https://lilianweng
   url     = "https://lilianweng.github.io/posts/2021-07-11-diffusion-models/"
 }
 ```
-# 参考文献
+# References
 
-[1] Jascha Sohl-Dickstein et al. “Deep Unsupervised Learning using Nonequilibrium Thermodynamics.” ICML 2015.
+\[1\] Jascha Sohl-Dickstein et al. “Deep Unsupervised Learning using Nonequilibrium Thermodynamics.” ICML 2015.
 
-[2] Max Welling & Yee Whye Teh. “Bayesian learning via stochastic gradient langevin dynamics.” ICML 2011.
+\[2\] Max Welling & Yee Whye Teh. “Bayesian learning via stochastic gradient langevin dynamics.” ICML 2011.
 
-[3] Yang Song & Stefano Ermon. “Generative modeling by estimating gradients of the data distribution.” NeurIPS 2019.
+\[3\] Yang Song & Stefano Ermon. “Generative modeling by estimating gradients of the data distribution.” NeurIPS 2019.
 
-[4] Yang Song & Stefano Ermon. “Improved techniques for training score-based generative models.” NeurIPS 2020.
+\[4\] Yang Song & Stefano Ermon. “Improved techniques for training score-based generative models.” NeuriPS 2020.
 
-[5] Jonathan Ho et al. “Denoising diffusion probabilistic models.” arxiv Preprint arxiv:2006.11239 (2020). [code]
+\[5\] Jonathan Ho et al. “Denoising diffusion probabilistic models.” arxiv Preprint arxiv:2006.11239 (2020). \[code\]
 
-[6] Jiaming Song et al. “Denoising diffusion implicit models.” arxiv Preprint arxiv:2010.02502 (2020). [code]
+\[6\] Jiaming Song et al. “Denoising diffusion implicit models.” arxiv Preprint arxiv:2010.02502 (2020). \[code\]
 
-[7] Alex Nichol & Prafulla Dhariwal. “Improved denoising diffusion probabilistic models” arxiv Preprint arxiv:2102.09672 (2021). [code]
+\[7\] Alex Nichol & Prafulla Dhariwal. “Improved denoising diffusion probabilistic models” arxiv Preprint arxiv:2102.09672 (2021). \[code\]
 
-[8] Prafulla Dhariwal & Alex Nichol. “Diffusion Models Beat GANs on Image Synthesis.” arxiv Preprint arxiv:2105.05233 (2021). [code]
+\[8\] Prafula Dhariwal & Alex Nichol. “Diffusion Models Beat GANs on Image Synthesis.” arxiv Preprint arxiv:2105.05233 (2021). \[code\]
 
-[9] Jonathan Ho & Tim Salimans. “Classifier-Free Diffusion Guidance.” NeurIPS 2021 Workshop on Deep Generative Models and Downstream Applications.
+\[9\] Jonathan Ho & Tim Salimans. “Classifier-Free Diffusion Guidance.” NeurIPS 2021 Workshop on Deep Generative Models and Downstream Applications.
 
-[10] Yang Song, et al. “Score-Based Generative Modeling through Stochastic Differential Equations.” ICLR 2021.
+\[10\] Yang Song, et al. “Score-Based Generative Modeling through Stochastic Differential Equations.” ICLR 2021.
 
-[11] Alex Nichol, Prafulla Dhariwal & Aditya Ramesh, et al. “GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models.” ICML 2022.
+\[11\] Alex Nichol, Prafulla Dhariwal & Aditya Ramesh, et al. “GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models.” ICML 2022.
 
-[12] Jonathan Ho, et al. “Cascaded diffusion models for high fidelity image generation.” J. Mach. Learn. Res. 23 (2022): 47-1.
+\[12\] Jonathan Ho, et al. “Cascaded diffusion models for high fidelity image generation.” J. Mach. Learn. Res. 23 (2022): 47-1.
 
-[13] Aditya Ramesh et al. “Hierarchical Text-Conditional Image Generation with CLIP Latents.” arxiv Preprint arxiv:2204.06125 (2022).
+\[13\] Aditya Ramesh et al. “Hierarchical Text-Conditional Image Generation with CLIP Latents.” arxiv Preprint arxiv:2204.06125 (2022).
 
-[14] Chitwan Saharia & William Chan, et al. “Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding.” arxiv Preprint arxiv:2205.11487 (2022).
+\[14\] Chitwan Saharia & William Chan, et al. “Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding.” arxiv Preprint arxiv:2205.11487 (2022).
 
-[15] Rombach & Blattmann, et al. “High-Resolution Image Synthesis with Latent Diffusion Models.” CVPR 2022.
+\[15\] Rombach & Blattmann, et al. “High-Resolution Image Synthesis with Latent Diffusion Models.” CVPR 2022.code
 
-[16] Song et al. “Consistency Models” arxiv Preprint arxiv:2303.01469 (2023)
+\[16\] Song et al. “Consistency Models” arxiv Preprint arxiv:2303.01469 (2023)
 
-[17] Salimans & Ho. “Progressive Distillation for Fast Sampling of Diffusion Models” ICLR 2022.
+\[17\] Salimans & Ho. “Progressive Distillation for Fast Sampling of Diffusion Models” ICLR 2022.
 
-[18] Ronneberger, et al. “U-Net: Convolutional Networks for Biomedical Image Segmentation” MICCAI 2015.
+\[18\] Ronneberger, et al. “U-Net: Convolutional Networks for Biomedical Image Segmentation” MICCAI 2015.
 
-[19] Peebles & Xie. “Scalable diffusion models with transformers.” ICCV 2023.
+\[19\] Peebles & Xie. “Scalable diffusion models with transformers.” ICCV 2023.
 
-[20] Zhang et al. “Adding Conditional Control to Text-to-Image Diffusion Models.” arxiv Preprint arxiv:2302.05543 (2023).
+\[20\] Zhang et al. “Adding Conditional Control to Text-to-Image Diffusion Models.” arxiv Preprint arxiv:2302.05543 (2023).
