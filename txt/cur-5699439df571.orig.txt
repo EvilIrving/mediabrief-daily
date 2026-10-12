@@ -1,0 +1,104 @@
+Two years ago, in March 2023, I published a blog post called “The End of Front-End Development”. This was right after OpenAI released its GPT-4 showcase, and the general reaction was that human software developers were about to be made redundant, that software would soon be written exclusively by machines.
+
+I was skeptical of these claims, and in that blog post, I made the case for why I thought software development would still require humans for the foreseeable future. My hypothesis was that LLMs would *augment* human developers, not replace them.
+
+At the time, the conventional wisdom on Twitter was that it would only be a few months before AI extinguished all demand for human front-end developers, maybe a year or two at most. Well, it’s been over two years since then! So, were they right? Are we currently living in the “post-developer” era?
+
+In this blog post, I want to take a fresh look at the current landscape, to see how things have changed, and to see if we can anticipate how things will continue to evolve. If you’re an aspiring developer who is feeling anxious about your future career, my hope is that this post will give you some clarity. ❤️
+
+## Link to this headingCompanies and AI usage
+
+Over the past few years, companies have definitely been adopting AI tools more and more. For example, Forbes recently published an article titled “AI Writes Over 25% Of Code At Google”(opens in new tab).
+
+The article’s title makes it sound like AI is doing 25% of the work and human developers are doing the other 75%, but that’s not actually what’s going on here. That title is misleading, in my opinion.
+
+AI may be *generating* 25% of the code that gets committed at Google, but it’s not acting independently. A skilled human developer is in the driver’s seat, using their knowledge and experience to guide the AI, editing and shaping its output, and mixing it in with the code they’ve written. As far as I know, 100% of code at Google is still being created *by developers.* AI is just one of many tools they use to do their job.
+
+In other words, it’s not like product teams at Google have fired 25% of their developers and replaced them with pseudo-sentient AI robots who work autonomously and report directly to the product manager. I haven’t heard of that happening at any large tech companies.
+
+Now, there *are* startups who claim that their AIs can fully replace human developers. The most popular of these is Devin, a product created by Cognition and released a year ago, in March 2024. But when companies actually try to *use* it, they run into problems. For example, one team found that Devin could only complete 3 out of 20 assigned tasks(opens in new tab), and it was ultimately more trouble than it was worth. They gave up after a month.
+
+Here’s some of what their team had to say about it:
+
+Tasks it can do are those that are so small and well-defined that I may as well do them myself, faster, my way. Larger tasks where I might see time savings I think it will likely fail at. So no real niche where I’ll want to use it.
+
+I had initial excitement at how close it was because I felt I could tweak a few things. And then slowly got frustrated as I had to change more and more to end up at the point where I would have been better of \[sic\] starting from scratch and going step by step.
+
+These quotes aren’t from AI skeptics, they’re from a technical team who work for an AI startup, trying the product with enthusiasm and in good faith. And their experience isn’t unusual. I’ve read a handful of other real-world reports, and they all arrive at the same conclusion: this just doesn’t work that well.
+
+**As far as I can tell, every AI success story still has skilled human developers as a necessary ingredient.** So, I think it’s safe to say that we’re *not* living in the post-developer era.
+
+## Link to this headingDrifting off-road
+
+Over the past couple of years, I’ve experimented with a lot of AI tooling myself. A few months back, I switched to Cursor(opens in new tab), an AI-powered IDE. I’ve been using its “agent” mode with Claude Sonnet, and I have to admit, it’s pretty remarkable. For certain kinds of tasks, I can give it some context and point it in the right direction, and it whips up a working solution on the first try.
+
+It’s smart enough to catch and often fix TypeScript or lint errors, and there have even been a few times that I’ve learned something new, where the suggested solution was *better* than what I had planned to write, thanks to some cool API I wasn’t aware of.
+
+**But it’s not perfect.** It does require guidance.
+
+It feels a bit like driving on the highway with “cruise control”: the car mostly goes where you point it, but you still need a hand on the steering wheel, keeping it steady. Otherwise, the car will slowly start to drift out of its lane. If you don’t occasionally nudge it back on track, you’ll wind up in a ditch.
+
+*And that’s kind of a problem for the “no more developers” theory.* If I didn’t know how to code, I wouldn’t *notice* the subtle-yet-critical issues with the model’s output. I wouldn’t know how to course-correct, or even realize that course-correction was required!
+
+I’ve heard from no-coders who have built projects using LLMs, and their experience is similar. They start off strong, but eventually reach a point where they just can't progress anymore, no matter how much they coax the AI. The code is a bewildering mess of non sequiturs, and beyond a certain point, no amount of duct tape can keep it together. It collapses under its own weight.
+
+Also, there are lots of tasks that LLMs just aren’t very good at. There have been times where I’ve spent a frustrating 10 minutes trying to get Claude to understand what I want before giving up and taking 5 minutes to write the code by hand. I’ve started developing an intuition for which tasks can benefit from AI assistance, and which should be tackled the old-fashioned way.
+
+On balance, I feel like LLMs do save me a significant amount of time. There have been cases where the LLM does 30 minutes of work for me in 30 seconds, and those cases are exhilarating. But, honestly, I think I still spend the majority of the time writing code myself.
+
+## Link to this headingThe current job market
+
+When I wrote this post a couple of years back, it was a pretty tough time in the job market. Unfortunately, things are still pretty tough out there.
+
+If you’re a job-seeker, you know that there aren’t as many high-quality job listings as there used to be, and the good ones get swamped with applications. It’s very hard to get an *interview,* let alone an offer.
+
+But I don’t think this is because companies are actually replacing their developers with autonomous AI agents. As I’ve shared, the real-world experiences I’ve read just don’t support that hypothesis. So what gives? Why is it still so brutal out there?
+
+I think there are a few factors:
+
+1. **Macro-economic stuff.** Interest rates are still relatively high, making it harder for startups to attract the funding they need to grow and hire developers. For several years now, the general economic sentiment has been that we’re on the cusp of a recession.
+2. **Layoffs.** Big tech companies laid off *hundreds of thousands* of workers over the past couple of years, for a variety of reasons. This means that there are tons of highly-qualified devs out there, looking for work.
+3. **AI myths.** Some companies are still operating under the belief that AI really will make developers obsolete soon, and so they’re not hiring as aggressively as they otherwise would.
+
+That last point is particularly frustrating. Companies are not hiring the developers they need because they’re convinced that Artificial General Intelligence: an AI that can learn and reason like a human, to accomplish any task, even ones that it was never trained to do is right around the corner, and when that egg hatches, we won’t need human developers at all anymore. “It’ll be any week now”, they’ve been saying for years. 😅
+
+## Link to this headingLooking forward
+
+When I wrote “The End of Front-End Development”(opens in new tab) back in 2023, I was trying to reach aspiring developers, folks who are in the process of learning to code, right at the start of their career. I saw how bleak everyone’s predictions were, and wanted to provide a counterweight to all of the Fear, Uncertainty, and Doubt I saw online.
+
+And for everything that has changed over the past two years, two things have stayed the same:
+
+1. Companies still need human developers to build their products.
+2. AI Evangelists are still claiming that, any day now, companies won’t need human developers to build their products.
+
+If you’re an aspiring developer, in college or a bootcamp or studying on your own, **I still fully believe that there will be opportunities for you when you’re ready to enter the workforce.** It seems clear to me that we’re still a long way from software development becoming fully automated. And once companies realize that AI works much better as a developer *enhancer* than as a developer *replacement*, I think they’ll stop sabotaging their own growth and start hiring at a more vigorous pace.
+
+There’s no doubt that AI models will continue to improve. It seems like every week, a new model gets released that breaks records on one benchmark or other. Most recently, it was Google’s turn when they announced Gemini 2.0 Flash and 2.5 Pro models(opens in new tab).
+
+It seems to me like we’ve reached the point in the technology curve where progress starts becoming more incremental; it’s been a while since anything truly *game-changing* has come out. Each new model is a little bit better, but it’s more about improving the things it already does well rather than conquering all-new problems.
+
+And as bleak as the job market feels right now, things *are* trending in the right direction, at least in the US:
+
+If AI truly was making software developers redundant, I would expect the total number of tech jobs to be falling at an accelerating rate, but the count has been *increasing* over the past year. If this trend continues, the market should feel a lot less brutal soon!
+
+### Link to this headingConcerns
+
+In 2023, I was reasonably confident that AI wasn’t on the cusp of taking our software jobs. Two years in, and I’ve only become more confident in that belief. Knowing how to code is still an incredibly valuable skill and I don’t see that changing anytime soon.
+
+That said, I’m also not trying to say that everything is great and we’ll all be just fine. 😅
+
+Last year, Americans inexplicably re-elected a *wildly* incompetent conman to be president. We’re only a couple of months in, and Trump has already torched the world economy, gutted the federal government, made it an unsafe place to visit for non-citizens, and started a global trade war. It’s hard to anticipate what effect this’ll have on the tech industry, but it certainly won’t be good.
+
+I also worry a bit about the next generation of developers. When using LLM agents, it’s *so easy* to get lulled into a trance, to keep hitting “accept changes” without understanding or even *looking at* the code being generated“vibe coding”, as it’s known among the cool kids. I caught myself starting to fall into this trap when I was building the landing page for my new course(opens in new tab). I took my hand off the steering wheel for too long, and had to spend a bunch of time refactoring funky junk code as a result.
+
+The path of least resistance is to sit back and let the machine do its thing, but this prevents us from building the skills we’ll need to debug and fix the code when the machine inevitably gets stuck.
+
+On the other hand, if you use LLMs *proactively,* there’s never been a better time to learn how to code. When I get a TypeScript error I don’t understand, AI can often help me understand it, or at least surface the relevant keywords I need in order to find the right docs. It’s like we all have access to our own personal tutor who can help us make sense of things we don’t understand.Although, that tutor is occasionally on LSD, so we do have to be a little wary of their suggestions 😂
+
+Nobody knows how the next few years will play out, but it wouldn’t surprise me at all if we see a bit of a “developer renaissance” in a year or two, when companies have finally accepted that human developers are still required, when they realize that a skilled human armed with a powerful LLM can do incredible things. ✨
+
+If you’re passionate about software development, or if you see it as the best opportunity for you to earn a high salary that’ll lift you into the upper middle class, I really hope you won’t let yourself get discouraged by AI hype. Companies are still hiring, and I don’t see that stopping anytime soon. 💖
+
+### Last updated on
+
+November 23rd, 2025

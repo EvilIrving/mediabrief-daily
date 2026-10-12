@@ -1,0 +1,344 @@
+Oh, welcome to
+Hey, not too much excited to
+the benefits the downs, all that good stuff, because this is
+give you the quick rundown of where my brain is coming from this.
+So couple weeks ago, on the McMaster car website went viral
+and it basically was like the McMaster car website is so fast
+like how was this 100- year old company making such a fast website.
+And so I was like the website feel as possible and one of the techniques that they're doing
+and I would wager to say the biggest bang for their buck of techniques is that they are preloading
+the HTML of the pages as you hover over top of the links, pre-loading, pre- and connecting.
+That's been a tactic for quite a while and, and it's actually baked into a.
+It's actually baked into a lot of frameworks like Next.js, but now we are getting a speculation
+rules API, which is going to be built into the browser and it's actually going to be able
+able to do even more than that.
+It's really pretty interesting.
+And I saw Harry in his website, which was a tree.com and it's pretty nifty.
+pretty nifty. So yeah, we're gonna get into it. Let's talk about Century really quickly.
+I'll talk about Century in regards to the speculation rules thing, so as I was researching
+this episode, I messaged some of the folks that work on the Perf team
+team at Century and I was like, hey, it'd be cool. Because the whole idea behind speculation
+rules is that you prefetch pages because you think somebody's gonna go to it. And then
+and when you actually go to the website,
+it will be, it will be already loaded, right?
+So there's this like kind of concept of like,
+well, are they going to
+and what percentage of the pages did
+because you downloaded it.
+So I messaged them and there's already a chat of like,
+oh, is there maybe something that,
+brought up in the dashboard, for this type of thing?
+It's not, it's not
+a thing yet, because it's obviously the spec is not
+in all the browsers just yet,
+but there's already some talk of like,
+ถo maybe that's a good metric to show in the dashboard.
+Check it out, centry.io forward slash syntax and you'll get all the insights into
+into the bugs as well as performance of your application.
+I'll let you know.
+When you're doing slow things
+things, let's talk about preloading, pre fetching, pre connecting.
+So in the browser for a while we've already had a link tag that you can put in the
+head of your document and you can say link rel equals you can say pre load or
+or pre-connect and what that will do is tell
+cycle is that you need to figure out, okay this font is loaded at cdn.coolguy.net and
+that cdn.coolguy.net I gotta figure out what the IP address is for it and we gotta do the
+whole SSL handshake to and make sure that's right.
+So do all that stuff right away so that when I need you to download something from that
+URL, you're gonna be done all of that overhead and we can simply just get to downloading.
+Yeah.
+or if this is a good metaphor for this.
+So what, like a preload could be, be like, get your shoes on,
+get in the car, we're leaving.
+And then preconnect would be like,
+hey, we might be going somewhere,
+let's pull out the GPS and get instruction.
+So that way when we are ready to go,
+we know what we're doing.
+Figure out how far it is,
+know exactly where we're going.
+Yeah, exactly.
+And both preload and preconnect,
+what can be really handy is because the way
+that HTML parsing works, you can put a preload
+or a preconnect in the head of the document
+and you can tell it things like web fonts
+or style sheets or whatever.
+And the browser is going to start downloading them
+before it even encounters them.
+Cause like for example, if you have a web font,
+you gotta load the HTML and then the HTML is parsed
+and then the HTML figures out there's a CSS
+and then and the CSS is parsed.
+And then part of the parsing of the CSS goes,
+Oh, there's a web font.
+Let me go download that, right?
+You're kind of, you're water falling your request.
+So if you can tell the browser
+before it even gets to the open body tag,年을
+encountered this in your web development.
+Google fonts is really good for this because
+yeah, when you're using Google fonts,
+you're on a different domain.
+It doesn't necessarily know where the IP addresses
+for the domain is.
+So when you copy paste the little snippet from Google fonts,
+it will give you the preload URL for that
+that you do paste into your head of your document.
+Yeah, I remember that, but I also remember.
+Remember the first time I tried to use Gatsby,
+like pre-alpha Gatsby, or like early, early Gatsby,
+and you load up everything microwave,
+how the heck is this so fast?
+And then you pop open the network panel,
+you see all of the pre-loading being슷.
+Yeah, it's pretty good.
+Even like if you have like pagination, right?
+If you're on page two, you could pre-load page three
+so that the chances are somebody's gonna click it
+and you can pre-load it.
+And what that does is the browser
+will simply just go and download the HTML
+and have it hot and ready.
+And it will also in the case of a link tag, it will also
+crawl through the entire looking for its resources as well.
+So if there's image tags and CSS on the
+page it will- will download those as well.
+So we've had that for a while, but it has to be done
+resource by resource, resource basis, right?
+So there's this new API called the Speculation Rules API.
+And what this does is it allows you to pop a script tag
+into your page with a script of type of speculation rules.
+Now, inside of that, you can specify
+both a pre-render and a pre-fetch.
+So a pre-fetch will go ahead and download the HTML
+for that document and sort of just have it hot and ready.
+And a pre-render will go one step further
+and literally render it in like-
+kind of like a new tab.
+So it will both download the HTML, parse it out,
+lay the thing out in the DOM,
+download any assets that are required,
+like images and fonts and whatnot and have the CSS selectors.
+selectors to say, when a link matches this, download it.
+And when a link doesn't match this, don't download it.
+And same thing for the, the, actual pre render.
+And so couldn't that get out of hand really quickly in terms of what you're
+asking, asking슷ing the client to download?
+Yeah, absolutely.
+Like any time that you, you talk about prefetching and pre rendering people go,
+Okay. Cause like next JS has a had this for for quite a while. And if you are too aggressively prefetching and
+pre-rendering, then your your bill can can go on up, right? So like you have to really think about
+is it worth prefetching and pre-rendering these values here. But before I gett into, that let
+me just talk real quick about one one more part of the speculation rules API, which is
+How aggressive you want this thing to be, which is called the eagerness.
+Good name, yes.
+Which is immediate, eager, moderate, or conservative, and even if you tell it, hey, these are
+some links I might want to preload, based on those immediate, eager, moderate, or conservative,
+the device has to make a decision.
+things like the user's there, the speed of their phone,
+or whatever, those things play into whether the browser
+decides to do it, even the battery.
+If your user has a 4% battery, probably not a good idea to waste the
+Because at a certain point, the browser needs to make those decisions given the things that
+it knows about.
+But like next year I just had this for a long time, a lot of frameworks have had this for
+a long time where they simply preload it when the link is in the viewport or they'll preload
+it when somebody hovers over top of the link and hasn't clicked it.
+But it can be a little bit expensive depending on how much does it cost.
+If you imagine loading the Syntax homepage.
+you think about, okay, 100k fairly large HTML page,
+what does that cost us to load?
+If you're loading that off of a CDN,
+like it's already a static, like,
+for example, a website, if it's just a static page,
+a lot of the blog posts are just static pages,
+that's gonna cost me almost nothing to load on there.
+But if I had to actually,, A,
+if you're paying for bandwidth on your host,
+it could get expensive really quickly
+because you're 10x'ing the amount of bandwidth
+you're paying for.
+Or does it cost the server anything
+And pre-rendering, do you think they're doing well?
+That feels like that would be part of it.
+on the link, they're just swapping the HTML on the page, now the whole, the whole page,
+just the part.
+Part of the website that changes.
+while we're validate, so if you have a CDN in front of your, you can throw some caching
+headers on the response and then your server is not going to do the work to regenerate
+the page every single time.
+You might say, all right, caches for three minutes, some pages, you can do that because
+it's the same for everybody and other people, other pages you can't because it's like
+user data, right?
+Like if it's your profile, you can't cache the user's profile in a global CDN.
+It's a good-argument for putting state in query params, right?
+-Yeah.
+You put your state into the URL, then what, you can, can you pre-render those URLs?
+you can at least cash that.
+You can pre-render them if you know them ahead of time, but in the case, for example, on the
+Syntax website we have shows
+shows, and you go to page two or you filter for Hasty treats, that goes in the URL.
+Theoretically we can figure out there's 100 pages and there's 80 different combinations,
+but then you're thinking at a certain point there's probably a couple thousand combinations
+of how many per
+per page, what type of episodes do you want,
+you know
+.
+Before you know it, it, it gets out of control.
+Generating a thousand HTML pages for a couple of pages.
+Yeah, but what you can do is just,
+just cache them
+after the renders.
+So the first person that visits,
+it's
+it's
+it's
+it's a fresh version, right.
+And then you'll stick that in the cache.
+And it's not necessarily that it's slow,
+because the syntax side is not slow
+to do it without a cache.
+But it's
+it's expensive that we have to use server time to regenerate that page every time so
+what you do is you just stick the result of Hacey treats page 32 stick that in a cash
+just save that version of the cash and serve it up the next time around yes and I think
+to consider is like what is the cost for the user to load this as well this is less
+of an issue now that unlimited bandwidth has become so widespread. In fact, who did we
+have on the show that they were saying about like Africa and like, like, oh, internet connections?
+Yes. Yes. From Tori, man.
+Yeah. All the comments where he's like, you know, about connections in Africa and
+like all the comments are that are like, brother, I'm from Africa and we have faster
+internet. Yeah, I believe.
+Believe that. Yeah.
+So like you have to think about like is there is it is the user on a
+limited data plan? Are they on slower?
+Slower connections, you know, and that's where I think the the device itself
+will play into these speculation rules.
+Of should it be done or not because again, you could burn up a two gig
+and real quick on some of these websites.
+If you just why not let's load absolutely everything in there. Yeah interesting along the whole McMaster car website is
+Apple folks built
+this thing called next master, which is they
+Ream the yeah McMaster. Car website in next J s and, it's really cool
+It's obviously not the exact same website. There's there's a little bit to it, but what I messaged them
+I was like post the Vercel bill because everybody is like
+Everybody says, oh yeah, but you're
+it's going to cost a bazillion dollars to preload all of these things.
+So they did post it.
+So they had 45,000 unique visitors, about 1 million page views, meaning each person that visited 20 pages.
+I don't believe people clicked on 20 things, but I bet that means 20 pages were preloaded on the page.
+page and their entire bill for microwave 45,000 unique visitors.
+A million page views was $513, which is that a lot?
+It really depends on your product, right?
+I would say that's a lot.
+You know, 45,000.
+I would say that's a lot.
+I would say that's a lot.
+And if you look at the breakdown over half of that was edge requests.
+And then, so $220 was the Vercel Edge request. And then another $160 was the image compression,
+or image optimization. So that only has to happen once, because they had literally 100,000
+images that needed to be resized. So that 160 is really only happening once. The rest
+of it was kind of incremental static regen, right, the reads and writes.
+There's nothing else that was like. really popping out, but that's on
+Versailles. Versailles is notably expensive for these types of things,
+but for a lot of people, ourselves included, it's worth it because trying
+to host the host can be a little bit tricky. So I bet you could do this
+for quite a bit cheaper if you were, like, gunning for making this
+cost savings. Yeah, they weren't gunning for that. They were gunning
+We make a next-js website that feels the same way in fact
+Doesn't even have spinners it loads even faster
+So man, this is the first time learning about this. So what's the did we did we discuss what the
+With the prevalence of this is yet it's in Chrome
+Chrome now, and it is not in
+in any of the other browsers just yet.
+So we're waiting on Firefox and Safari.
+However, this is the type of thing
+that can be very easily polyfilled.
+Especially the prefetching,
+because you can simply just take these regexes.
+I'm sure there are other rules, polyfill.
+In fact, hold on.
+there is a potty polyfill potty fill there is a potty fill so you can do that and in the case of like
+NECS I don't think that they're even using this because next yes has even more control over
+They're not fetching the entire page right you can you can simply just fetch the component that needs to change
+At a component level which is pretty nifty
+So it's just this whole idea of pre rendering a website can be a very good thing to
+to make your website feel fast.
+Because that was another thing, is the car.
+Awful PageSpeed Insight scores.
+All the performance people are like,
+no, this is awful I'm, and it's hilarious to see
+just real world people.
+I got so many messages from people
+that were not web developers and being like,
+I love this website because it's so fast.
+if it has a high page speed score or whatever,
+they just know that it, they tap the button
+and it shows up as fast as it possibly can.
+Yeah, we have mentioned before on this show
+that page speed is not the end all be all.
+But man, if you're using the site
+on even like slow or medium slow internet,
+and you're noticing it or seeing the actual usage
+being fast, then you don't need,
+You don't need
+a perfect Lighthouse score at that point, it's just about the experience of the users, cause that's all that matters anyways, not the, not the score.
+Somebody was screenshot shaming me on Twitter the other day, that my Westboss.com only got like a 76 on mobile, but like a 90, 94 on desktop, and my mobile was like a 78, or something like that.
+And I was just like, it's show me a website,
+that is real and not just like your personal blog
+with a list of links in a div.
+But show me a website with images
+that gets a good page to get insight.
+Like you said, hmm, like who's top performance
+in our industry?
+Vercel, let'szz go with Vercel.com.
+See what they get.
+It has to have a lot of images though
+Well, let's see. Does for sale have for cells lots of images don't they I can't imagine and I can imagine a lot of CSS
+Oh, I got they got they got lots of images. Okay. Yeah quite a fee
+Yeah, my personal website. I got a I got an 80 yesterday. I ran it again. I got a 50
+That's all over the map with these things. Yeah, you don't like your page speed insight score. Just run it a few times
+I'm just not using images.
+There we go. the Versailles gets a 44 on performance on that.
+And like, you go to their website, it's fast as hell.
+And it's so frustrating that this is the, like, golden score.
+When, like, show me like a real website that has real customers that it's getting.
+And if you go to the desktop, it's usually better.
+But it's, it's like, oh, if you're running us on a throttled,
+like old feature phone with really poor 3G.
+Of course it's gonna be slow.
+The whole website's gonna be slow.
+And that's not really excuse to make crappy websites,
+but I don't think that this whole lighthouse score
+is the thing that we should be going for.
+I don't know, what do you think of that?
+Well, I think my dog is like going nuts right right now.
+I don't know what she's doing.
+I think she heard something she thinks is outside.
+So she's huffing and puffing a little bit.
+Oh, okay.
+I don't know why.
+That's what I think about it.
+I think whatever she might have urgency to go outside to the bathroom.
+I think that's...
+No, I don't know, man.
+I test is super important.
+These preloading and prefetching techniques combined with other things is the true path
+to really, really fast feeling things.
+The information's ready to go.
+You click.
+either cached or it's loaded, it's in the site, whatever, it feels good, and that's
+kind of what I've been getting at a bit with even client-side rendering stuff with local
+first sites.
+Yeah.
+Like these are apps.
+The information, information comes in super-duper quick.
+Now, I have no idea what the page speed is going to be on those.
+It's not server rendering any of the data, it may be server rendering the shell of
+the site, but those sites, it's not about the score that you might get from something
+like that, it is just how ding fast they are to use, and that's what matters the most.
+Yeah, especially like you think about the local first stuff, you're loading, I don't know,
+you have to load a little bit to be able to do it
+Speculation rules check it out on MDN and let us know what you think
+Peace

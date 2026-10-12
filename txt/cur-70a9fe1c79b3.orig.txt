@@ -1,0 +1,499 @@
+This is software engineering radio the podcast for professional developers on the web at se-radio.se
+SE radio is brought to you by the IEEE Computer Society by IEEE Software Magazine
+online at computer.org
+software
+Welcome to software engineering radio. I'm your host Gavin Henry. Today my guest is Daniel Stenberg
+Daniel is a Swedish internet protocol expert and developer who has been in and worked with open source software for 30 years
+known for being the founder and lead developer of the project, one
+one of the world's most widely used software the world's most
+widely used software components. He also participates in the development within the IETF and has authored books
+- on curl, open source- Http version.
+So today our show is Daniel Stan Rust from Currl.
+So what I want the lessons to get out from this, hopefully, is to understand why Rust
+in to how you brought Rust into the Cur, project to understand, to understand why
+you I'm going to use the word of Bands in the attempt, but decided not to do it.
+Same, same. And what the future holds. And then hopefully, help everyone understand the lessons learned. So if someone else attempts or if you come back to it, we're all much wiser for the process. So let's lay some foundation and remind our listeners what curl is.
+pop3, and ftp, and sftp, and scp. So it has a lot of transfer protocols. And I could
+also continue. The command line tool is often what developers think about when I say curl.,,
+One very important key,丁 factor with curl is stability, security, and stability
+that we provide,
+You said it's used, it
+of where you knew it's used?
+Just a list of where you know it's used?
+By volume, I think nothing compares to the mobile phones and tablets.
+It's an embedded component in iOS and Android.
+It's basically on every smartphone and every tablet that exists.
+Basically, I tend to avoid the word users then because it's a little bit of a library,
+so it's being used by others. It's not really users but embedded in different tools and
+applications. And a fun part about it being used in all these mobile phones is also
+Libcurl is a library that is used embedded in these mobile phone operators. They don't
+expose the API to applications. A lot the typical phone today, you have multiple installations of
+curl actually because high volume apps also ship it and bundle it because they can't access it from the
+OSותר level. So in a typical phone with a lot of apps, you have maybe five or ten installations
+like these big ones, they're just using the open source version for free and seem to be
+happy. I tried to get as many as possible to actually pay for and help them use curl
+properly so that they can meet for my maintenance and ongoing and not only me,
+of course the rest of the team. It's hard sell sometimes.
+How many in the team do you have full time or volume?
+Only one that is full time. So it's a small team.
+software, critical internet software like this. And it's just a person or a couple of people.
+Nobody really understands that, do they, unless they're in the open?
+That's true. And also, it sort of just suffers a little bit from the classical economic terms that
+if they don't have to pay, they prefer not to pay.
+All of these companies, they don't have
+Nobody actually asked that question, I don't know.
+, okay so I reached out to you because I, so I'm in the rust world and done quite a few shows on rust, I know what hyper is I move on to the next stage.
+Yeah, so hyper is well close to the.
+in to Carl.
+Correct.
+Exactly, Carl is written in C. It's from the 90s, one of these old classical styles of
+open source projects.
+So it's written in C, C is unsafe and we certainly have our share of memory, memory issues over time.
+And Carl also has this backend system, which means that when you pretty much decide which
+So, for example, if you want TLS support, that TLS
+build it. So the idea was then, so Carl's written and see, maybe we
+we should try to make the final build use more memory safe code and buy
+memory safe than using libraries written, for example in Rust.
+Rust is probably the most suitable replacement when it comes to this.
+so, this-a- we're sponsored thing from ISRG in their Proximo project.
+ISRG being the team behind Rust, and they have this project to
+memory unsafe projects with safe projects rewriting things from unsafe languages into Rust,
+so they sponsored this. So the
+So by building Curl, with this HTTP backend, we would get a build that would then use more memory-safe code than we would otherwise have.
+But it was then an optional build, right? So you could there you use the Natives C version or use the Hyper-powered version.
+Yes,
+The Kerl project that can offer 28 different protocols I'm
+depending on what you configure when you're comp Illing it
+or what's available on the operating system,
+those protocols will then have a back end,
+so say you did, we're talking about ACTPs,
+we could opt to use the original one in Kerl and see
+or another one if there's the same same for
+for like TLS, you could use different libraries
+that protocol capability. Exactly, because traditionally you've had a lot of
+I think it's the more and more or less nonsensical.
+and hyper is a way and this was years
+ago we started this. So I
+needed a glue layer to make sure
+Yeah.
+Air.
+Air.
+Air.
+that world still.
+Oh, so it's just Hyper that you removed, which provides the...
+Exactly.
+So we didn't actually remove all the rust we removed Hyper, and Hyper was actually the
+only HTTP backend.
+The other ones I mentioned now are TLS backend, it's a TLS backend and an HTTP 3 backend.
+So different places they glue in into the stack.
+So Hyper was HTTP 2.
+HTTP 1 and 2.
+Oh, 1 and 2, yeah.
+Forget about 1.
+And
+because it was funded by them and they gave you guidance, helped not have to make a lot
+decisions about your picking.
+So you didn't have to to start protocol parser from scratch and rust.
+Exactly.
+Because that was really never a good idea.
+So because that's quite a lot of work and I'm not really a rust guy myself.
+So I wouldn't be a suitable person to write it in rust anyway.
+And by using something that was already there, proven working and everything, it was, I
+What is this pretty suitable option to go with?
+Yeah, because as I understand it, when you're talking about bringing Rust in or rewriting
+Rust or porting to Rust, the options would be what you've done.
+You bring in something established or you port the C code.
+You look at the C code on one screen and on the other screen, you're rewriting that
+C Rust.
+Yeah.
+It does work and it kind of doesn't.
+This is the Rust Geomatic way, which I've done a show on that, by the way.
+of my year has been spent on rust stuff. So I'll just list a couple of shows for you.
+The last one was show 672 on rust and production with Luca 670 with Mattias on prototyping and
+rust which was really enjoyable. And then we did show 659 on
+on idiomatic rust. So there are some other ones for people to, to listen to.
+Anyway, so creating it from scratch or porting your C code to a rust equivalent
+insane and just to close off this section before we move onto the actual process of what you did.
+How do you see most of the memory related issues in Curl? Is it in your?
+Your speck or is it in your implementation of the HTTP spec or is it just spread across different back ends?
+That's a really good question. I actually don't think I've had them in the HTTP related parsing code.
+It wasn't really addressing where I think I had the most,
+but it's really hard to find that pattern, right?
+Where do we do the most mistakes and how do we fix them?
+So typically when we get security problems,
+we of course try to see the pattern
+and see what we can learn from that
+and what we can do to avoid them in the future and so on.
+But they tend to be spread out in different ways,
+but also we have also over the last,
+I would say maybe even 10 years,
+we have done several different things internally in curl,
+make it harder to do those mistakes we sometimes did in the past so I also think that there are many ways that we can actually just write better see to avoid some of those mistakes so many different things that are happening at the same time we try to maybe
+Maybe introduce more rust code. We also made sure that we did better see code and avoided some things that
+Obviously things that were a little too easy for us to do wrong insert mistakes with so nowadays
+We sort of introduce more internal helper functions and rules on how to do things just, just to avoid the risk of mistakes more
+. Yeah, trying to centralize where you do, do some of theableski. Yeah, exactly for example
+I think that was a bug that was like 20 years old or something
+that came out of nowhere because
+yes, yes, security is really hard
+security is really hard
+The idea was then, I mean, since we already have this concept of different backgrounds,
+this would be one more way to just bring in and other back, replacing native, that in
+So is the only bit of Ross that we got the back ends that implement the protocol you're
+because this is being pulled out, is it only the curl implementation that's left or is that other work?
+Yes, so basically I created this HTTP, the notion of a HTTP backend, it didn't exist
+exist before this, so I created it on the behalf of the Hyper for it, and then when I removed the
+Hyper approach, there was no other backend, so it's pretty much closed that drawer and now we
+So, it wasn't really done the best way.
+since remodeled
+call in the backend hook or, however you do it, would have been completely different and brand new.
+Exactly because we learned
+a lot from doing this and. And now we know more.
+Yeah, so it's not a failure. It's just a learning process
+Yes, absolutely.
+brings us
+actually adding rust so I haven't done this myself. I have an idea but I just want
+I just want to paint the picture of what it was like before you even did this so
+normally when you configure it. It's an auto tools based project so that's your
+configure make test. Is that correct?
+Yeah, pretty much.
+So you make option as well. Do you?
+Yes, yeah. It's pretty much on power so you can select whichever version.
+So you're doing the configure,
+of the
+Rust ecosystem is available
+yes
+you would decide other backends with the configure line,
+you would decide this backends, you would specify,
+I want to use hyper, hyper is installed here.
+then I would provide the proper configure magic.
+So that it would detect that Hyper actually exists.
+It is the proper version.
+And then I'm made sure that you would build with it.
+That's the easy part, right?
+They're just making sure that the
+is there and can be used
+or it wasn't even the generated FFI,
+it was some glue library that Sean created first.
+So pretty much I don't actually interface
+the hyperlibrary directly,
+I interface the little glue library
+or wrapper library called something else.
+And that's the library I check for
+because that's the library written with the same face.
+And so I just pretty much make sure
+find link with that library
+available through that library and then I make it just a set of define for that
+and then in the to be used in this stuff if this is available use this code if it's
+not available use the other code yeah cool that's how I understand it
+Yeah, I mean, Rust can be built into a library for a foreign function interface for Codes,
+i.e. F, and that's what you're
+doing.
+I would abstract it and so that I would either use the native code or the hyper
+library to do things, setting up a request, adding headers, parsing headers,
+all that stuff you do with, with HDP, which actually is quite a lot.
+And did you, as far as was concerned, it's just a C-Library you're using.
+You don't have to think of Rust as something.
+Exactly, that's kind of the beauty of it.
+I didn't have to think about it as Rust at all.
+I just it is written in or anything. I just have an API which will document behavior and
+I would just use that. And of course, one of the challenges for us then me and Sean from the hyper side is that this was early, this was early days then for the FFI things and me hyper from the C program. So most of this stuff didn't actually exist. It wasn't really documented. So we had to have a lot of interactions for me to understand how to use it. And one of the challenges actually in general when it comes to using rust
+even though Rust provides this as a fairly convenient way to generate code so that you can use it from C,
+is that most of the documentation written for these Rust libraries, they're written for Rust consumers, right?
+users, and it makes it complicated when you're not using the Rust API, you're using the FFI API from C,
+because then you end up in a, you have to read the Rust documentation, but it's not that way,
+and it's got a fix of dash sys, so sys, that's the bit of that links to the sea library and then
+you've got a nice idiomatic create that links to this. Sys. Thanks for your hiding all the sea staff.
+Exactly. That you documentation. Yeah, the way you do it is you've got, got to generate the library
+and then all the rust doc document and the symbols and the function calls and the return
+types because it's strongly typed on the rust side and I don't think that has an
+ultimate way to maybe through buying Gen and Lib C that offer those things the
+other way. You, said that Sean, so Hyper was just rust, wasn't it? It just was a
+library, a raster, didn't have anything built to generate the C build.
+No, but it was already in their plans. So I really didn't sort of push for
+I didn't already, intended to do, or it was just that they hadn't done it yet, so I was pretty much the first user of it.
+So did you have to work together to create function names that would be available
+through the library version of Hyper the C library version that you would call?
+Yes, because it didn't exist, so they pretty much had to go through it one by one and make sure that I could access it from C
+provide the documentation for the sea angle, which is an interesting challenge.
+And I think that was one of the bigger challenges, in general, when it comes to doing this,
+is that in this middle land, when there has to be sea library or sea interface to access
+from the sea code that would then reach into the rust code, it means that
+you have to have someone that is actually interested and knowledgeable in both languages
+in that middle land to understand it and be interested enough to work with it.
+it and, write the document to write the functionality necessary, necessary for this to actually work.
+Yeah, because it's like it's double the work.
+And it's got the design, the rush function, then you've got to say on that rush function, the standard way in curl, I'm just guessing here the return a excess success or an exit failure, or a pointer to an error code, or saying right if it's a non zero return then you know what's that.
+there's loads, there's loads of things to think what's written or how is it called and how are we going to provide what Carl needs and you lose a lot of rust main features you know the rich can get and all those types of things because you're sk.
+I guess that just comes with the territory.
+When you have to use a library, that is fairly, fairly rich in a lot of features and you have to integrate.
+getting to know howלים actually work. I guess that test
+The outgoing request is exactly as expected.
+Every.byte in the request has the exact value it's supposed to be, right?
+So, the outgoing request, we know that if it's 120 bytes, we can compare it.
+All those 120 bytes should be exactly like this.
+And the same way, when we get a response from the server, the server sends back a response
+response that might be, and I don't know, how many bytes.
+But all those bytes, exactly when we download it, exactly as the server sent it.
+as the, as Carl saved it.
+That actually introduced quite a lot of interesting challenges because hyper has a different approach
+to how they expose.
+It was not at all that as, as easy to do the test cases the way we had done it for decades
+because hyper exposed it differently.
+So it was already there was a challenge to make sure that how do we verify that the
+transfer done.
+code is identical to a transfer done.
+Yeah, so you haven't got that safety net to fall back on to just, if that test fails,
+a no, you've not, something right, you've actually got to change the contract.
+Yeah, so part of our first sort of steps to making sure that this would work, was that
+we had to ask Sean to do several different changes to Hyper so that it would data
+cars in a more curl-like way so that we could actually use it in the test suite and make
+sure that everything's not completely identical but almost identical. Identical enough so
+that we could actually tweak a little bit so that we could run tests and make sure they
+actually work exactly the same.
+So to interface the C to the async, it does, I think.
+So is that a ton of callbacks you have to do and wait for the reply or?
+No, I think they hide the callbacks.
+So they do the callbacks.
+It hasn't actually performed it yet,
+so you have to call it again later to know if it went OK or not.
+In a, for example, when you introduce, in my-mode,
+in my case, when I want to have an alternative way to do HTTP,
+I have the native way and the rust way to do it.
+It just introduces some fun
+behave because of the different, which of the different backends you would use.
+So it was just a challenge really.
+Yeah, imagine you've got ABI or API to add in your backends, Carl.
+So if I was coming along and I'd created a brand new protocol and I wanted Carl to do it,
+I know there'd be documentation of how I hook that, into your configure and build process.
+But that wasn't there for this, for us first, and hyper because you hadn't done it, it before.
+So, yeah, exactly. You got two moving parts to try and line up and work.
+and a whole new frontier to try and pull things out of the curve
+and then before as well. Okay, so what advice would would you or could you give others with regards to
+this. This bill process actually the way you explain it is just another sea library. Yes.
+I think that's a pretty neat way to do it. So I I think that's straightforward and from a sea
+point of view from our point of view. It's convenient and really working well. So
+Technically,
+there's no problem, there's nothing really.
+Really, I think there should need to be changed when it comes to that.
+I think the biggest problem and come back to it because I mentioned it
+and I see the same problem actually with the other RUHs back-ends is that again,
+you end up in a weird land where the documentation is often fairly good for these libraries,
+but they don't.
+I end up in a weird, I don't actually have a, documentation for how the API interface I use isn't actually documented.
+So I have to do a lot of guessing or reading code or both or guessing how it actually works because the translation from rust to see is not always straight.
+forward. And it's not even, I mean, I can't even guess at some points because it matters.
+depends on how you actually do that FFI translation pretty much. So that's sort of a common pattern
+I see.
+Could you give us an example of that? Say we've got a function that does something and
+returns something that function interface is documented. But what problem?
+Well, typically it's only documented. The Rust version of it is documented. Sure.
+So there's a
+code. So I usually get a more of a tweaked or twisted version of that, but, but I need the details in that particular flavor because I use the C API, not the Rust API.
+Yeah, I see. When I've been doing some functions, I
+only written them because the C program is going to be calling them. So I've changed the
+you know, the signature of that function and what it returns.
+More of a I a C user in this sort of situation. I'm the oddball hair and the niche case
+So of course people are sacrificing spending spare time and offering their time on this and energy
+They of course focus on getting things working primarily for the
+RUST users so that's why the rust documentation is is the
+Sometimes that makes it harder to use it from C, because this documentation is often...
+Yeah, the types and the the types of the structures in the rough side, when they tell us to represent that as sea
+you just have to kind of see what comes out comes out, don, don't.
+Yeah, and then it comes back to this. To do this really well, you probably need to understand a lot of roughness and see at the same time and that's a special intersection of people.
+Excellent. So I'm going to move us on to our, what, topsy for one of a better
+better word, what went wrong, you know, the analysis here. So first question, was this the right
+was I think it could have been the right part to use rust the
+I don't think it was actually the part of Carl that was the problem because I think as I said before, I think we can pretty much introduce
+introduce back against for more or less anything in Carl like this if we just spend time
+and do it correctly.
+So I don't think it was the part of curl
+that was the a problem.
+I think the primary thing that made us,
+eventually pull it out again
+is that we didn't really find users that wanted it.
+So we have this,
+I kind of liked the sort of survival of the fittest approach
+by offering different back ends for different solutions
+so that users would pick whatever they want and go with that.
+We offer a bunch of different TLS library solutions,
+for example, and
+users decide a lot what they should have and what's used and what's best and what they want.
+It was quite notable quite early on and through the entire project that we had
+a hard time to get anyone to actually even
+helping out improving the backend so that very few people actually engaged and helped us out.
+How do you figure out if a backend is being used or as popular or not?
+Basically.
+Basically just by, asking people.
+it. I, I suppose. Yeah, I suppose you could argue if it was marked as stable and then
+you'd get a bug or a bugger or
+you didn't get there, you did exactly, that was one major one.
+And were the other Rust options, the TLS stuff, was that there before you started this project?
+So you had some experience or was that done after????
+The key one for HP刺 was before the Russell's one started I think pretty much
+why I was doing
+It's subtly far from clear and obvious how to do it.
+And one of the challenges we face many times is that the hyper and curl has a little bit
+of a different.
+We have different approaches to how we approach it, which made it, for example,
+when getting the headers from hyper, it would get them in a random order while curl always
+returns them in the order they
+they were sent over the wire, which of course, if
+in order I can't compare them correctly as I do in my current test suite, so that's one thing, for example.
+And other things like hyper has certainly other limits,. Restrictions, requirements on the HP layer
+than curl has, which also also in funny friction and differences it build one way or the other way
+because they would behave differently depending on just policies or religion or taste.
+The existing rust things that
+you're using, where again, just see libraries in a well-established landscape because you had
+other back end.
+Yes.
+And this compacted it.
+And there must have been a point, or
+was there a point when you thought, hold on, we�
+when having to make so many changes to Hypert to get this to work, did you ever have a
+H. H. H' H. H. H. H. H. H. H. H. H. H. H. H
+at 97% of the case coverage. So I think we were pretty well on our
+hour to work, but then it flatlined and no one worked on it for a while. It just sat at that
+That's what we call the sort of end of the road
+road for this adventure and say that we didn't actually manage to do this in a proper way.
+That brings me nicely on to what里 what benefits did you gain from the attempt.
+Which to me sound like a lot, a lot of things that you've learned.
+I think we learned a lot. I think actually Hyper also learned a lot.
+I think they improved as well as we did.
+Even when we're not using Hyper, we're no longer using it.
+I think we improved average ways we made the HP', handling more rigid and stringent, to match, to match up with hyper really. And we did a lot of cleaning up internally to be able to do this back end separation. And that helped me
+refactors we've done in curl and I think the hyper lesson also helped us make decisions
+and learn from that and use that when we refactored the internals in curl so that we
+sort of have in the back of our minds we now have this idea that when maybe if we do this
+again now we have these different tools and set ups that will help us do this better
+the next time.
+Did any, any of the changes that you made to bring in hyper, did they remain or
+or did you just rip them all out when you removed Hyper?
+A lot of the improvements with it to the HTTP in general
+and the separation of HTTP from other,
+there was some case pretty much of,
+I don know how to sort of explain it,
+but you know that we have sort of in other code parts
+with HTTP and specific knowledge
+that we had to make sure that they were not
+in the generic parts, they had to be in the HTTP parts.
+So we did a lot of cleanups like that,
+that have certainly remained,
+just been emphasized and improved over time.
+quite a lot of the HTTP related, the protocol related parts, they have remained. What we,,
+we've, I'm sure, ripped out was the entire attempt to have this flexible back-end approach
+where we go either or away, because we don't have that anymore, so we don't have to provide
+it. So that part we ripped out.
+In your blog post, I'm just going to quote this bit, 95% of the work,
+and getting those final 15 test cases to, work those were the ones that sort of the,
+shit, horrible things. So we really need a kind of person with knowledge of all this,
+and not only knowledge, but you also have one, you need an interest and an energy and
+enough to actually dig into this and work on this. And we basically didn't find those persons
+with that time and energy. So they remained there and didn't see any easy outcome. I didn't see
+anyone likely to show up to do this work.
+So those 15 tasks, do you recall a couple of them, what they were and why they failed?
+Well, why they failed, that's part of the reason why, if we knew exactly why they failed,
+it would have been easier, but that was part of the of the research that would have been
+done.
+the interaction or the differences between hyper-solution to do things to the native solution
+to do things. And I could also just add that hyper is not doing everything. Curl can do
+to
+were mostly cases like that, and they would end
+that slightly different than, you know, the
+requests or the responses would be slightly
+different depending on which solution you would
+use and the entire challenge there.
+Would be to figure out why and what to do to fix
+it.
+I think I can imagine because I've done similar
+and my C project bringing rust into it, which
+another reason why I was interested.
+So I imagine that the bits that curl still
+does that hyper doesn't or never will.
+You set those
+fairly complicated programming challenge. I mean, not impossible, of course, but it was just
+challenging enough that it turned out to be an obstacle that no one really worked on. And when
+there was no one that had worked on it for long enough, I took, I took it as a sign that it's,
+probably, not something people want to work on either. And no one showed up interested in
+doing it either. Well, people worked on it that helped us out. And we got this far, thanks
+....................
+maybe surpass and go through if we really made it there.
+, but there was no one asking us to do that and the big end was missing.
+Did you have a timeline by the sponsors of this feature?
+of this feature? I forgot the acronym. Did they say you had a year, five years or
+how did that work?
+No, it wasn't really like that they were much more flexible in the ISRG so they were
+really great with this. They were fully on board with this and I had a full
+communication over the years really and we came to this. It was a really conclusion
+first it was more like, I thought that maybe we should just conclude defeat
+here and give up and rip it out again. So I had conversation with...
+them all the time and they were very good with this and they understand it completely.
+They struggled quite a lot to find people to actually pick up the
+ball and continue this work and in the end I think we
+we concluded that this is the right decision for now. I mean, we haven't shut the door
+for the idea or this concept for the future. Anyway, so who knows, maybe, we will come back
+to this idea and restart it in the future.
+approach to replace CC++ code in a larger project.
+So you can, I kind of always liked that approach.
+I was already back from the days I worked with Firefox,
+that it is a convenient and decent way to replace components,
+components sort of component by component-wise.
+Instead of having to rewrite everything into Rust
+in one single blow, you can instead do it component by component.
+That's a good way to do it.
+to prove that it works to do it that way.
+things. I think it's harder because then it transluc to the
+the weeds of exactly how the API works and how to actually replace a
+component in the software and that depends on the particular
+software I think, I think more than anything else.
+I think we've covered my last question which would be why didn't
+other step forward to help and you.
+You explain that the knowledge to me here's like four different. Things you know, there's the
+the rest way to do it. There's the sea in the face of this place. There's the
+particular bit you're replacing on curl and
+particular bit you're replacing on curl and then the pro specs involved of that whether it's
+author or version four when that comes out etc.
+etc.
+And I think just the general lack of a perceived upside of using this I don't think most people
+think curl's native solution is bad or insecure and
+of dream of switching over with this new one anyway. So we're stuck in a land where people
+using curl, they're pretty satisfied with the existing solution. People using hyper, they're
+mostly rust users there. They're in rust land. They're using hyper already. They don't use
+curl anyway.
+So we ended up in this middle land with no demand.
+Yeah, I suppose if this was the hotspot of memory you really insecure, issues or
+you either take the decision to address them and,
+and the same, and fix them,
+like you're, you constantly doing refactoring to make improvements,
+or you bring the raw data to say given X amount of F,
+you'll get Y amount of return.
+It's hard to really quantify it.
+We can also come back to the fact that my plan
+is not to remove the native C,
+because I think the portability of curl
+and curls prevalence on everything everywhere is partly due to it being massively portable
+and it is this portable because it is written in C. So even if we had kept the hyper back
+end, we would have kept the native one as well. So we still need to work on the native one
+even if we would have provided a Rust one.
+And are you aware of any C projects that you reviewed or listeners could do that? Do
+what you already do with Rust and parts, for example?
+library with a Rust library in order to do more memory safe operations.
+thought it was the version somewhere in there anyway.
+Exactly.
+OK, I think I'm going to wrap us up now. I'm really glad we did this show and hope it helps
+others understand how they can add Rust into their C project, make it success. And as we
+discussed, it wasn't a failure. It was just a feature that didn't have enough demand
+and benefit and got very, very complicated at the end. Was there anything we missed
+, that you'd like to mention, that was a particular
+that you solved or just anything in general
+to get some, do it again or try appetite?
+All this is now gone from Git.
+So if
+if you
+I mean, you could do it if you're really interested into what kind of weird problems you can run into when you do this, but otherwise�
+it's not that fruitful.
+I think now we're looking into improving every aspect and going forward.
+And. If anyone ever think doing it again is it would be a great idea that we would of course consider getting this back onto the drawing table and do it better next time. But everything that is about Curly's of course on the Carp that is seen just hit us up.
+And your blog. Yeah, absolutely.
+I wonder if anything will come along like a hyperversion version, has particular thing
+in

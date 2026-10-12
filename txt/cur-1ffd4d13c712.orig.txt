@@ -1,0 +1,338 @@
+A few years ago, I had a _Eureka!_ moment with CSS.
+
+Up until that moment, I had been learning CSS by focusing on the properties and values we write, things like `z-index: 10` or `justify-content: center`. I figured that if I understood broadly what each property did, I'd have a deep understanding of the language as a whole.
+
+The key realization I had is that CSS is _so much more_ than a collection of properties. It's a constellation of inter-connected layout algorithms. Each algorithm is a complex system with its own rules and secret mechanisms.
+
+It's not enough to learn what specific properties do. We need to learn how the layout algorithms work, and how they _use_ the properties we provide to them.
+
+Have you ever had the unsettling experience of writing a familiar chunk of CSS, something you've used _many times_ before, only to get a different and unexpected result? It's super frustrating. It makes the language feel inconsistent and flaky. How can the exact same CSS input produce a different output??
+
+This happens because the properties are acting on a complex system, and there's some subtle context that changes how the properties behave. Our mental model is incomplete, and it leads to surprises!
+
+When I started digging into the layout algorithms, everything started to make more sense. Mysteries that had bothered me for years were solved. I realized that CSS is actually a pretty darn robust language, and I started to really enjoy writing it!
+
+In this blog post, we'll look at how this new lens can help us make sense of what's happening in CSS. And we'll use that lens to solve a surprisingly-common mystery. 🕵️
+
+## [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#layout-algorithms-1)Layout algorithms
+
+So, what is a “layout algorithm”? You're probably already familiar with some of them. They include:
+
+*   Flexbox
+
+*   Positioned (eg. `position: absolute`)
+
+*   Grid
+
+*   Table
+
+*   Flow
+
+(Technically, they're called layout _modes_, not layout algorithms. But I find “layout algorithm” to be a more helpful label.)
+
+As the browser renders our HTML, every element will have its layout calculated using a primary layout algorithm. We can opt into different layout algorithms with specific CSS declarations. For example, applying `position: absolute` will switch an element to use Positioned layout.
+
+Let's look at an example. Say I have the following CSS:
+
+```
+.box {
+  z-index: 10;
+}
+```
+
+Our first order of business is to figure out which layout algorithm will be used to render the `.box` element. Based on the CSS provided, it will be rendered using _Flow layout_.
+
+Flow is the “OG” layout algorithm of the web. It was created in an era when the web was primarily seen as a giant hyperlinked set of documents, like the world's largest archive. It's similar to the layout algorithm used in word-processing software like Microsoft Word.
+
+Flow is the default layout algorithm used for non-table HTML elements. Unless we explicitly opt in to another layout algorithm, Flow will be used.
+
+The `z-index` property is used to control stacking order, to figure out which one shows up "on top" if they overlap. But here's the thing: **it's not implemented in Flow layout.** Flow is all about creating document-style layouts, and I have yet to see word-processing software that allows elements to overlap.Clippy would never allow it!
+
+If you had asked me about this a few years ago, I would have said something like:
+
+> You can't use `z-index` without also setting `position` to something like “relative” or “absolute”, because the `z-index` property depends on the `position` property.
+
+**This isn't exactly _wrong_, but it's a subtle misunderstanding.** It's more accurate to say that the `z-index` property is _not implemented_ in the Flow layout algorithm, and so we'd need to pick a different layout algorithm if we want this property to have an effect.
+
+This might seem like I'm being pedantic, but this small misunderstanding can lead to big confusion. For example, consider this:
+
+Code Playground
+
+Code editor:
+
+Result
+
+In this demo, we have 3 siblings arranged using the Flexbox layout algorithm.
+
+The middle sibling sets `z-index`, **and it works.** Try removing it, and notice that it falls behind its sibling.
+
+_How can this be?_ We haven't set `position: relative` anywhere!
+
+This works because the Flexbox algorithm implements the `z-index` property. When the language authors were designing the Flexbox algorithm, they decided to wire up the `z-index` property to control stacking order, just like it does in Positioned layout.
+
+**This is the critical mental-model shift.** CSS properties on their own are meaningless. It's up to the layout algorithm to _define_ what they do, how they're used in the calculations.
+
+To be clear, there are some CSS properties that work the same in all layout algorithms. `color: red` will produce red text no matter what. But each layout algorithm can override the default behavior for any property. And many properties don't have any default behavior.
+
+**Here's an example which blew my mind:** Did you know that the `width` property is implemented differently depending on the layout algorithm?
+
+Here's proof:
+
+Code Playground
+
+Code editor:
+
+Result
+
+Our `.item` element has a single CSS property: `width: 2000px`.
+
+The first instance of `.item` is rendered using Flow layout, and it will actually consume 2000px of width. In Flow layout, width is a hard rule. It will take up 2000px of space, consequences be damned.
+
+The _second_ instance of `.item`, however, is rendered inside a Flex container, which means it's using Flexbox layout. In the Flexbox algorithm, width is more of a suggestion.
+
+The Flexbox specification calls this the _hypothetical size_. It's the size that the element _would_ be, in an idyllic world, with no constraints or forces acting upon it. In a perfect world, this item would be 2000px wide, but it's been placed in a narrower container, and so it'll shrink to accommodate it.
+
+Once again, the framing is super important here. It's not that `width` has some special caveat when it comes to Flexbox. It's that the Flexbox algorithm implements the `width` property in a different way than the Flow algorithm.I'm not actually sure how this stuff is implemented under-the-hood, but in my experience, this framing is much more helpful
+
+**The properties we write are inputs,** like arguments being passed to a function. It's up to the layout algorithm to choose what to _do_ with those inputs. If we want to understand CSS, we need to understand how the layout algorithms work. Knowing the properties alone is insufficient.
+
+## [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#identifying-the-layout-algorithm-2)Identifying the layout algorithm
+
+CSS doesn't have a `layout-mode` property. There are several properties that can tweak the layout algorithm used, and it can actually get pretty tricky!
+
+In some cases, a CSS property applied to an element will opt in to a specific layout mode. For example:
+
+```
+.help-widget {
+  /* Uses Positioned layout, because of this declaration: */
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+
+.floated {
+  /* Uses Float layout, because of this declaration: */
+  float: left;
+  margin-right: 32px;
+}
+```
+
+In other cases, we need to look at what CSS the _parent_ applies. For example:
+
+```
+<style>
+  .row {
+    display: flex;
+  }
+</style>
+
+<ul class="row">
+  <li class="item"></li>
+  <li class="item"></li>
+  <li class="item"></li>
+</ul>
+```
+
+When we apply `display: flex`, we aren't actually using the Flexbox layout algorithm for the `.row` element; instead, we're saying that _its children_ should be positioned using Flexbox layout.
+
+In technical terms, `display: flex` creates a _flex formatting context_. All direct children will participate in this context, and it means that they will use Flexbox layout instead of the default Flow layout.
+
+(`display: flex` will also turn an inline element, like a `<span>` into a Block-level element, so it does have _some_ effect on the parent element's layout. But it won't change the layout algorithm used.)
+
+### [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#layout-algorithm-variants-3)Layout algorithm variants
+
+Some layout algorithms are split into multiple _variants_.
+
+For example, when we use Positioned layout, that refers to several different “positioning schemes”:
+
+*   Relative
+
+*   Absolute
+
+*   Fixed
+
+*   Sticky
+
+Each variant is sorta like its own mini-layout algorithm, though they do share things in common (eg. they can all use the `z-index` property).
+
+Similarly, in Flow layout, elements can either be block or inline. We'll talk more about Flow layout shortly.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#conflicts-4)Conflicts
+
+What happens when multiple layout algorithms are applied to an element?
+
+For example:
+
+```
+<style>
+  .row {
+    display: flex;
+  }
+
+  .primary.item {
+    position: absolute;
+  }
+</style>
+
+<ul class="row">
+  <li class="item"></li>
+  <li class="primary item"></li>
+  <li class="item"></li>
+</ul>
+```
+
+All three list items are children inside a Flex container, so they ought to be positioned according to Flexbox. But that middle child opts into Positioned layout, by setting `position: absolute`.
+
+As I understand it, an element will be rendered using a primary layout mode. It's a bit like specificity: certain layout modes have higher priority than others.
+
+I don't know the exact hierarchy, but Positioned layout tends to beat everything. And so, in this example, the middle child will use Positioned layout, not Flexbox.
+
+As a result, the Flexbox calculations will act as though there are only _two_ children, not three. As far as the Flexbox algorithm is concerned, that middle child doesn't exist.Things are a bit messier than this; an absolute child of a Flex parent can still sometimes use Flexbox properties. In practice, though, such conflicts are rare.
+
+In general, conflicts are usually pretty obvious / intentional. But if you ever find that an element isn't behaving the way you'd expect, it can be worth trying to identify which layout algorithm it's using. The answer might surprise you!
+
+## [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#inline-magic-space-5)Inline magic space
+
+Alright, let's look at a classic “bewildering CSS” problem, and see how focusing on layout algorithms can help us solve it.
+
+Here we have a basketful of cats:
+
+Code Playground
+
+Code editor:
+
+Result
+
+Hmm… Why is there a bit of extra space underneath the image?
+
+If you inspect it with your developer tools, you'll notice a discrepancy of a few pixels:
+
+The image is 250px tall, but the container is 258.5px tall!
+
+If you're familiar with the box model, you know that elements can be spaced using padding, border, and margin. You might think that there's some margin on the image, or some padding on the container?
+
+In this case, **none of these properties are responsible.** And that's why, for years, I've privately referred to this as “inline magic space”. It isn't caused by the usual culprits.
+
+To understand what's going on here, we have to dig a bit deeper into Flow layout.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#flow-layout-6)Flow layout
+
+As mentioned, Flow layout is designed for documents, similar to word-processing software.
+
+Documents have the following structure:
+
+*   Individual characters are assembled into words and sentences. These elements sit _inline_, side-by-side, and line-wrap when there isn't enough horizontal space.
+
+*   Paragraphs are considered _blocks_, like headings or images. Blocks will be stacked vertically, one on top of the other, from the top down.
+
+Flow layout is based on this structure. Individual elements can be arranged as inline elements (side-by-side, like words in a paragraph), or as block elements (chunky bricks stacked from the top down):
+
+Most HTML elements come with sensible defaults. `<p>` and `<h1>` are considered block-level elements, while `<span>` and `<strong>` are considered inline.
+
+Inline elements are meant to be used in the middle of paragraphs, not as part of the layout. For example, maybe we want to add a little icon to the middle of a sentence.
+
+In order to make sure that inline elements don't negatively affect the legibility of the surrounding text, a bit of _extra vertical space_ is added.
+
+So, bringing this back to our mystery: why does our image have a few extra pixels of space? **Because images are inline elements by default!**
+
+The Flow layout algorithm is treating this image as if it was a character in a paragraph, and adding a bit of space below to ensure it isn't uncomfortably close to the characters on the (theoretical) next line of text.
+
+By default, inline elements are “baseline” aligned. This means that the bottom of the image will align with the invisible horizontal line that text sits on. That's why there's some space below the image — that space is for the descenders, like the letters `j` and `p`.
+
+So it's not margin, or padding, or border… it's the bit of intrinsic space that Flow layout applies to inline elements.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#solving-the-problem-7)Solving the problem
+
+There are a number of ways to solve this problem. Perhaps the simplest is to treat this image as a block, within Flow layout:
+
+Code Playground
+
+Code editor:
+
+Result
+
+Inline magic space has bitten me many times throughout my career, and so I've incorporated this exact fix into my [custom CSS Reset(opens in new tab)](https://www.joshwcomeau.com/css/custom-css-reset/).
+
+Alternatively, because this behavior is unique to Flow layout, we could flip to a different layout algorithm:
+
+Code Playground
+
+Code editor:
+
+Result
+
+Finally, we could also solve this by shrinking the additional space to 0, using `line-height`:
+
+Code Playground
+
+Code editor:
+
+Result
+
+This solution removes all additional line spacing by setting it to 0. This would make multi-line text totally unreadable, but since this container contains no text, it's not an issue.
+
+I would recommend using one of the earlier two solutions. This one is presented purely because it's interesting (and because it proves that the issue is due to line spacing!).
+
+## [Link to this heading](https://www.joshwcomeau.com/css/understanding-layout-algorithms/#building-an-intuition-8)Building an intuition
+
+**So, here's the point:** If you were focusing exclusively on studying what specific CSS properties do, you'd never understand where this mysterious space is coming from. It isn't explained in the MDN pages for `display` or `line-height`.
+
+As we've learned in this post, “inline magic space” isn't really magic at all. It's caused by a rule within the Flow layout algorithm that inline elements should be affected by `line-height`. But it _seemed_ magical to me, for many years, because I had this big hole in my mental model.
+
+There are _a lot_ of layout algorithms in CSS, and they all have their own quirks and hidden mechanisms. When we focus on CSS properties, we're only seeing the tip of the iceberg. We never learn about really important concepts like stacking contexts or containing blocks or cascade origins!
+
+Unfortunately, a lot of CSS instruction online is equally shallow. It's common for a blog post or tweet to share a handy CSS snippet, without explaining _why_ it works, or how the layout algorithms use it.I have to admit, I'm guilty of this myself! When I share CSS tips on social media, there just isn't enough space to provide all of the required context.
+
+CSS is a tricky language to debug; we don't have error messages, or `debugger`, or `console.log`. Our intuition is the best tool we have. And when we start using CSS snippets without _truly_ understanding them, it's only a matter of time until some hidden aspect of the layout algorithm throws a wrench into our gears, stopping us in our tracks.
+
+A few years ago, I decided to start building my intuition for CSS. Whenever I was derailed by some unexpected behaviour, I'd settle into the problem as though it were a warm bath. I'd dig deeper into the MDN documentation and the CSSWG specification, and tinker with the code until I felt I had really figured out what was going on.
+
+This was an absolutely worthwhile investment, but my goodness, it took _forever_. 😅
+
+I want to speed this process up for other developers. I recently released a comprehensive online course called [CSS for JavaScript Developers(opens in new tab)](https://css-for-js.dev/).
+
+[![Image 1: CSS for JavaScript Developers](https://www.joshwcomeau.com/images/the-importance-of-learning-css/css-for-js-banner.png)](https://css-for-js.dev/)
+
+In this course, we explore how CSS works under the hood. It's laser-focused on providing a robust mental model you can use, one that helps build your CSS intuition one puzzle piece at a time. I can't promise you'll never hit a CSS challenge again, but I can help you build the toolkit you need to overcome them.
+
+More than 21,000 developers have taken the course so far, from organizations like Apple, Google, Microsoft, Facebook, Netflix, and many many more. The response has been overwhelmingly positive.
+
+You can learn more on the course homepage:   
+[https://css-for-js.dev(opens in new tab)](https://css-for-js.dev/).
+
+### Last updated on
+
+November 18th, 2025
+
+
+## Code blocks from the page not captured inline above
+
+```
+<style>  .row {    display: flex;    gap: 16px;  }  .raised.item {    z-index: 2;    background: hotpink;  }</style>
+<ul class="row">  <li class="item"></li>  <li class="raised item"></li>  <li class="item"></li></ul>
+```
+
+```
+<style>  .flex-wrapper {    display: flex;  }  .item {    width: 2000px;  }</style>
+<div class="item"></div>
+<div class="flex-wrapper">  <div class="item"></div></div>
+```
+
+```
+<div class="photo-wrapper">  <img    class="cat-photo"    alt="A basketful of cats"    src="/images/cats.jpg"  /></div>
+```
+
+```
+<style>  .cat-photo {    display: block;  }</style>
+<div class="photo-wrapper">  <img    class="cat-photo"    alt="A basketful of cats"    src="/images/cats.jpg"  /></div>
+```
+
+```
+<style>  /*    We flip its *parent* to Flex,    so that the child will use    Flexbox instead of Flow:  */  .photo-wrapper {    display: flex;  }</style>
+<div class="photo-wrapper">  <img    class="cat-photo"    alt="A basketful of cats"    src="/images/cats.jpg"  /></div>
+```
+
+```
+<style>  .photo-wrapper {    line-height: 0;  }</style>
+<div class="photo-wrapper">  <img    class="cat-photo"    alt="A basketful of cats"    src="/images/cats.jpg"  /></div>
+```

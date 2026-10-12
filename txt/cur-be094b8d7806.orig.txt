@@ -1,0 +1,60 @@
+Imagine a stereotypical product workflow.
+Customer call → synthesize insights → decide what to do about it → do it → ship it → measure impact
+Pre-AI, this would involve 1) reading/reviewing a call transcript and your notes, 2) synthesizing that into a set of takeaways either in a document or presented somehow, 3) considering a set of options by talking about those options, writing about them, and narrowing those down to some tangible actions/investments, 4) taking those actions (e.g., building something) using whatever collaborating techniques and “pointers to the work” (e.g., tickets), 5) shipping it, and 6) ideally measuring impact by going into an analytics tool, watching feedback channels, reaching out to customers, etc.
+At each stage, you were, in effect, asked to process, think about, discuss, reshape, restate, copy-paste, “migrate” information down the line. There might have been meetings, routines, gates, swapping between tools. With only N hours in the week, you were constantly kicking yourself for not being as collaborative, inclusive, comprehensive, or rigorous/disciplined enough. Yes, this was a pain in the ass, but it was also “positive friction.” Each of these information migration moments was an opportunity, in HCI parlance, to apply a forcing function: to focus conscious attention on something, to avoid automating your thinking, to pay attention, discern, say “no” or “what if.”
+The friction was judgement and discretion’s friend. We tend to remember the crappy parts: the meeting prep, the “I have a document with 35 feedback themes and a Miro board. Where the hell do I put this?” We remember that sense of never doing enough.
+But it was also valuable.
+New Reality (Unless You Push Back)
+Say you wanted to just automate everything now with AI. You could effectively:
+- Do your expenses during the call. Just ask the occasional question.
+- Take that three-thousand-word transcript and ask an LLM to “summarize this into key pain points” (the average call can generate dozens if not hundreds of these)
+- Plop those pain points into a “skill” that looks at the current code, maybe even checks analytics, and writes up “specs”
+- Run the “Strategy alignment prioritization” skill (alongside your secret “what I need for my promotion” skill) and sequence the bets
+- Shuttle that into some kind of harness to build the thing
+- Have some other agents review the PR
+- Ship it…
+- Half-heartedly verify the features work, but hey, Playwrite has been doing a good job lately, so automate that
+- Trigger a downstream analysis skill that asks if it “worked”
+- And you could effectively do dozens of these calls, or just monitor customer “voice” channels and not even show up. Promotion! Bingo! What a time to be alive!
+Notice all the opportunities for thinking, pruning, shaping, designing, judgement-applying that are lost. AND, noticing all the drudgery that is lost. Noticing how very quickly nothing you are looking at is “real” (original, atomic, as written by a human). You have tens of thousands of words of original feedback, yes, but very quickly all you have is pointers (if you’re lucky and/or smart). Yes, the code is real. That’s why everyone has the utmost confidence in that step. But how did the code get that way? Sure, if it is all obvious slop, that’s one problem. But what if it isn’t? That’s almost worse.
+Prior to AI, you might focus on one product area, one opportunity, and methodically work through it. You did the same calls, but those calls didn’t come with hundreds of things you could/can do. The blast radius of any particular thing you were working on was narrower. Very quickly, you amassed more feedback than you could meaningfully act on, support, market, communicate to customers, and keep in your own head.
+Now you can go from five customer calls (~8000 words) to 80 “opportunities” to 80 “tickets,” 400 “tasks,” and hundreds of stuff to show customers, to hundreds of bits of feedback on those things, to 50 “feature adoption dashboards” (hidden behind MCP obviously).... Not to mention all the internal call recordings, status updates, PRs, stuff, fluff, slop, 1000 interface variations, etc. And after doing ALL of that, your customer is going to say, “I can’t keep track of everything you’re doing.”
+All About Relationships
+I recently did an activity where I looked at hundreds of artifacts at my current gig and looked at the “job” each one of them played. Many artifacts contain LOTS of atomic bits of job-doing information.
+- Signals: What is observed, recorded, written, or measured
+- Insights / Interpretation: What we infer from those signals
+- Models / Hypotheses: How we believe things work and connect, including assumptions
+- Options: Possible paths, configurations, or interventions
+- Choice: The selected option and resulting commitment
+- Intent: The future state or direction being pursued
+- Actions: What actors do to advance the intent
+- Mechanical Change: The specific thing that is modified
+- Effects / Impact: The resulting change
+- Actors: Who observes, interprets, chooses, acts, or is affected
+- Materials: Systems, tools, technologies, artifacts, and infrastructure
+- Constraints: Conditions that limit, shape, or enable the system
+Whenever I see a simplistic “SDLC” diagram, I laugh because real knowledge work is much more than a couple stages. The ontology is much richer.
+Yes, there might be a sort of physics in the flow (e.g., observe, orient, decide, act), but imagine everything above as a graph. Every edge in that graph is a transition point, even when we lump together ideas. A PRD might contain signals, insights, choices, etc., and itself serve as a model, but you are really dealing with a discrete mix of more enduring/lasting ideas and more transient ideas.
+Of course, the problem was there pre-AI as well. Very few people thought in this level of detail because “it was too complicated” and “you do this naturally when you’re solving problems.” But the active participation was key.
+We tend to think of the nouns. But it is the edges where the work happens. Pre-AI this happened whether we liked it or not. Now…we have excuses.
+At work, I was trying to untangle an initiative recently. What I observed was as follows:
+- TONS of AI-generated summaries on top of summaries
+- Lots of surface area in an attempt to be customer-centric. We had a lot of change in the mix, probably far outpacing the customer’s ability to absorb or provide feedback on that change
+- AI is very lazy at telling the difference between things (e.g., signals and insights, intent and actions, etc.)
+Unless we are very deliberate, we end up with Linear tickets being a dumping ground for synthesized feedback (AI) and code review (AI), and you couldn’t help but be trigger-happy and just ship, ship, ship.
+Principles
+Here are some rough principles I’m using to tackle this problem:
+- Keep original feedback atomic, and preserve its path back to the source. Transcripts and feedback are records of the original context and the start of a loop. Whenever we break that material into smaller items, such as an issue, observation, theme, or action, each item should link back to the original transcript or feedback. That traceability lets us check what was said and recover the surrounding context. If you can’t link back to something real, stop doing it.
+- Preserve both atomicity and coherence. Product artifacts often mash together distinct ideas, such as Intent, Options, and Change, into a single issue or document. AI needs those ideas represented as separate, atomic pieces while keeping their relationships and context intact. Atomicity without coherence leaves fragments; coherence without atomicity leaves ideas mashed together. We need both. Miss either and we’re out.
+- Add positive friction when content is copied and recontextualized. At each transformation, make it clear what is being carried forward, what changed, and why. The friction belongs at that moment: enough to make the transformation intentional and keep the source links intact.
+- Separate the underlying job from its presentation to different audiences. Different audiences may need different framing, but that doesn’t change the underlying job or intent. Keep the source clear, label each audience-specific version as a variation, and link it back to the source.
+- Label AI-generated content by degree of AI contribution. Make the label visible on every AI-generated artifact, with a variation such as “100% AI-generated,” “HITL curated,” or “AI used for editing/grammar.” Keep the label with the content when it is copied or recontextualized.
+- Avoid compounding AI flattening. The biggest anti-pattern is AI flattening layered on AI flattening, with no thread back to reality. Each round can strip away more of the original context while making the resulting abstraction look authoritative. Summaries are most useful when they get close to a specific problem, opportunity, or action, and remain linked to the source material.
+- Don’t let AI capability turn a tool into a dumping ground. The fact that a tool can process information with AI doesn’t mean everything should be put there and sorted out later. Give each item a clear purpose, and keep it connected to its source and context.
+- Treat code analysis as one source of evidence. It can be very helpful to see “what the code says,” but seeing X in the code doesn’t establish that customers experience X, that we’re solving the right problem, or why the code came to be that way. Don’t let the concreteness of code analysis create confidence about the broader product reality that the code alone can’t support.
+- Use Linear for bounded team intent. An issue should make clear whose need it represents, why it matters, what problem we’re addressing, and enough of how we’ll address it to make the work verifiable by people or machines. It should capture intent, not serve as a transcript repository.
+- Go for depth over breadth in product improvements. If everything changes at once, customers can become confused, their feedback can become scattered and nonspecific, and the data can conflate the effects of different changes. Focus improvements enough that customers can respond clearly and we can learn what made a difference. Being trigger-happy with new features puts us at risk of taking on too much breadth.
+- Recognize Linear has two jobs. One is team-visible product and feedback intent: the problem or opportunity we’ve decided to pursue. The other is personal planning and decomposition as work unfolds. Both help people track progress and preserve context, but personal breakdowns can create noise for the team and may fit better in personal notes or another workspace.
+Hope sharing this helps you think about how you work!
+As a last word, I’d leave with you the question:
+Where was positive friction a good thing? And how can you embrace new technologies without losing the good things?

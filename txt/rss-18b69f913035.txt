@@ -1,1 +1,0 @@
-How I replaced a long-lived Cloudflare Container with a one-shot Cloudflare Sandbox, deleted most of the control-plane code, and let an agent do the heavy lifting in less than an hour of my own time.

@@ -1,0 +1,537 @@
+[Introduction](https://www.joshwcomeau.com/css/custom-css-reset/)
+Whenever I start a new project, the first order of business is to sand down some of the rough edges in the CSS language. I do this with a functional set of custom baseline styles.
+
+For a long time, I used Eric Meyer's famous [CSS Reset(opens in new tab)](https://meyerweb.com/eric/tools/css/reset). It's a solid chunk of CSS, but it's a bit long in the tooth at this point; it hasn't been updated in more than a decade, and _a lot_ has changed since then!
+
+Recently, I've been using my own custom CSS reset. It includes all of the little tricks I've discovered to improve both the user experience and the CSS authoring experience.
+
+Like other CSS resets, it's unopinionated when it comes to design / cosmetics. You can use this reset for any project, no matter the aesthetic you're going for.
+
+In this tutorial, we'll go on a tour of my custom CSS reset. We'll dig into each rule, and you'll learn what it does and why you might want to use it!
+
+## [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#the-css-reset-1)The CSS Reset
+
+Without further ado, here it is:
+
+```
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+*:not(dialog) {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Increase line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+```
+
+It's relatively short, but there's _a lot of stuff_ packed into this small stylesheet. Let's get into it!
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#one-box-sizing-model-2)1. Box-sizing model
+
+Pop quiz! Measuring by the visible pink border, how wide is the `.box` element in the following scenario, assuming no other CSS has been applied?
+
+Our `.box` element has `width: 100%`. Because its parent is 200px wide, that 100% will resolve to 200px.
+
+But _where does it apply that 200px width?_ By default, it will apply that size to the _content box_.
+
+If you're not familiar, the “content box” is the rectangle in the box model that actually holds the content, inside the border and the padding:
+
+![Image 1: a pink box with a green box inside. Pink represents the border, green represents padding. Inside, a black rectangle is labeled “content-box”](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fcustom-css-reset%2Fcontent-box.png&w=1200&q=75)
+
+The `width: 100%` declaration will set the `.box`'s content-box to 200px. The padding will add an extra 40px (20px on each side). The border adds a final 4px (2px on each side). When we do the math, the visible pink rectangle will be 244px wide.
+
+When we try and cram a 244px box into a 200px-wide parent, it overflows:
+
+Code Playground
+
+Code editor:
+
+Result
+
+This behavior is weird, right? Fortunately, we can change it, by setting the following rule:
+
+```
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+```
+
+With this rule applied, percentages will resolve based on the _border-box_. In the example above, our pink box would be 200px, and the inner content-box would shrink down to 156px (200px - 40px - 4px).
+
+Instead of applying it on a case-by-case basis, I prefer to apply it to all elements (with the wildcard `*`), as well as all pseudo-elements (`*::before` and `*::after`). This way, it becomes the default behaviour for all elements. Contrary to popular belief, this is [not bad for performance(opens in new tab)](https://www.paulirish.com/2012/box-sizing-border-box-ftw/).
+
+**This is a must-have rule, in my opinion.** It makes CSS _significantly_ nicer to work with.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#two-remove-default-margin-3)2. Remove default margin
+
+```
+*:not(dialog) {
+  margin: 0;
+}
+```
+
+Several HTML tags come with margin by default so that unstyled HTML documents are nice and legible; for example, each `<p>` has a bit of vertical margin so that there’s a clear visual break between paragraphs.
+
+When I’m styling my own projects, however, I want to control this spacing myself! In my opinion, margin is a design concern, and not something that should be applied by default. So, I’ve decided to remove margin from _almost_ all elements in this CSS reset, with the expectation that you’ll add in whatever margin you need in your application styles.
+
+The exception is `<dialog>`. This element comes with `margin: auto` by default, which centers the dialog within the viewport, and I think that’s a reasonable default. So I’ve excluded it from this rule. Thanks to Oriol for the heads-up!
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#three-enable-keyword-animations-4)3. Enable keyword animations
+
+```
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+```
+
+So let’s suppose we’re building a collapsible accordion component, something like this:
+
+The `height` of each child goes from `0px` to `auto`. Historically, this hasn’t been something we can animate using CSS transitions; we’ve needed to measure the element’s height using JavaScript. This is surprisingly tricky to do well; unless you’re using a battle-tested library, it’s likely you’ll introduce subtle bugs.
+
+**The new `interpolate-size` property fixes this.** By enabling it, we can transition between absolute values (like `0px`) and derived ones (like `auto`). It even works on the other size-based keywords, like `fit-content`!
+
+This means we can use standard CSS transitions, and it’ll work perfectly. For example:
+
+```
+.accordion {
+  height: 0px;
+  transition: height 300ms;
+  overflow: hidden;
+}
+
+.accordion[data-state="open"] {
+  height: auto;
+}
+```
+
+As I write this in March 2025, this property is [only supported in Chrome/Edge(opens in new tab)](https://caniuse.com/mdn-css_properties_interpolate-size). The demo I built above uses [Radix’s Accordion component(opens in new tab)](https://www.radix-ui.com/primitives/docs/components/accordion), which solves this problem in JavaScript.
+
+Honestly though, unless the animation in question is _critical_ for the user experience, I think it’s fine to start using this feature. The fallback experience — not having the animation — is perfectly acceptable for most use cases. I share more about this philosophy in my blog post, [A Framework for Evaluating Browser Support](https://www.joshwcomeau.com/css/browser-support/).
+
+In this CSS reset, I’ve placed the `interpolate-size` declaration within a `prefers-reduced-motion` media query. This helps ensure that we won’t accidentally cause problems for folks with motion sensitivities.
+
+I should also note: whenever possible, we should still prefer to use `transform: scale` to change an element’s size, rather than `height` or `width`. It’s much more performant and produces smoother hardware-accelerated motion.
+
+You can learn more about this new feature in my [Keyword Transitions Snippet](https://www.joshwcomeau.com/snippets/html/interpolate-size/).
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#four-increase-line-height-5)4. Increase line-height
+
+```
+body {
+  line-height: 1.5;
+}
+```
+
+`line-height` controls the vertical spacing between each line of text in a paragraph. The default value varies between browsers, but it tends to be around 1.2.
+
+This unitless number is a ratio based on the font size. It functions just like the `em` unit. With a `line-height` of 1.2, each line will be 20% larger than the element's font size.
+
+The issue is that when lines of text are too close together, the text is harder to read, especially for folks who are dyslexic. The consensus is that line-heights around 1.5 are friendlier, for body text. So, I set that as the default line-height in my CSS reset.
+
+Now, this number does tend to produce quite-large lines on headings and other elements with large type:
+
+Code Playground
+
+Code editor:
+
+Result
+
+As a result, I tend to pick smaller `line-height` values for headings, but the specific values depend on the app’s design, so it’s not something I’m including in my CSS reset.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#five-improve-text-rendering-6)5. Improve text rendering
+
+```
+body {
+  -webkit-font-smoothing: antialiased;
+}
+```
+
+Alright, so this one is a bit controversial.
+
+On macOS computers, the browser will use “subpixel antialiasing” by default. This is a technique that aims to make text easier to read, by leveraging the R/G/B lights within each pixel.
+
+In the past, this was seen as an accessibility win, because it improved text contrast. You may have read a popular blog post, [Stop “Fixing” Font Smoothing(opens in new tab)](https://usabilitypost.com/2012/11/05/stop-fixing-font-smoothing/), that advocates _against_ switching to “antialiased”.
+
+Here's the problem: that article was written in 2012, before the era of high-DPI “retina” displays. Today's pixels are much smaller, invisible to the naked eye.
+
+The physical arrangement of pixel LEDs has changed as well. If you look at a modern monitor under a microscope, you won't see an orderly grid of R/G/B lines anymore.
+
+In macOS Mojave, released in 2018, **Apple disabled subpixel antialiasing across the operating system**. I'm guessing they realized that it was doing more harm than good on modern hardware.
+
+Confusingly, macOS browsers like Chrome and Safari still use subpixel antialiasing by default. We need to explicitly turn it off, by setting `-webkit-font-smoothing` to `antialiased`.
+
+Here's the difference:
+
+### Antialiasing
+
+![Image 2: A description of “lorem ipsum” with heavier text](https://www.joshwcomeau.com/images/custom-css-reset/subpixel.png)
+
+### Subpixel Antialiasing
+
+![Image 3: A description of “lorem ipsum” with crisper text](https://www.joshwcomeau.com/images/custom-css-reset/antialiased.png)
+
+macOS is the only operating system to use subpixel-antialiasing, and so this rule has no effect on Windows, Linux, or mobile devices. If you're on a macOS computer, you can experiment with a live render:
+
+Code Playground
+
+Code editor:
+
+Result
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#six-improve-media-defaults-7)6. Improve media defaults
+
+```
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+```
+
+So here's a weird thing: images are considered "inline" elements. This implies that they should be used in the middle of paragraphs, like `<em>` or `<strong>`.
+
+This doesn't jive with how I use images most of the time. Typically, I treat images the same way I treat paragraphs or headers or sidebars; they're layout elements.
+
+If we try to use an inline element in our layout, though, weird things happen. If you've ever had a mysterious 4px gap that wasn't margin or padding or border, it was probably the “inline magic space” that browsers add with `line-height`.
+
+By setting `display: block` on all images by default, we sidestep a whole category of funky issues.
+
+I also set `max-width: 100%`. This is done to keep large images from overflowing, if they're placed in a container that isn't wide enough to contain them.
+
+Most block-level elements will automatically grow/shrink to fit their parent, but media elements like `<img>` are special: they're known as _replaced elements_, and they don't follow the same rules.
+
+If an image has a "native" size of 800×600, the `<img>` element will also be 800px wide, even if we plop it into a 500px-wide parent.
+
+This rule will prevent that image from growing beyond its container, which feels like much more sensible default behavior to me.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#seven-inherit-fonts-for-form-controls-8)7. Inherit fonts for form controls
+
+```
+input, button, textarea, select {
+  font: inherit;
+}
+```
+
+Here's another weird thing: by default, buttons and inputs don't inherit typographical styles from their parents. Instead, they have their own _weird_ styles.
+
+For example, `<textarea>` will use the system-default monospace font. Text inputs will use the system-default sans-serif font. And both will choose a microscopically-small font size (13.333px in Chrome).
+
+As you might imagine, it's very hard to read 13px text on a mobile device. When we focus an input with a small font size, the browser will automatically zoom in, so that the text is easier to read.
+
+Unfortunately, this is not a good experience:
+
+If we want to avoid this auto-zoom behavior, the inputs need to have a font-size of at least 1rem / 16px. Here's one way to address the issue:
+
+```
+input, button, textarea, select {
+  font-size: 1rem;
+}
+```
+
+This fixes the auto-zoom issue, but it's a band-aid. Let's address the root cause instead: form inputs shouldn't have their own typographical styles!
+
+```
+input, button, textarea, select {
+  font: inherit;
+}
+```
+
+`font` is a rarely-used shorthand that sets a bunch of font-related properties, like `font-size`, `font-weight`, and `font-family`. By setting it to `inherit`, we instruct these elements to match the typography in their surrounding environment.
+
+As long as we don't choose an obnoxiously small font size for our body text, this solves all of our issues at once. 🎉
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#eight-avoid-text-overflows-9)8. Avoid text overflows
+
+```
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+```
+
+In CSS, text will automatically line-wrap if there isn't enough space to fit all of the characters on a single line.
+
+By default, the algorithm will look for “soft wrap” opportunities; these are the characters that the algorithm can split on. In English, the only soft wrap opportunities are whitespace and hyphens, but this varies from language to language.
+
+If a line doesn't have any soft wrap opportunities, and it doesn't fit, it will cause the text to overflow:
+
+Code Playground
+
+Code editor:
+
+Result
+
+This can cause some annoying layout issues. Here, it adds a horizontal scrollbar. In other situations, it might cause text to overlap other elements, or slip behind an image/video.
+
+The `overflow-wrap` property lets us tweak the line-wrapping algorithm, and give it permission to use hard wraps when no soft wrap opportunities can be found:
+
+Code Playground
+
+Code editor:
+
+Result
+
+Neither solution is perfect, but at least hard wrapping won't mess with the layout!
+
+Thanks to Sophie Alpert for suggesting a similar rule! She suggests applying it to _all_ elements, which is probably a good idea, but not something I've personally tested.
+
+You can also try adding the `hyphens` property:
+
+```
+p {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+```
+
+`hyphens: auto` uses hyphens (in languages that support them) to indicate hard wraps. It also makes hard wraps much more common.
+
+It can be worthwhile if you have very-narrow columns of text, but it can also be a bit distracting. I chose not to include it in the reset, but it's worth experimenting with!
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#nine-improve-line-wrapping-10)9. Improve line wrapping
+
+```
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+```
+
+When there are too many words to fit on a single line of text, the default behaviour is to push any words that don’t fit onto the next line. This process is repeated until none of the lines overflow:
+
+This algorithm works well enough most of the time, but it sometimes produces awkward results. My least favourite example is when a paragraph ends with an emoji, and that emoji is pushed to its own line:
+
+![Image 4: A paragraph with 4 lines of text. The final “line” is a single emoji, looking stranded.](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fcustom-css-reset%2Fpretty-wrap-before.png&w=1080&q=75)
+
+To solve this problem, we can opt into an alternative line-wrapping algorithm with the new `text-wrap` property!
+
+For paragraphs, I use the `pretty` option. This algorithm will make sure that the final line of text has at least two words. It also makes other subtle tweaks to improve the visual balance of the paragraph:
+
+![Image 5: The same paragraph, except now the final line includes a regular word with the emoji. Feels much more balanced visually.](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fcustom-css-reset%2Fpretty-wrap-after.png&w=1080&q=75)
+
+For headings, I use the `balance` option. This has a much stronger effect; the algorithm tries to make each line of text roughly the same length. This tends to make two-line headings feel a lot more balanced.
+
+This won’t _always_ be what we want, but the point of a CSS reset is to set better baseline styles. We can always overwrite this property for any particular heading or paragraph.
+
+Browser support for `text-wrap` varies by property; as I write this in November 2024, `pretty` is at [72%support(opens in new tab)](https://caniuse.com/mdn-css_properties_text-wrap_pretty) and `balance` is at [87%support(opens in new tab)](https://caniuse.com/css-text-wrap-balance). These numbers aren’t _great_, but it doesn’t really matter; as I shared in [a recent blog post](https://www.joshwcomeau.com/css/browser-support/), we don’t need to worry about browser support for progressive enhancements like this.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#onezero-root-stacking-context-11)10. Root stacking context
+
+```
+#root, #__next {
+  isolation: isolate;
+}
+```
+
+This last one is optional. It's generally only needed if you use a JS framework like React.
+
+As we saw in [“What The Heck,z-index??”(opens in new tab)](https://www.joshwcomeau.com/css/stacking-contexts/), the `isolation` property allows us to create a new stacking context without needing to set a `z-index`.
+
+This is beneficial since it allows us to guarantee that certain high-priority elements (modals, dropdowns, tooltips) will always show up above the other elements in our application. No weird stacking context bugs, no z-index arms race.
+
+You should tweak the selector to match your framework. We want to select the top-level element that your application is rendered within. For example, create-react-app uses a `<div id="root">`, so the correct selector is `#root`.
+
+## [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#our-finished-product-12)Our finished product
+
+Here's the CSS reset again, in a condensed copy-friendly format:
+
+```
+/*
+  Josh's Custom CSS Reset
+  https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+*:not(dialog) {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+```
+
+Feel free to copy/paste this into your own projects! It's released without any restrictions, into the public domain (though if you wanted to keep the link to this blog post, I'd appreciate it!).
+
+I chose not to release this CSS reset as an NPM package because I feel like _you should own your reset_. Bring this into your project, and tweak it over time as you learn new things or discover new tricks. You can always make your own NPM package to facilitate reuse across your projects, if you want. Just keep in mind: **you own this code, and it should grow along with you.**
+
+Thanks to Andy Bell for sharing his [Modern CSS Reset(opens in new tab)](https://piccalil.li/blog/a-modern-css-reset/). It helped tune some of my thinking, and inspired this blog post!
+
+## [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#going-deeper-13)Going deeper
+
+My CSS reset is quite short, with only 12 CSS declarations, and yet I've managed to spend an entire blog post talking about them. And honestly, there's _so much more_ I want to say! We only scratched the surface in a bunch of places.
+
+CSS is a deceptively complex language. Unless you pop the hood and learn what's _really_ going on under there, the language will always feel a bit unpredictable and inconsistent. When your mental model is incomplete, you're bound to run into some problems.
+
+If you take a bit of time to learn how the language _really_ works, though, everything becomes so much more intuitive and predictable. I love writing CSS these days!
+
+For the past few years, I've been focused on helping JS developers change their relationship with CSS. I launched a comprehensive, interactive online course called **[CSS for JavaScript Developers(opens in new tab)](https://css-for-js.dev/)**.
+
+[![Image 6: Banner with text “CSS for JavaScript Developers”](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fthe-importance-of-learning-css%2Fcss-for-js-banner.png&w=1920&q=75)](https://css-for-js.dev/)
+
+If you wish you were one of those people who liked/understood CSS, I made this course specifically for you!
+
+You can learn more here:
+
+## [Link to this heading](https://www.joshwcomeau.com/css/custom-css-reset/#changelog-14)Changelog
+
+*   March 2026 — Update the `line-height` explanation to correctly describe the WCAG requirements.
+
+*   December 2025 — Excluded the `<dialog>` tag from the margin-stripping rule.
+
+*   March 2025 — Added the `interpolate-size` property to enable animations to `auto` / `fit-content` / etc.
+
+*   October 2024 — I added #8, improved line wrapping with `text-wrap`.
+
+*   June 2023 — I removed the `height: 100%` from `html` and `body`. This rule was added to make it possible to use percentage-based heights within the application. Now that
+
+[dynamic viewport units(opens in new tab)](https://web.dev/viewport-units/)
+are well-supported, however, this hacky fix is no longer required. 
+
+### Last updated on
+
+June 3rd, 2026
+
+
+## Code blocks from the page not captured inline above
+
+```
+<style>  .parent {    width: 200px;    border: 2px solid black;  }  .box {    width: 100%;    border: 2px solid hotpink;    padding: 20px;  }</style>
+<div class="parent">  <div class="box"></div></div>
+```
+
+```
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+```
+
+```
+<style>  * {    line-height: 1.5;  }</style>
+<p>  This paragraph has a 1.5x ratio for line-height, and it feels pretty good, right? I think this text is legible and pleasant.</p><h1>  But it's a bit much on headings!</h1>
+```
+
+```
+* {
+  line-height: calc(1em + 0.5rem);
+}
+```
+
+```
+<p>  This paragraph uses the default subpixel antialiasing.</p>
+<p class="antialiased">  This paragraph does not use subpixel antialiasing.</p>
+```
+
+```
+img.oversized {
+  position: absolute;
+  width: 120%;
+  left: -10%;
+  right: -10%;
+}
+```
+
+```
+img.oversized {
+  position: absolute;
+  width: 120%;
+  max-width: revert;
+  left: -10%;
+  right: -10%;
+}
+```
+
+```
+<div class="wrapper">  <p>    This is a narrow column of text, with a very long word: antidisestablishmentarianism.  </p>  <p>    The same problem happens with URLs: https://www.somewebsite.com/articles/a1b2c3  </p></div>
+```
+
+```
+<style>  p {    overflow-wrap: break-word;  }</style>
+<div class="wrapper">  <p>    This is a narrow column of text, with a very long word: antidisestablishmentarianism.  </p>  <p>    The same problem happens with URLs: https://www.somewebsite.com/articles/a1b2c3  </p></div>
+```

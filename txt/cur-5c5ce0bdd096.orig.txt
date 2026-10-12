@@ -1,0 +1,214 @@
+## The Secret Inside One Million Checkboxes
+
+Teens wrote me a secret. I found them.
+
+Aug 28, 2024
+
+A few days into making One Million Checkboxes I thought I’d been hacked. What was *that* doing in my database?
+
+A few hours later I was tearing up, proud of some brilliant teens.
+
+But let’s back up.
+
+*Note - I’m trying something new; I’ve also made a YouTube video that tells this story. I’m trying to decide whether I’m interested in making videos; check it out if you’d like!*
+
+## What was One Million Checkboxes?
+
+On June 26th 2024, I launched a website called One Million Checkboxes (OMCB). It had one million *global* checkboxes on it - checking (or unchecking) a box changed it for everyone on the site, instantly.
+
+The site, 30 minutes after launch
+
+My expectations for the site were very low and very wrong. I thought hundreds of players would check thousands of boxes - instead, 500,000 players checked over 650,000,000 boxes in the two weeks that I kept the site online. The site made it into the New York Times and the Washington Post; it’s on Know Your Meme and Wikipedia. The whole thing was a wild ride.
+
+A separate blog of mine covers the technical details behind OMCB. This blog covers my favorite story from running the site.
+
+But to tell you that story, I need to give you two bits of context.
+
+### Bit of context 1: OMCB made it hard to draw
+
+I like to make games that help people interact on the internet. Some people are assholes when they interact on the internet. So when I make games like this 1 I try to add constraints to make the average interaction a little more pleasant.
+
+The data I put together for Talk Paper Scissors is that \~4.5% of games involved someone trying to ruin things
+
+I’ve been around long enough to know what people will draw if you put an unrestricted canvas on the public internet, so for OMCB I wanted to constrain drawing.
+
+To do this I scaled the number of checkboxes in a row to the size of the browser window. Here’s what that looks like in practice:
+
+excuse the kerning
+
+Here I’ve written “EXAMPLE” - but you can only see it if the browser is exactly the right width! As soon as the number of checkboxes in a row changes the message disappears.
+
+This meant that if you drew something rude on your phone it wouldn’t show up for me on my laptop and vice-versa: your graffiti was only visible to people with the exact same display as your own. This constraint was particularly nice because it was subtle; you might never realize that your writing wasn’t visible to anyone else on the site!
+
+I got a *lot* of comments asking for me to “fix” this so that people could draw. But the choice here was very intentional.
+
+I’ve found that the best stories from my stranger-interaction games come from how people work around the constraints that I add.
+
+That was foreshadowing.
+
+### Bit of context 2: how I stored state
+
+OMCB had a million checkboxes on it. One million is a big number! So I wanted to store and transmit my state efficiently.
+
+To do this I said - a checkbox has two valid states. It’s checked or it’s unchecked. That’s like a bit - a bit is either 0 or 1. So I just stored the state for each checkbox as a bit. Bit 3 was “1” if checkbox 3 was checked and “0” otherwise.
+
+That’s a million bits. There are 8 bits in a byte, so that’s 125,000 bytes, which is 125KB - not even the size of an MP3! Totally workable.
+
+Checked boxes are stored as 1s, unchecked boxes as 0s
+
+I stored this data in Redis (an easy to use database) and base64-encoded 2 it when transmitting it to clients.
+
+Just an easy way to pass binary data around on the internet. There were more efficient choices here but I wasn’t too fussed about that when I made OMCB, especially since I didn’t expect it to be super popular.
+
+I promise this matters. Let’s get back to the story.
+
+## Have I been hacked?
+
+A few days after launching OMCB, I rewrote the backend in go (with the help of my friend Eliot) to keep up with the load. And then, for some reason, I dumped an ascii encoding of the raw bytes in my database. I don’t know why - I just did it.
+
+The data I saw looked like this:
+
+what in the world
+
+And my reaction to the data looked something like this:
+
+sheer terror
+
+I panicked. There were URLs in my database! There were URLs pointing to *catgirls.win* in my database!! Something was very very wrong.
+
+I assumed I’d been hacked. I poured over my logs, looking for evidence of an intrusion. I read and re-read my code, searching for how somebody could be stuffing strings into a database that should have just contained 0s and 1s.
+
+I couldn’t find anything. My access logs looked fine. My (very simple) code was ok. My heart rate increased. My girlfriend patiently waited for me to join her for dinner. And then - wait.
+
+Wait!
+
+I saw it.
+
+## The hidden message
+
+I looked at the checkboxes that corresponded to the sketchy URLs in my database.
+
+the 'h' is one byte - 8 bits. 8 checkboxes. those 8 checkboxes
+
+That H - it represented one byte. One byte represented 8 bits. *8 bits represented
+8 checkboxes.*
+
+Those chunks of 8 checkboxes formed a repeating pattern that lined up with the URLs. And if I changed something - if I unchecked a box - the pattern immediately reappeared.
+
+spooky
+
+I hadn’t been hacked.
+
+*Someone was writing me a message in binary.*
+
+### What does that mean?
+
+When I dumped my database, redis converted the data to ascii.
+
+To do that, it read the data one byte - 8 bits - at a time. It converted that byte to a number between 0 and 255 (2^8 - 1). And then it checked whether that number was in the printable ascii character range (32 - 127). If it was, it printed out the corresponding character; otherwise it printed the byte’s hex representation (e.g. `\x00` for `0`).
+
+104 represents an 'h' and '116' represents a 't'
+
+So someone was:
+
+- Checking boxes
+- To flip bits
+- To form numbers
+- That formed letters
+- That spelled out the URL
+
+And they were doing it with *thousands of other people on the site.*
+
+I was impressed.
+
+## Down the rabbit hole
+
+So.
+
+`https://catgirls.win/omcb`
+
+*catgirls dot win*
+
+I hemmed and hawed. I googled around. And then I clicked the link.
+
+interesting
+
+The link went to a discord! And the discord was called “Checking Boxes” 3. I joined the discord.
+
+The original discord is now locked down and the URL points to something else.
+
+saying hello
+
+And someone was really excited to see me! We chatted for a bit. And then they asked me something that blew my mind:
+
+“Have you seen your checkboxes as a 1000x1000 image yet?”
+
+I said no. They showed me what they were up to:
+
+goodness
+
+They were downloading data for all million checkboxes and rendering them as a 1000x1000 grid (the unchecked boxes are white; the checked boxes are black).
+
+There’s a lot going on here! We’ve got “be gay do crime” - love that - but there’s some interesting technical stuff here too.
+
+double goodness
+
+The repeated noise at the bottom is the binary message I found. Above that is a base64 version of the same message - remember that base64 is what I used for transport. And on the left side is a QR code (with full error correction!). All of these messages linked to the discord.
+
+The discord was full of some very sharp teens 4, and they were writing these secret messages to gather other very sharp teens to talk about botting the site. Anyone who was writing a bot would probably be looking at either the base64’d version of the data, the binary version, or the 1000x1000 image version; they were covering all the bases.
+
+Well, not exclusively teens! But certainly “sharp people who are younger than me”
+
+And this worked! The discord grew from under 20 people when I joined to over 60 by the time I shut the site down.
+
+### So what’d they do?
+
+Well, they drew a whole lot! As they built better systems for drawing (and better reverse-engineered my rate limits 5) their drawings became more complex.
+
+At one point I offered to tell them what the rate limits were and the leader of the discord told me they preferred to figure them out themselves!
+
+a windows blue screen of death - pre CrowdStrike incident!
+
+Over time they experimented with animations and even tried out some protocols for adding color - like treating adjacent cells as the red, green, and blue channels of a color and drawing to a smaller grid.
+
+The grid at its most chaotic - someone was a Jake Gyllenhaal fan.
+
+I gave the discord a warning before I sunset the site. The night before doing it I removed all my rate limits to see how much traffic the site could handle and what they could do. We ended up with some really cool animations - my favorite was a Rickroll (this clip is not sped up).
+
+look at Rick go
+
+### Is botting good?
+
+Lots of people were mad about bots on OMCB. I’m not going to link to anything here - I don’t want to direct negative attention at anyone - but I got hundreds of messages about bots. The most popular tweet about OMCB complained about bots. People…did not like bots.
+
+And I get it! The typical ways that folks - especially folks who don’t program - bump into bots are things like ticket scalping and restaurant reservation bots. Bots that feel selfish and unfair and antisocial.
+
+And there certainly was botting that you could call antisocial. Folks wrote tiny javascript bots to uncheck every box that they could - I know this because they excitedly told me.
+
+ok!
+
+I expected this - I’m a programmer! - but people told me that it ruined the site for them and I suppose I understand that.
+
+So, sure. This drawing probably degraded the experience for “regular” users - although the botters did have some rules around where to bot, and I would occasionally chime in to ask them to dial things down.
+
+debatable how well this worked
+
+So there are some caveats. I understand why people don’t like bots; maybe this wasn’t an unassailable good. But man…
+
+### I found this so moving!
+
+In highschool, I wrote a recursive mail rule that sent a friend of mine millions of messages as a joke. I (accidentally!) repeatedly crashed the school’s mail server 6.
+
+I’ll write a different post about this.
+
+The adults in my life 7 were largely not mad at me. They asked me to knock it off, but also made me a t-shirt. *I don’t think I’d be doing what I do now without the encouragement that I received then.*
+
+Including my computer science teacher - the incredible Richard Eisenberg, who’d go on to be a brilliant functional programming researcher and my future coworker at Jane Street!
+
+What this discord did was so cool - so surprising - so creative. It reminded me of me - except they were 10 times the developer I was then (and frankly, better developers than I am now). Getting to watch it live - getting to provide some encouragement, to see what they were doing and respond with praise and pride instead of anger - was deeply meaningful to me. I still tear up when I think about it.
+
+I’m proud to have made something that this discord decided was worth playing with, and I’m even more proud of what they did with it.
+
+I can’t wait to see what they go on to make.
+
+*Again - I’ve made my first YouTube video to tell this story. Given how emotional I found the whole thing, I thought being able to use my voice would be nice. Check it out if you’re interested!*

@@ -1,0 +1,544 @@
+[Introduction](https://www.joshwcomeau.com/animation/scroll-driven-animations/)
+One of the best ways to add a bit of personality to our websites is to animate things on scroll. For example, I recently created the following scroll-driven animation on the [Whimsical Animations(opens in new tab)](https://whimsy.joshwcomeau.com/) homepage:
+
+Historically, we’ve needed to use JavaScript for this kind of effect, but an exciting new API, _Animation Timeline_, makes it possible to do this sort of thing in native CSS! ✨
+
+I’ve been experimenting with this new API for a few months, and honestly, it’s _so good._ It’s built on top of existing CSS primitives in a really elegant and natural way. In fact, if you’re familiar with CSS keyframe animations, you already know most of what you need to know!
+
+In this blog post, I’ll show you exactly how this new API works, and we’ll explore some of the more advanced things we can do with it. I’ll also share some of the gotchas to watch out for.
+
+## [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#the-core-concept-1)The core concept
+
+In CSS, we can use keyframe animations to interpolate smoothly between two chunks of CSS.
+
+For example, suppose we have the following keyframe animation:
+
+```
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+```
+
+We can use this keyframe animation to fade an element in over a certain _duration:_
+
+```
+.elem {
+  animation: fadeIn 1000ms;
+}
+```
+
+Here’s the core concept with the Animation Timeline API: **what if we map a keyframe over a _scroll distance_ rather than a _duration_?**
+
+Check this out:
+
+Code Playground
+
+<style>
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .elem {
+    background: goldenrod;
+    width: 100px;
+    height: 100px;
+    animation: fadeIn;
+    animation-timeline: view();
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<div class="elem"></div>
+
+Instead of transitioning from 0% (`opacity: 0;`) to 100% (`opacity: 1;`) over a set amount of time, we’re using the _element’s viewport position_ as the input. Scrolling down scrubs through the keyframe animation.
+
+Let’s visualize this. We can measure the element’s progress through the viewport as a percentage. **Try scrolling through this box to see that measurement:**
+
+We’re taking that scroll progress percentage and applying it to our keyframe animation! 🤯
+
+It took me a minute to wrap my mind around this concept, since I’ve spent more than a decade thinking about CSS keyframes as a duration-based thing. But really, when we define a new keyframe animation with `@keyframes`, we don’t specify _what_ the percentages refer to. In theory, we could use _any_ input value that goes from 0% to 100%!
+
+So, when we set `animation-timeline: view()`, we change the behaviour of the `animation` property so that it’s based on the element’s progress through the viewport, rather than time.
+
+This is the most fundamental way to use this new Animation Timeline API, but we can customize the behaviour in a number of ways, as we’ll see in this blog post!
+
+### [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#timing-functions-2)Timing functions
+
+We can apply a custom easing curve to our scroll-driven animation with the `animation` shorthand, like any other keyframe animation!
+
+For example, if we want our scroll-driven animation to have an “ease-out” style curve, we can slap it on like any other keyframe animation:
+
+Code Playground
+
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .box {
+    --super-ease-out:
+      cubic-bezier(0.15, 0.75, 0.35, 1);
+    animation: spin var(--super-ease-out);
+    animation-timeline: view();
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<div class="wrapper">
+  <div class="box"></div>
+</div>
+
+I’m using `cubic-bezier` to exaggerate the default `ease-out` timing function. As you can see, the box spins quickly when it first enters the viewport, but slows as it approaches the top.
+
+We can even use spring-based easings, thanks to the [linear() timing function](https://www.joshwcomeau.com/animation/linear-timing-function/):
+
+Code Playground
+
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  
+  .box {
+    --spring: linear(0, 0.01, 0.04 1.8%, 0.161 3.7%, 0.81 10.6%, 1.038, 1.181 16.4%, 1.223, 1.247 19.3%, 1.253 20.2% 21.1%, 1.232, 1.19 25.4%, 1.058 30.8%, 1.001 33.5%, 0.958 36.5%, 0.945, 0.938 39.6%, 0.936 41.6%, 0.941 43.8%, 0.999 53.9%, 1.01 56.7%, 1.015 59.7% 64.3%, 1.001 74.2%, 0.996 79.6%, 1.001);
+    animation: spin var(--spring);
+    animation-timeline: view();
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<div class="wrapper">
+  <div class="box"></div>
+</div>
+
+This is kind of a cursed thing to do 😂. I’m sharing this just to show how powerful this new API is, not because I think this is a good idea!
+
+The CSS Working Group, the team that manages the CSS language deserves a lot of credit, in my opinion, for repurposing/extending CSS keyframe animations for scroll-driven animations. Rather than invent an entirely new thing from scratch, they built it on top of existing structures, which means a bunch of our pre-existing skills and knowledge can immediately be applied!
+
+## [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#animation-ranges-3)Animation ranges
+
+In the examples we’ve seen so far, we’re measuring the element’s scroll progress throughout its _entire_ journey through the viewport. It starts the moment the very tippity top of the element enters the viewport, and it ends once the final pixel has scrolled out of view.
+
+**This is something we can customize!** The `animation-range` property lets us define when the range should start/end:
+
+```
+.elem {
+  animation: fadeIn;
+  animation-timeline: scroll();
+  animation-range: cover; /* 👈 default value */
+}
+```
+
+If we change the default value to `contain`, we only start measuring once the element is _fully within the viewport:_
+
+This can be useful in cases where we want to see the _entire_ animation. With `cover`, the animation begins/completes while the element is mostly out of view.
+
+Here’s an example using elements sliding in from offscreen:
+
+Code Playground
+
+<style>
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  .shape {
+    animation: slideIn backwards;
+    animation-timeline: view();
+    animation-range: contain;
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<div class="wrapper">
+  <div class="shape">
+    <img alt="" src="/img/shape-circle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-square.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-triangle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-star.svg" />
+  </div>
+</div>
+
+### [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#entry-and-exit-4)Entry and exit
+
+In addition to `cover` and `contain`, there is also `entry` and `exit`.
+
+For example:
+
+Code Playground
+
+<style>
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .box {
+    animation: spin linear;
+    animation-timeline: view();
+    animation-range: entry;
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<div class="wrapper">
+  <div class="box"></div>
+</div>
+
+The `entry` range starts the moment the element peeks its head into the viewport and it ends once element’s bottom pixel has entered the viewport. We can visualize it like this:
+
+A common design pattern is to have elements fade in as they enter. The `entry` animation range is perfect for this!
+
+Code Playground
+
+<style>
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  img {
+    animation: fadeIn linear;
+    animation-timeline: view();
+    animation-range: entry;
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<img
+  alt="A capybara sleeping peacefully on the grass"
+  src="/img/capybara/a.jpg"
+/>
+<img
+  alt="A capybara chewing on some vegetation, with some white birds in the background"
+  src="/img/capybara/b.jpg"
+/>
+<img
+  alt="A baby capybara walking on top of an adult capybara"
+  src="/img/capybara/c.jpg"
+/>
+<img
+  alt="A close-up shot of a capybara, with a human nearby"
+  src="/img/capybara/d.jpg"
+/>
+
+Similarly, `exit` will apply as the element crosses the _top_ of the viewport, exiting out of view:
+
+We can use both `entry` and `exit` on the same element by specifying _multiple_ keyframe animations. We do this by passing comma-separated values for each animation property:
+
+Code Playground
+
+<style>
+  img {
+    animation:
+      fadeIn linear,
+      fadeOut linear;
+    animation-timeline: view(), view();
+    animation-range: entry, exit;
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<img
+  alt="A capybara sleeping peacefully on the grass"
+  src="/img/capybara/a.jpg"
+/>
+<img
+  alt="A capybara chewing on some vegetation, with some white birds in the background"
+  src="/img/capybara/b.jpg"
+/>
+<img
+  alt="A baby capybara walking on top of an adult capybara"
+  src="/img/capybara/c.jpg"
+/>
+<img
+  alt="A close-up shot of a capybara, with a human nearby"
+  src="/img/capybara/d.jpg"
+/>
+
+### [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#range-percentages-5)Range percentages
+
+There’s a long-form syntax that allows us to precisely control where the animation range starts and ends. Check this out:
+
+Code Playground
+
+<style>
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  .shape {
+    animation: slideIn backwards;
+    animation-timeline: view();
+    animation-range-start: cover 0%;
+    animation-range-end: cover 50%;
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<div class="wrapper">
+  <div class="shape">
+    <img alt="" src="/img/shape-circle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-square.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-triangle.svg" />
+  </div>
+  <div class="shape">
+    <img alt="" src="/img/shape-star.svg" />
+  </div>
+</div>
+
+In this playground, I’m specifying that the `animation-range` should start right at the beginning of the “cover” range (right when the first pixel enters the viewport), and it should end when the element is 50% through the “cover” range (when the element is smack dab in the middle of the viewport):
+
+This is incredibly useful, since it means we can decide _exactly_ when the scroll animation starts and ends. ✨
+
+There’s a more compact way to write this as well. We can pass all four values to the `animation-range` property:
+
+```
+.shape {
+  animation: slideIn backwards;
+  animation-timeline: view();
+  /* Combine start/end in one property: */
+  animation-range: cover 0% cover 50%;
+}
+```
+
+Personally, I find this shorthand syntax pretty confusing, and I prefer to use `animation-range-start` and `animation-range-end`. But you can use whichever you prefer!
+
+Finally, if we need even _more_ control, we can mix and match different animation ranges:
+
+```
+.shape {
+  animation: slideIn backwards;
+  animation-timeline: view();
+  animation-range-start: contain 0%;
+  animation-range-end: exit 50%;
+}
+```
+
+So far, we’ve been looking at _view_ progress timelines, which track an element as it moves through the viewport. The Animation Timeline API gives us another primitive, _scroll_ progress timelines.
+
+Instead of focusing on an individual element, _scroll_ progress timelines are concerned with the scroll’s overall progress. Essentially, it maps how far a user has scrolled through the total available scrollable area.
+
+Honestly, I can’t think of a _ton_ of use cases for this. The main thing that comes to mind are those progress indicators we sometimes see on blogs or news websites:
+
+Code Playground
+
+<style>
+  @keyframes expand {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  
+  .readingIndicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: red;
+    transform-origin: left center;
+    animation: expand linear;
+    animation-timeline: scroll();
+  }
+</style>
+
+<div class="readingIndicator"></div>
+
+<article>
+  <h2>What is Lorem Ipsum?</h2>
+  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Mosley, the librarian at St Bride Printing Library in London, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.</p>
+  
+  <h2>Why do we use it?</h2>
+  <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+  
+  <h2>Where does it come from?</h2>
+  <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+  
+  <p>Read more on <a href="https://www.lipsum.com/>Lipsum.com</a></p></article>
+
+As you scroll through this website, a red bar grows along the top, showing how far you’ve made it through the article.
+
+This does feel a _little_ bit redundant to me, since we have scrollbars for this purpose 😅. But I can’t really think of many other reasons you’d want to measure _overall_ scroll progress.
+
+## [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#linked-timelines-7)Linked timelines
+
+So far, all of the examples we’ve seen involve measuring an element’s scroll progress as a percentage and applying it to a keyframe animation _on that same element_.
+
+That’s usually what we want, but in some cases, we want to separate the element we _measure_ from the element we _animate_. One element’s scroll position can scrub through another element’s keyframe animation.
+
+Here’s what that looks like:
+
+Code Playground
+
+<style>
+  main {
+    timeline-scope: --tracked-elem;
+  }
+
+  .content {
+    view-timeline: --tracked-elem;
+  }
+  .square {
+    animation: fadeIn backwards, fadeOut forwards;
+    animation-timeline: --tracked-elem, --tracked-elem;
+    animation-range: entry, exit;
+  }
+</style>
+
+<p>
+  👇 Scroll down here 👇
+</p>
+<main>
+  <div class="left col">
+    <div class="square"></div>
+  </div>
+  <div class="right col">
+    <p class="content">← A square appears!</p>
+  </div>
+</main>
+
+In this example, `.square` uses sticky positioning, so it doesn’t move through the viewport at all. We’re tracking the `.content` element (the paragraph on the right) and using its progress to fade `.square` in and out.
+
+**Here’s how this works:** on the element we want to track (`.content`), we set `view-timeline: --tracked-elem`. “--tracked-elem” is a variable, and I can name it whatever I want. This creates a new “view progress timeline”. Any other elements can subscribe to this element’s progress through the viewport.
+
+On the element we want to animate (`.square`), we set `animation-timeline` to `--tracked-elem` rather than `view()`. That way, we use an existing _named_ view progress timeline, rather than initializing its own view progress timeline.
+
+**There’s a big gotcha here:** the variable names we create, like `--tracked-elem`, are not global. They can only be referenced by the element that creates it (`.content`, in this case) and its descendants.
+
+This is a problem for us. The element we want to animate is not a descendant of the element we want to track:
+
+```
+<main>
+  <div class="left col">
+    <!-- We want to access the --tracked-elem variable here: -->
+    <div class="square"></div>
+  </div>
+  <div class="right col">
+    <!-- We create the --tracked-elem variable here: -->
+    <p class="content">← A square appears!</p>
+  </div>
+</main>
+```
+
+Fortunately, the lovely folks at the CSSWG foresaw this issue, and they gave us an escape hatch: the `timeline-scope` property.
+
+This property essentially allows us to _declare_ a variable at a higher level, which will then be reassigned somewhere down the tree. Here’s the full code, with added comments to clarify what’s going on:
+
+```
+<style>
+  main {
+    /* Instantiate a new variable here: */
+    timeline-scope: --tracked-elem;
+  }
+
+  .content {
+    /*
+      Create a new view progress timeline and
+      assign it to the variable:
+    */
+    view-timeline: --tracked-elem;
+  }
+  .square {
+    animation: fadeIn backwards, fadeOut forwards;
+    /* Reference the named view progress timeline: */
+    animation-timeline: --tracked-elem, --tracked-elem;
+    animation-range: entry, exit;
+  }
+</style>
+
+<main>
+  <div class="left col">
+    <div class="square"></div>
+  </div>
+  <div class="right col">
+    <p class="content">← A square appears!</p>
+  </div>
+</main>
+```
+
+I’m adding the `timeline-scope` declaration to `<main>` because it’s the nearest shared ancestor. It ensures that `--tracked-elem` will be available for both the element we want to track and the element we want to animate.
+
+## [Link to this heading](https://www.joshwcomeau.com/animation/scroll-driven-animations/#scratching-the-surface-8)Scratching the surface
+
+We’ve seen a few examples of what we can do with the new `animation-timeline` API, but we can only cover so much in a single blog post. 😅
+
+For the past year and a half, I’ve been focused on creating the ultimate animation resource. It’s a comprehensive collection of the skills needed to create all sorts of whimsical effects using HTML/CSS, JavaScript, SVG, and Canvas.
+
+It’s called _Whimsical Animations_.
+
+[![Image 1: Whimsical Animations, a course from Josh W. Comeau](https://www.joshwcomeau.com/_next/image/?url=%2Fimages%2Fwhimsical-animations.jpg&w=1920&q=75)](https://whimsy.joshwcomeau.com/)
+
+This course is broken into 4 main sections. Part 3 is all about advanced user interactions, and we go _much deeper_ into scroll-driven animations. It also covers a bunch of other cool stuff like View Transitions and cursor-tracking effects, like this lil’ guy:
+
+I’m so excited to share all of my animation secrets 😄. You can learn more here:
+
+*   [Whimsical Animations(opens in new tab)](https://whimsy.joshwcomeau.com/)
+
+### Last updated on
+
+June 19th, 2026

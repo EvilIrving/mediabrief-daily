@@ -1,8 +1,0 @@
-In the world of software security, there was historically a comfortable lag between the moment a vulnerability became public and the moment attackers could exploit it. This lag was often measured in months, but AI models can now read a vulnerability report and generate a working exploit almost instantly. They can scan the entire internet for exposed secrets at a scale no human team could match, and surface complex flaws that traditional tools missed for years. However, the same capabilities are just as available to defenders, and there is a case to be made that defenders hold the stronger hand.
-
-Alon Schindel is the VP of AI and Threat Research at Wiz, which is a cloud security platform acquired by Google in 2026. In this episode, Alon joins Gregor Vand to discuss how AI has compressed the time from disclosure to exploit, the prospects for defenders to stay ahead, how Wiz approaches scanning and remediation, the growing strain on open source maintainers, and more.
-
-Sponsorship inquiries:
-sponsor@softwareengineeringdaily.com
-
-The post Security in the Age of Instant Exploits appeared first on Software Engineering Daily.

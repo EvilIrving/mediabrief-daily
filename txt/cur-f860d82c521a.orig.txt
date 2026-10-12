@@ -1,0 +1,642 @@
+self included to
+So we're going to run through basically how to actually write code,
+all the different interfaces-interfaces,
+and then also building things with AI,
+like understanding all of the different parts,
+context, tokens, prompting,
+all of the different models that are out there,
+streaming, embedding, rag,
+all those words that you're going to be hearing about.
+What's up, my name is Wes.
+I'm at the cottage right now and I forgot my nice camera.
+So this is actually not not bad, though.
+This is my iPhone 13 just on a tripod and it's
+it's on the end.
+Hey, man.
+And yeah, I'm out there at the cabin.
+That's a great time of year for doing that kind of thing.
+Right.,.
+So I'm up at the cottage.
+We were just talking about it and me and Scott were not being able to talk to each, in the
+video was glitching out and I was doing, I'm on Starlink and I was getting like, like
+a hundred, a hundred and twenty megabits down.
+I was getting about 10 to 12 up, is usually not an issue, but it was just not working,
+right?
+And the pings were decent.
+So I switched to my LTE cell phone.
+It's four down, two up, and the video is way better.
+The ping is fine, so I don't know, man, that's, yeah, it's bizarre, yeah, definitely bizarre,
+the video is easier to talk to you right now.
+Hey, Wes spew, hey, Wes, I did some soldering yesterday, no, this weekend,
+not yesterday, on Sunday.
+Well, I have this, I have been digitizing all my bandss old footage.
+which are on like hi-8 DV taped.
+I don't even know if it's DV.
+They're on hi-8 DV tapes.
+Which are these like tapes of size.
+And so I've been digitizing it all,
+on YouTube because like, hey man,
+you know that stuff's just gonna get lost
+lost to time if I don't.
+I have a little device that takes in RCA in
+and does HDMI out.
+So that way I can do the cam link and whatever.
+And the USB micro U came un-soldered from the board.
+I soldered it back on that's impressive. Wow. That's I that's a pretty. Tiny. It's it's tiny
+I'm doing the little thing. I bump it the wrong way. It the connection goes out so I. Just leave it. It's not if by no means a professional job, but
+spew I am a terrible soldering. So I just wanted to you know to my own horn here for a second
+Can we say that
+lowest of all. Yes. And then all the way up to like USBC although they
+they got their own problems on the top. Lightning decided that a wafer was the best design of a vanilla wafer that could just snap off at any time.
+All right, let's get on into it.
+Talk about how to actually interface with AI
+AI when you're writing code.
+So the, that's entry level, maybe experience as a ghost text
+or auto completion.
+So you fire up an IDE editor and whatever editor you're using.
+So VS Code, Windsurf, and Cursor probably the big three
+right now, but any editor using will have some
+as you're typing it will try to auto-complete it.
+That can be a little bit frustrating at times,
+but I also find myself, when it's turned off,
+I'm almost at a point now where I'm just like,
+or like you're writing code somewhere
+that it doesn't have that, like a text area
+or like even like on Twitter, and you're just like,
+ugh, I need that, you know?
+Where's the auto-complete for it?
+Yeah, and I will say that this is the lowest barrier
+to entry one, and honestly, probably the least
+intimidating version because, most of us are used to working with auto complete of some
+in disregarded inside of our text editor.
+And that ghost text popping in there
+shows you what it's gonna be.
+You can choose to just toss it in there or not.
+So for me, this is like, if we're talking dollar signs
+in terms of intimidation factor,
+this is like a $1 sign.
+It pops in there, you can choose to accept it or not.
+And I think that is a relatively easy way to get going
+with working with AI and I have it not feel super icky.
+I know there's lots of people who don't even like autocomplete,
+like not even like AISI.
+People like people don't like autocomplete at all.
+So if that's you, maybe you want to check out one of the ways
+to sort of chat with your code base.
+So all of these are going to have a sidebar where you can go
+ahead and select a model and be able to chat with it.
+«Most of them now have defaulted to what's
+called agent mode.
+And what agent mode will do is you type into the box at a
+component that does X, Y, and Z and update the database and it will go ahead and do it.
+But there are other modes where you it will either just give you the answer, which is
+like the very basic chat, get to summarize something.
+You can ask it to modify something and it'll just give you the answer.
+You can go ahead and copy paste it or it will allow you to apply the edits manually,
+which quite honestly is kind of slow and a lot of people didn't use that.
+This like chat feature until agents came along where it just sort of
+staged all of the changes and then you can either you can go through
+through every single change
+changes, those changes are ready for you to use in the browser before you.
+You accept.
+Yeah.
+Before you accept without, without you having to commit to those changes, you
+can actually try that stuff out.
+You can see what it looks like.
+You can see what it feels like beyond just having to go through the
+platforms.
+You can see really quickly,.
+If you're trying to get it out, which is one of the things I feel like I've
+a harder time with some of the CLI agent, platforms.
+I'm interested to get your take on that, but that's the one reason I tend to reach
+for the IDE chat first and foremost as my main means of working with AI currently, specifically
+nice. It's a feature that I really like about all of these AI agents because you otherwise if it tries
+to do too much or you're a bit like spooked about how much it'ss done then I have the same thing as
+well. Maybe we'll talk about that. So like the third thing here is CLI agent. So instead of asking
+inside of the IDE to do something.
+The, we're seeing a lot of people use terminal UIs
+to interact with your code base.
+So the big ones being probably by far the biggest one
+is quad code.
+And then a couple, as of recording a couple days ago,
+Google rolled out their own Gemini code.
+There is Codex from OpenAI.
+There's OpenCode, which will allow you
+to bring your own thing.
+There's several others out there.
+We'll probably do a whole show on these CLI agents themselves.
+But the idea is, oh, and warp.
+Warp, my favorite terminal has like totally pivoted
+their business into being like a coding tool
+via the terminal, which is like, I had a call with them
+like a couple of months ago.
+And he's like, I really think like the terminal
+is the UI for building software.
+And I was like, really?
+And then like, here we are.
+Couple of months later, everybody's going bananas
+over terminal UI, so it's kind of interesting.
+I still, as much as I use cloud code,
+I still don't buy it as being the best to work
+compared. it to the ID approach.
+Yeah, I agree.
+And I think that they are different approaches.
+So the idea with something like cloud code
+is you type into the box,
+hey, build X, Y and Z and it will make a plan
+and it will go off and do that do that thing.
+And I think, I think the idea with those is that you're not necessarily just sitting there
+waiting for it to complete, is you're firing off three or four of them and they all work
+in parallel.
+But for times when you do want to sit there and do it, I don't like that interface at
+all.
+If I hit the wrong key, the whole thing quit.
+Granted, the quality, I think the quality of Cloud Code is significantly better.
+I think that's why a lot of people like it.
+And you can also
+and you can also also code into other tooling because at the end of theệc
+it's just an npm script that you can go ahead and run.
+But I much refer the IDE experience.
+I have a full blown GUI.
+You can
+click on things, roll things back, accept things.
+I know you can do these things, you can open it up in an editor, view the desk,
+not as good, not nearly, in my opinion,
+not nearly as good as using like a cursor or VS code
+in the editor. the editor.
+?
+more context tools to the AI agent.
+So a big one that I found out about a couple weeks ago.
+Was contact seven.
+This one will give you the ability to eject
+the documentation for different libraries
+into your actual prompt.
+And you don't- you just have to say I say,
+go read the docs for tail and four or spelt five.
+It will go off, download the docs stick that into the prompt
+for you.
+I, I honestly quite like that a lot better than the cursor built in documentation.
+I've never felt that the cursor built in documentation worked very well and I'm not sure if you've
+got thoughts on that.
+It's obnoxious because in so folks who don't know newbies, anybody in cursor, the editor
+in the settings, you can attach a docs and to like a keyword essentially like
+Felt five docs and you're pasting in either a link to the docs page or the
+and you're pasting in either a link to the docs page or the llm.txt file which we'll talk about.
+And with that you are you are able to access the up-to-date documentation and reference it.
+However, with cursor you frequently have to do at the docs in every message.
+At least I have found to get specific syntax
+found to get specific syntax I'm always having to reference
+to get specific syntax I'm always having to reference constantly those docs to say no please
+for real actually use these docs these times I begging you I've given you the docs you have the docs
+you can look at you index them just use them please and for docs that don't have a page that
+you can grab
+documentation either as a single markdown file or like LLMs, ms. TXC or as like multiple
+markdown files which you can easily gather up and inject as you need it. But I've had some
+documentation for very small libraries where it's like 30, 40 pages and I just hadn't
+found a good way to provide all of that. So I'm still kind of working on that.
+my biggest frustrations do still revolve around versioning modern software. It's like if you are, is there's a reason why it seems like we're convero converging on a handful of tools because AI is really good at a specific era of specific tools. And once you get into, oh Svelte is now releasing. Wow, they changed their on colon click to on click and like AI is just like, I've never heard of that.
+the documentation in a minute, yeah.
+Any time you find that you say the AI is really dumb
+at X, Y, and Z, Z. AI, for example, AI can't do math.
+I talked about this in our MCP episode, right?
+If that is your thing, oh, it sucks at X, Y, Y, and, Z.
+The answer to that is very likely not,
+oh, okay, we'll scrap it.
+It's not a very long, but the answer
+almost always is yeah, there should be some sort of tool
+added to it via probably via MCP that will give it the power that you need.
+Yeah, totally. Word. There's also a handful of GUI AP the most
+popular one. It's basically a way to build things very quickly using Vercel
+Well,-well, not using Vercel specifically, but it's built on V-Vercel, and this works with-
+It's a chat. You should say that. It's basically like a
+visual chat that will build out the UI and some of the functionality.
+Yeah, and a handful of these tools all work very similarly, and the branding on a lot of them is
+really like, we can build something very easily for you. So another popular one would be
+lovable in this space, lovable on has pretty much the exact same landing pages V zero in
+many ways. Like you can tell just by looking at the landing pages, like kind of what the vibe is
+for some of these things. Bolt.new, another one. Basically, hey, you want to build something,
+you want to start with a chat inside of a GUI, then, like, hey, this is the way to go.
+This is maybe in my mind, I know a lot of people like V0, but in my, my mind, this is for more of-
+of the person who doesn't want to get into the code as quickly themselves in terms of, like,
+in your editor, in dev environment, like, up and running, like, this somebody who wants
+to build something with the least amount of effort, but also maybe the least amount
+but a lot more UI, focused.��고
+All,
+all of these tools can't do back-end now.
+Initially, it was just UI focused,
+but it's much more based on it visual prompting
+and going, going back and forth,
+which is really cool, quite honestly
+and also Windsurf has this feature as well,
+Visual website are more
+They're going towards these tools.
+So, when surf is trying to, at least I think,
+they're trying to attack those tools as well.
+So, I wouldn�t write these off
+off because they don't seem to be as popular in our circles
+of people who already know how to code.
+, but I'm always, oh, and replet�,
+repl is huge in this one as well.
+And now it makes me five grand a month crowd Twitter of thread boys. Yeah, yeah, type of
+audience. So just like you said, I should say
+More popular with maybe not our kind of deeply tech audience and as far as like the AI
+Skeptics go might be the most skeptical of this type of thing just because of the type of individual that most
+No, I certainly am very careful to write these off because I think that they are very
+good.
+And also if you were to give me a tool like this for something that I was not good at,
+like for example,
+making art, chat apps, you know, being able to generate photos or I
+use, I use the 11 labs one to create sound effects for my capture one, you know?
+I'm sure the audio people are in there being like these idiots are just typing in what they
+are getting these awful sound effects out the other end.
+But I don't care.
+It gave me a really fun, you burned it, audio clip and it works great.
+Yeah, I know.
+It's definitely great for that.
+The last one here is that just like chat apps, like chat GPT.
+using AI to do like this for a long time.
+app for a while was like the best way to work AI before we got a lot of these newer tools.
+So this is certainly still something you can do if you're the type of person who's like,
+I really want I want to dial in on this. Like I want to copy and pay.
+I want to work back and forth with this in a chat way. But at the end of the
+day, it's not a text editor, you're not getting into there to modify the code.
+You're doing a lot of copying and pasting and trying a lot of back and forth.
+And it is really super inefficient compared to, most of the newer styles of working
+this stuff.
+So I probably wouldn't, if you're talking to me and you're new to this stuff,
+I would say you can either start with the ghost text, if you're scared of it.
+Um, but the IDE chat is probably the least scary way to start using AI in
+and small dosages instead of like trying to go whole hog into this thing.
+Yeah. I will still use research and reference where I don't want it to take my entire repo
+into consideration. Sometimes you ask it questions and I don't want your idea to be slanted
+based on what I've written. I want you to give me an idea of what you think in general.
+So if I'm looking at how CSS features work
+or had a best approach, something I'll paste it in.
+But I put this in here because at least maybe even three
+or four months ago, it seemed like a lot of people thought
+that coding with AI was that.
+how I do that in the past month with code and in general.
+I'm almost entirely using DIA browser now for that specific thing.
+The chat window and DIA browser is so good because you know how some documentation sites have like the chat with AI feature.
+DIA basically gives you that for any project.
+So you can reference the docs in the browser from DIA with your code, pasting back and
+forth, your referencing other tabs.
+Oh, I have this library and I have two different tabs.
+I can pop open a little chat on the one and say, hey, if I were to integrate it with
+this other service here in this other tab, how might I do that?
+Here's some of my code and it's like so stinking good for that.
+, so Dia man has been, and I actually just signed up for the perplexity, I think we're
+gonna start seeing agentic browser more and more.
+Cool.
+Yeah.
+I'll have to give that a shot.
+Let's move into the second portion of this episode, actually building stuff with AI.
+So this is it's not writing, getting AI to write code for you.
+It's kind of the other way around, is you or I guess, the AI is writing the code.
+But I feel like in order for you to get good at writing code with AI, you need to actually
+build something with these tools in order to understand what all of the pieces are
+and how they all fit together.
+If you build like a small little application that has a few, the features,
+different models that are out there streaming text versus not embedding what this word called
+rag is. So if you build something that includes all of these features, let's go each of these
+features one by one and sort of talk about them. First one is just like custom prompting, right?
+You
+multi-multimedia, if you're going to be sending it to an AI
+and getting the data back,
+probably the most table stakes, right?
+When you build something, you give it an initial system prompt
+and you can say, you are an expert at identifying birds,
+given the sounds that they make when they are scared.
+That's absolutely silly right that.
+And that will sort of
+set the stage for you.
+So a custom prompt is the very basics there.
+Yeah..
+Have you solved the getting data back piece?
+Like I need the data back in this specific format.
+Yeah, yeah, the being able to get data back in the format that you want has pretty much been solved.
+Even like
+AI SDK and you can use it with obviously open AI, but you can also use it with with Claude and Gemini
+and like pretty much all of the other services have been out of bowl with it, which is really nice
+because you can always just swap out models and you don't have to like you're not hard coding
+your app against using just open AI models. But yeah, it's that's largely solved. Generally,
+Finally, these AIs are best at returning either JSON or Markdown, but you
+And I kind of have a feeling that, partially, the AI being able to modify and generate those,
+better in JSON versus Tommel is part of the reason why they did that.
+Yeah. And I've been seeing a lot of JSON-L as being the way that people have been working within
+LLMs with JSON. Have you been seeing that yourself?
+What's JSON-L? I know JSON-C is JSON with comments.
+Yeah, JSON-L is basically line-separated objects. So if you were to have just a JavaScript object
+on a line, you could have just another JavaScript on an object without having to do that.
+Yeah. Each line represents a JSON object, ideal for handling large data sets, streaming data scenarios.
+because JSON-L's efficiency makes it popular
+for choice with fine tuning language models.
+Oh, that makes sense, because with JSON,
+you'd have to wait for it to return the entire thing
+before you can parse it, right?
+That's the pain in the butt.
+So JSON-L will allow you to parse the data.
+So maybe we'll jump ahead to one of them,
+which is the idea of streaming.
+So these AI models are often very slow
+for you to simply send a request, sit there and wait for the entire thing to come back.
+What you have to do is you have to start streaming the data as it's coming back from the AI.
+You have stuff in there that needs to be parsed, most likely markdown or JSON.
+You want, want to be the able to display it in some way as it's coming in.
+You need to be able to parse it.
+That's why sometimes when the result is coming in, like let's say you're streaming in a
+a markdown table for a split second, you might see like a weird half formatted markdown table
+and that's because the whole syntax hasn't come back. So with the idea of JSON lines is
+you get simply one object each time and at least you know you can safely parse that
+entire line before you go ahead and use it.
+Yeah, because that is something now that you actually have to worry about because
+is, yeah, like you said, if you're waiting
+for that entire JSON object to come in
+or you're having to figure out where the lines are
+or where the new objects are,
+Information a lot of people think that you you would train a model on something like let of say for example
+We have what almost a thousand
+The AI model doesn't know about
+Scott's thoughts on self actually it does actually does
+Well, they will also confidently know about it even if it doesn't.
+It will just give you hallucinations about it.
+Yes.
+No, but what needs to happen is if you have custom data that is the AI model is not trained
+on, you provide that data as part of the prompt.
+And we can't take the, the transcript of a thousand episodes and stuff that into the
+prompt and then ask it what you want.
+So what you need to do is you need to basically your data and then find the pieces of data
+that make sense.
+And then you give it to the AML say given the following context, please answer the question,
+what does Scott think about cell five?
+And then you might give three or four different pieces of the transcript.
+And in order to find which of those pieces of the transcripts you need to provide to
+the prompt.
+You need to first convert your data to embeddings and text can be converted into embeddings,
+which is essentially just like a large vector array of data.
+And then you can find items that are closer to it.
+So what you do is you would convert your question to an embedding that will return
+this array of numbers.
+And then maybe you convert each of your episode transcripts into embeddings or
+you convert like three or four sentences at once into embeddings, you can get pretty complex with
+it. But essentially what you do is you say, I'm searching for this. These are the things that are,
+these are like the pieces of the transcript that are close enough to it. Then you can take those
+three or four and then provide it to the prompt and get your answer. And the same thing works
+with images as well. That's how Google similar images work. So you might take an image,
+Convert it to an embedding and then you take every other image in the world and convert those two embeddings
+And if if images have similar
+Like items inside of it the embeddings might be might close or if they're similar colors
+They might be close to them as well
+and that is really nice way to
+Add additional context to that prompt that's called rag retrieval augmented generation
+Yeah. All right. The next one is an MCP server. And I got to say, CJ just released an incredible
+video giving a deep explainer on actually building with MCP. We've done episodes on MCP here some
+very recently as well. So MCP is largely a means of using AI to connect with other
+items via like an API. So like if you want to connect with something else via your
+chat or via your AI, it can use MCP as an interface to go off and do other work, whether
+that is interfacing even with like a full on other application or another service, another
+server somewhere.
+So I highly recommend giving CJ's video a watch because nobody explains it quite like him
+in terms of like getting your hands dirty and really building something.
+Even Figma has a MCP server as well.
+If you want to get details about a component,
+I was watching Adam Wathen.
+He was trying to figure out how to convert Figma components
+to Tailwind code, like a pixel perfectly.
+And he got pretty far using the Figma MCP server.
+Yeah, like I mentioned, I've been using MCP in Godot
+to change things in the Godot interface.
+There's MCP for things like DaVinci Resolve.
+I mean, there's a lot of different MCP out there
+for interfacing with different applications.
+The Sentry MCP is a great example.
+So Sentry, as sentry.io is the perfect place
+to track all of your bugs to fix them.
+Sear is a new product from Sentry
+that allows you to debug your code
+and find out exactly why it sucks with AI.
+It's amazing.
+Yeah, it's agentic.
+It figures it out for you.
+It is crazy good, but there's also a Sentry MCP server
+that again, allows you to interact with your Sentry
+and gain access to understanding your code base
+and errors in your entire everything that's happening
+because Sentry essentially is insight
+into how your application is functioning.
+You can gain so much information
+from interacting with the Sentry MCP server.
+So check it out, sentry.il forward slash syntax.
+Next up is a multi-model.
+So if you want to build something,
+probably text is the most common way
+you're gonna be getting responses,
+but dip into the different models, right?
+There's models out there that will allow you
+to send an image as part of the prompt.
+There's models out there that will return images
+or video as part of the prompt.
+There's models out there that will transcribe audio,
+right?
+It'll do speech to text.
+There's models out there that will do text to speech.
+I did a really silly one, probably be a year, year and a half ago where it took the webcam
+photo of me, took a photo, and then it sent that off to open AI and said, describe this
+image as if you were Ricky from Trailer Park Boys.
+And then I took that response and I piped that into 11 Labs, which was a custom model
+trained on Ricky from Trailer Park's voice, and then it played it back to me, right?
+And like, just like putting those two things together is just so much fun because you can
+obviously string these things together and then throw MCP into the mix and before you
+know it, you got Ricky from Trailer Park Boys like fixing your sentry bugs or something
+hilarious like that.
+Yes.
+And for those of you who might be listening to that and being like, what's the point
+of that?
+What's the point?
+The point is, is that you're building things that are at least getting you interested
+to have some sort of output to explore
+and to give these things a rip.
+So that way you're not learning about it in some dry context
+or something without an idea in general.
+And you say, I wonder if I can do this and this and this.
+You start connecting these things
+and it's going to help you really figure out
+the whys and hows.
+So that way when you wanna build something practical
+you have an exact idea of how the pieces fit together.
+Exactly. And like the multi models as well is you'll get a very good under how much does
+this cost? You know, there's models out there that are fast and cheap, but not very good.
+There's models out there that are slow and expensive, but very good. And trying them
+all out will give you a much better feeling for the trade offs on that for at least
+two weeks before they're all deprecated and new ones come out and you have no
+no idea that three is better than four and everything has an O in it.
+And you're all confused.
+But yeah, just, man, also, like dipping into like local AI stuff as well, we've got a note
+coming up.
+We just like try out transformers.js try out TensorFlow.
+If you are able to run them locally, you don't have to pay for them.
+They're pretty dirt cheap to run by communicating with APIs.
+But if you want to do it absolutely free, you, you want to try some
+really neat stuff- just locally or doing it entirely in the browser.
+That's kind of a fun way to do one as well.
+Yeah, totally.
+Let's talk real quick about some Libs that you can use to code the AI.
+We said the open AI SDK is probably one of your first interactions with talking back and
+forth with these different models out there- Versel AI SDK is really, really nice.
+So this is a TypeScript tool kit for building- it's kind of like if you want to build a chat
+app or you want to build common stuff and be able to interact with all these different
+AI providers.
+There's just a a whole bunch of handy tools in there. If you want to build
+a little tool kit, work with streaming and integrate it with view or view, it's an awesome tool kit you need
+to grab. Since it's from Versailles, you have to use React and have to use it. That is not the
+case here.
+Yeah, it is basically just a library for interacting with the AI SDKs themselves.
+It's kind of like a middleman so that way you don't have to use the open AI library and the
+anthropic library or do just fetch calls for everything, right?
+Yeahs Yeah, and I think it goes a little bit further
+than that as well.
+Like it will give you UI components for that will help you streaming and it's really
+nice.
+Cloudflare is using it.
+, yeah the Cloudflare agents one is a little SDK that will allow you to persist
+state, if you want to like store stuff in a database or you want to have long
+running tasks, if you want to query the web, you want to have
+synchronous workflows, they provide a whole bunch of
+tools on there as well. So the the Versa.
+AI SDK, well that's more of like
+something for interacting with the providers or the UI.
+The SDK is more of a infrastructure level thing.
+So if if you wanna schedule tasks and persist state
+and tell something to run like a cron job every single time,
+it hooks into the Cloudflare infrastructure,
+all of their tooling that they have.
+So they have tons of examples on their Github as well
+if you wanna dip, dip in to that.
+But I would probably tell you,
+if you, if you're just trying to build something here,
+you don't have to use all of these.
+I would probably just start with the open AISDK,
+SDK, the Cloudflare agents. And then there's also like,
+Langchain as well, which
+has been about a year for
+for me. I haven't used it, especially since,
+well, I've used it in the past, but I have not used it since their website has
+undergone a major glow-up, I guess.
+So, Langchain allows you to chain together different
+AI stuff. So, you're able to ingest a whole
+bunch of documentsילו you end up just clicking together a lot of these things when you
+when you're building an AI application, and LangChain is a tool kit for
+There's a JavaScript version and a Python version, which is really nice, but I haven't found myself needing that in quite a while.
+I feel like I can use the previous libraries we talked about.
+And there's also transformers, JS,
+it basically allows you to interact with hugging face,
+which hugging face is one of those things to me
+that if I was a newbie or a skeptic to AI
+and I were to go to hugging face,
+I would feel intimidated by it because there's so much stuff.
+And there's so much good stuff on YouTube
+and I think that's one of the things
+here and it does a great job of giving you demos and examples and how to use
+these things but in the same regard it's a lot of words and all of a sudden
+, you're feeling like wow there's a tonne of stuff in here that I might not
+understand how so many things exist here how so many people are using
+using this but basically it'll all kinds of AI stuff from different models to
+different data sets, you can integrate these things in your application with
+Transformers JS or you can just bounce around hugging face and give some of them
+a try to see if they are the type of type of use. Yeah, so Transformers JS allows
+you to use local AI. Yes, in, in JavaScript runtimes meaning that if
+you're in Node.js, you're in Dino, you're in the browser, you want to be
+be running an AI model because these, these big models like open AI, they're good, they're
+very good at lots of stuff.
+But sometimes that is too expensive or too large to do it and you want a very specific
+model that's like very good at doing one thing.
+So or you just want to be running it locally, you know, yeah, or you, or
+or you, you just want to be able to run it locally.
+Locally, because you don't, you don't want to have to send that off to the cloud.
+Right.
+the entire world is so deep on very specific models
+that are for specific tasks and it's absolutely nuts
+how deep all of this goes.
+If we wanted to feed it, I built something
+that it took 6,000 screenshots from an image
+and fed it through it and tried to figure out which one had the largest smile in or which one had the most scared face in and
+a little bit, Transformers, JS, and via hugging face is a great way to do so.
+So that, like you mentioned, all those things that you said are a great way to get your
+hands dirty with some interesting things.
+So I guess that leads us to some process things we've mentioned throughout this episode, but.
+I think one of the biggest things that I can suggest to people is to explore.
+know, we mentioned that there's all these like fun and interesting things
+things. I do think that if you're the type of person sitting on the side lines and saying,
+I don't need that stuff. I think you need to explore your curiosity a little bit because
+we are all about making cool things were about exploring technology were about building
+things and like if you leave the word AI out of it and I were to tell you as
+as a and you can build something that detected a
+a smile and took a screenshot when there was a smile.
+Or I could build something that, you know,
+did this or that really fascinating.
+Like generated in an image or something like that.
+If you leave the entire big AI scary cloud out of it for some people.
+Just call it machine learning.
+It sounds so much more scientific and sick.
+Is that, not exciting?
+That is exciting that you can build that kind of stuff.
+Yeah.
+You would have told me five years ago, ten years ago, to build some of this stuff or
+do
+some of this stuff.
+I would have been like that is incredible.
+There's so many neat things I want to do with these ideas.
+So explore.
+Don't be afraid to go out there explore if it breaks if it doesn't work.
+Toss it out.
+I have a directory on my computer called temp inside of my site folder.
+It is used for a scratch pad websites.
+I throw up together demos, some of them work,
+some of them don't.
+The cool thing about my temp folder
+is it automatically deletes itself.
+So because of that, like, I can just toss stuff in there
+, and if I ever actually like the process that's happening,
+I can move it into a real project or whatever.
+Otherwise, it's just scratch.
+It's just exploration.
+And I think that is an important feature
+that I think some of us lose
+because we really like,
+We take in the, I don't know if it's like social context
+or like, we latch on to these fields.
+There's a lot of awful stuff around it.
+There's stealing content that uses a ton of energy,
+the whales are dying.
+There's a lot so awful stuff around AI
+and I don't wanna discount that,
+but I do think that there's a lot of benefits
+of it as well and I do think that this industry
+is certainly changing it.
+So, a skeptic just know that we understand,
+but this is kind of exciting stuff.
+And you can build some really neat stuff.
+Especially if you're like at all a little bit burned out.
+Build some fun stuff.
+So build some fun stuff.
+Silly Pokemon indexer thing.
+And you can go ahead with it.
+turn off the
+use tech that you already know, because you can tell if it's generating code, like if
+you're working with AI. AI tooling, it, you can tell if it's generating code that you
+want to actually use because you know the code, you know what good code looks like, like,
+and therefore, if you're choosing to accept a brilliant code into your code
+base base from AI, you're going to know a lot better and faster if it's code you actually want to have
+that you know and understand.
+So use tech that you already know if possible.
+All right, that's all, we have come come come come come come come come come come come come
+come come슷ly.
+We've got no sick pics for you today because we are recording ahead for the
+summer and I am, I am out, I'm flat out of sick pics so.
+We can only buy so many things here.
+We're gonna go broke trying to find sick pics.
+the comments.
+No sick pic it down in the comments below let us know your sick pic I'd love to
+That's all you got today, Scott?
+That's all I got. All right. Thanks for tuning in. We will catch you later.
+Peace

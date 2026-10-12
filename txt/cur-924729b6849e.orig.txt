@@ -1,0 +1,785 @@
+Modern web development requires an ever-growing collection of tools, including formatters,
+linters, bundles, and plugins. Each tool typically has its own configurations,
+dependencies, and performance cost. As applications grow more complex, the overhead of,
+of maintaining this will chain becomes a real burden. Biome is an open- I am-source
+tool chain for web projects that brings formatting and linting together in a single fast-opinionated
+tool. It's built in Rust and is designed to be a drop-in replacement for Pretier and ESL-Lint
+with sensible defaults, minimal configuration, and consistent behavior across the CLI and
+Editor. Biome also introduces a module graph that enables cross-file analysis and type-aware
+lint rules that don't require the TypeScript compiler. A Manuela Stapa, known as Emma,
+is a senior systems and
+cloud flare a lead at
+astro and the creator and lead
+maintainer of biome in this episode
+and the joins Josh Goldberg to,
+to discuss the history of how
+leaders and for matters work
+under the hood what makes
+biomes are fundamentally
+different from the tools it
+replaces and what's
+this episode is hosted by Josh
+Goldberg and independent full
+time open source developer
+Josh and the typescript ecosystem,
+most notably typescript ESLint,
+static analysis tool set for JavaScript and TypeScript.
+He is also the author of the O'Reilly Learning TypeScript book,
+a Microsoft MVP, for developer technologies,
+and a co-founder of SquiggleConf,
+a conference for excellent web developer tooling.
+Find Josh on Blue Sky,
+Faustadon.com, as Joshua K. Goldberg.
+With me today is Emmanuel Stopa,
+open source maintainer at Cloudflare,
+creator of Biome and lead at Astro.
+Emma, welcome to Software Engineering Daily.
+.
+Thank you for having me, Josh.
+How's it going?
+It's good.
+I'm excited to talk to you.
+You've done quite a few interesting things in tech.
+Recently you've been on Astro, joined Cloudflare, your creator, lead maintainer of Biome.
+Before we get into all that, how did you get into coding?
+Things didn't plan as I said.
+Things didn't, things didn't plan as I said.
+Things didn't plan as I said.
+Things didn't plan as I said..
+Things didn't plan as I said.
+And as I, I thought they were, I went to university, where they were supposed to
+teach a game design, but in the year where I was supposed to join that class,
+there was no professor.
+So I had to choose another class.
+And eventually I haven't done anything around video games.
+So I ended up doing PHP, Postgres, and all the stuff that web
+that was at that time.
+And that's how I started, so then it was PHP developer,
+jQuery, and so on until React and all the cool kids that we have now.
+Do you have any emotions that come to mind when you think about developing
+front-end full-stack apps in PHP and jQuery?
+Yes, because I see a lot of partners that they used to use back in the day coming up like SSR.
+Before, it wasn't a thing like React developers and it was all about spas everywhere, so everyone
+was developing single page applications and that SSR came back because that's how you
+used to the things in PHP
+PHP. So it was like, I mean, there's nothing new here. We are just doing things as they
+were just using JavaScript instead of, I don't know, PHP, C sharp or Java, you know,
+That time, that's what we had. So it's kind of weird because we are not inventing anything.
+We are not inventing the wheel. It's nothing exciting. It's just the same patterns
+of using different tools, different libraries. I like the tools that we have now
+simplified the process.
+Back in the day when I wanted to do spas or islands,
+for example, it was a mess now.
+We know how to do this kind of things.
+The libraries allow us to do that.
+So I was like, oh, thank God, now we,
+we can
+can do things very quickly.
+It's lovely that we've learned how to do the same proper techniques,
+but with a lot cleaner syntax now,
+which brings us to kind of a transition for you.
+You started off as a standard developer.
+Working on apps, PHP, jQuery, and so on.
+But at some point you transitioned to dev tooling.
+And one of the earliest projects that you were associated
+with in that space that got a lot of interesting news was Rome.
+Can you tell us about how that came to be and what that is
+is
+So, ROM, ROM Tools, was a project that was supposed to be like only one tool for all your
+web projects.
+So, I have been formally linking and bundling testing everything in one single application
+or, or binary, or whatever.
+And I really liked it, the mission behind it.
+In the past, I always struggled to maintain a lot of these depth libraries, such as
+as formatters, linters, bundlers, and rom was like a breath of fresh air.
+And I was looking for an open source project to contribute to, so yeah, let's do it.
+That's how I joined the mission.
+Rom at that time was in TypeScript.
+And eventually, Rom got some funding.
+They opened the company and they joined as an employee of the tool.
+That's essentially how I got, like my passion to open source came before Osirom.
+I was involved in the webpack before that.
+I was part of the CLI team.
+And why?
+Because, like, I fought with webpack a lot of times in my working experience with all
+the companies where it worked.
+And they became a on the webpack.
+It was also on Stack Overflow answering questions and things like that.
+I wanted to increase my knowledge
+around web-sour you do it.
+You just go into open source
+and you learn stuff from the actual
+How did you make that jump from learning about web-pack the
+contributing back to it or to helping others?
+It seems like kind of a scary cliff for
+for a lot of people, a gap in difficulty levels.
+Yeah it is scary.
+But in the end, you just have to do it.
+It's like a leap of faith.
+And you, you come come to understand that you can't know everything.
+So you have to make the peace with it and just say,
+I don't know this, I don't know that.
+But I have experience with this thing.
+So maybe that's your solution.
+Maybe this is your other solution.
+So once you understand that you can't know anything.
+And you have to accept that others might have the answer.
+It gets easy.
+So eventually, you just do stuff that you want to do.
+mentioned into something a little easier, right? Yes, exactly. Before tooling, I was in front end
+and it's a completely different world. Like tooling requires a lot of different knowledge
+from front end, but there are some similarities. There are some lessons that you can take,
+from front end, and where there's accessibility, error renderings, and fighting with browsers,
+fighting with things that don't work in a lot of context, take them into your tooling and,
+for example, error rendering, it's the same. Like you have your user that does a mistake,
+you have to handle it. You have your back end that does something funky, you have to handle it.
+Same for tooling, you always have your user that puts something via CLI, for example,
+and you have to essentially provide some decent feedback.
+So it's a different context, and in the end it's a product.
+You have your users and you have to provide something good that they
+they like.
+So it's not that scary and yeah I mean, in programming you always have the same problems
+more or less different context.
+But at the end it's just about data.
+You get some data, you have to pass them
+and then do something with it.
+And if it doesn't work,
+you just send them a good feedback.
+If it
+details, what is a builder or what is a bundler?
+Oh, well, a bundler, what it is.
+Well, as you said, like a bundle is a linker.
+So it's like taking different files
+and just create something that is
+linked all together in modern programming.
+Now, in the web ecosystem, we
+have a bundler that has to take a lot of JavaScript files
+scattered in your application and the dependencies,
+and eventually creating something that it's
+pleasable to use in the browser for you as a developer,
+and but it's especially for users, your end users.
+So you have to ship something that doesn't break,
+you have to ship something that doesn't,
+takes a lot to download, for example.
+So you can ship all like a file of your old dependencies,
+otherwise it's like mags of JavaScript
+that your user is to download and,
+if anyone wants to work on it,
+because
+What situations can I, if any, get away without that?
+Well, you could use a
+something that we couldn't do 10 years or 15 years ago.
+So capabilities increased.
+We have more tools at our disposal.
+So even the applications got complex
+based on what we want to ship.
+So eventually, you want to use a tool.
+Like it simplifies complex,
+based on what we want to ship.
+but there's a lot of going on nowadays, so you don't want to do it and you want to focus on Europe,
+you don't want to focus on the boilerplate. So, yes, nowadays, you should use a tool that simplifies
+all the basics and so you can focus on creating whatever you want on the browser or
+even
+electron where you have your native app. So, you see the capabilities and
+increase that we have endless-possibilities.
+That's a really interesting question.
+I don't have a clear answer, but as a developer, some tools that do the kind of things such
+as Astro, how does it work?
+So you have a concept of pages, which are essentially your entry points, where your user lands.
+Lends.
+Okay.
+And from there, you essentially start building your tree of dependencies, which are styles.
+CSS files, components, JavaScript files, anything that your page requires, your bundler works.
+So you have your entry points where your user needs to interact, call them pages.
+So in most of the cases are synonymous, entry points or pages, and there your bundler creates
+a tree of dependencies of assets, essentially.
+What it needs to ship in order to render
+and make the page functional.
+Of course, there are a lot of challenges
+like understanding the CSS files.
+If things got more complex
+because styles in some applications
+are shipped with some components.
+So there are atomic, like,
+take for instance views belt and Astro. They have the council of
+components, single
+file components. And each file component can contain a piece of
+JavaScript, can contain a piece of HTML and a piece of styling..
+So when you have multiple components that are inside the
+tree, you also need to understand the order of how the
+style needs to be bundled together in order to actually
+the end result, like you could have your button that is imported in the middle of the tree
+or in the end of the tree, and then you have to decide, okay, now what's the order? And
+that's what the bundler does. So it's responsible to tackle these kinds of problems for you so
+you don't need to fight them. And of course bugs can be there, but that's what the
+the bundle the best for you and same for job scripts.
+So a lot of scripts important in your tree,
+you have to,
+sure-to make sure that they are imported and executed in
+in order.
+So eventually your bottom reacts to a phone submit or
+or it reacts to an error in your farm without breaking other
+scripts.
+So that's I think like the way that you described the
+assets because very little, if anything, in your explanation
+is specific to JavaScript files.
+So let's say that we have a new kind of asset.
+Let's say I want to import some .wep image
+and then use it as a source string in my file.
+In this system, does, I mean, that I
+can have sort of arbitrary, arbitrary
+extensible plugins for different sorts of assets?
+Yeah, technically,, yes.
+If the bundler allows you to do so,
+but essentially, yeah, a bundler needs
+to work like in a very abstract way.
+but then he has to have specialized section where he needs to understand is actually processing.
+So CSS files, images, which have different extensions, so different kind of encoding and things like that.
+We have wasm, which also requires its own instantiation and other things.
+We have fonts. For example, that's another asset that needs to be treated in a certain.
+certain way.
+So yeah, I mean, nowadays we are creating bundlers that
+has to be designed in a generic way, and extensible.
+So users can extend the bundler for their needs,
+because not everyone needs to deal with web images,
+or videos, for example.
+There's also this kind of asset.
+So in the wild now we're creating,
+since webpack area, or roll up, creating bundlers
+that are generic and users can extend it.
+So we are sadly on a plugin system
+performance and configurability for ease of use, abuse.
+There, there are horror stories out there,
+it's a cost and I think like people shouldn't pay that cost. Like you have it's a lot of
+extensibility but yes as a cure that's nice you do like a people shouldn't pay that cost. Like, you have a lot of ext
+and you have
+then the bundler somehow has to be responsible of it and reduce...
+the performance and make it faster.
+But at a certain point, I think it's not responsibility of the bundler of the tool, the plugin system anymore.
+It is responsibility of the maintainers of the plugin
+I'm coming to a realization that we need the plugins systems just
+baked into the tool
+and eventually the performance of the tool degrades and you ended up with a webpad that
+takes like 30 minutes to bundle your application so we're
+trying to and we keep trying to solve this problem like we have roll up but now we
+We have a roll down that wants to fix it by using different language or maybe architecture,
+but I think it's not going to solve everything because applications are going to be more powerful,
+demanding and bigger, because that's how the technology works.
+So we're going to see maybe in three, four years, five years, we're going to see the
+same problems so we're going to try to solve them the same way.
+So, according to realization, not many have
+to do something different.
+So, that's why configurations should be static.
+It shouldn't be dynamic, like they should be
+predictable, like I know ESLint paid this cost.
+And then, V9 shifted their configuration to be flat.
+So, like it's easily debuggable.
+nd eventually they couldn't understand
+like which plugin was making a mess.
+because it was all a recursion, like it was difficult to back
+because it was all a recursion, like it was difficult to do back and so they came to realization we have to
+to do something.
+They broke the ecosystem but I think it was, I think it was something that had to be done because as an
+open source and maintainer I understand where they were coming from and why they did it.
+Of course a lot of users a lot of users were not happy but they made a mistake, they had to
+to fix it, some users would be happy.
+But in the long run, I think it's going to pay off.
+How do you know or how are you able to tell
+So to be honest, I don't know.
+I really don't know.
+A plugin system allows you to do everything,
+but if you give it's too much, you end up breaking stuff.
+You end up that you can do a a lot of them and musicians
+that you could do if your plugin system was more like tight
+or as less feature.
+To give you an example, like as a great plugin system
+system, and we have plugins everywhere,
+and we have plugins everywhere, but it comes to the.
+But it comes to the cost where they can't innovate now.
+The force of the ESL
+comes from its plugin system, but now they can't innovate and try new
+things, otherwise, the plugins could break, they could degrade without
+knowing.
+That's the line, you should try to give enough power to please your
+developers and users. But not as much so that you can't innovate. Like, you are
+are a programmer. So as a programmer, you also want to look for new things, try new
+things. it's because that's, I think, one of our passions. And if you can't try new
+things, what's the point? Like, at the end, it's just doing maintenance. I don't
+know, it gets boring. So maybe that's why you ended up with creating new
+making new projects and trying new things.
+Yeah, that was a natural cycle where once a project gets successful, that bogs it down. the
+I want to talk a little bit about one of the major new things that a lot of projects,
+including Rome and Biome and Astro, are, which is native speed code.
+You led the conversion from and typescript to Rome and Rust.
+First of all, why Rust?
+For those who haven't heard this hollow balloon, why are so so many projects switching
+to specifically Rust or at least native in general?
+Why us? So, I think like there are two main reasons,
+Even when you have a major, you have less breaking changes,
+or if you have them, you catch them straight away
+at compile time.
+So, it gives you the safety of having a lot of dependencies,
+but at least they break less often
+as it could happen in TypeScript or JavaScript.
+So, you have less mental burden for your tooling.
+Second, it's actually speed.
+Like a ROM, when it was in TypeScript
+was actually
+or somewhere else, you can try to do
+using the wasm bind gen create.
+so it's very easy.
+you're raskodלים into wasm,
+so that it can be shipped into browsers,
+other languages that are able to
+to that's really great for a
+like a playground and things like that.
+So I think that's one of the reasons.
+because like I'm sure the language is very typed,
+but even TypeScript is typed in a a different way.
+So it wasn't the problem.
+And Rust has gained a lot of traction recently
+for their memory safety.
+So you don't need to deal directly with memory like C
+or C++ or other similar languages
+because Rust does it for you using their Baro Checker.,
+So it takes a lot to get used to
+but it's the language that does it for you,
+you don't need to take care about that
+part so you can focus on your application.
+It sounds great.
+Let's
+Let's jump
+jump forward and time a little bit.
+For a year and a half we were.
+We were doing great, but eventually the company behind it went under so they
+couldn't get any more money. So eventually they had to. Thing is, I liked the project.
+I joined the open source project before getting hired, and I wanted to continue it. So, even
+to Rome, other people
+And we ship, we continue shipping eventually like I really wanted to change the
+face of the project but it always requires a lot of work you know like logo
+names website domains so you don't want to do that you know you wanna it's a
+annoying. But eventually we had to do it because NPM tokens expired, so we couldn't actually
+ship and publish new versions on NPM anymore. So we were actually forced to do the move
+and why buy on? So like James, which was the CTO at Rome at that time, had his idea.
+a second ROM, so second ROM biome.
+That was the idea.
+So I asked him, can I use it?.
+are you okay with that?
+Yeah, sure.
+Go ahead.
+And
+eventually so ROM fell December and in August of the next year, we announced biome as the new ROM.
+I would say the mission changed slightly because we are not focusing.
+change it slightly because we are not focusing on the bundle, for example, because we, we have
+less resources, we don't have people dedicated to the project. So we are now focusing on the
+linter, because that's what we had. So instead
+of going horizontally, we went vertically. So like we ship more features into the
+linter and the formatter. So more languages, but still like more rent rules, formatting
+capabilities, but we are not focusing the moment on the bundle
+or the testing suite, stuff like that.
+So I don't think we're happy with that.
+We are doing still great things.
+So yeah, let's talk about those great things.
+Most users I've talked to are not
+extremely familiar with formatting and linting
+as concerns.
+They lean up the code base.
+Maybe they know that linting does more logic formatting
+or, well, formatting web space.
+What does Biome do for users around formatting and.
+So first of all, it creates like a,
+it wants to ship a different developer experience
+compared to the tools that we have.
+So the better messages,
+something that you can actually action,
+you have your error and Biome tells you,
+okay, okay, that's how you should do it
+or you shouldn't do it.
+So some users, yes, they dismiss the linters
+as like a nice to have.
+So what we're trying to do is to teach people
+how to do stuff.
+Like we shipped this lint rule that targets
+the dot reduce function of JavaScript
+and says to not use the spread operator
+when you return the accumulator.
+And the lint rule tells you don't do it
+because it's a performance problem.
+And I've seen people that didn't know that
+and once they know the rule, they learned something.
+So that's one of the missions.
+like we have a linter that teaches you something.
+Because as I told you before, not everyone knows everything.
+So spew if we get the chance to teach you something, I think we did good, so we're spreading
+the knowledge. That's why our lint rules have to have a high standard. They have to tell you
+why it's an error. If you're not able to tell why an error exists, it's not an error. It's
+a mood point. And then like formatting, he wants to just provide a faster experience compared
+to the tools that we had at that time. Like I know that users in the past were kind of
+unsatisfied with Prettier's performance, which was at that time the only widespread
+format in the JavaScript world and the web world. So with Biome, we provide a very similar
+formatting, but at least it's faster, especially in CIs and things like that. But we also like want
+to provide an experience that is tied also to other tools, like biome knows you're getting your
+files, for example. So you just hook into them. And it doesn't format the files that I'd ignored
+in gate. You can also integrate with your editor config, for example. So you have your
+you're editing coffee, so you don't need to maintain the biome config.
+You just use what you already have.
+So it's not just about LinkedIn and Formati,
+but we also embrace the other tools so that biome gets to know what you're using
+and you learn from them.
+We're doing the same with Svelte, Vue, Astro, CSS modules.
+Tailwind, too.
+So it seems like a web dev is quite vast.
+We don't want to limit ourself to just one tool,
+but we think we should actually embrace a lot of them.
+So users get to know them and you learn something
+that you might not do.
+You've touched on one of the really lovely parts
+of using Bio, which is, as you said, it's all in there.
+You can run the format, the linter, just from one command.
+How much simpler is it in your experience
+to configure Bio compared to how things were configured,
+say, five years ago?
+So I think it's actually really good and fast
+because you don't lose a lot of time.
+I still remember when I used to set up ESLint
+and Pre-tier years ago and it got easier,
+but like the fact that you have to install three
+or four packages and then you have to configure ESLint
+to use Pre-tier's config or plugin.
+I don't remember.
+So it was a nightmare.
+I... I mean sure it takes a 10 minutes but why you have to do that.
+I mean you shouldn't spend so much time on this.
+And that's why.
+I'm is a like you have one config with sensible the falls which means that you just installed
+the dependency and that's it.
+You don't a to do anything else.
+You just use it.
+If you don't like the defaults okay just you can run by your in it and change
+the defaults and that's it.
+Also, you don't need to format the code that is fixed by your linter because it's
+all in there.
+Bayon does it for you and it works out to the box in your editor and what you get in the
+the CLI, you get it as well in your editor.
+they want because that's, we like to in the tooling a bit formatting is not changed-significantly
+over the last few years other than what the defaults may be or configuration the architecture has
+been pretty stable. Linting on the other hand biome does linting things quite a bit differently than
+say ESLint that came before. What's different about a biome and rural versus say a predecessor
+or ESL not rule.
+But I know that these kinds of plugins need to do something that ESLint can't provide such as
+scanning the whole project or the whole dependencies. Because these kind of rules need to understand
+not just the file that you have open on your editor, but they have to resolve
+types, dependencies. So, they need to do a lot of work in order to work.
+And that's something that ESLint doesn't provide out of the box, but Biome does.
+So Biome, in this case, is able to scan your whole project before starting the actual LinkedIn,
+is able to collect a bunch of information so that we can provide powerful intros such as
+No import cycles. So it's able to fly over all the import tree of your project and understand if you're actually importing the same. You're doing a
+cycle is able to scan your dependencies. So it understands if you're using a dependency that is not installed and
+and your package reason.
+One thing that, for example, I recently merged
+is a lint role that is able to scan the whole file files files files files
+view files and all the files.
+it� it collects all the information and then it does the lint rule that inspects your component,
+your div or whatever, your element, it's reads the classes you used and checks if they are defined
+, defined somewhere in your project.
+If they are not defined anywhere, it's not defined anywhere and it's able to show you the actual tree
+of components that they of components that they were analyzed.
+And that's something that is provided by the biomodograph,
+which is a language agnostic, in a sense,
+like is able to collect multiple languages
+or files or assets in the same time,
+like HTML, CSS, JavaScript, and so on.
+And I'm really proud of what they've done
+because it's something that like the tools
+that we have today,
+they are not able to do that or I mean, that I'm aware of, of course.
+So that's what Biome is able to, current tools might lack or they don't provide out to the
+bots.
+You mentioned two big features now.
+There's typed literals out of the box, and then there's the Biome the module graph.
+Talking about type lentils a little bit, how does that type information work in Biome?
+Yeah.
+So in Biome, we've tried to do things differently because that's essentially our way of doing
+things, like providing something different from what you have, so you can try it.
+So Biome does something called type inference.
+So it actually tries to collect and infer, as it says, the types of your code, like
+of the JavaScript type suite files.
+So the project and the efforts were led by another core contributor, and Vercelo actually
+employed the contributor to actually ship the feature.
+So it was a great community effort and it required a lot of resources and time, but
+now we are able to ship lint rows that don't require the actual TypeScript compiler.
+So you don't need ThighScript to understand if you're using incorrectly a promise.
+There's a dangling promise that you haven't awaited.
+How does it work?
+Essentially, the engine
+relies heavily on the model graph in order to essentially collect
+and read all the files that the project uses, as well as the dependencies.
+just a project but also all the libraries involved in the application, and then there's a little
+work where it tries to flatten, for example, expressions, functions.
+I don't know all the details.
+and the efforts were led by another co-member.
+But I managed to actually fix a couple of bugs there
+because the engine requires a lot of tools such as not just the model graph but also the sematic model...... just the other day I fixed the bug where biome couldn'ting infer the type of dependency so there was import function from low dash for example and you couldn't understand if it was a promise or not..........................
+port function from load dash, for example, and he couldn't understand if it was a promise or a not.
+to teamfer when, for example, it changes, it changes value and things like that. And at the end when
+there's the if or
+because this variable never changes, it's always true. So I put it answer your question.
+Very much so. You mentioned another type of graph now, semantic graph. What's the difference
+between a semantic graph and a module graph? So it's not called semantic graph graph, but it's
+-s-
+specialized to the kind of file.
+So in JavaScript, it specializes into understanding the value scopes inside a
+you have a different scope, you have different functions,
+then you have your arrow function that don't have scope, so,
+you have your classes, they have a different scope.
+So that's what this semantic model does, for example,
+and checks as well if a binding is exported or not.
+So it does very specialized things for CSS, for example,,
+it
+to the implied semantics of the language that you're
+rendering, surely we're going to have, for example My Semantic
+model for GraphQL. I don't know
+the language, other maintainers have more expertise than me, but
+they know they're going to use it.
+they're going to create it so they can provide
+specializing tools. The model graph is
+just a big pile of data of all your files that you have.
+It's basically a tree and branches.
+And you have your edges, you know, how they are
+to each other. So it's mostly like a spider web and you have to navigate it to understand
+to collect the information that you need. One of the difficulties with building
+Lent rules specifically in, in native speed code is that many of the end users are its native
+speed developers.
+what are you in biome doing to solve that developer interoperability difficulty?
+Ah, I mean, as we mentioned, like Bi is a plug-in system to try to bridge the gap.
+It's a plug-in system based on this, the, the called grid QL.
+So it was chosen some time ago as a winner after a lot of discussion.
+So, we are aware that we can do everything and there are some requirements that are project
+specific.
+So, things like that belong to your org or to your employer, to your code base.
+So, that's where we think the plugin is actually very useful because also like your
+sensitivity, things like that.
+So we have this powerful DSL that biome is able to interpret,
+and it has its own runtime.
+So with these plugins, users are
+able to inspect the code and just to let you know.
+So until now, plugins were not able to provide code fixes.
+So until now, it was just that's the rule, that's
+the diagnostic, that's the error, and that's it.
+So we have now API to actually provide a code fix.
+Probably the next minor user will be able to create an intro that is able to fix possible issues
+in their code base.
+So this actually gives my point where the plug is bad, but I think it's valid because the
+tool cannot know everything and it shouldn't.
+I shouldn't know anyhow about the quirks of your code base because they are sensitive
+data. And that's where a plugin makes sense. You leverage
+the tool, biome is linked, OXE
+e,, whatever, and you apply it to your code base specifically
+to your needs because they belongi
+So it sounds like you could use code fixes from litrules as a
+sort of code mod tool. Yes. Yes, exactly.
+Look to hear that.
+and there's already a
+just looking through the biome.js.dev slash reference slash great QL page.
+It looks like you can do some pretty powerful matches with not that much syntax with great QL.
+Have you seen a lot of developers pick this up and use it?
+So I'm not into to a lot of this part of the tooling.
+I know that there are users that have like a 70 or more
+more plugins written in GridQL. So I feel like there are users that actually leveraging
+the plugin system a lot. But yeah, like GridQL was born as a code mod. That's why it's so
+powerful. And that's why it has a lot of weird syntax. Because one of the initial
+Objective was to create code mods and essentially what
+Bayon could potentially-
+Potentially do in the future.
+You could create your code mod to I don, I don't know.
+You have your own reactor from 18, 19,
+there's a lot of changes.
+You have your code mod or even internally.
+So you are changing stuff.
+There's a lot of refactor.
+Create your plugin that does the code mod run by on.
+And there it is.
+Beautiful.
+the feature a little bit. What are some of the big, flashy upcoming features in
+around by about.
+Ah, that's nice. Okay, so there's a lot of going on. A lot of
+of ideas. So one is this lean through that I talked about that is able to
+catch a new glasses is still early stages, because there. There's a lot
+of and the system is big quirks. The second thing that we're working on
+is the watcher.
+So you can run biome lint dash dash watch.
+And then you can start typing and bi
+biome at every change.
+It lengths the new file that you just changed.
+exposing the watcher using the CLI.
+One other thing that we are doing,
+this is just a third-party contribution,
+so I'm not doing that much.
+Plug-ins that will, be able to emit code-fixes
+and they will be able also to set the severity.
+So until now, users, they couldn't do much.
+So now we are making the plugins more powerful
+and customizable to� our users.
+We are working towards markdown support
+So internally, we reached 100% coverage against common mark.
+This is also done by another third party contributor. So that's amazing.
+I'm just essentially a review in PRs and contributing with them.
+So itne there's an effort at the moment, doing a refactor of the parser
+while keeping the conformance to common mark to 100%
+and we're setting up the format at the moment.
+if everything goes well it's going to be part of the next miner yeah I think
+that's I mean there's also that we're doing a lot of ling tools for review and
+also Svelte probably we're gonna start creating some new tools now that we
+have a very good handle on this belt syntax so now we can start shipping some
+new tools for them for Astro I still need to investigate I know there's a
+I'm not familiar with the roles, so probably there's a room for implementing something there.
+It would be nice if the leader of the Astro project and the leader of the Biome project
+would do슷ly many of the same people together.
+Ah, yes.
+Which is me.
+Well, great.
+One of the interesting notes you brought up was editor support.
+Can you tell our users what is LSP?
+What does that mean in this, and what does that mean in this context?
+you get the same look and feel on the CLI, the LSP in the playground, so any client, because biome
+is essentially a server, you have multiple clients, and that's what we do for the nostic.
+So what you see in the CLI is the same thing that you see in your editor.
+So something that we could potentially do in biome that other tools can do is to
+to leverage the model graph to implement things
+like the go to, you have your function,
+you wanna know where is the function,
+you do a command click and it takes you to the definition.
+So that's something that Bio potentially could do.
+So there's endless possibilities with Bio
+because everything is central.
+On the stack we own the information
+but still requires essentially the time.
+so I'm setting up essentially the whole infrastructure, I have years, I just need the time to implement
+them. Now with these agents, I get to do things quickly because like they just write the code
+community because like a lot of fixes,
+and the format there as well.
+We are actually also working on CSS support,
+it's also support.
+So yeah, I mean, I wanna do a shout out
+to all the contributors,
+cause like a lot of things that you're using
+and other people are using shipped
+and created by the community by the community session.
+by the community The community.
+The community.
+Biome.
+Biome.
+Biome has been around for a few years now.
+It's outlasted Rome.
+It's sustained itself.
+How have you been able to build a community where so many
+many open source projects are?
+Well, I think like a biome as a sector attracted a lot of people.
+I was so that's one of the reasons.
+Second, I don't know.
+I have some experience in open source.
+I'm involved in other communities.
+So I learned from communities and applied to the biomes.
+community. I try to be friendly every time it's not easy. That's actually very difficult as a
+maintainer to keep your cool. And I know that sometimes sometimes I wasn't able to. And also like
+you have to be active. Like we have our Discord chat and. And if you're able to answer
+questions, you can ask questions. People eventually acknowledge that and they like it.
+Because sometimes you are in a project,
+you file an issue, or you ask a question,
+and then it's basically you don't get an answer for weeks.
+So I think that's why I try to focus on quick feedback
+if I'm able to.
+And I think this is paying off, because users
+that activity, they see that their problems
+are solved, their questions are answered,
+or maybe we don't have the answer,
+but at least there is some discussion, so there is something moves every single time.
+There's something to be said about positivity. You joined the Biome Discord,�
+there are all these fun channels, there are lots of emo and emojis, exciting announcements.
+It feels like a very big project and a fun place to be.
+Yeah, we try. We try to be active, to be positive, as you said.
+To communicate, that's also something that since day one I wanted to do,
+you, if you have something about biome, anything related, just share it. Or even if it's, it's not about biome, share it.
+You have a link that you like, just drop it and people will like it because it's something
+nice to read. So that's essentially the mentality. You are. You want to share something
+and do it. You are more than welcome to do so.
+say that I'm a listener with a large code base,
+complex formatting, linting, and so on,
+how would I get started to try to switch things over
+or to evaluate to Biome?
+So Biome has a couple of commands
+that allows you to read the config from ESLint
+and pre-tier and create a Biome config that matches
+as much as they can what you had before.
+Of course, we don't have all the ESLint rules,
+but at least something.
+Second, you can actually do a first pass of your linter
+by suppressing all the violations
+because you might have a lot of violations
+your old code in the big code base.
+So you do bi
+it doesn't scream at you, you can keep your code base,
+and then you can progressively address the intrudes as
+as you go.
+That's essentially what you could do for your migration. it's
+if you have a lot of formatting problems,
+one technique that I usually suggest is to have a PR,
+make sure the CIS green, merge it,
+and then goes with another PR that ignores
+the commit of formatting.
+So like your history is not mangled by the formatting.
+We do the same also in the biome repository
+When we have these trivial changes that the don't bring anything to the
+table, you ignore that commit, that hash so that your history is the blame when you do a blame of the file.
+It doesn't show any meaningless information.
+That's a great tip. You're talking about git revision ignoring.
+There's a Git file where you essentially can list all the commits that you want to ignore.
+Those commits want to appear in the history of your Git blame.
+Great. Let's say that I have a new project and I want to get started fresh with the biome. How is
+that different? So you start biome and you're good to go. You could run biome in it which
+putstrap a biome config for you which essentially mirrors our defaults. So it might be lengthy,
+but at least you can see what are our defaults. You don't.t need to go to.
+You can understand what's the default and then you can change it like tabs versus spaces,
+and so on. Other than that, we ship also a really nice tool called the Biomexplain from the雌 I, where you can just type biomexplain no debugger, and it shows you the docs right in the CLI. So, if you don't have any connection, and you know the name of the Internet connection, and you don't want to go to the website, you just type that command, and you can see what their link rule does for you.
+Speaking of which, that website is biomjs.dev, yes?
+Yes.
+Great.
+Are there any other resources or links you'd want to send people to if they wanted to learn
+more about Bio?
+It's quite several explanations., also the main KitGitab
+repo.
+It's also a nice resource.
+And yeah, we tried to be central, so we tried to have everything in one-place,
+and the website is where we're going to go.
+And our Discord, so biom,omjs.dev, slash chat, and you should be good
+to go.
+Excellent.
+I like to add the reviews with one non-work question.
+You mentioned at the very beginning spea that you were interested in video games.
+What games are you playing games these days?
+So the moment I'm playing Assassin's Creed Shadows, I'm not a big fan of the whole saga, but I like
+the last video games because I'm really focused on role playing, you have your character, you choose
+your skill that you want to develop your weapons skills and things like that spew. So in Japan, which I really like, so it's a really nice mix of things. I really like role-playing, so GDR and things like that RPG. Essentially, I'm not into sports or shooting. I really like RPGs.
+first person. If you want to learn how to do video game, you have to do it yourself.
+Just do it yourself like a lot of people do in the video games. That's I think you should start.
+I mean, I tried the university, it didn't pan out. So do it yourself if you have the passion.
+And the time I don't have the time anymore. So that's the only problem. But if you have
+We have the time and the tools that we have now days, I think it's quite easy to
+t.
+All you need is time, interest and energy.
+Yes.
+Well, great.
+Emma, this has been wonderful.
+Thank you for walking us through your history and bio and all the fun
+fun things around analyzing and lending that come with it.
+If people wanted to learn more about you
+specifically, where do you direct them to go on the internet??
+I can go to my blue sky account.
+I'm a typical dot x y z.
+I'm a typical dot x y z.
+I'm a typical dot x y.
+I'm a typical dot x y z.
+Why Z, the account, and, yeah, I mean the essentially where, where I'm active, at a real social person.
+I like to and I engage less.
+Excellent, well, thank you for your your your your your your your your your your your your your, the the the the the the the the the the the the the.
+... and Emma and Josh Goldberg. Cheers everyone! Thanks!

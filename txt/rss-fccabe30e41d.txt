@@ -1,1 +1,0 @@
-What it takes to run agents in a codebase older than the team

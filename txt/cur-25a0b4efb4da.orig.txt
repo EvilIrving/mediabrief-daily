@@ -1,0 +1,107 @@
+People have noticed that Firefox is fast again.
+
+Over the past seven months, we’ve been rapidly replacing major parts of the engine, introducing Rust and parts of Servo to Firefox. Plus, we’ve had a browser performance strike force scouring the codebase for performance issues, both obvious and non-obvious.
+
+We call this Project Quantum, and the first general release of the reborn Firefox Quantum comes out tomorrow.
+
+But this doesn’t mean that our work is done. It doesn’t mean that today’s Firefox is as fast and responsive as it’s going to be.
+
+So, let’s look at how Firefox got fast again and where it’s going to get faster.
+
+### Laying the foundation with coarse-grained parallelism
+
+To get faster, we needed to take advantage of the way hardware has changed over the past 10 years.
+
+We aren’t the first to do this. Chrome was faster and more responsive than Firefox when it was first introduced. One of the reasons was that the Chrome engineers saw that a change was happening in hardware and they started making better use of that new hardware.
+
+A new style of CPU was becoming popular. These CPUs had multiple cores which meant that they could do tasks independently of each other, but at the same time—in parallel.
+
+This can be tricky though. With parallelism, you can introduce subtle bugs that are hard to see and hard to debug. For example, if two cores need to add 1 to the same number in memory, one is likely to overwrite the other if you don’t take special care.
+
+A pretty straightforward way to avoid these kinds of bugs is just to make sure that the two things you’re working on don’t have to share memory — to split up your program into pretty large tasks that don’t have to cooperate much. This is what coarse-grained parallelism is.
+
+In the browser, it’s pretty easy to find these coarse grains. Have each tab as its own separate bit of work. There’s also the stuff around that webpage—the browser chrome—and that can be handled separately.
+
+This way, the pages can work at their own speed, simultaneously, without blocking each other. If you have a long-running script in a background tab, it doesn’t block work in the foreground tab.
+
+This is the opportunity that the Chrome engineers foresaw. We saw it too, but we had a bumpier path to get there. Since we had an existing code base we needed to plan for how to split up that code base to take advantage of multiple cores.
+
+It took a while, but we got there. With the Electrolysis project, we finally made multiprocess the default for all users. And Quantum has been making our use of coarse-grained parallelism even better with a few other projects.
+
+#### Electrolysis
+
+Electrolysis laid the groundwork for Project Quantum. It introduced a kind of multi-process architecture similar to the one that Chrome introduced. Because it was such a big change, we introduced it slowly, testing it with small groups of users starting in 2016 before rolling it out to all Firefox users in mid-2017.
+
+#### Quantum Compositor
+
+Quantum Compositor moved the compositor to its own process. The biggest win here was that it made Firefox more stable. Having a separate process means that if the graphics driver crashes, it won’t crash all of Firefox. But having this separate process also makes Firefox more responsive.
+
+#### Quantum DOM
+
+Even when you split up the content windows between cores and have a separate main thread for each one, there are still a lot of tasks that main thread needs to do. And some of them are more important than others. For example, responding to a keypress is more important than running garbage collection. Quantum DOM gives us a way to prioritize these tasks. This makes Firefox more responsive. Most of this work has landed, but we still plan to take this further with something called pre-emptive scheduling.
+
+### Making best use of the hardware with fine-grained parallelism
+
+When we looked out to the future, though, we need to go further than coarse-grained parallelism.
+
+Coarse-grained parallelism makes better use of the hardware… but it doesn’t make the best use of it. When you split up these web pages across different cores, some of them don’t have work to do. So those cores will sit idle. At the same time, a new page being fired up on a new core takes just as long as it would if the CPU were single core.
+
+It would be great to be able to use all of those cores to process the new page as it’s loading. Then you could get that work done faster.
+
+But with coarse-grained parallelism, you can’t split off any of the work from one core to the other cores. There are no boundaries between the work.
+
+With fine-grained parallelism, you break up this larger task into smaller units that can then be sent to different cores. For example, if you have something like the Pinterest website, you can split up the different pinned items and send those to be processed by different cores.
+
+This doesn’t just help with latency like the coarse-grained parallelism did. It also helps with pure speed. The page loads faster because the work is split up across all the cores. And as you add more cores, your page load keeps getting faster the more cores you add.
+
+So we saw that this was the future, but it wasn’t entirely clear how to get there. Because to make this fine-grained parallelism fast, you usually need to share memory between the cores. But that gives you those data races that I talked about before.
+
+But we knew that the browser had to make this shift, so we started investing in research. We created a language that was free of these data races — Rust. Then we created a browser engine— Servo — that made full use of this fine-grained parallelism. Through that, we proved that this could work and that you could actually have fewer bugs while going faster.
+
+#### Quantum CSS (aka Stylo)
+
+With Stylo, the work of CSS style computation is fully parallelized across all of the CPU cores. Stylo uses a technique called work stealing to efficiently split up the work between the cores so that they all stay busy. With this, you get a linear speed-up. You divide the time it takes to do CSS style computation by however many cores you have.
+
+#### Quantum Render (featuring WebRender)
+
+Another part of the hardware that is highly parallelized is the GPU. It has hundreds or thousands of cores. You have to do a lot of planning to make sure these cores stay as busy as they can, though. That’s what WebRender does.
+
+WebRender will land in 2018, and will take advantage of modern GPUs. In the meantime, we’ve also attacked this problem from another angle. The Advanced Layers project modifies Firefox’s existing layer system to support batch rendering. It gives us immediate wins by optimizing Firefox’s current GPU usage patterns.
+
+#### ???
+
+We think other parts of the rendering pipeline can benefit from this kind of fine-grained parallelism, too. Over the coming months, we’ll be taking a closer look to see where else we can use these techniques.
+
+### Making sure we keep getting faster and never get slow again
+
+Beyond these major architectural changes that we knew we were going to have to make, a number of performance bugs also just slipped into the code base when we weren’t looking.
+
+So we created another part of Quantum to fix this… basically a browser performance strike force that would find these problems and mobilize teams to fix them.
+
+#### Quantum Flow
+
+The Quantum Flow team was this strike force. Rather than focusing on overall performance of a particular subsystem, they zero-ed in on some very specific, important use cases — for example, loading your social media feed — and worked across teams to figure out why it was less responsive in Firefox than other browsers.
+
+Quantum Flow brought us lots of big performance wins. Along the way, we also developed tools and processes to make it easier to find and track these types of issues.
+
+So what happens to Quantum Flow now?
+
+We’re taking this process that was so successful—identifying and focusing on one key use case at a time — and turning it into a regular part of our workflow. To do this, we’re improving our tools so we don’t need a strike force of experts to search for the issues, but instead can empower more engineers across the organization to find them.
+
+But there’s one problem with this approach. When we optimize one use case, we could deoptimize another. To prevent this, we’re adding lots of new tracking, including improvements to CI automation running performance tests, telemetry to track what users experience, and regression management inside of bugs. With this, we expect Firefox Quantum to keep getting better.
+
+### Tomorrow is just the beginning
+
+Tomorrow is a big day for us at Mozilla. We’ve been driving hard over the past year to make Firefox fast. But it’s also just the beginning.
+
+We’ll be continuously delivering new performance improvements throughout the next year. We look forward to sharing them with you!
+
+Try Firefox Quantum in Release or in Developer Edition to make sure you get the latest updates as they come out.
+
+## About Lin Clark
+
+Lin works in Advanced Development at Mozilla, with a focus on Rust and WebAssembly.
+
+## 82 comments
+
+bornjreNovember 13th, 2017 at 08:44DavidNovember 13th, 2017 at 19:09JulianNovember 14th, 2017 at 04:38anonNovember 14th, 2017 at 07:05Lin ClarkNovember 15th, 2017 at 10:40ZorgNovember 13th, 2017 at 08:55MartyNovember 13th, 2017 at 08:59JohnNovember 13th, 2017 at 17:52AdamNovember 14th, 2017 at 02:07ZoidbergNovember 14th, 2017 at 02:35HeinzelNovember 14th, 2017 at 06:40WillNovember 14th, 2017 at 08:28BeardfaceNovember 14th, 2017 at 09:58DerrickNovember 14th, 2017 at 11:08TimNovember 14th, 2017 at 16:42RayNovember 14th, 2017 at 18:28DidunaffinNovember 14th, 2017 at 21:51devxNovember 15th, 2017 at 00:02cronvelNovember 14th, 2017 at 09:40KSSNovember 13th, 2017 at 09:24Ryan S.November 13th, 2017 at 10:38JadNovember 13th, 2017 at 11:09OmarNovember 14th, 2017 at 09:57DanielNovember 13th, 2017 at 11:41Raymond RamirezNovember 13th, 2017 at 11:47aNovember 13th, 2017 at 12:19JonNovember 13th, 2017 at 15:25JamesNovember 13th, 2017 at 12:47QuantumBreakNovember 13th, 2017 at 13:19Garrett JewellNovember 13th, 2017 at 13:27Mees BoeijenNovember 13th, 2017 at 13:45Jon vNovember 13th, 2017 at 14:14Frans FaaseNovember 13th, 2017 at 14:42JurajNovember 13th, 2017 at 15:05HarryNovember 13th, 2017 at 15:21Dr. E.J. WilsonNovember 13th, 2017 at 15:25AbedNovember 13th, 2017 at 15:59MarkNovember 13th, 2017 at 17:06Steven GreenbergNovember 13th, 2017 at 17:14SeanNovember 13th, 2017 at 17:39EricNovember 13th, 2017 at 17:40jakeNovember 13th, 2017 at 18:25Milt ReynoldsNovember 13th, 2017 at 19:08Nope nope nopeNovember 13th, 2017 at 20:14\[email protected\]November 13th, 2017 at 20:29ClintonNovember 13th, 2017 at 20:29bobNovember 13th, 2017 at 20:30mattNovember 13th, 2017 at 20:54Quantum DOM already intoduced in Firefox 57?November 13th, 2017 at 20:57KonstantinNovember 13th, 2017 at 21:10dsfsdfdsfNovember 14th, 2017 at 10:24JasonNovember 13th, 2017 at 21:28Joe ContrerasNovember 13th, 2017 at 22:09Ken GradyNovember 13th, 2017 at 22:22GrzegorzNovember 14th, 2017 at 04:36WayneNovember 13th, 2017 at 22:38ChrisNovember 13th, 2017 at 23:06AlperNovember 14th, 2017 at 00:21FDominicusNovember 14th, 2017 at 00:25zoobabNovember 14th, 2017 at 01:10aimNovember 14th, 2017 at 01:43Dutra de LacerdaNovember 14th, 2017 at 02:22pushpendraNovember 14th, 2017 at 03:08GregNovember 14th, 2017 at 03:40ShazadaNovember 14th, 2017 at 03:51Pablo Gonzalez PortelaNovember 14th, 2017 at 04:32JiFishNovember 14th, 2017 at 04:47GazNovember 14th, 2017 at 05:39Kat MarsenNovember 14th, 2017 at 05:51CarlosNovember 14th, 2017 at 08:30Charley SNovember 14th, 2017 at 09:56MarkTheBikeNovember 14th, 2017 at 11:01JigarNovember 14th, 2017 at 11:17Pär AmsenNovember 14th, 2017 at 11:27ljeNovember 14th, 2017 at 12:07FatTonyNovember 14th, 2017 at 15:50DhruvaNovember 14th, 2017 at 20:53StefanNovember 15th, 2017 at 05:07Patrick SullivanNovember 15th, 2017 at 11:16Rafael EbronNovember 15th, 2017 at 11:18Big PeteNovember 16th, 2017 at 05:33Lin ClarkNovember 16th, 2017 at 05:54

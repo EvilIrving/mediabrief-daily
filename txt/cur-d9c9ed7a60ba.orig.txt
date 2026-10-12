@@ -1,0 +1,1304 @@
+What's up,
+live another wonderful Monday as we get into some stuff here we're going to be
+talking about reading code- is that a thing you should be doing? What are people
+talking about because it seems like there has been a lot of conversation on
+if you read the code and a ton of really interesting people have chimed in
+on this. I have a feeling like I'll I'll your answer a bit CJ. Yes I have
+But I have thoughts.
+Yes, what one it's kind of shocking that we are just slightly late to this, given that this is the first episode without Wes, who is kind of, uh,, is West ever late?
+I guess Wes isn't late.
+Maybe it's me.
+He's an on time guy.
+Yeah.
+Yeah.
+Maybe it's my fault.
+Sorry, folks.
+I'll take, I'll take responsibility for that.
+But what's up?
+Welcome to syntax live.
+Every single week, we get into the topics that are going on the web.
+We're getting into new libraries.
+We're getting into new projects and we're getting into what people are talking about.
+My name is Scott Delinsky and with me today is CJ Reynolds.
+What's up, CJ? Hello, not much.
+So I'm not a soccer watch or football watcher, but I did watch the Mexico versus England game.
+So are you watching the World Cup at all? Are you watching?
+I, you know what? I'm not a big soccer guy either.
+But I did watch that game and that was an exciting ass game.
+It was crazy.
+It was a spectacle.
+Like red cards, penalty kicks, it was sad, I was sad Mexico didn't win but it was an
+incredible game.
+Yeah.
+I'm the mind that soccer would be better if one, the players obviously didn't flop
+around on the ground.
+That's table stakes for me.
+There was so much.
+Yeah.
+As a hockey watcher it's like come on guys.
+You know, the hockey players will take a huck to the face, lose a bunch of teeth
+and keep playing.
+You can get up.
+really bugs me on defense when a defenseman like goes down and lays, like brother you need to be standing
+ve when a defenseman like goes down and lays down like brother you need to be standing up and helping your team. What are
+you doing? Yeah, but I also like the opposite though. So near the, near the end of the game someone got really
+hurt like rolled his ankle, dragged him off the field
+I'll make people mad about my takes on soccer, but another one for
+for me is, no off sides.
+Get rid of off sides.
+Let them cherry pick.
+Let them just kick the ball down.
+Run and score a go.
+Let's get some I think so.
+I of course I've been staying off of X, but Scott did bring this to my attention, and
+?
+way, the tweet, how much better do the models have to get before you stop reading the code?
+And that led to response from all kinds of people.
+So even just this first one here, it's crazy the amount of people that chimed in on this,
+so like David K. Piano, Schroeder says, negative 20% reading the code is meaningless
+now it always was.
+You have to verify it.
+Interesting.
+out.! Reading code, I barely even look at the folder structure now. That's Mr. Pretext himself.
+Reason ML. Gla of Glauber from TURSO for database or OS code. I will expect that never. A lot
+of us still routinely read assembly code. So Glauber is big on reading the code, which
+I mean TURSO, great product.
+And actually watched
+Every single time you update OpenClaw it breaks,
+where Hermes, they do read the code,
+and it is more curated, and Hermes needs something new.
+this is our new react. And Prime nails this here. Because before this is HTML, they'reью,
+there's just endless amount of bikes shedding on this kind of stuff that happens. So, yes,
+Devs are just going to fight about anything, reading the code, and i think that's not what
+matters.
+I think the answer just with the code has nuance and lies somewhere in the middle because
+personally, if you, if you've seen my takes on this channel, you would expect that yes I read
+the code.
+or just like test the thing itself. But when it comes to production code, when it comes to like
+into like you're not necessarily, caring about token usage or bill or efficiency or moving too fast
+something insanely large.
+So it's like, yeah, he runs a, I mean, he's built this business into a billion dollar
+company.
+Like that's crazy to me.
+So, yeah.
+No, like Kramer is one of the co-founders, former CEO of Century, who we work for as
+well.
+Yes.
+I'm not just big-upping my boss either, I'll just say that.
+No, you can see it from the proof.
+Like, I mean, we have a little more insight into this I
+because we can see all his messages in Slack
+and like we hear him from all hands,
+but like, this guy, he still is,
+even though he's not an engineer or CTO anymore,
+he's still writing code, he's still using agents,
+he's still working on workflows,
+he knows what matters, so.
+Man, we're still a bunch of stuff
+that I'm using right now.
+whether that's the DEX thing for.
+I use DEX every day, yeah.
+Yeah, for my
+Yeah, for my issue tracking and stuff.
+We also had David Fowler says,
+I see a lot of influencers talking about reading the code and building software factories but
+I don't see much discourse about what software engineering teams
+teams of the future will look the future will look like.
+Software is a multiplayer game as much as everyone can convince you that all you need is a team
+of agents.
+Yes, I agree.
+David nailed this. And I think there are some people who are working on this problem. Back when
+we were at JS Nation, there was a panel that I was a part of and afterwards a discussion room
+and a big portion of the room really lined up on the idea of pair prompting and what that
+looks like and working on agents together. And I think there's some really neat tools coming
+in this space that I'm not quite sure what I can share yet.
+But it's a little teaser for maybe future episodes
+when I can share some stuff.
+But I do think that there is some interesting work
+being done in that space.
+what does teamwork look like in this world of AI agents?
+I think that's the biggest question, because a lot of devs have, even on one individual,
+one big team, every dev is going to have their own workflow, and they haven't necessarily
+figured out how to collaborate on that, like how to share skill files or workflows.
+And like personally, like I, even though I'm on the syntax team, I'm still kind
+of a solo dev in the sense that I'm working on a lot of side projects.
+and like that's we're still not there in terms of how we work with agents so I
+think it's something to think about as well. Yeah folks if you're just joining
+us we're talking about does reading the code even matter? Twitter has been a buzz
+all a lot of like really interesting people have chimed in on this. This
+actually was one of my favorite tweets because CJ says some guy named Notch
+says how much better do the poll requests have to get before you stop
+reading the code and I said do you really not know who Notch is and he was like nope.
+Yeah I didn't. People don't know Notch created Minecraft also just Minecraft
+something that has been going on every single day in my household for the past
+billion years so not just for me my son is absolutely obsessed with Minecraft
+like many other third graders so yeah before you stop reading the poll
+Pull requests, yes, pull requests have to get better.
+That's funny.
+Yeah.
+There's one more tweet from Dex I want to highlight, and he always has the most levelheaded takes.
+He says, guys, stop trying to argue with the code doesn't matter posts, and just ask
+them if they're so ahead of the game, why aren't they richer?
+He has multiple posts like this.
+If really we don't have to read the code anymore, show me the receipts.
+Have you built a million-dollar business with this?
+Are you actually making money from it?
+Are you actually more productive?
+Because it does seem like, especially in the Twitter space, there's a lot of people just
+spinning wheels and burning tokens with not much to show for it.
+I feel like I'm crazy sometimes when I see the amount of people who, like, what are you
+actually making?
+And is anybody using it?
+No.
+You know, I mean, there's so much of that.
+Somebody, Patrick says, I don't really take this.
+This famous software engineer
+is from Zach Corman. Zach's a good follow. Zach does cybersecurity stuff. I think he's
+a real good follow. He says, I find Theo's takes on this exhausting. No one knows your
+process, your role, or the way your brain works. But you, it reminds me of all the
+people who tell me that I'd stop writing and reading code as a manager without understanding
+why I did it. Man, this is such such a for people become a manager. They they feel
+ing. I feel like, oh, now I have a team of agents to go off and do the work, and then
+they lose sight on everything where
+where, again, it's the same thing of like, you kind of have a bigger role than ever
+to be able to control things. So, Zach is a good follow, again, cybersecurity stuff,
+if you are interested in that.
+I think it also plays into reading this initial thread was the fact that, like,
+Before agents, people already didn't read the code in pull requests. If you're ever working
+on a team and you made a really big PR, you'd get multiple comments, LGTM looks good to me.
+This is an old problem. When there, spew, when there's a lot of code to review,
+it often doesn't get reviewed to begin with, and now, with the fact that we're producing code at 10x speed,
+people are already set in their ways and a lot of people are not reviewing.
+There was a post from a few months ago, it was like slow the F down, like we can produce
+code at 10X.
+But should we?
+Yeah, from Mario.
+Yeah.
+From Mario, exactly.
+Mario is actually the creator of Pi says he slows down and he reads the code.
+Now me, to give my answer to this, whether or not I read the code, it entirely depends
+on what project it is.
+Is it a project I care about?
+if it's a project I read the code if it's not
+and you know what ever just lapped together so I if entirely
+situation's dependent thing
+I completely agree
+and yeah that's where I'm at as well
+it's in the result of all linked in the comments of i can find it there was a
+blog post that I found on the news
+uh... that
+very similar to mario's post of slowing down it just talked about like if
+you actually want to be successful with agents
+you need to turn off all except
+and you need to review the changes.
+Because we're also getting into the realm of,
+like when we were writing code by hand,
+we're building up this mental model of our code base, right?
+As we code, we learn more about where this code lives,
+how it relates to the whole,
+we're kind of like building up this mental model
+as we code it, but when you let AI do everything,
+you're not building up that mental model.
+So in a sense that is moving into the realm of like-
+well, what is my job anymore?
+Like why, why am I even, even here?
+So I think you should be-, slowing down.
+I think you should turn off,
+especially on features that you care about,
+features that need to be engineered well,
+need to have good code,
+you should turn off auto accept,
+you should just slow down, take your time.
+There are some things I want to say that I don't read
+if it's something that I don't understand.
+For instance, I had an agent port,
+a shader for me the to another language
+and I don't even know,
+I don't know shader,
+I mean, I've like tried to learn 800 times
+and to write shaders myself and I'm not good at it.
+So when it worked and it was done, I said, fine, that's fine.
+That's A-OK with me.
+So I think the most exhausting answer
+and the-correct answer to this is it depends.
+If it's something you care about,
+it's absolutely worth still reading the code.
+And if the-if the question that, well, if it works,
+does it matter?
+Well, just because something works
+doesn't mean it's good.
+Lots of shit works, that's no good.
+So works a-is not the bar.
+And works has never been the bar.
+But again, Dev's gonna be arguing about stuff
+when they should be talking about what their users need
+and want.
+, definitely.
+Yes.
+OK.
+I think we can get off this one.
+CJ, let's keep it moving here.
+Syntax Live weekly every single week.
+Wes is at the cottage, probably just hanging on a dock.
+Actually, I think he might be in New York.
+He's doing something with his family.
+So he's not here today.
+He's on vacation as C.J. What else you got for us today?
+I have for you something very exciting. It is a a brand new HTTP method.
+So if you're not familiar, the HTT, the
+like get post put delete. Give me some other one, Scott.
+I only use git and post.
+Those are the only two because the other ones just kind of are there and I never even consider
+them..
+I don't know why.
+They exist and the things they've existed for a very long time so the idea that there would be of a new HTTP
+method is interesting. Francine is currently a proposed standard and
+has actually implemented this in their server side HTTP module.
+So if you're implementing a server, you could actually listen for it.
+So it's called query.
+So now, in the long list of methods, you
+So now in the long list of methods, you've got gip, put, post, patch, delete, and now query would be a new one, but the idea is sometimes you request that you're cramming data into the query string because you want it to be a get request.
+So in the example here in the introduction,, the common query pattern is like a SID, which, the query string and then a bunch of query parameters like
+q equals,?, limit equals 10, sort equals minus published.
+And this is essentially how you craft a request that has some data inside of it.
+Basically the data is in the URL and then the server can act on that data.
+This is and could be a, I think the right term is idempotent, id.mp
+Basically, it's a request that doesn't modify anything on the server side.
+It's just a request for data, the server returns something.
+And we do this a lot, and the reason we do this is because the get method does not
+officially support putting data inside of the body of the request.
+So typically, if you a have some more complex data that you want to send, but you still
+have an idempotent request, you would use a post request.
+And we actually see this in GraphQL I think it's a
+slash query.
+It's always a post request and then it has a big massive payload of all the things you're
+requesting or reading.
+But that's the reason they use a post request is because they need more than just the
+URL state.
+They need actual data in the body.
+And so HTTP HTTP query is here to solve that.
+Essentially it's an HTTP get, but it can have a body.
+So, so you can put those query params in the body as like
+form URL encoded coded params, or you could have JSON inside of
+the body, you can set the content type to whatever you want.
+But the idea is this will still be classified as an
+idempotent-int request.
+Like it doesn't modify anything on the server, it's
+really just requesting data.
+I have this other blog post that shows some more
+concrete examples.
+So yeah, in practice, essentially like GraphQL would
+be one of the things that could adopt this.
+So instead of a post to slash API slash GraphQL, they do a query and then that query includes
+the GraphQL query in the body.
+Similarly, like they show an example here where instead of using a form URL encoded body,
+they actually use a JSON body.
+So you have a query request to an endpoint, include JSON version of the query string,
+and get more readable because because you can have like array types inside of there typically like
+with query string string you'll have like multiple of the same query parameter so query it's coming
+it-it's exciting and like I said it's only supported in Node.js HTTP module so far but the idea with
+an RFC is it's a request for comments so implementers of browsers and everyone else can kind of
+of chime in to decide, should this thing
+exist, should we change the spec a little bit?
+And eventually, this will make it across the web.,
+it's going to take.
+But eventually, if everyone buys it from the web,
+and you'll be able to use Query instead of Post or Git.
+Interesting.
+Yeah.
+Yeah.
+I mean, this is the type of thing where I think,
+and what it's just going to do for us,
+devs on a daily basis.
+it's neat and it feels modern, it feels nice, I don't really have too much other than it's
+is interesting.
+But yeah
+I have some comments from Hacker I can show, because I think that the main take that I think
+think a lot of people have is just get using get with a bodywork so this is one one take
+that's like you may not know this actually can.
+Put
+a body inside of a get request the, the issue
+is not every htp server can handle that not every client can do that and so that that's the whole idea is like you're not supposed to use get with the body it
+it's a hack.
+So having an explicit method makes sense.
+Yeah, and their commentaries just because it works doesn't mean it's the right way
+but I think that's the the general idea is most people be like why do I even care
+why couldn't I why don't we just use post-credit but I think having something
+explicit for some thing we do all the time is the reason why stuff like this
+exist so yeah and honestly as being additive you know it's not some
+game break it's not destroy anything it's just additive you can use it but
+Yeah, exactly. Yeah. So Scott, what do you got for us next? Yeah, I got something very fun in terms of a very fun where the internet decided it was going to be giant babies for one day
+GitHub they decided to have a fun little promotion. Just because the Sony PlayStation announced that they are going
+Disgless I had to make sure I focused really hard when I was saying that we're just now dis. Disgless
+and that they,
+What in the world? Why would we ever want that? What? Why don't you fix your infrastructure?
+As if the marketing team at Github,
+a couple of people, are the ones going to be single-handedly fixing your infrastructure.
+Like, let's re-divert that energy and money, like this is costing any kind of money that would
+would then cause GitHub to somehow not be able to fix their infrastructure.
+It is crazy.
+And I had people arguing with me left and right about this thing.
+It's like, brother, like people are just in such a ding grumpy complain about anything
+that like I cannot comprehend being mad at this.
+, like you gotta think of the timing and the optics and
+I did that those two takes like fine i can understand the optics of it that get
+hit that has had the best up time lately
+but the people who are saying
+like it's diverting for structure structure or this is why github is down all the time
+you people are so out to lunch
+go through my, oh my gosh, yeah let's find this, let's find this, because this is my
+content, yes, this guy here, you YouTubers are so out of this world that you can't understand
+the importance or ways to deliver a better product by all means.
+You got numb to people's real problems, the performative marketing is the only thing
+you see and create theater people YouTube people influencers brother I'm not a theater person
+what do you think I I spend my whole career as a developer building and you're gonna say that all
+I understand is performative marketing because I understand that the three people at GitHub that
+that it takes to produce a promotion like this
+absolutely influence...
+zero percent,
+zero big old zero.
+So you're on my...
+You're on my list.
+Nice.
+Yes. And
+I will say it's got for...
+I saw it's
+like blog posts and stuff.
+So I clicked the link and I signed up.
+And it sounded cool.
+It's like, let's get the syntax repo on a CD.
+That'd be really cool.
+So I was not there for all the discourse
+but people always find something to find something to play about.
+I could see it.
+But you have to understand just like, and also, I'm not backing big big big
+corpo here, but you have to understand the nuances of a large
+big corporations.
+There are so many internal organizations, so many things happening, I don't
+think the marketing team talked to the infrastructure team to be like, hey, do you think people
+would be mad if we released repos on a CD? Nobody would even care to have that cross
+organization communication. So I don't know. I think it's a, it's a cool idea. Like physical
+media is back too. I think the marketing team was on the right track, but it's potentially
+maybe the tweet itself. Like one of the chats just said, I'm just a bit confused
+We heard you, we agree, which is the first and first tweet, which maybe people didn't
+necessarily say they wanted GitHub on a CD, but they're trying to tie in to all the news
+about PlayStation and no more physical media.
+Yeah, it's a direct call to the PlayStation stuff, which had blown up, and they assumed
+that everybody would know that because that makes sense, because it was all over the
+place.
+Exactly.
+folks were doing the same meme. This had been memed several times so they weren't
+the first ones to respond to this and do something like this, even other tech companies had made
+jokes about giving you stuff on or tape- or anything like that. So, I thought they expected
+people to understand that and not make a joke about their uptime. I do want to shout out,
+Franky, for the, I, I understand the optics for a CD-ROM is on point. Yes, Franky, absolutely.
+Optics, CD-ROMs, my God, dude, dude, I just thought this was too ridiculous. It's like,
+GitHub is always known for doing fun and funny stuff like this. That's like,
+always been part of their brand. The OctoCat, even as itself, is a fun and fun. I'm sorry,
+that you are immune to fun and you don't get the joke, but I just don't get, I don't
+get grumpy about this. I'm grumpy about getting grumpy. I'll say that.
+Yeah, but I did see that because you were backing up a large corporation,
+they did say one of the tweets said they were going to give you two CDs, Scott.
+So I think that's good for you as a well. I don't know if there's a person in
+charge of it, but they're like, you get two.
+Do you know who that is?
+Only the first 1000 people to sign up were able to get one.
+and I don't know how many sign ups they actually accepted.
+They're funny thing about all of this is literally only a thousand people are going to get a CD.
+But the up, or triggered like tens of thousands of people it seemed like so.
+Yeah, the first 1000 it maybe seems like the first 99zin 98 because I'm getting to that's right.
+And yeah, exactly.
+Yes.
+Okay.
+Alright, that's all I got here. Just a little grump list.
+A little rant? Scott's thoughts? Nice.
+Let's keep moving. So if you're just joining us, this is Syntax Week.
+It will tell you exactly what went wrong.
+You can see a stack trace from the front end to the back end.
+, it also has profiling so you can nail down like slow database queries.
+We use it on the syntax I, I
+This work is called G. It's spelled G-E-A.
+How would you say that?
+G-E-G-E-A?
+G-E-G-E
+I'm going to go with G-E-E-G-E-A.
+reactivity for free. Now, I saw this a few weeks ago, but didn't pay too much attention
+to it. But it got on the front page of Hacker News. I started looking into it. It looks
+very interesting. It says they're the compiler-first UI framework that turns ordinary classes
+and functions into surgical DOM updates. No virtual DOM, no hooks, no signals, just
+your code wired at build time. And you know what this tagline sounds like?
+It's like what Svelte tried to do.
+And so like looking through the docs and like looking at their examples, it very much seems
+like Gia is kind of like a middle ground between solid react because even solid JS tries to do
+a similar thing that Svelte is like compile ahead of time.
+But you can look at their charts and they show you that a simple hello world of Gia is
+only 214 bytes, whereas the hello world is 10,000 bytes, Svelte is 23,000 bytes.
+So they're really trying to harp on the idea of, like, we have a really optimized compiler
+that only ships what's needed, no extra stuff, because I think even Svelte now ships like
+a tiny runtime for, like, reactive variables using proxies, and there's a little bit
+of runtime code, but in this case, Gia is thousands of bytes smaller than what you would
+ship with Svelte. And they also have a chart that's not just a hello world, like a to-do
+app, because that's where the real stuff comes in. But this also shows that it's a lot smaller.
+So Gia with minified JS is 15,000 bytes, solid is 16,000 bytes, and Svelte is 38,000
+bytes. And so that's what I saw as interesting슷 to me is, like, you can see how close
+it is to solid and I'll show you the code and talk about the code in a second because it uses jsx
+But this was kind of the idea behind solid as well like write code that looks a little bit like react
+But a lot of it's going to get stripped away. There's no virtual DOM. It uses signals
+so
+It's very interesting
+Any thoughts so far scott
+my thoughts are a little bit of
+I hate the the the text treatment on this website. I'm sorry gfx
+Yeah, it makes it very difficult for me to read this page.
+Now, I think it's cool.
+I like this obviously because I like Svelte,
+but in the same regard,
+I don't think this is moving the needle enough for me.
+That said, when I looked at the code,
+I did like the way that it looked
+and it felt very organized
+in the way that I like to write code.
+I don't really love JSX.
+So for me, that's a bummer.
+But how they handle stores just being classes,
+how they handle components just being classes,
+I like all that.
+And the fact that you're really shipping nothing,
+that's all good.
+Do I see this going anywhere?
+I don't know, but I do think it's a good,
+a cool thing to try.
+And I'm down for people trying this kind of stuff.
+One thing I saw was interesting was there was a,
+we're all just gonna be saying this differently.
+I guess GUI, which is based on Zag.js,
+which I didn't know about anything like that.
+So one thing I got to love
+is a framework taking UI components seriously.
+And that Zag.js, which I'd never heard of before
+we, you showed me this,
+is a UI components powered by finite state machines.
+So it's a state, machine-based UI components library.
+Now granted, when I went to look at Zag,
+I didn't really like how the components looked.
+This felt used like use language the language from React.
+It used writable stores instead of hooks, or not hooks,
+runes.
+framework
+took UI components as being an actual part of the framework.
+I love it because that's one of
+the things' that I don't like about the React ecosystem is there's just so much
+choice around it. You could say that nowadays people have kind of settled on
+So they have things like a button component,
+a bit of a card component, the Brotli versus G.
+Brotli being compression algorithm, browser.
+And I think what that's saying on their website,
+is saying that here is the size of Gia pre-B
+Here is the size of of Gia pre-Brotly, here is the size of Gia without
+Here is how much compression improves Gia.
+That's how I read it as well.
+I think one of the aspects is it's also potentially more compressible for whatever reason.
+I would. I would read this third column as Gia with
+Brotly is 30 times smaller than solid and it's 70 times
+smaller than spelled. That's what I'm thinking as well. Yes. Yeah.
+It's a little confusing because the column title says Brotly versus
+But I think they mean comparing brought lead GS size.
+Two-given framework size.
+I guess.
+Yeah.
+Yeah.
+Let's talk about the code though because that's the thing that a lot of people care about and I will say like this is one of the other things that I like about it as well.
+I've been
+a very silly model and solid this where essentially you write your solid component, it runs once
+and then you have effects that can potentially run later.
+But you don't have this whole idea of this component runs over and over again.
+And Gia does that as well.
+So they don't run over and over again.
+And the idea is if you're going to build a component that needs internal state.
+You actually use a class component.
+So it kind of goes back to like the old react way of class extends component. and
+And then instead of a render function, you have a template function.
+But what that means is you can have class methods.
+So you can
+like what order does it get called in?
+Where does it live?
+that kind of thing.
+So you essentially, if you want a component that has state
+you have to create a class that extends a component
+but they also support functional components
+purely for presentational UI.
+So a functional component슷ly like a function component
+wouldn't react except there are no hooks.
+You can't, in any use effects,
+you can't have any variables or states inside of here.
+It's purely presentational.
+And so I like that split where like
+if you want interactivity,
+if you want state
+you have to put it into a class component and then you have to create method on it.
+So I'm a big fan of that.
+They have an example, like there's a doc on their site called React versus GIA.
+I would say take a look at that if you're a React developer to kind of see
+the differences.
+But there's a to-do app here in React and this is kind of what I'm talking about.
+Everything is defined above the return.
+You've got your use state, you've got your methods.
+contrast that with GIA,
+stuff, like it being very CSS variable focused is great.
+they're having some nice little examples inside of here.
+It's interesting.
+And I'm happy that someone's taking an approach like this.
+So I think it's fascinating.
+Am I going to reach for it?
+I mean, I'm so firmly my tooling and everything is so firmly embedded in the
+felt world that it's like, I'm gonna have a hard time using anything else at this point,
+but it's still cool. I think it's cool. And I think this is
+is the type of lesson I think other frameworks should pick up or people are looking for
+something to build in an ecosystem could think of like, all right, what is stuff like this
+doing that framework is either, either missing or
+, I would like to have an a bundt up all nice kind of way.
+I think it's cool, yeah.
+I think just having people thinking about how to do this.
+Better is great because, because this is another argument I have about, we've kind of stagnated.
+There's not a lot of innovation, AI is just being out the same old react.
+And so in a sense that kind of feels like we're stuck, even if something like this
+comes along and it does it better, it doesn't matter because it doesn't have the critical
+mass and AI is just going to poop out like bad react code with a bunch for use states and use
+effects in it. But something better might come along. I like that people are at least
+taking the time to think about it. And I do, I like the mental model here. I think going
+Class components is a good play, especially for being able to structure your code in
+this way.
+I, I like it.
+Word.
+Yes.
+Cool.
+Well, let's keep it moving, folks.
+Syntax Weekly, we're bringing to you all the cool stuff.
+I wanted to talk a little bit about F
+Fable.
+Let me even just show this.
+Last week, we got Fable, we got Fable, and we received notice that the Department of Commerce has lifted export controls
+on Fable, Five, and Mythos Five, restoring access. And then again, it took towards the
+end of that day, I know this because I was checking, and Fable was restored. And I gotta,
+say, I have used-used all of them, credits, as of this morning. So I'm officially booted
+from Fable because that takes me up until past the deadline at, which they will be
+removing it, which I believe is the seventh, so tomorrow, even though my usage limit said
+it would reset Thursday.
+Either
+longer, I no longer have access to fable.
+I burned to all my fable credits.
+I'm here to tell you that on a vibes level, it's definitely the best model that I've
+used.
+It's done a whole lot of stuff.
+And one thing that I really liked was the ability for it to, to execute it.
+But again, one thing that I have not used it on CJ is I have not used it on any projects
+where I actually care about슷ing code.
+I have been using on my vibe coding slot vest stuff and I had to go back and forth with
+it less.
+It was able to do more complex things and it did so better and with less hand holding.
+So again, as somebody who feels like I have used everything that has come out, I think
+the hype around fable was real. In fact, I, I can even show you some of the stuff it built
+for me. Yeah, it. So papers made made shaders. I think it was paper shaders. They released
+open source shaders. It one thing that it did for me, where is the water water effect,
+one thing that it did for me was port it to my WebGL project here. And actually,
+This is not, it's WebGPU
+every single one of these examples can be done in JSON.
+So these all exist as JSON.
+And they all have various different things.
+And it one--shotted to me,
+, which this one actually I've twe
+and turn it
+and then have several different themes for it or or
+whatever. But it one-shotted the ability to translate this application into
+mermaid diagrams and have them look nice.
+Again, opus to me or opus,
+cloud models to me remain goaded on having a
+just a better aesthetic barometer.
+But it did quite a bit of restructuring
+this large repo, which this repo very large,
+very interesting and it did a lot to take every single
+thing that I had working as just animations
+and turn it into something that could be manipulated
+by the UI, something that allowed for keyframes.
+Oh yeah, built a whole keyframing system for me.
+And these demos right now CJ,
+, I will say these demos
+are just kind of like tossed together demos to have a demo.
+Let me do, let me do for keyframes.
+I mourn the loss
+basically streaming server of music. And I was planning out that project and
+I thought it would be to use all of these four models to plan that project.
+Essentially, I have a folder
+of artists, albums, files. I needed to scan that and then also sync with
+MusicBrain's API to show me metadata about the actual albums and everything.
+So I wrote a big prompt. Copy pasted it into all three.
+one aspect of this is Kimmy K2.7 is is now available in GitHub co-pilot so I was able to test with that
+but I basically pasted
+and GPT 5.5 were used for building it.
+But I will say, you see this bar graph here for Fable,
+that's how much usage it took to do the same amount
+of planning.
+Now I will say the one piece of it that made it feel better
+was a, it went really deep.
+So that were generated by GPT 5.5, Opus 4.8
+and Kimmy 2.7.
+It basically took the prompt that I wrote,
+maybe did a few documentation lookups
+and it was like,
+the plan that I'm going to present to you. But Fable just went, just started researching.
+It was like, okay, this is what you want to build. But I see you also want to talk to
+the Amazon API. And so it started reverse engineering the Amazon music API. And like
+it was just tool call after tool call. So it definitely is more agentic. Basically
+the way that they've trained it is it will try and try and try more before it's done.
+And so that's really the only thing that I could see before I completely ran out of
+usage credits on GitHub Copilot. But I will compare the four models, that was the main
+difference. It prompt and also rolled with it. It basically did things that I had to later
+prompt the other models for, but it just went ahead and started doing it. I could supers.
+I could see myself planning with Fable 5 and then maybe implementing with GPT-5, RAR, Opus
+4.8. But yeah, that was my experience with it. And like I said, I ran completely
+out of credits. If we're talking about AI usage, I actually found that it's cheaper
+cost-wise to pay $100 a month for Codex, which gives you access to GPT 5.5 because I've been
+running some agentic flows building out that music app over the weekend, and it barely
+touches that usage usage for Codex. Whereas, I was able to code for maybe two hours,
+and then it completely ate through all the usage of my GitHub co-pilot.
+Yeah, co-pilot man that you see even without even without using cable is not
+that much so that's not that surprising I I do like I said I yeah I agree with you
+I think it doesn't really good job of having a wide view of projects just likeur said it does in I experience it's I does way better when
+you have a big project and you want to plan and make big changes across that
+project project and I feel like when I asked it to do something that was more likely to
+affect many things other than one localized spot, I found it personally to be much more
+reliable in the end result. So
+So, the next big news on the clock is that Sol is going to have ultraversion available
+in the Codex, in your Codex app.
+So, Sol, the latest, biggest model from OpenAI
+that is not yet released, will be available
+in its most juiced up form, its most roided out form
+in the Codex subscription.
+So for, for me, I'm kind, I'm kind of stoked about that
+because what is it?
+GPT-5 Pro isn't available
+and I like to use the biggest, baddest model
+at any given point to do some testing.
+So, I'm going to be excited to see whenever
+And Luna, yes, I believe Luna being the smallest.
+Yes, Terra Earth.
+Yes, got it.
+I see, I see.
+That makes sense then.
+And I've, like you mentioned earlier,
+I do prefer the anthropic cloud models,
+but now when it's coming down to token usage and pricing,
+it's like I'm settling for GBTB,
+because it's like I don't want to pay
+for the cloud usage tax.
+So it'll be nice to see 5.6,
+to see is it on par with Opus?
+But again, it also the vibes of Opus output is just so much, it's like I can't describe
+it because it's just vibes versus the output of GPT55.
+Like GPT55 feels rigid, it feels less creative.
+Feels exact and that can be good, but it also feels like it wants to write his record
+over and over again and have one function call another function that calls another
+function that calls another function that eventually does the work. That's the reason
+why I have a hard time with 5.5 because. Because to me, I feel like I have to I have to babysit
+it's results more, but maybe that's just the tools and how that I have mine set up. The
+thing I do love about GPT models is that I can use them in my dearest open code and
+I do like my open code set up significantly more than I like Claude code. So for me,
+I will be stoked to try it out because I do right now I use GPT 5.5 for some things and I use
+like for instance
+My robot
+I find the robot programming to be way better with GPT 5.5
+And I don't know if it's because there's a lot of python involved or what but I just have not found claude to do a good job at this
+-dang thing so
+Yeah, I use them both
+I think they're different
+And I think that's kind of what you got to do.
+That's why I like having a co-pilot subscription
+is because I can try both the open AI and anthropic models.
+But like I said, now I'm kind of leaning
+into just the Codex models specifically
+because I can use it with open code.
+And that's where I've figured out all my agentic flows
+is with open code.
+And you can't use Cloud Code with it.
+You have to use an API key.
+Yeah.
+Yeah.
+Do we want to do a robot update?
+somebody said my robot looks good.
+Yeah, let's talk about it.
+You can tell I've been using GPT for this design.
+This is a GPTS design right here.
+And I've built this whole thing where you
+I've built this whole thing where you can, let's see if I can make him dance it.
+Let's see if this actually works, is he not recovered?
+Every single time I show, I show the stream it doesn't work.
+It's my fault here, oh there he goes.
+Oh wow, he's moving his head.
+Yes, he's moving his head.
+You have emotes, this is the curious emotes.
+This is the curious emotes, yes.
+Yes, ooh, displeased, I wonder what displeased looks like.
+Either way, this is the Richie Mini,
+built by Paulin and Huggingface, we talked about him before.
+And inside of him is is Wi-Fi and a camera
+and a speaker and all kinds of stuff.
+And I built in, like, wake listening
+so you can say, hey Marshmallow, and he'll respond to you.
+, you can do start conversation.
+Hey Marshmallow, how are you?
+Oh, well, I found the timing to be the hardest part
+about this, because you're trying to do,
+gosh darn it, every single time.
+Every single time, folks.
+Like it works perfectly fine.
+Hey Marshmallow, it's up.
+You thinking now?
+Oh, there we go.
+Yeah, up and ready.
+Yes, Marshmallow.
+Yes, that's so great.
+We're so happy you're up and running.
+I gotta fix this timing.
+Got it, Reiki Marshmallow, yes.
+Yes, got it, Reiki Marshmallow, yes.
+Okay, we're gonna stop the conversation.
+Marshmallow is up and running, folks,
+and man, this has been a fun project,
+but I gotta say the-
+Up and running, folks.
+Yes, you are.
+You are up and running.
+It's been very fun to work on a project,
+Back and... back and forth with like this type of thing... thing has been tough because it's like, all right, how do you debug the latency between how fast the response? I, I'm using GPT, something mini, I think, I think 5.5 mini even, but it's only whatever is available in Hermes.
+This bad boy is hooked up to Hermes.
+That means he's got a memory system,
+he's got access to a whole bunch of tools
+that does blow up the context a little bit.
+It is going to increase the latency.
+And as a fun little thing for my kids,
+So reaching many folks, this is a cool project.
+You have to build it though.
+And then, again, it like, you have to build it.
+There's no internal things.
+So it has to be connected to.
+Wi-Fi to a computer to run the daemon.
+But yeah, that's a robot update.
+The robot update.
+Yes, getting a little bit better every single day.
+Another thing I want to talk about was junior.
+I have long been a hater of Slack and
+agents and I checked out Junior just
+because this is another Kramer project
+over at Sentry.
+This is from Sentry Labs,
+junior.sent, dot dev.
+And I definitely have never been one to
+really want any kind of agent system
+inside and then I talked to DAX.
+And when we interviewed DAX,
+he mentioned that their team,
+the way they collaborate talking to agents.
+And I thought it was really interesting.
+And I have connected this thing to a YouTube analytics so we can ask you questions about
+YouTube.
+And I said, Tasty, find her every Monday for any upcoming holidays in
+in the Netherlands, Canada, and the US.
+And Tasty's just like, no problem, we remind you
+on Monday, based on our own company's internal stuff.
+Yeah, and so we're actually working on a, a holiday, you're all welcome
+for that.
+But so does it also on like modify its own code?
+So when it said, yes, I will do that,
+did it create a
+And because they have all these plugins already here,
+it was pretty trivial to get this up and running.
+, but I gotta say I'm kind of into the idea
+of having agents in Slack on your work team.
+Yeah, I mean
+it created a PR for the syntax repo that was really nice and simple and it did so for first try gave you a preview URL
+a preview URL, check and like yes, that's not that
+much different than using an agent.
+But like as a team we could talk about it in chat and
+somebody could say, oh, I wonder we should do this.
+And just right there be like, hey, Tasty, go and do it.
+And Tasty's like, no problem.
+Yeah.
+I like it.
+I like the just the, the greats with all these things.
+Cause so many times we're jumping between services
+because we use one thing for our email scheduling.
+We a published videos to YouTube, we want to also see
+podcast analytics.
+For task tracking, we use notion for documents like all of the things we use to work as a team are spread across all these places
+And so what an agent is really good at is getting like API access to all of these things and then kind of mashing them together
+I really like that aspect of it. I will say I hate linear or notions. Yeah
+I'm very security-minded, so the fact that we've given this bot access to all of these
+things, I want to figure out how to break it.
+I probably shouldn't have said anything because I want to make a video about it.
+But ...
+CJ, you're fired.
+If you do that, you're fired.
+Don't change your prompts.
+No, because the whole thing is like, I'm going to break it, but also make a PR that
+will fix it.
+Because when you give an agent access to lots of systems like this, like if it
+It has write access to certain things.
+It could potentially be prompt injected.
+Like right now I already looked at it.
+It only has read access to YouTube.
+It has read access to YouTube analytics and YouTube information.
+But if it had write access, there could potentially be a prompt injection in one of the comments
+left on a YouTube video.
+So somebody could prompt inject.
+Yeah.
+If it had write access.
+If it had write access and it doesn't.
+So that's a good security posture, at least amount of access as possible was possible.
+But I will say this is also why I'm hesitant to make my own personal AI agent.
+I haven't gotten in the world of Hermes or Clodbot or whatever it's called now because of all this
+potential for injections or expiltration of data.
+Yeah.
+Yeah.
+I know for me it's all about what it can read and what it can access.
+I think there was definitely threats and whatever,
+but if I'm not having it just automatically read
+all my email or letting other people essentially get access
+to things that it can read, yeah, sure,
+you could prompt inject it by visiting a site
+or something like that, but I think Hermes is doing
+a good job of being very cautious and cognizant
+of all that stuff.
+Again, I think it's all about how much you want
+to give it access to.
+Yeah, the junior stuff is interesting,
+And again, I thought, I even, I think I even said,
+I will never want to code from Slack.
+I think I said that directly on this show.
+And this Friday, or even today,
+I coded from Slack on with Tasty.
+And I feel, I feel okay about it.
+That's crazy, yeah.
+Yeah, I mean, especially like getting back
+to the first thing we talked about in this video,
+that like, if it opens a PR and we're happy with it,
+Great, that was literally a time saver,
+because otherwise we would have had to spin up an agent
+locally or like directly open a PR.
+So the fact that Junior has access to our repos
+has access to the history in our Slack channel.
+So like you can basically have a discussion
+about what new feature you want or what thing is missing.
+Junior has all of that context
+and then it can go off and start building.
+So yeah, I like it.
+Yeah, I will say it will be really cool
+for like producer Randy.
+Sometimes we get into a situation
+where the site's not building and the site won't build
+because maybe there's a syntax error
+in a markdown file or something.
+And now Randy can just say,
+because it has access to the Vercel logs,
+you can just say, hey, why did the latest build break?
+Can you fix it?
+And then it can go and create that PR directly there.
+And now CJ doesn't have to stop doing what he's doing
+to go and fix it.
+So that's awesome.
+This is the exact type of workflow we were promised
+when AI was super hyped up
+because that literally is something that I used to do.
+like Randy would be like, hey, the PR won't merge.
+There's a failure, a syntax error, if you will.
+Yes.
+And then I would go in and be like, oh, it's this.
+We can ignore it, or oh, I just pushed a fix.
+But those are like little one-off things
+that I actually would trust an agent to do
+because a lot of times it is a one-line fix
+or it is just a simple look at some Bercel logs.
+So this is the future we were promised.
+Yes, cool.
+Folks, we are Syntax Live.
+We're talking about all the new things on the web here.
+CJ, do you have something else for us today?
+I've got several things.
+Wow.
+The first thing is,
+good news.
+So this was a tweet from
+Colen Hacks.
+The creator of Zod�
+but they show that in all of
+the tools you use in the
+J.S.
+E.C.
+System.
+The dependencies.
+Whether it's in P.M.
+P.M.
+P.M.
+P.M.
+P.M.
+P.M.
+say, install, let's say you do
+code would of even tried to install
+send to install or update to that version because it a-
+basically waits a certain number of days or hours after a certain release has been out in the wild.
+And so this is one thing that your teams should adopt to prevent the spread of supply chain and attacks.
+So that's one thing.
+Only you can prevent the spread of supply chain attacks.
+Giant worms.
+Throw this in your config.
+And so that's one piece of good news but I'm actually linking this up with a
+linking this up with a POST form GitHub, where in the title is NPM adds preventative account
+protection for high impact accounts.
+So the idea is, if you are the owner of
+of a package on NPM that gets millions of downloads.
+I, I don't know the exact classification of high impact account is, but basically just
+think some of the most downloaded packages on NPM. the NPM.
+and if the. The running those packages uses one of their two factor authentication recovery codes that you write down on paper.
+When you first sign up to a, not the ones generated by your authenticator app.
+And the, the idea is if you're using a recovery lost access to your authenticator app.
+So, if you change your email.
+And again, this is to help prevent the spread of supply chain attacks because a lot of times
+people lose access to their account accounts in this way, whether they were phished or maybe
+they got
+And this will now prevent whoever potentially got at things from publishing malicious
+packages. Now, it's a little bit of an in for the person, because let's say you legitimately want to change your email.
+Now you just have to plan for that and know that for the next 72 hours you won't be able to publish new versions.
+So another good win for the world of NPM and preventing supply chain attacks.
+I think these are some much needed things. We've been waiting for what is Microsoft going to do, what is NPM going to do,
+to do, and I think this is a good step in the right direction.
+This is a good step.
+I just wish everybody would have adopted the.
+The same stinking property name for this.
+Come on.
+Yeah, so for our podcast listeners, for NPM, it's min-release-h.
+For PNPM 10, it's minimum-release-h.
+For PNPM 11, it's minimum-release-h in a camel case or Pascal case.
+And then bun is also Pascal case.
+And then npm minimal age gate in Pascal case.
+So they're all different properties for doing the same thing.
+Yeah.
+Yes, I love it.
+Yeah.
+All right.
+What, what else
+do you got CJ?
+Yes.
+This is a quick one, but Chrome has introduced the user media HTML element.
+So if you're not familiar, if you're writing a JavaScript app and you want to get access
+to the user's camera, or microphone, or a get user media, but this will allow us to
+request access to a user's webcam or microphone with simply having an HTML element. It's just
+the user media element. It's very similar to the geolocation element that got added.
+But essentially, you can슷 this to your page, and instead of having to call JavaScript
+to request access to the user's camera or microphone, you can just use the HTML element
+itself. And so, this is much less, I guess, intrusive. And there's also, they talk about
+it in this article, but a lot of times that API user media is a little bit buggy, right?
+You might land on a website and say, no, block this request. But then it's because
+it expected you to have access to it. With this element is that there also be like
+a more centralized way of managing that access on the page, so your scripts are less likely
+to error out if it doesn't have access. It's easier to like,
+retrigger that request for access if needed. So, it's pretty cool. Had you seen this, Scott?
+I had not seen this. And this is something that I feel like, yeah, it makes perfect
+sense. Why don't we have this? So, I'll make a user-media element all day. Yes, absolutely.
+And right now, this only exists in Chrome.
+I don
+I don't even know if it's in Canary or which one, but basically this is how new features get shipped to the
+web.
+It's going to be tested out in Chrome and other browsers will potentially adopt it once they settle on the
+API and behavior.
+It's a fun one.
+Another fun one.
+Another fun one.
+User media is fun stuff to play with, it's a big fan.
+I've been working on my screen recorder app for a long time, so I've been deep into that
+world.
+and basically let's you record camera microphone to separate files, but you're using Electron,
+is that accurate or?
+I am using a Electron, yes, and you can record cameras, mics, you can record and record infinite
+amount of, maybe not infinite amount of sources, but as many sources as you want, it'll
+kick them out of separate files.
+And then also, there's like a, I added a simple mode recently where you can just
+to have it all wrapped up into one file automatically for you if you want.
+Just because I need that sometimes.
+Nice.
+I'll call what else you.
+Yes, I have two things related to cloud code.
+Yeah.
+And I use cloud.
+Cloud code at work.
+I don't use it for personal stuff.
+Interesting.
+But this was this was a bug that was filed five days ago.
+And it says there was no response after 60 seconds continued without an answer.
+So if you're not familiar, Claude has the ability,
+a lot of these other coding, coding agent
+have the ability as well to ask you a question,
+to get clarification
+clarification on something.
+. So maybe you're writing a plan.
+It'll ask you, oh, do you want to use this versus that? eject
+or how do we want to approach it this way or that way?
+And you can answer that question with a prompt
+or by choosing, from multiple choice.
+But the Claude team secretly added this feature
+, where if the- the user does not answer within 60 seconds, it just automatically chooses an answer and and keeps going. Wow, the recommended one. Yeah, well, yeah, it chooses like this answer, but here are some other options. It will choose the recommended option or whichever option it thought, and just keep on coding. There's a, a massive thread on GitHub that filed this as a bug that was like, this should not be on by default. I agree with that.
+Yeah nouve my terminal focused when it's cooking on something I just let it go and then
+a notification pops up, I'm going to go take a look at that in a second when I'm done
+with whatever else I'm working on.
+I would never want it to just keep on coding if I don't respond for
+in more.
+And finally, it's off by default, I do believe.
+All they had to do
+was prompt their model to fix it.
+And if nobody takes a look at it, it will fix itself, right?
+That's the feature.
+Exactly
+the fact that Anthropic owns the harness, right?
+They own Clawed Code.
+They can, as a sense, auto-continue after 60 seconds
+makes them more money because it just starts consuming tokens.
+You would expect that I mean and this also gets into what we were talking about at the beginning of the video. If like if you don't in the
+when you hide information in something.
+Typically you see it with images.
+So like, steganography can like hide a message
+inside of an image or I of something like that.
+But they used that word to say that the way that
+clod code, the CLI is writing its prompts is allowing them
+them to do certain thingsותר the backend.
+And they basically reverse engineered the clod code
+locally, but the idea is when you send a prompt
+with clod code, it has a piece of text at the top and
+says, today's date is year-month-day.
+And that's the standard format.
+But there is some code that will detect,
+like if you're running Cloud Code from the Asia Shanghai
+time zone or the Asia, you're in key
+you're in QI, you're in QI, you're in QI, you're in QI.
+I don't know where that is, is that like Russia or I don't know?
+I'm going to go ahead and say I do not know, yeah I'll look it up, I'll let that run in the background.
+Oh, it's Northwestern China, so they're actually just two different Chinese time zones.
+So basically, if it detects that you're in either of these two Chinese time zones, it
+changes the prompt to have slashes instead of dashes, and then it changes the apostrophe
+to use a different Unicode value instead.
+So if you were working on code in China, and you were even, let's say you were just
+watching the request that Cloud Code was making, you would kind of have no idea
+just fingerprinted you as someone using cloud code in China.
+The way it fingerprints is it uses a different apostrophe character
+character and uses slashes instead of dashes.
+The other thing is.
+prompting Claude, saving the responses and then using that as training for their own models.
+So it detects where you're running from in terms of your domain. And there's a whole list of like
+deep seek, moonshot, mini max, and all of that is passed in the prompt as well. So
+the Claude code harness that you're using locally is able to do this like auto accept your code
+after 60 seconds if you don't respond, or let, let their API know on the back end that
+you're running this code from a part of the world or from a specific company, which is
+fascinating. I mean,
+Shout out to Mitchell Wilson, by the way, in the chat.
+I made
+a chat in your terminal that is a single bash script.
+I explained it on my blog.
+All right.
+It's called ask stupidly simple and useful.
+Ask. Dude, how do you feel about the ask UIs in these chat
+in these chat tools.
+Do you prefer it to be a quick,
+do
+Yeah, I like the UI. In fact, I get grumpy when it doesn't give me the UI.
+It's like, especially when it gives me like pick one of these four things just in the text,
+but it doesn't give you the UI to click them, which is so stupid.
+I see, if it's a type one, two, three, or four, yeah.
+Yeah.
+It's so stupid that I prefer the UI.
+Ah, yes.
+Nice.
+Cool.
+I think, yeah.
+Were they sharing a site that they built?
+It's on CS.
+I would, we should probably make sure
+of what the site is before.
+We'll double check it and we'll come back to it.
+We can show, but yeah, I think thanks again to Mitchell
+for the $10 innovation.
+We appreciate that.
+Yes. Okay.
+I verified the site is just fine or at least on the surface.
+It looks fine.
+I've not, which is good enough for me.
+Let's share it.
+Okay.
+You got your screen up CJ.
+Yeah.
+What is, so what I was just, what is,
+I posted it in chat CSIMW.com cool stuff and interest of Mitch Wilson.
+Can you share your screen?
+You don't trust Mitch Wilson?
+It's the thing that Mitch Wilson could do.
+He could grab my IP address and he already has yours, so just share your screen instead
+so he doesn it doesn't have to get mine too.
+Yes, there's a network request here a Mitch.
+I'm trustinging you Mitch.
+Mitch. It more so comes down to like the server side because the quest originated from the address.
+I don't know, I'm having internet issues. I don't want to have슷net issues.
+I'm on a VPN, Mitch, so don't try anything. Amazing.
+I'm behind six firewalls. And I'm not on one. So Scott, go ahead and.
+Yeah, I can't. I'm sorry, I lost the dang screen, the share screen.
+In classic new fashion, I got too many dang links open. Yes.
+Hold on one second, my God, video nidge, I got so what Mac I like groups them all together
+now.
+Expo's they to show all of them I like cannot find anything I'm looking for so sorry Mitch
+Ask chat with your AI tool
+Oh, you are tracking me Mitch, but I blocked it a block that blocked
+Was it just like a little analytics script or something? I'm a hundred, percent certain. Oh Azure application
+insights
+Yes
+Okay
+Okay
+You know how many times you're in the terminal grinding way
+and suddenly you need to know some random thing like how do I grep for that specific pattern?
+What's the flag for that tar command again? Yes
+So it's basically a quick little ask CLI tool that prompts through the open code Zen
+API and prints the response directly in your terminal. That's it easy
+Yeah, I thought about building something like this before but like with the local model because yeah, like I don't know the number of times
+one
+gone to Claude or ChatGPT, just like remind
+. and then it instantly figures out
+commands that's kind of what I want the robot to do I want the robot to just be
+like hey what's this hey what's that and and, just have him on my desk in like
+voice prompt at any point I actually might hook him up to my foot pedal I've
+on loving my foot pedal to prompt and stuff maybe I could have a specific
+trigger for Marshmallow that way I don't have to rely on the wake word
+detection and I could just say hey what is this terminal command and do it
+at Mitch Wilson style.
+Nice.
+Yes.
+Cool.
+Well, thanks, Mitch.
+Thanks for sharing that.
+Yeah.
+All right, I got two last two things to show you.
+These ones are a little more fun and interesting.
+And the first one is an app called Organic Maps.
+So in the realm of being privacy conscious and not
+letting Google own all my data, I've
+been searching for a new Maps app.
+And if you use Android, you typically
+are just using Maps that's built in.
+maps. If you're using iOS, you're probably using Apple Maps, but no, you aren't. Who's
+using Apple Maps? That's do you use Google Maps on enter on iOS? Absolutely. Yes. Oh,
+wow. Okay. Okay. But as you could assume, Google is tracking absolutely everything
+about you when you're in the Maps app. It knows your exact location. It knows the
+places you visited. Like the number of times I know you can get this on or off,
+but I've gotten notifications of like, Oh, I saw you visited this restaurant. Would
+would you like to leave a review?
+There are settings to turn that stuff off,
+but organic maps is completely disconnected
+from all cloud services and allows
+you to download maps offline.
+That's the other thing is you typically
+it might want to use this if you're like hiking or biking,
+or maybe you're going to an area that
+doesn't have a cell service.
+Like technically Google Maps, maps, maps, maps, maps, maps.
+But the nice thing about this app
+is it's all based on Wikimaps data.
+You can select a city, or an entire country, or a state,
+and have all of those maps downloaded.
+and that includes points of interest.
+So the offline maps and Google maps, I believe,
+is kind of just like streets and stuff like that,
+but once you've downloaded the maps,
+you can also search for places,
+and one of the killer features that I've yet to see
+in a lot of these free map apps is navigation.
+Now I haven't used it yet, the navigation piece.
+One of the most finicky parts
+of these apps that Google maps has navigation tuned.
+Like it like the I remember using like the old like physical GPS devices and trying to figure out when to turn like is my turn now
+Or is my turn? Yes. Yes, and feet from my experience has that dialed like I've I've I can now gauge where I need to turn
+So that's the one thing I haven't I haven't tried yet, but just putting this on your radar because
+I also like to go hiking or camping sometimes. I don't have service and so this app is really great
+And I've been using it on Android.
+It's also supported on iOS and all the other places.
+Yeah, I used offline maps in Google Maps quite a bit
+when I was in Greece and they did have places
+of interest as far as I know.
+At. At least maybe I was connected
+or something without knowing it,
+, but there were times where I was getting
+at least that bit of stuff still working
+working. So offline maps, man, it's a low key feature
+that I feel like that's really great that that,
+Like if I were to use something like this, I would be upset if it didn't have
+offline map support or navigation support.
+Yeah. Oh my gosh.
+Do a sandwich delivery.
+Thank you, Court.
+I got some peaches too.
+Oh, my God.
+It is some nice bread.
+It's got like, oops, and wow.
+Oh, yes, it's a butter lettuce.
+We love some butter lettuce.
+Nice. All right.
+I only got one more thing to share and then we can let Scott eat a sandwich.
+And this one is a site called Starring the Computer.
+So it's at starringthecomputer.com.
+And
+it's an this of a bunch of different types of computers, so like Acer, Alienware, Mac, and it has screenshots of when those computers have appeared in movies.
+So I thought this was fascinating. Like, like, for instance, if we go to the Mac book,
+You can see that even going back to like 2009 there are movies that that featured a MacBooks
+you see screenshots from the movies, using that tech.
+So this is a fun little browse.
+Also like a trip down memory lane because like some of the older movies you might remember.
+And you can see people using that that old tech, I do believe it might be movies and
+TV shows.
+Yeah, it says movie and TV.
+I did see Young Sheldon on.
+Do you like that show or what's it?
+No, I don't know.
+I couldn't catch me dead watching that show.
+I'm sorry.
+If you're like Young Sheldon folks, that's not for me.
+But love this.
+You know, it could even do is you could hook this up
+to something to pull these like.
+Oh, I want a Honeywell H 200.
+Let me pull that clip from Casino Royale 1967.
+And then it could find that clip and pull the clip front.
+I always this clipping like because I'm deep into this like
+programing video space right now.
+So not like building programing videos,
+but like, what could I do to like make finding clips easier?
+I'm trying to make, yes.
+And I think like maybe even Randy could could use this
+because we've done in the past like reacting to hacker clips,
+but this site is like a massive index of computers being used.
+So I, I'm sure it has hacking movies that we could we could react to.
+Yeah, Jackie Chan has a GE 635 inside of his Subaru in Cannonball Run 1981.
+I did not know that.
+Nice.
+I would have just guessed that was a fake-ass
+computer.
+So, shout out to Jackie Chan and Cannonball Run.
+This is cool.
+This is very old web, CJ.
+Yeah, yeah.
+But I found it on the Hacker News, I love it. and I'll be perusing that quite a bit.
+I will shout out.
+I feel like I just went back in Thyme.
+who just donated five Kenyan shillings. So thank you so much. Thanks for tuning in. Thanks for the donation all the way from
+I'm guessing you're in Africa and Kenya. Amazing.
+Sick. Cool. I don't really have anything else, CJ.
+That's all I got. And I'm not just saying that because I got a sandwich here.
+Henry asked if I was a teenager in 1981. No, I was not a teenager in 1981.
+I was a teenager in the 90s. I was a 90s kid. So, yes.
+Nice. Donnie says every time CJ mentions hacker news, we drink. I did mention it quite a bit today.
+CJ. See, we got to have some digital, I don't know, digital frowny faces anytime
+Yeah, yes, all right. Well, I don't have to get out of here then let's do it. All right. Well, thank you so much everybody for checking us out
+We will catch you next week for another syntax weekly, and who knows maybe we'll have a giant sun-sized
+AI model to talk about who knows fingers crossed
+face

@@ -1,4 +1,0 @@
-A few weeks ago I held a CSS Grid Layout workshop. Since I'm, like most of us, also pretty new to the topic, I learned a lot while preparing the slides and demos.
-
-I decided to share some of the stuff that was particularly interesting to me, with you.
-My blog doesn't support comments yet, but you can reply via blog@matuzo.at.

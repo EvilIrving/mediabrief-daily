@@ -1,0 +1,69 @@
+[본문 바로가기](https://tech.kakao.com/posts/838#mainContent)[메뉴 바로가기](https://tech.kakao.com/posts/838#gnbContent)
+
+# [![Image 1: kakao tech](https://t1.kakaocdn.net/kakao_tech/resources/static/ico_logo.png)](https://tech.kakao.com/)
+
+**검색하기**메뉴 열기
+
+## 테크 카카오 메뉴
+
+*   [Blog](https://tech.kakao.com/blog)
+*   [Events](https://tech.kakao.com/events)
+*   [Careers](https://tech.kakao.com/careers)
+*   [Kakao Developers 새창열림](https://developers.kakao.com/)
+
+ Search **검색하기**
+
+# 데이터 분석 에이전트를 만들며 배운 컨텍스트 설계
+
+![Image 2: logan.wvl의 프로필 사진](https://t1.kakaocdn.net/kakao_tech/author/7f5293ee018f00001.jpg)
+
+logan.wvl[View →](https://tech.kakao.com/author/logan.wvl)
+
+[← Back to Blog](https://tech.kakao.com/blog)
+
+[이전 글 개인화 추천을 위한 랭킹 모델 개발기](https://tech.kakao.com/posts/837)
+
+## 카카오테크 사이트맵
+
+**kakao tech**
+Kakao lowers the barrier to the future, and brings tomorrow's technology into your life
+
+### Tech Sites
+
+*   [Kakao Developers 새창열림](https://developers.kakao.com/)
+*   [Kakao OpenSource 새창열림](https://github.com/kakao)
+*   [Kakao Maps API 새창열림](https://apis.map.kakao.com/)
+*   [Kakao Olive Platform 새창열림](https://olive.kakao.com/intro)
+
+### Channels
+
+*   [Youtube 새창열림](https://www.youtube.com/@kakaotech)
+*   [Facebook 새창열림](https://www.facebook.com/kakaotech)
+*   [Talk Channel 새창열림](https://pf.kakao.com/_qmkxcs)
+
+### Events
+
+*   [If Kakao Conf 새창열림](https://if.kakao.com/)
+*   [Kakao Tech Meet 새창열림](https://festa.io/hosts/388)
+
+### Family Sites
+
+*   [Kakao Corp 새창열림](https://www.kakaocorp.com/page/)
+*   [Kakao Career 새창열림](https://careers.kakao.com/index)
+*   [Kakao Privacy 새창열림](https://www.kakao.com/ko/privacy)
+
+Copyright © Kakao Corp. All Rights Reserved.
+
+[Terms 새창열림](https://www.kakao.com/policy/oppolicy?lang=ko)[Privacy 새창열림](https://www.kakao.com/policy/privacy?lang=ko)
+
+[최상위로 이동](https://tech.kakao.com/posts/838#mainContent)
+
+## 콘텐츠 검색
+
+## 콘텐츠 검색
+
+[메인페이지로 이동](https://tech.kakao.com/)
+
+검색어 입력 검색창 닫기
+
+Search **검색하기**

@@ -1,0 +1,772 @@
+There's Shep, may I actually listen to another doc show.
+I'm Dave.
+In the shed with me is Chris in his home office square.
+Hey, Chris,
+Still, he's OG-ous and making apps and caring about how good they are
+So, you know, a brother from another mother kind of,
+Hi Ben, how are you?
+Hi, hi guys, how are you?
+I feel like we've been like internet
+Friends for decades and this is like a first time to hang out.
+Well, it's not, he was on episode, Ben let me know, he's on episode 68 in 2013.
+Well, it's been too long.
+I mean, I don't.
+So how
+like we want to do x-rays and I was like no
+So anyway, that's my back story now. Okay. No, you're back story. I get it. I get it. That's funny.
+I wasn't ready for that. Yeah
+All right, let's do some other guests that were on in 2013. Are they still involved with the web?
+Episode 69 Mike Taylor who that makes me miss Mike. Do you think so?
+I'm going to say yes, but he's pretty out of the limelight for sure.
+I think he does work at Google for Compact and is very hidden.
+Hidden. It's too bad. He was funny, dude.
+Hampton's Catlin, the SAS guy.
+Yes. I think.
+I don't know what, though.
+He went on to do like more entrepreneurial type stuff, I think.
+Requel Velaz, no idea.
+What?
+What is she doing?
+Oh, I don't know.
+She's like a node.
+She's willing to node stuff.
+Val head, still at Adobe, right?
+Val's still at Adobe as far as I know.
+Noah Stokes, how's that a blast from the past?
+Yeah.
+Anyway, still doing stuff, but different.
+Yeah.
+Okay, all right, all right.
+We don't have to go forever.
+It's just fun to think.
+We're all OG guys.
+It's fun. We were discussing whether everybody had super super yachts or not. And I was like, Ben works on
+on caliber or don't you do you feel like people say calibre?
+They do. I mean, sometimes they do.
+Sometimes when I do calls with customers, they, they'll be like that's the first question.
+It's a web performance suite, it's built for teams, built for people who are maintaining
+site, A site or multiple sites, and you can test your site with synthetic tests, so you
+can run a lighthouse that monitors that in the background, and you can delve into all
+all the requests, all the third parties,
+so all of that information.
+But it also also has what we call crux data,
+which is from the Chrome User Experience Report,
+which Google collects from real Chrome sessions.
+So we collect all of that for your site as well.
+And the third kind of heat is real user monitoring.
+So you install a script on.
+On your website.
+And then you can see what live real sessions
+are doing on your site.
+and see what they experience.
+And we try to segment it up in ways that are useful.
+Like you can see the top pages, you can see everything
+is ranked by how many sessions it affects.
+So the idea being that you can, without having
+to click a sort button immediately,
+you'll see which page is the worst
+for the most amount of people, or which element is
+the worst for the most people that causes
+a slow, largest contentful person.
+Yeah, I.
+A little bit of neat.
+Right.
+Because you're using this app because you want to like do something.
+So, don't make me search around for what to do. Just tell me.
+Yeah, yeah. That's right., so I'm almost 10 years into Calib
+what spurred the, the recent communication between us, is that you wrote a blog post caring all about
+airline, websites, and just how bad they are, you know, you probably could have picked just about
+anything. But you know, everybody's bad at this apparently, but this is especially painful,
+because it's like you're trying to do something important with your life and
+there's a lot of money on the line, you know, for everybody involved, the
+airlines and you know you're about to spend a whole bunch of money on a ticket
+to wouldn't you like that experience to be okay or but you tell me why'd you
+pick airlines? Yeah so one of the things that we have on the Calibra
+website is a performance benchmark, industry benchmarks and so so we've
+maintain that for a little while, we have packs for the top e-commerce sites around the world,
+all the banks, fashion, fashion brands, that sort of stuff.
+And I know from looking at them that the pack, which I've been maintaining for a while, is
+the worst.
+websites, and actually, I just booked a trip and I was struck by how bad the website was.
+It was one of those things where you click to maybe see seat information about the plane, but then the page
+would hang for a few.
+There would be a big paint and maybe it would like even shift the page would shift as
+new content came into the page.
+And I found it like even as somebody who uses a computer all day, I found the like really
+disorientating and I was trying to book something that yeah, it costs two, three thousand dollars
+and I want to know that the dates are right and I want to know that I'm picking the right
+option and I'm not getting ripped off and all of the things like you're in this zone
+of trying to book a holiday or a trip which is kind of stressful usually.
+It's stressful by itself.
+I think that if you look at the technology behind it,,
+it just makes it worse.
+And so that's how I came to that point of like, all right,
+well, I think I've got this.
+So I started to look into the data.
+And once I did, I was actually kind of shocked
+at how bad it was across the industry.
+I knew that the stats, the general stats were bad.
+But when I got into it, I was shocked.
+Yeah, interesting.
+We should get into some of the details.
+I was kind of bracing myself for the, I don't know,
+certain feelings about it, being a little bit just like,
+yeah, websites are, are slow or whatever,
+because I don't know, we kind of all know that.
+They're inaccessible.
+If we're gonna look at a bunch of websites,
+the news is gonna be bad.
+It's rare that we're analyzing websites
+and celebrating what we find.
+It's gonna be bad UX and all this stuff.
+But also, I was also prepared for like,
+all right, how can I, I'm gonna bet on the show,
+How, how can I poke this a little bit?
+Because some of it's going to be like, okay, so we looked at pages or something like Jake-
+Jake Archibald used to do this for F1 sites or whatever and they're all, you know, but
+it was just like, let's just run the metrics on the home page.
+And I was like, if all this is, is like running some synthetic stuff on the home page of some
+when I'm booking a flight like you were doing and I'm spending thousands of dollars,
+I'm not even trying to do it fast. I'm trying to do it slow.
+I'm trying to be methodical and I want to do it really right.
+And I might have the tab open for an hour.
+Well, I'm, you know, I gotta do this, but I want to like, you know,
+make a cup of coffee, make sure I'm in the right thing.
+Cause I hate it when I screw it up.
+I'm going to take my time and do it like my God,
+the website's loaded 30 minutes ago. I don't care how fast it is.
+you're experiencing it on. This is about interactivity while you're
+using it. This is
+Let me get on to that.
+So when you have a synthetic test, yeah,
+And so for this study, I actually used,
+you know, instead of using quantus.com,
+I used booking.quantus.com or .com.au actually.
+But so I used the booking engine domain domain or origin I used that, right?
+And so by doing that,
+I was only focusing on the core business experience of booking a flight.
+I wasn't interested in the
+that gives you information or in
+into the Google data set, it needs to have at least a few-thousand uniques per month.
+So we're talking about thousands and thousands of user sessions, making up that data set
+that I was looking at.
+So it's not like a hypothetical, like, I think it's really easy to run like a machine and
+be like, I got five billion, I'm the best, you know, like, but you like ran it on your
+$5,000 MacBook, which has a bitching CPU and GPU.
+And where in the real world, that's not how it works.
+And people are on 5G, 4G, 3G, you know
+I think, or just even a low powered computer.
+I think Alex Russell has all those like charts
+about like Android phones versus versus the best Android phone
+versus the best iPhone.
+And it's like half as good or whatever.
+And then like the best selling Android phone is like another tier below that.
+And so it is, I think that like croc stuff in the real user metrics and the like,
+because you start learning about your stuff, not just lighthouse.
+And the, and you can like build a lighthouse.
+I did, you know, with Luro.
+And I think you with that even, but it was like, you can like tune a lighthouse
+server to like give you a good CPU score of 1200, like get a like kind of an.
+Accurate ish measurement, but like, you know, I think we run it on our computers.
+It's just kind of like a vanity metric sometimes or like a gut check more than
+like this is how your users are actually feeling about it.
+Yeah, like with with Lighthouse, it's, it's been a really misunderstood project.
+of a 100 score.
+Every one wants to know that the score is accurate.
+They do a test somewhere and they score 72 and they do a score somewhere
+else and they get, say, a 95.
+That's exactly the variance that we're talking about, where you're using a fast machine and a
+, fast the fast connection or something that maybe you're blocking the ads in your browser
+or whatever it might be.
+Those different experiences are real.
+So regardless of whether or not your Lighthouse score was
+the same from one test to another,
+that doesn't actually matter.
+What matters are the metrics that are there the truth to
+those metrics regardless of whatever the score is.
+If it says that it took four seconds,
+It took four seconds for that scenario.
+I think that's where people definitely got stuck
+on the shiny object syndrome of the number,, the big bright.
+They were trying to report up.
+And that was damaging to spew
+but if you look at the actual user experience that's going on there, that's really important.
+And caliber does both, not to make it in an ad,
+but that's the deal with rum and synthetic test
+right? Can you maybe like,
+I feel like it might be just interesting
+from an educational perspective
+if somebody's listening to this and like
+to this and like, it isn't fully understanding that we're talking about lighthouse being like just this thing that you can run
+and that's in the category of a synthetic test right?
+And that's just different than rum can you just
+I don't know enlighten us all on the big differences.
+a lighthouse test or a
+it would have been if you weren't running Lighthouse.
+And the idea is that it gives you a mid-market device
+and
+It's kind of a decent amount,
+doing is the LCP image, the image that should be loading fast and quickly was
+actually delayed by that.
+Lighthouse can give you those checks that you can run to just make
+make sure that you actually have a checklist.
+Sure, and if you go through that checklist and you fix those things, by and large you
+are you are improving the performance of your website and you're doing it broadly for everyone,
+right?
+Yeah, that's, so then, soותר rum is different, what you called real user metrics, I don't
+know, perhaps less people think advantage of that, but yeah, yeah, I
+I would say larger organizations use rum and there's a couple of reasons for that.
+One of them is cost is often prohibitive, so it would be a larger software purchase, it would be a larger
+software purchase to be able to have it and then to be able to
+What's some stuff you can get out of RAM
+that you can't get from Lighthouse?
+Yeah. So if you imagine that every visitor or
+anyhow, a handful of visitors that go to your website.
+They're all over the world, they're on different devices,
+together.
+And the power that that gives you
+is you can get the depth of the pages that are,
+slow.
+You can get information about elements.
+So because it's on the page and browsers
+have great APIs built into them to them now
+to identify which element caused a slow largest
+contentful paint or a slow interaction or maybe a page
+shift, you can report and so with the run,
+you get this get this richness of data.
+And so in the case of Caliber, like these segmented views
+that allow you to see your top elements
+for a largest contentful paint or a interaction to next paint.
+And so you can say, OK, well, this hero image here is,
+it's been seen by 700 people in the last four days transfused.
+And it was slow.
+It's aggregate metric, so like a P75.
+So let's say you have a hundred visitors, 75 of them would have had this experience
+where it was four seconds.
+And that depth of data allows you to segment, to find those things, oh actually we have
+a lot of traffic coming from India and all of those users are having a bad experience.
+So is it part of your core business?
+It allows you to make some decisions and understandings about the data.
+It feels very similar to analytics.
+Do, do people use it like instead of analytics sometimes?
+Or are you tracking like what page they're on and that type of thing too or not so much?
+Yeah, yeah.
+I mean, it's less about page visits.
+Actually in Calibre, we do the concept of sessions.
+So we, when a user visits a site, we create a session that is, you know,
+we, we do the concept of sessions. So we when a user
+visits site we create a session that is you know media it's a
+femeral it's thrown away immediately afterwords we did that session
+encapsulate that session and give it a quality rate.
+So, we actually have a metric called UX rating,
+where they can say like what the,
+what the how good the, you know,
+the experience was for the users on the site.
+So
+Interesting.
+I have an anecdote about airlines
+that fits into the web performance anecdote.
+So I usually don't,
+I don't like printout boarding passes at home
+or even like download the app.
+I don't want the app, why Delta app, I use it twice a year,
+don't need it.
+So I go to the, and just print out a boarding pass,
+like an old man, like a grandpa,
+and I'm wearing my sketches, and I get to Delta,
+the machine doesn't print out boarding passes today.
+Like it's broke.
+I don't know what's going on.
+It doesn't work.
+It doesn't, I can't print my boarding pass from the machine.
+I am sweating at this point.
+It's like I might fly.
+I think 10 minutes or something at this point by the time I find this fact out.
+And so I'm on like inside your distrust of logging into the website is so strong that
+you're sweating because yeah.
+And he's like the first time in an airport kind of passenger, seemingly.
+Yeah. Well, it's, well, it's, it's like a Austin airport in particular is like
+like zero bars for me on AT&T in a metropolis of like two million people.
+But I think they're all at the airport using all the bars as well.
+But I'm like in my phone's like hot.
+I don't know what's going on.
+It's loaded.
+I I'm trying to load
+the website.
+I finally load the website
+and it takes forever.
+It's like three minutes before a boarding. I'm not.
+Even. Through security.
+And I'm like, what?
+What's going on?
+Like, can I get my boarding pass?
+No, I can't get my boarding pass from the web app.
+They make me go download the app.
+So I have to download like a 200 meg binary from Apple
+just to like check into my flight.
+I finally get it. I'm I'm make the fight but man it was
+you X rating zero
+Yeah, my new say don't make me do it zero on all counts like user was not able to satisfy the task
+complete their task
+I I always say like there's no replacement for using your app and I will even go farther to say there's no replacement for using your app
+inside the airport and like on whatever Boingo Wi-Fi and just like just or in an
+airplane like can you use your app in an airplane what's the experience I just
+there's it's a different world out there than our fiber internet you know
+piped into the wall with our 10 gig routers and stuff like that it's a
+different different world yeah that's I mean that's exactly like the kind of
+experience that happens, right? And conversely, I've had flights to
+Europe from Australia that had super fast internet. And I was
+watching YouTube during the flight very comfortably and
+texting my friends, you know, internet is not consistent
+everywhere. So yeah, that speaks to it.
+Well, you're flying like Qantas, you're not flying
+Southwest. So that's true. That's
+The Southwest Wi-Fi is like a guy, a hamster on a wheel, trying to...
+Yeah, you want to use the internet, go on the, get on the wheel, buddy, yeah.
+There's a, there's, I just want to make sure that we, we give this article it's due here
+that the, like, what else is interesting in here, that you could do, you could do
+some correlation and stuff, we can name and shame a little bit, you know, like, what
+else did you find here?
+Yeah, okay, let me get into some stats.
+So I tested 111 websites, so there was 111 airlines from around the world.
+I made sure that I tried to pick all the ones I knew and then tried to find ones that I
+didn't know.
+And 95% of them fail core web vitals.
+So that was a big initial shock.
+on mobile, a couple more pass on desktop,
+but it's still only 13% of them pass on desktop.
+So.
+And the fail metric is what, I mean,
+core with vitals is the group of terms that has LCP
+and all that stuff in it, right?
+So what does fail mean?
+So fail means that it doesn't meet Google's threshold
+for any one of those three metrics.
+That's what a pass would be, is
+that you pass on all three.
+Which doesn't mean a hundred.
+It means like, I don't know, it's not even that high.
+Is it it's over 50 or 65 or something?
+Is it?
+No.
+I don't you don't have to know offhand,
+but it doesn't mean that you're hitting all hundreds
+necessarily, right?
+Well, there's no there's no concept of hundred, right?
+So it's each metric is given a range.
+It's different than Lighthouse.
+I see it's different.
+Yeah. Lighthouse, there's hundreds.
+Core Web Vitals is a different thing.
+Yeah, there's no hundreds.
+Yeah, exactly.
+And so, yeah, you have to pass all three metrics to get a pass.
+But in the performance world, I talk
+with people from other vendors who also
+work on tools for web perf like I do.
+And we all agree that the thresholds that Google set
+are actually, they're mostly pretty easy to pass.
+We're not talking the world's fastest website
+to just get a pass.
+We're talking an OK website.
+So it's a low bar, and airlines fail them pretty badly.
+So let me get into some of the worst stats.
+So one of the things that I did was
+I looked at the SkyTracks service ranking.
+So if you've ever heard of SkyTracks,
+they review effectively airlines from around the world,
+and they give them a top 10 status.
+And so if you're a top SkyTracks performer,
+means that you're a great airline. You've got exceptional service. You've got nice booking.
+You've got good facilities, maybe the plane's fancy, and you can bring a Falcon on some planes
+in the Middle East. Yeah.
+I did not know that.
+Yeah.
+If you're traveling.
+You either get a pass fail on Falcon allowance.
+Yeah.
+But apparently it doesn't track your website quality or does it, do you think?
+No, the Falcon? I don't know. I wouldn't argue with one.
+Not yet. Falcons just doing Falcon stuff. But I mean, the SkyTrack service ranking maybe doesn't
+care about your website. No, no, I don't think so. And so, yeah, I tracked the top 10 to see how
+they performed on, you know, in the benchmark. And what I found was that actually the best
+airlines in the world actually have some of the worst performance that there is.
+is Cathay Pacific from Hong Kong
+is one of the world's best airlines.
+It's number three in SkyTrax's ranking.
+And it was dead last in all of the metrics.
+And-
+Is that the one you had the personal experience with
+as well?
+I did have a personal experience I just booked a trip
+to Japan in next month.
+And yeah, I was shocked by how bad the Cathay site was.
+And, you know, these are not, they're not small businesses.
+so in the case of Cathay, they have like 28 million passengers a year, right?
+So when you're talking about like poor web performances, like their LCP,
+okay, their LCP for Cathay Pacific, 10 seconds.
+Wow.
+Yeah, their interaction to next paint is 1.4.
+So this means like you click on an element and then maybe the browser kind of half hangss,
+like nothing happens, you feel this lockup, it's one of those things you can feel,
+you can tell straight away something's wrong. And then a second and a half later,
+something paints, something green. So that's a huge delay like, for an interaction delay
+that I found on Cathay there. Yeah, pretty rough. So I mean,
+I mean, yeah, maybe we'll, instead of diagnosing why just yet,
+we'll keep going with the data a little bit.
+What else were you seeing?
+Yeah, so, I mean, I saw bad performance for all hallway vitals.
+So, paints, layout shifts, and interactions,
+all of them were bad.
+But actually, the worst segment were interactions
+and by a long way.
+And that kind of surprised me
+because, you know, coming back to, like,
+Why did I choose airline websites?
+I chose them because they are actually,
+they're big websites.
+The flights are sold, little upgrades,
+the seat changing, the meals, everything.
+There's a lot of interactions.
+and BookerFlight, it's
+15, you know, 15 to 20.0 interactions in, you know, not including typing in your name and your passport,
+that kind of information.
+So I expected that because flight data needs to be up to date,
+that pages might take a second or two to load, right?
+Like their time to first byte might be slow.
+That might mean that the page a little bit late.
+but once it's loaded, there's this fallacy of single page apps
+that we hear a lot and we've heard a lot over the spe,
+for them. But I did see. I did see a lot of that. And you know, this is it's dynamic data. So like
+you're clicking on a calendar. Actually calendars were one of the things that had some of the worst
+interactions that I had seen. So like maybe you would think like, okay, well, I'm gonna choose
+this flight from here's my destination. Here's my rough. Like you can do that seven
+and they search to see flights.
+Then you open the calendar widget and it would hang.
+Showing a calendar should be instant.
+That shouldn
+shouldn't be something that,
+that's different to render.
+You could do that client side,
+you could do that server side, it doesn't matter.
+It should render immediately.
+But what's actually happening in a lot of those cases,
+there's the fetching data and then they are painting.
+they're painting, they, they're, they're painting,
+they're, they're, they're, they're painting,
+they're, they're, they're, they're,
+they're, they're, they're, they're,
+And then maybe a price appears over the calendar or something like that.
+And so, a lot of these slow paints and poor interactions that I saw weren't,
+like you could say, okay, well,
+yeah, there's data to be fetched and sometimes data isn't fast, right?
+And I can agree with that because I understand how the,
+the technology works.
+But what I can't agree with is the page shouldn't shift.
+The page shouldn't lock up at that moment.
+Like this is, like this is actually just, this is web development and it's
+actually not that difficult to make something
+so it doesn it doesn't shift the entire page away, at least I think so.
+Fascinating. It makes me smile for front end web developers, a good front end developer can solve
+this problem. It's uniquely in their wheelhouse to do so.
+The fact that they're not, so is a bum, but it's it's also interesting that it's probably not particularly
+a framework problem.
+I mean, I mean, maybe we could, waggle fingers.
+I mean, the temptation certainly in IRN is to either defend or waggle your finger at
+react, but it's, it I probably not that it's probably the choices you're making with
+the framework.
+Yeah.
+Yeah.
+I think.
+I think I'm.
+No.
+Okay.
+I don't love working on React, but that's the reality of
+very popular to show a skeleton loader.
+Right?
+You want to have the user see something,
+they want to know that something's happening,
+and it should just replace the content.
+But what I see with...
+it feels the content feels valid and true.
+There are maybe other ways that you could handle this interaction,
+But it's not a bad one
+It's not a bad one as long as long as it's not too fast and the page doesn't shift
+What I see is that a lot of these skeleton loaders will be completely different dimensions
+to the content that they're replacing and the content that's coming in.
+Every damn time, isn't it?
+They really tricks you too, the little bastards.
+They make it, it's this box, it's got aspect ratio.
+There's a, there's a little fancy gluing through it, then the content loads and it looks
+nothing like the skeleton.
+Yeah.
+Come on.
+And the skeleton might appear once, then disappear and flicker.
+And I think in a lot of cases, and I'd
+be interested to hear how you guys feel feel about it.
+But so much of if you're in a team where you've got design,
+PMs, developers, very siloed roles,
+sometimes those skeleton loaders are not
+part of the initial-design.
+It'll, we've got a pretty picture of a website.
+Here it is.
+And then somebody will realize like,
+oh, we don't have any states.
+So let's do them later, right?
+And so that gets thrown in.
+And there's not a lot of like care and the private belief
+that skeleton loaders are in admission that you
+means. I just
+looked in page and there's like, like just full on.
+I mean, is the real answer that, you know, like Ben said earlier, like there's sometimes
+there's an admission that like it's data and sometimes data isn't fast.
+Is the pushback then like, well, then make it fast.
+Do a fast data.
+It should be.
+Do a fast data.
+Probably.
+Yeah.
+But, you know, I think that, yeah, like actually something that I really enjoyed from this
+report was learning that a lot of these issues aren't scary technical things, and like airline
+and technology probably is big scary technology and in a lot of parts. But like a lot of these
+fixes that web developers like you and I know how to fix. And given given the time and attention
+to be able슷 that the page doesn't shift, you know, by half of its size when a loader
+appears is just one of those little polish things that you can execute
+good feeling, isn't it?
+Yeah.
+Nothing like shipping a performance fix for the good
+feels in there.
+Yeah.
+Good feels.
+But ironically,
+some of this stuff is big business too,
+and I think you try to make, right?
+There probably is money in these fixes.
+I find it really hard to believe that it wouldn't be.
+So I have a stat here that came from Shopify.
+where they looked at storefront loads for LCP
+CP.
+And they found that if your page loaded at 2.5 seconds, it would convert 30% worse than if
+it loaded a second faster, which is a pretty big deal.
+So that's like people, people, you know, like one second doesn't sound like much, but again,
+it's aggregate metrics.
+can be worse. And if you know, if slow interactions cost something, like that, like when-
+Actually, I worked for, I worked for Qantas on a contract once, so over years ago, and
+I think I'm okay in saying this.
+So we had, we-
+Just roll with it.
+Yeah, it's fine.
+It's nobodies listens to this show anymore, I heard it was all about Slop or something
+like that, so yeah, it's just agents now. I want the AI podcast, we'll just weed
+to mount AI talk all day.
+All right, you're good.
+You're good.
+You're clear.
+Yeah, so yeah, we had the concept of every couple of weeks
+we could work on something that we wanted to work on.
+And it was like free time to try and ship something that
+was different, whatever.
+because it was for hotels. It had really small thumbnails
+thumbnails and when you're booking a hotel, you want to see what the room looks like. That's
+the first thing. If they have a nice photo, you're going to click on it.
+So we tied it up with the typography, we made the image, simplified the basic stuff,
+there they would A-B test everything.
+There they- they would A-B test everything and so every change that you made would get A-B tested before it went out to see how it
+on top of.
+Really focus on metrics which was cool.
+Is a nice way to work yet we found it that was like to
+make an effort so that better.
+The thing that
+for months
+the project that I was supposed to,
+because it was delayed for reasons and so yeah,
+basically like a two afternoon thing.
+Just became I think the converted a lot better so like I
+know for a fact that it's true and percent better.
+Yeah. Yeah. You've lived it. We've all seen studies. It does
+seem to matter. With these kind of numbers too, it does. I don't know
+know if it's actually true because just to preface this a
+little bit, I think Dave and I just a a few weeks ago were
+kind of questioning the idea of like, ah, you changed the
+shade of blue a little, a little bit, and you A-B tested,
+and it does 5% better. You're like, yeah, well, where's
+my 5% money at the
+the world. Like don't you think six months of concerted effort on
+there, you could squeeze a quick bill, squeeze another quick
+billion out of some people that that's, you know, I didn't I
+didn't run the math, but that seems practical to go from the
+worst of all websites to maybe you could get close to the top
+if you really, you know, really, really focused on it. And
+then just I don't know, it just seems like the return on
+investment for monitoring and caring and changing performance is like almost certainly,
+especially at the, and yet we often see the opposite the cheapy, the little personal websites
+are speedy and fun and they work great and the bigger, the more money involved, crazier
+they are. It's like some great irony of life.
+Yeah, yeah, definitely. Like, even if it wasn't a billion dollars, like, $100 million
+is a cool thing. And if there's that kind of level of numbers out there, and it just means that people can actually, actually deliver on their craft, let them do it.
+I would be curious like what you, you know, I guess you described the work you kind of did, but like,
+the airline sites, like what do they, do they have to swap out their react? Do they have to,
+you know, I don't know, just shave some CSS down or is it like, did you ever get to the level of like,
+you know it's kind of just doing science right so like what what do people have
+have to do to you know turn their turn their website around it's like a hundred
+milliseconds is 10% conversion or something like that
+I don't I don't remember the percentage but it's about there I love how we
+weren't sure if we would have an hour and yeah here we are so I hope we didn't
+get too much into the
+I hope we didn't get too much in the way I think that's something I think that I think that something that's
+something that I want to make really super clear is that I think that I want to make
+The best thing that you can do for understanding performance
+and then actually doing something about it,
+first thing is obviously get to monitor it.
+Or like, and I know that I'm the monitoring,
+like you should buy monitoring.
+You have to buy my monitoring, but you should.
+You got to know the numbers to be able to do something about it.
+But the most effective thing that you can do is literally buy worst.
+Right.
+like you can look at, you know,
+sort by worst for the most popular page
+or the most popular element.
+And this is something that I've done
+with Calibre the app itself, right?
+Like I said that the app was, was react.
+And we did have some skeleton lotus that.
+That shift around.
+So you know what
+I did I went and found like which pages shift the I went and found which pages shift the worst and then I fixed those
+and because it's component driven architecture that fixed a couple of
+and
+I saw the metrics change over time.
+And so after that had landed and I was satisfied that that work had been had been completed,
+I, I saw it again and I chose the next worst thing.
+And you can literally do that with a slow query.
+You can do that with a bad image.
+You can do that with a JSON endpoint.
+It doesn't actually matter as long as you have the time and focus to find the
+the most people and just fix that one thing and even if
+if you donB you don't entirely fix it just improving it is
+also you know, improving it and landing it that
+that day there's because you know you may never get to do
+that three week rebuild that is really hard and like
+and like stresses everybody out,
+you know, like if you're at a, like, you're at a, you know, like, you're at a, you know, like, you
+I'm gonna read this book, I'm gonna reach out to three people.
+I'm gonna do these little actionable tasks.
+Like over time, if you don't drift away from that.
+and you stop caring and you do something else, you won't.
+I just think that's a way to think about it.
+I also think that, you know, we mentioned some of these things
+that are really bad and disorienting and problematic
+like layout shift.
+Layout shift is a CSS
+CSS concern, a CSS concern is a light piece of the stack.
+You for not
+stuff around around on the page or whatever. But there's layout things you can do to make
+sure the things aren't moving around. Very few people
+coming back to Dave's question of like, is it like cool stuff? And actually, yeah, a lot
+of the stuff is really simple. And one of the points that I made in the article that
+I wanted to add now is that a lot of the problems that I saw were just poorly implemented
+like these were, a lot of these websites, websites were made a few years ago when, you know, we used
+more JavaScript for interactive elements, but if you look at the web today, you can style a
+details list, and it can look like an accordion and you can have have it so that when one opens,
+the other one closes, that's built into the web platform now. We also have have dialogues,
+all of these things that are built into the browser that give a really high quality and
+actually a better quality implementation than the JavaScript version that maybe has a whole
+ton of scripts.
+It might not� be accessible, it might not be fast, it might of require another library,
+it might require a third party CSS.
+that can be done away with if you just use the platform
+I have no involvement in this website, but it's so bad.
+I just want to like a little peek at to why, just for my own horror, you know, just to,
+I don't know, like for the same reason, horror movie, I mean you know, you look at the network
+panel and it's downloading like 850 assets and like, you know, 89 megabytes of JavaScript
+and you're like, that's all I needed to see, you know, I'm not even, at that point,
+like, would a native modal dialogue even help?
+like I don't know what
+finding 20 megabytes of Javascript to delete is actually what you need to be doing with.
+Yeah, but you know I think all of these these new controls and these new things in browsers
+are a step down right like if you look at these popular these I don't quite remember
+For all intensive purposes, it was a input.
+It was a very simple input.
+When I inspected it, it was actually like nested divs.
+There were,
+everything was styled within an inch of its life.
+Really pretty complex.
+I'm sure that they were trying to make it
+extensible and it probably had a bunch of options
+that you could turn on or off for this UI piece of UI.
+But when you think about details, dialogue, popover, anchor positioning, and now...
+Now customizable selects, I think is a really big one.
+So instead of...
+I was going to mention that one.
+That one is huge.
+Yeah.
+It's enormous.
+And so if you can like start to replace some of these, you might might be
+to keep the styling exactly.
+Exactly the same.
+You can actually have a bit of an off-ramp from those really heavy UI libraries.
+So it's probably related to what I was just saying too.
+I think you're right.
+Those are those are combined like if it really is 80 megabytes of JavaScript,
+which sounds insane, but it's, you know, it's that some of them from loading
+big old weird libraries that do stuff like custom selects, they just do it with a,
+a jackhammer or whatever and just absolutely loads one
+to do it, and that one dependency can go away.
+It's like you get best at both worlds.
+Not only does the dependency go away,
+but you're using the browser to do something
+that it will do snappier.
+Yeah, and not only snappier,
+like it's probably a better user experience
+because it has control, it's accessible,
+like the winds don't stop there, right?
+.
+Yeah, a free click handler, I'll take it like this.
+Yeah.
+Yeah, that's really cool. I like that go with the worst thing because I think you know if you're like I'm gonna
+Take react out of the app
+You've like caught so much organizational heat like you literally ruined your old the
+rest of your year there at the company or whatever
+But if you're like
+I'm going to make the skeleton loader, not glitch.
+You're like, could just make a little GIF,
+screen cap, was before and here is now.
+That's gonna fly under the radar as an improvement,
+an of incremental improvement over this months-long project
+to rip, react out, or fix performance or whatever.
+So I like that idea of frog-boiling the performance
+to shape because you should measure it
+for your LinkedIn stats in your career.
+But I doילו like that idea because even if you're just
+like, người to fix whatever performance,
+well, now you're in the, we have to A, B test all
+the, the performance and do
+like you're saying like the metrics
+like, oh, move this whatever, click flops down 0.01
+percent and we can't have that, you know, like you paint a target on your back for trying to do a big
+move. But if you're like, I fixed this skeleton glitch like, man, that's great. Or if
+you like, hey, I found a way to remove a bunch of JavaScript for free. People are, oh, cool, let's go.
+Yeah, I really, it's really easy to get into a holy war with people about the technology. People
+seem to really hold technology choices very close to their chest. And I think, you know,
+the more, the more that you can, the more that you can, the more that you can shift away those conversations to be about results. That's like such a conversation. And so like, whether or not you, you like, doesn't actually matter matter. The result is what matters. Like, it weirdly, it isn't about the web developers sitting
+The important people are the
+users and that's certainly where I started out in my career of trying to
+for people and trying to improve them and make them better than they were the day before.
+If you're in, you're in a team and you don't have a performance culture and you can lament
+that you don't have a performance culture in your team or yeah, you can start shipping
+stats, if stats get smaller, people love to see that. and like demonstrate it on your pool request,
+put it on your pool request and make those numbers, you know, here's a before, here's an after,.
+Nothing looks visually different, it's just better, it's smaller, and then share them with your team
+in Slack or teams or where you converse with your team. not to gloat, not to try and receive
+Chris, for coming on, for people who aren't following you and giving you money, how can
+they do that?
+Yeah.
+So you can find me on Blue Sky, Ben Schwartz, you can find me on Mastodon, you can find
+me on LinkedIn, and yeah, calibreup.com is where I spend my time trying to make the
+web faster.
+Oh, wow, we're watching Chris put his microphone back together.
+Yeah.
+Thanks for being on the show.
+Thank you.
+Bye.

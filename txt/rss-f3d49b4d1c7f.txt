@@ -1,8 +1,0 @@
-Automated browser testing is a foundational technology that many web developers rely on. Modern tooling lets a single test drive Chrome, Firefox, and Safari the same way, a triumph of software engineering built on years of standardization work. That standardization emerged from the interplay between open source projects, browser vendors, and standards bodies like the W3C.
-
-David Burns is a longtime Selenium and WebDriver contributor, a veteran of Mozilla, and is currently the Head of Developer Advocacy and Open Source at BrowserStack. In this episode, David joins Josh Goldberg to discuss how open source projects, browser vendors, and standards bodies fit together, a practical philosophy of testing built around one solid test per critical path, and the risks that AI and vibe coding introduce to web development.
-
-Sponsorship inquiries:
-sponsor@softwareengineeringdaily.com
-
-The post The State of Browser Testing appeared first on Software Engineering Daily.

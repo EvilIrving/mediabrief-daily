@@ -1,0 +1,784 @@
+to try to measure productivity.
+If the goal is more, I can prompt something to write the longest piece of
+I'm not sure what I'm saying, but I'm not sure if I'm, but I'm not sure if I'm, but I'm not sure.
+It's just too easy to gain that system.
+How do I know if my edge team is fast enough if they can move faster if they're just,
+just not performing as well as they can move faster?
+We can ship trash faster every single day.
+We need strategy and really smart decisions to know what to ship.
+One of the biggest issues
+Are shoved by me?
+So much of the time is not going to be spent reviewing versus writing code.
+There's some real opportunity there to not just rethink workflows, but rethink how we structure
+, our days and how we structure our work.
+Now, we can also make a 45 minute 40 minute video because getting into the flow is handed off at
+least in part in part to the flow by the flow by reminding us of context and generating diagram.
+It's the best thing that you think an edge team and product team a product team can do this week next week to get more done.
+Honestly, I think the, the best thing you can do.
+Today, my guest is Nicole Forsgren.
+With so much.
+Much talk about how AI is increasing developer productivity.
+More and more people are asking, how do we measure this productivity game?
+Developers aren't speeding
+This episode is brought to you by Mercury.
+I can't imagine banking any other way at this point.
+I switched from Chase and holy moly, what a.
+Sending wires, tracking spend, giving people all my money around, so freaking easy.
+in invoice cost of cashflow and access capital.
+Merkurey's business performance is at its highest level.
+See what over 200,000 entrepreneurs love about Merkurey.
+Visit Merkurey's website to apply for a job.
+Merkurey is a big deal, but it's not a big deal.
+Merk.
+where you can find a platform built specifically for B2B SaaS., whether you're a seed stage, start up to, try to land your first enterprise, or a unicorn expanding globally. WorkOS is the fastest path to becoming enterprise ready and unlocking growth.
+They're essentially spread for enterprise features. Visit workOS.com to get started, or just, or just hit up their Slack support where they have real-time users in there who answer your questions super fast.
+Work-A-West allows you
+to build like the best with delightful APIs,
+Nicole, thank you so much for being here and welcome to the podcast.
+Thank you.
+It's so good to have you and I
+Yeah, because
+world for longer than anyone you've invented so many of the frameworks that people rely
+on now.
+I'm excited to have you back in to talk about this stuff슷.
+And it's importantותר because when on DevEx is poor
+everything. Everything else just is gonna help right the best processes the best tools
+tools. Whatever magic you have right if the, if the DevEx is bad everything kind of
+takes. And so within DevEx is productivity and I think the key insight that you
+had other folks in the space of that is not just like also engineering
+happiness and and we're gonna get into a lot of these parts but just maybe
+speak to there's broader components
+components to, components to engineers being successful at a
+company.
+Yeah.
+And I love that point, right
+because productivity, first of all, is hard to define anyway.
+But if you're just looking at output, you can get there a lot of different ways.
+But if you're getting there in ways that are high-toil or high-friction, then at some
+Then you don't have the brain space left to come up with like really innovative solutions
+and questions and questions and so I love that it's kind of self-reinforcing
+loop in terms of you do more work, you do better work, it's better for people, it's better for people, it's
+better for our customers, it's better for our systems, it's better for our customers.
+I was going to get this later, but I want to actually get to this right now.
+I said, yeah, I have a new idea for engineers.
+So I was in a new year actually early in my career.
+I went to school, computer science, I was an engineer for 10 years.
+The best part for me was just this flow.
+You enter when you coding and building and just things feel like so fun.
+It feels like AI is making that harder in a lot of ways
+because there's all these agents you're working with now.
+There's all this code that's going to be written for you.
+The importance of flow state to a developer happiness,
+develop productivity and just what you I impacting, how you've seen AI impacting that.
+A lot of times, well, there are lots of different ways to talk about defects, right?
+. One way to talk about it is kind of three key things that have components
+that are important of themselves. They also kind of reinforce each other. So,
+flow state is one of them. Cognitive load is another feedback loops or another.
+I think, you know, when you touch on this, your question about flow state is a really
+And
+have to integrate what's happening in the system. And that can really interrupt. At the same time, though, it can contribute to flow. And I've seen some senior chairs pull together some tool chains that are really incredible where they figured out, how to kind of keep the flow going, right? The fast feedback loops really, really work well for them. They can kind of assign out different pieces to agents. It helps them keep in the flow in terms of instead of details in line by line writing,
+I can step back and kind
+B
+like right now, a lot of us, you know, play around with tools and we'll like put
+in a prompt and we'll get a sheet of lines back or maybe we'll put in a prompt
+and we'll get like whole programs back, well, what...
+What they can do is they, many and many times I'll see them say, to kind of help prime it.
+This is what I want to build.
+It needs to have architectural
+components. It needs to have this kind of stack
+and follow this general workflow.
+Help me think that through.
+because they were so systematic about it up front,
+they're much closer to something
+that looks like production code.
+So I'm hearing a little more time up front
+planning what all these AI engineers are doing
+versus just like powering through
+and just figuring out as you
+Yeah.
+Okay, cool.
+Let me get to this kind of the core question
+that I think슷 a lot of people's minds that
+companies are trying to measure productivity for their teams.
+Is this improving our productivity?
+Is this hurting your productivity?
+So let me just start with this
+tricky because historically, not look, lines of code has always been a bad metric, right?
+But many folks still use lines of code as some proxy, some proxy for output or productivity
+or complexity or something, right? Well, now, for many of the systems that they,
+they would sometimes like whisper and not super talk about that uses lines of code,
+it's just blown out of the water. Because what do you mean by lines of code? If the
+I will say there are some things that we can kind of watch and pay attention to because
+So, it's pretty bad, it's kind of more relevant if we can tease out which code came from people
+and which, because now we can answer downstream questions.
+What is the quality of our code being fed back into train systems and for that code that's
+retraining systems later, especially for doing like fine tuning and local tuning, how much
+of that is machine generating?
+types of loops is that creating and what types of patterns or biases might it be in
+infert and lead reducing.
+So on the one hand, like it's not good as a productivity metric, but, but it can horm.
+Be useful, and I'll, I'll even say the same for Dora, right?
+So I have metrics there, speed metrics, their stability metrics.
+If that's all you're looking at, it's, it's not going to be sufficient anymore, because
+AI has now changed the way we think about feedback loops, right?
+They need to be to be.
+Now, what. What Dora is meant for, you know, you're kind of assessing
+the pipeline overall and she wants to be in stability. It,
+it's still that works. But we can't just blindly apply the existing metrics
+contributing, large portions of code.
+I will say if it is a prescriptive metric, it needs to be used only in the way it was prescribed.
+So Dora4, they are four key metrics.
+There's two speed metrics, a d-p-mint frequency and lead time, so code commit to deploy.
+There's stability, there's stability, m-t-t-r and change fail rate.
+If those are used to assess the speed of the pipeline, general performance of the
+pipeline, that's great.
+If you're trying to use those to understand, because implied in that is feedback loops,
+right?
+Because you used to kind of like to get you back from customers.
+We have feedback loops throughout and even sometimes in the middle of some of the pipeline
+that we really will want to leverage in ways that weren't as useful before. I won't say they weren't
+But now I think that's the power of it. We're
+useful because it's how our systems communicate with each other and also how our people do.
+You know, what proportionally offloaded
+isn't always better, less depends. spe
+and then efficiency in flow.
+Can people get in the flow?
+How much time does it take, take to do things?
+What is the flow like through our system?
+And here I would probably, probably,
+I would probably, early authors to say, you know, trust.
+Not to say
+trust wasn't important before, but now it is very, very front of mind.
+on deterministic, right? Now we can't put in a command and get back and
+accept it, we really need to evaluate it. Are we seeing hallucinations? What's the reliability?
+Does the style that we would typically write, and if it doesn't meet, is that fine?
+That. That's my kind of, it depends on, so prescriptive. You gotta make sure you're using it
+for best, right? We're going to get to your current thinking on the best way to do this stuff.
+You have a book coming out that explains how to do this well. So we're going a going to get to
+One thing I wanted to highlight in
+One of the biggest issues we're gonna probably have with AI is trust.
+understanding
+Can you say more about that? Just what is that? What do you what are you thinking will be happening?
+Where do you think things go? What are you seeing working?
+So purely speculative. But for example, Gloria Maro has done some really good work on attention and deep work and
+humans can get about four hours of good deep work a day.
+Like that's about it.
+pickle.
+go. And that's like kind of the upper limit to it.
+And I'm sure people are,
+What if you take 20 grams of creatine?
+Right, let's be microdose.
+So in the context of knowing we have about four hours of good deep work.
+And I'm sure many of us have,
+have probably hit this right where like we have good period.
+Like maybe it's morning, maybe it's afternoon,
+or it's not a good time where you're like,
+I'm going to clean out my inbox because that is all I
+I can do.
+Right? Like, I can be functional, but I'm not going to come up with my best, innovative,
+problem-solving, authoring, and, uh, writing work.
+A lot of times in the
+in the old maze three years ago, three
+years ago, we could block off four hours of time, and we could probably get
+two or three hours of really good work done.
+Now, because we were just focused, there were no interruptions,
+the nature of writing code in the system itself is interruptions at least, right?
+Because you start something and then it interjects.
+And so spew how do we think about that?
+Does that mean that a four-hour work block is still useful?
+Probably.
+But does that mean that now we can also make a 45-minute work block useful?
+because getting into the, the, the
+engineering manager coordinating all of
+of these junior AI engineers and so your point is even you have a 30 hour block you can't get deep into code
+but you can unblock all these engineers that are running off doing tasks plus your
+point is they remind you of just like here is where they left off you can just jump into this code maybe make some tweaks.
+So interesting.
+meet the business, meet the business need. It helps us with market share. It helps us attract and retain customers. It helps us
+do all of these things. And you know, I think DevX is important because it enables all of that software creation. It enables all of that
+that. It enables the, the experimentation with customers that, you know, you, you'd need a while for pro, a little bit longer to actually
+through, maybe test on a
+a production system.
+I mean, you can, do it, in hours right now.
+Maybe the opposite end of the spectrum, getting very tactical
+before weing we get into the larger, framework.
+What's just like one thing that you think an
+Eng team, agreg
+e team can do this week next week to help their developer
+experience maybe get more done.
+Honestly, I think the best thing that to do is go talk to people
+on listen. And I love it, you know, the audience, this
+I'm going to build this thing.
+really good at this. And I would say start
+So, I think it's a good thing to do, and I think it's a,
+and do anything just like, go ask them what is bothering you.
+Go ask them, yeah
+and.
+And trust me, most developers are
+going to be more than happy to tell you what's broken and what's bad and what's
+bad.
+that can be one of the best
+to the whole rest of the org, right?
+Sometimes you can process, can.
+Well, say from a business leaders standpoint, a lot of what you can do is provide structure
+and support for this organizational change.
+Communicate what you're doing, communicate what the priorities are, communicate why
+this is important, sell the sales because if you do this just like a one off side
+fully isolated project. It's really challenging to get some good momentum and get people
+to care and to get them, stay involved, right? Because it feels like it's another internal
+project that isn't going to get celebrated, but it has these huge upside potential returns
+for the business.
+It's interesting what I'm hearing here is, not that it's not like move to
+Deployment system, its processes, and people in Oregon Morale.
+Yeah. Now, there will be technical pieces that are very important, right? Especially now with AI, right?
+We're rethinking how building test systems work. We're rethinking feedback to users so that it's very, very customized in terms of
+I feel like this is the question that most founders and heads think about and the question is just like
+how do I know if my edge team is moving fast enough if they can move fast if they're just
+not performing as. What are just maybe smells, they tell you, yeah, my, my T-Vs are moving
+faster versus like this is just the, it works, this is as fast
+as they can move.
+Most teams can move faster,, right? And also, given what we know about cognitive load, not
+all speed gains are like, right? Or the upside is going to be kind of limited, right? Once
+Most people are not even near
+if you need to provision it,. it's really hard to switch tasks or projects. If someone has an opportunity to go work in another part of an org, they don't for reasons that are unclear and not political.
+That's usually a pretty good smell that there's friction. once you figure out your
+Switching costs can often be really, really high to go anywhere else.
+And so, sometimes people do that, but I've worked where
+switching orcs, within the company, you had to basically pay the same tax as
+Yeah, and you don you don't know about the quality, right?
+So like I think that's the other side is that you can always move faster.
+For what are we making the right business decisions?
+I think, you know, that for PMs come in.
+You can, we can ship trash faster every single day.
+We need strategy and really smart decisions to know what to ship.
+What to experiment with what, what features we want to do in what order and what rollout.
+Right?
+The strategy is the core.
+And then think about that, if we don't have the other pieces in place, I mean Carp-Pitch and Carp-Pitch out.
+I'm going to follow that thread, but before I do that just to mirror back what you shared.
+So signs that your team, there's a lot of low hanging fruit to improve the productivity of your team is
+is builds are always breaking,
+there's things that are constantly incorrect, false positives.
+It's hard to context switch between different on different projects,
+the system, you just sext hear people talking about the system
+is just really hard to work with.
+That roughly right?
+Yeah.
+Cool. Okay.
+So going back to the point you just made there,
+there's a sense that AI the AI is making teams so be much faster
+and because it's writing all this code for them,
+you're gonna have all these asynchronous agents,
+engineers working for you.
+Feels like a core part of your message is,
+It's one part of engineering work.
+There's so much more including figuring out what to build,
+alignment internally, maybe just speak to just,
+like there is a lot of opportunity to performs the performance productivity
+as much faster before, right?
+Like some places that you can check with, check with your experts, right?
+What type of data should I be looking at?
+What type of analysis can I do?
+because then you can also go to your data science team
+and say, like, I'm planning on doing this.
+I'd like to, because let's not just yellow AB test, right?
+Because that can be, it's a shame to do a large test
+and end up disrupting users or disrupting customers
+or breaking the privacy or security of a product.
+And also end up with data that's unusable, right?
+Because you just can't get the signal
+that you're.
+But now I'm also seeing people kind of accelerate that
+into a few days versus a few weeks.
+And so they can kind of start those key stakeholders discussions from
+much more informed kind of filled out space.
+Today's episode is brought to you by Kota.
+I personally use
+use Kota every single day to manage my podcast and also to
+manage my community.
+So I put the questions that I plan to ask every guest that's
+coming on the podcast.
+So I put my community resources.
+It's how I manage my workflows.
+Here's how Kota can help you imagine starting a project at
+work and your vision is clear.
+exactly who's and where to find the data that you need to do your part.
+In fact, you don't have to waste time searching for anything because everything your team needs from
+project trackers and OKRs to documents and spreadsheets lives in one tab, all in Coda.
+With Coda's collaborative all, all in one workspace, you get the flexibility of docs, the structure of
+spreadsheets, the power of applications, and the intelligence of A, all in one easy to
+Like I mentioned earlier, I, I use Cota every single day and more than 50,000 teams trust
+Cota to keep them more aligned and focused.
+If you're a startup team looking to increase alignment and in an in-in-in-in-in-in-in-in'in-in-in
+Coda can help you move from planning to execution in record time.
+To try it for yourself, go to coda.io today and get six months free of the team plan for
+startups.
+That's coda.io slash Lenny to get started for free and get six
+I love that you work with a bunch of different companies and a bunch of different types of businesses. I think very few people get to see inside a lot of different places.
+What kind of gains are you just seeing in terms of increased productivity with AI? Like how real, like how big of a gain have you seen.
+I'd say it's real and I would also say we don't have great measures for it yet. We're still
+trying to figure out what to measure I'm not that looks like.
+trying to figure out what to measure and what that looks, one of the best is going to be velocity.
+All the way through the system, how quickly can you get.
+How quickly can you.
+You get a feature or a product or something through the system so that you can then experiment a test, either from like idea to like final end or, or even kind of a feature and a piece through the system so we can test that's really good.
+really good. Now that's also hard to tie back directly to
+a particular AI tool in the hands of a particular developer.
+But there are some other things that we can see.
+And that I've seen is again this kind of rapid prototyping.
+I, hate lines of code, but I'm gonna use lines of code.
+We do see, I... I know I worked with
+Some folks had a whole set of companies they were looking at for folks who were like you know, you know regular users of AI coding
+and they found that.
+AI was generating
+like significantly more code for the people who were using
+but then they also found that for folks who
+were like regular users of AI coding and
+the tool kind of the more code and then the engineers themselves
+the increase was double what the coding agent gave them.
+I'd say
+And AI tool could figure it out.
+And then the latest version of codex,
+or something, looking into it and found it for him.
+Yeah, I'm hearing incredible things like that.
+Right. Well, and even also, you know, writing unit tests,
+and creating, and cleaning up documentation,
+because I know now people are like,
+Oh, well we have agents.
+I don't need to read the docs
+because there's the code there.
+Turns out agents rely on good data, right?
+because it's all about how they've been trained,
+how they've been, and better data gives you better outcomes.
+And some of that data includes documentation and comments.
+And the better documentation, the better comments,
+the better performance you're going to get out your AI tools.
+and AI can help you write that documentation.
+I've been working with Dev in a little bit,
+and it's really good, that stuff.
+Yeah.
+Okay, let's framework this book.
+Your publishing a book called Frictionless,
+which sounds like a dream.
+So I will say, I also spew
+So I will say I also wrote this with Abbi Noda who has just of DX, he has incredible experience in this
+space.
+He's worked with hundreds of companies and it was nice bouncing ideas off of him and thanks to all of
+the engineering leads and dev ex-leads and CEOs and engineers that
+we talked to to make sure that our smells were right.
+And so who is this book for?
+Let me actually take a, let me take a tangent on Abbi and DX since you mentioned.
+This is super interesting and I think it connects so directly with this conversation.
+So Abbe started this company called DX which is just such a great name for a company around
+developer experience.
+They just sold the company for a billion dollars to Atlassian.
+It's a very high multiple on their ARR.
+To me shows too shows exactly why this conversation is so valuable.
+Just how much value companies are putting into improving developer experience experience Atlass a
+hanging fruit, there's so much unlock potential, and it's hard to know where to start a lot
+of times. Even in, I've been at large companies that have a lot of expertise, a lot, a lot
+of really, really smart people. But if you haven't kind of been in this space and thinking
+about the way it's hard to know where to start, or it's easy to make simple mistakes
+upfront that mean like you kind of need to start over later, which kind of also
+brings us back to, who is this book for? It's for anyone that cares
+about DevX, right? So definitely technology leaders, anyone who's trying to kick off a
+DevX program, or is working on a DevX, DevX improvement program. I think it's particularly
+the particularly relevant for PMs, because if you're PMing something that involves software
+building and creating software, improving DevX will only help your team. And also,
+you have
+key skills and insights and instincts that are so important to DevX that many times,
+I will say I've seen engineering teams just miss.
+Okay.
+What's the framework?
+What are the steps where people start?
+So the book goes through a seven step process and then also kind of provide some key kind
+of principles at the end.
+Step one is to start the journey, right?
+So assuming you're kicking off, you can start the journey.
+And this involves what we have already talked about, right?
+Go talk to people, have a listening tour,
+synthesize what you learn, visualize the workload
+and tools, get a handle on what the current state is.
+Step two is to get a quick win.
+So start small, get a quick win, pick the right projects,
+share out what you've done.
+Step three is using data to optimize the work.
+So kind of establish some of your data foundation,
+Now you have to kind of convince everyone else, right?
+So now you want to get feedback, you want to share why this is the right strategy right now.
+Step six is to drive change at your scale.
+So here we address folks that have local scope of control, right?
+If you're starting a dev team, you want to do it yourself kind of either grassroots effort
+or global scope of control, right?
+If you're, you
+you know, the VP of developer experience or something like that,
+there are some things that you can leverage for a top down.
+Um, and then how do you drive change when you're kind of somewhere in the middle?
+Cause you can leverage both, both types of strategies.
+Uh, and then step seven is to evaluate your and show value.
+I have a loop back around and I will say that we wrote this so that you could kind
+of jump into any step wherever you are right now.
+Right.
+Like if you're picking up a team, you'll, or an issue, you'll probably
+want to start a step one.
+You should definitely start a step one.
+If you're joining an, existing initiative, you could jump into.
+picking the prior or implementing the changes.
+So there's seven steps.
+There are practices that we also recommend.
+So thinking about resourcing it, change management,
+making technologies, and then also bringing a PM lens to this.
+Right? How can we think about developer experiences,
+and how do we think about the metrics that we have?
+, I have,, I have questions, point people to the book real quick with what's the URL,
+how do they get it, when does it come out?
+Yeah, developerexperiencebook dot com.
+So right now you can sign up for the mailing list, we'll let you know when it's out
+on pre-order and we'll also be sharing pieces of the workbook.
+So we've got almost a hundred page workbook that goes along with the book and then
+it should be out
+in that it, it's not developer productivity, developer work.
+It's how do we make developer experiences better at our company,
+which includes they include, they include, but also they're happier, things like that,
+so I think that's an important element.
+Yeah, absolutely.
+Again, it's not just about productivity, right?
+we talked about this from from kind of the frame in the lens of
+This- is what engineers are also just really incredible to give them a problem and don't
+tell them how to solve it and then they can solve it better, right?
+They have the freedom, they have the innovation, they have the creativity so that they can
+solve this problem.
+If it's only about productivity, then it's just like lines of and code or number of
+PRs or whatever, right?
+But we really want to talk about value and how do we unlock value and how do we
+get value faster?
+And that involves yes, making them more productive and removing friction because then they
+to kind of help communicate because really,
+comms plans are just so important here.
+On a small, on a small scale, right?
+What we wanna do
+is look for those quick wins,
+look for things that you can do at small, it's small scale.
+are there, you know, some folks call them things paper cuts,
+but they're small things that you can do
+to help I people see the value
+a and the benefit themselves, right?
+How can the developers work get better?
+It's not a great day to, day to day work, get better.
+Kind of build momentum from there.
+If you're working from a top down structure
+and you have the remit, you still want some quick wins,
+but those quick wins can look a little more global on scale
+because you have the infrastructure or the backing
+make
+different types of changes that are only local.
+So, you know, an example of a small local change
+could be just cleaning up your tests
+in your test suites, right.
+Any team could do that.
+Any team could do that.
+More global scale might be-
+changing an organization-like process process that is just,
+I'll say I've seen a.
+I'll- I'll say I've seen a huge impact, right.
+For smaller companies,, hundreds of thousands of large companies.
+In the billions.
+Cut.
+Also we, we need to learn
+to learn how to genocate that right.
+Like what does the math look like?
+We can look at saving time, we can look at saving costs.
+We can look at a lot of different things.
+We can look at speed to value, speed to market, risk to market, risk to market production.
+The gains really are there.
+I will mention that it tends to follow something like J curve.
+Right, so we have a couple quick wins and a big win.
+And then you will hit a little divot where suddenly the,
+really obvious projects, the low hanging fruit are handled.
+to do a little bit of work, right?
+We might need to build out a little bit more infrastructure.
+We might need to build out a little more telemetry
+so that we can capture the things we want to capture.
+And then once we get that done,
+then we start to see those benefits really compound.
+So going back to that measurement number,
+what do you, right?
+how do people find these numbers?
+Cause I think that's so much of the power of this
+is saved a million dollars doing this.
+What do you look at to figure that out?
+You know, I think there are a few different things
+to keep in mind, right?
+Who is
+who is our key audience?
+And we usually have a few, right?
+We really want to be able to speak to developers because they're the ones I
+will be using the systems that will be partnering with you on either building them or at least
+terms. So, if something gets faster, they can spend time doing set up when they
+But I don't say they're not value add, they are
+not value add spe from an individual human perspective, if we can automate as much as possible,
+that
+because they
+have to keep re running tests or kind of go clean up test suites
+from a perspective cleaning up a test build suite can be
+cloud cost savings because all those tests are more on a cloud
+that they always fail or they're just kind of a waste of spend
+that can be useful recovering some capacity right
+so how much
+Equivalent to that, by the way, are we losing on things that are not necessarily value-add?
+And then sometimes we can correlate to business outcomes and correlate is usually the best we
+can do here but there can be some pretty compelling
+What should people do to understand what impact AI tools have on their productivity?
+Because they're spending a lot of money on it like, I don't know, what are we getting
+out of this?
+I guess things are moving faster, but I don't know.ותר
+So if someone had to just, okay,, here's what I should probably try to do.
+What would be your best advice here for measuring
+It depends on what your leadership change is about.
+Right.
+Right.
+, we're usually pretty good at figuring out what matters to developers,
+But if we're trying to just identify two or three data points to really kind of focus on because when we're first starting with data, sometimes iting challenging.
+What do they care about?
+Think about the messaging you've been hearing.
+Have they been talking about market share, right?
+Losing market share or competitiveness in the marketplace.
+If that's it, focus on speed.
+Think about capture metrics for speed for from like feature to production
+or feature to customer or feature to experiment
+and what that feed that loop looks like.
+If they're talking about, uh, profit margin all the time, right now
+Now, we always talk about money, because this is business.
+But if that seems to be an overarching narrative,
+look for ways that you can save money
+and then translate that into recovered and recouped
+headcount cost.
+Or sometimes, you'll kind of reinvent, change a process,
+and then you no longer need as many vendors.
+So reductions in vendor's spend can also help there.
+And I say also it depends because sometimes something
+they'll say something.
+leadership will say something and it
+we're doing and the value that we provide.
+That is such good advice.
+So just to reflect back, the advice here is
+if your company is trying to, to figure out,
+what sort of impact are AI tools having on our company?
+So it's just like, what does the company care about most?
+What do leaders care about most?
+Could. Could be market share, could be profit,
+my dear, could be velocity.
+We need higher velocity.
+Or we need to transform, transformation.
+So your advice, there's like, figure that out
+based on words and phrases you're hearing
+then, figure out ways to measure that,
+ways to measure market share growing,
+profit margin increasing.
+I, I love these examples,
+like time from feature idea to production
+or to experiments,年, so maybe start tracking
+that. If it's margin, it's like money saved
+by fewer tests failing or some vendor
+you don't have to pay for, things like, that,
+and then velocity, I imagine that's where
+things like Dora
+r a command of just like speed of engineering
+shipping or what would you think in there for
+, you know, one of those, uh, I would pick as, as far out of small as you can, so for my DEA to customer or idea to experiment, how long does that take? How long does, does it typically take? And how long can it take? And does it take now with, uh, improved use of AI tooling and reduction in friction, right.
+Right. And that's where I will say, we talk about this a little bit in the book, you know, how do we deal with attribution challenges? So like what was responsible for this? Was it the DEFX or was it AI?
+AI. Go with the disclose that, right? Say, yes, we rolled out AI, tools. We also had
+this effort in DevX, they partnered with
+If people were starting to do this today, say they're just like I want to start measuring developer experience
+Are there like a two or three metrics everybody needs they should just start measuring ASAP
+If you're just starting today, nothing at all talk to people obviously after that I would do surveys
+Because surveys can give you a nice kind of overall view of the landscape quickly
+So that you know where the big kind of challenges are and I say that because if you're just starting you you might not have
+. . . . . . . . . . . . . .
+challenges to getting work done and let them pick, you know,
+maybe either from a set of tools or
+maybe like a set of processes and then say,
+let them pick three, just three.
+Oh, how often does this affect you? Right?
+Is this hourly? Is this daily?
+Is this weekly? Is this quarterly? Right?
+Because sometimes it hits you every single day and you're just mad about it.
+Sometimes it only hits you once a quarter because it's end of quarter,
+but it's so onerous. Right.
+It's kind of open text, right, like anything else we should know that that can give you
+. and, incredible, incredible signal because by making folks prioritize the top three things to let
+them pick everything like it makes the data super super messy but three things and how
+often you can just come up with a score or a weighted score if you want and then go kind
+of dig into where should that data where should that data do we need but also at
+It.
+Yeah.
+, I love how all this just comes back to starting by talking to people and asking them these things,.
+Yeah.
+And everyone thinks they're doing this, but most people are not doing this enough.
+So interviews are data and that's important.
+Surveys are, we can turn into counts, but that's where we're careful, right?
+A lot of folks go to write a
+question and they'll say something like.
+Were the build and test systems slower complicated
+in the last week?
+You're asking four different questions there.
+If someone answers yes, was it the build?
+Was it the test?
+Was it slow?
+Or was it like flaky or complicated or something, right?
+So it can be really difficult to untangle
+what the signal is you're actually getting there.
+And so it is worth time chatting with someone
+who's familiar with survey design,
+having a conversation with Claude
+I'm gonna try to GPT around, hear the survey questions,
+or can you propose them?
+and then make a couple rounds.
+Is this a good survey question?
+What questions can I answer from the data that I
+Happiness is work, happiness is family, happiness is hobbies,,-happiness is weekends, happiness- there's so many things contributing to happiness.
+Now, that doesn't mean I don't care about happiness. I think happiness
+�
+And people are...
+What's the same thing?
+It's not.
+Because you can you can ask, are you satisfied, it contributes to happiness.
+And I a used to joke.
+Remember the old commercials like happy cows make happy cheese?
+How to kill green?
+That was the best.
+make it a little
+different.
+I'm going to show you
+Make happy code, they write, they write better programs, they do better work, um, they're, they're better team members and collaborators, but, the capturing and trying to directly influence happiness, like, that's, that's, that's not what we're here for, right?
+And it's just, it's too challenging.
+It's too un-composite.
+Satisfaction can give us some signal.
+And a totally different direction.
+Uh, in terms of just tools, you see people using.
+Oh yeah, this one's really,
+calmly great for people this just like a tool people are finding a lot of success
+with like... like there's the common one scope by a cursor.
+I don't know.
+It's not that the you you want to share just like a check this tool out.
+People seem to love it.
+I think the you right.
+Oh, I love your job.
+I love your job.
+Yeah, I love your job.
+I love your job.
+I love your job.
+I love your job.
+It's so interesting. For example, Claude Code, find ways to clean up storage on my
+laptop. And it just tells you here's a bunch of files, it's just like chat,
+GPT running on your computer and you could do all kinds of crazy stuff on
+your computer for, for you like a little mini mini-god. Well, I'm gonna do that now.
+This is great. So good. Yeah, that's why I'm running. I had a Dan Shippers on the
+podcast and he said Claude Code is the most underrated슷ed tool out-there
+because people don't realize what it
+that we kind of, collect and capture.
+And by that I mean, we want, we want to identify a problem, right?
+We want to think about from a set of users, we want to think about creating MVPs and
+experiments and get fast feedback, you know, some do some rapid iteration, we want to
+have a strategy, we want to know who our addressable market is, we want to know what success
+is, we want to basically have a go to market function, right?
+We need to have comms, we need to get continuous feedback
+from our customers, we wanna keep improving.
+And at some point we wanna think about sun setting,
+something, right? spe it in maintenance mode,
+and sun setting.
+And I think.
+And I think that's important in general, but I think it's extra important now because when we're using AI tools,
+we're using AI-
+we're embed ing AI tools, we're embeding AI into our products,
+things are changing so rapidly,
+that it can be really important now because when we have AI tools,
+is this metric that we've had of the last 10 years still important or should this be sunset because it's not really important anymore?
+And the types of just just that I need before we get very exciting lightning round
+I
+design and like, like, like redecorating rooms and stuff.
+Um, I'm, I'm not good at, I'm not good at this
+this.
+But I've really been loving chat, GPT and Gemini especially to render pictures for me.
+Right.
+So I can give it the floor plan.
+I can give it one shot of the room, that's like definitely not what it's
+ables to look like, and then I can give it pictures of a couple
+different things and I can just tell it, change the walls or change the
+furniture layout or change something.
+And it
+relatively quick. It helps me kind of visualize the things again. I know what I like, but I don't know how to get there.
+So I know if I like it or not. Which is probably a very random.
+It's fun for now.
+My wife does exactly the same thing she's sending me constantly. Here's what this
+look like in her living room. Here's this water feature
+feature. It's so it's just like house with this new rock.
+And all I do is just upload these two photos and just like how would this
+I've been impressed a couple times. I mean
+definitely the machines are listening to us. It's given me a mock-up of a room or something and then it throws in a dog bed and
+I have I have dogs. I'm like I did not tell you to do that but yeah
+That's probably the Kylin color and style of dog bed that I should have in this room.
+Speaking of that have you tried this use ask. Chat Jpt generate an image of what you think my house looks like based on everything
+You know there's a lot.
+I've got five questions for you.
+You ready?
+So. Like it's not a great back mechanic by Stuart McGill is incredible.
+So shout out to anyone who has hurt lower back.
+It's for a lay person to read through and like figure out how to fix lower back problems.
+Kind of weird.
+I love how big things get done.
+I can't pronounce the
+a bonus one. The Undoing Project by Michael Lewis. Matt Velas.
+I
+shrinking, shrinking, have you seen shrinking?
+I heard it, the the therapists and yeah,
+I did not recommend it, it's like, okay, okay, sweet.
+Is there a product you
+turns it into ice cream. Oh man. Which is delicious. Another one is a Jura. I'd love, I'd love good coffee and I'm not great at
+making it. So I can just push the button and it'll give me anything I want, including lattes, cappuccinos, or anything.
+So that's kind of... Sweet. Okay. Do you have a favorite- To sugar and caffeine, I just need to power through the day.
+There's engineering productivity 101. Yeah. Oh man. Okay, two more questions. Do you have a favorite
+favorite life motto that they often find useful in work or life and come back to you in various ways.
+Yeah, I think one that's come up a couple times, it's not like that it's more the vibeệc
+but like hindsight is 2020 but it's also really dumb, right? I think if we made the best decision
+we could at the time with the information that we had available, like that it is for this,
+right? If you make a bad decision because, because you made a bad decision and you,
+you had the information, not great. But,
+I think we give ourselves or other people enough grace because
+we always end up finding more information out later.
+Here, here. Final question. I was going to ask you something
+else, but as we are here, you share your role at Google.
+Maybe justותר about that. Would you have up to there?
+Why you joined Google? Anything, anything folks should know.
+Sure. So, I am Senior Director of Developer Intelligence
+in core, so it's super exciting if all
+all these
+things.
+It's focused on Google and all their
+properties and their underlying
+infrastructure.
+How can we improve developer productivity,
+velocity, all of these things we've been
+talking about.
+And because I'm kind of the numbers
+person, right?
+measuring it.
+How does measurement change?
+How do feedback loops change?
+How can we improve the experience
+throughout and then kind of the
+And then that changed through an organization in ways that are
+meaningful and impactful and faster than they've been before.
+Nice job, Google, getting Nicole.
+What a win.
+I need to get some more Google stock ASAP.
+OK, two follow questions.
+We're can folks finding online if they want to find your book on
+the deeper and a can listeners be useful to you.
+So online, you can find the book at developer, experience book.com.
+I
+Sometimes it's a mess. I try to wave through all of the noise that I get there. To be useful,
+you can subscribe to the show on Apple Podcasts, Spotify, or your favorite podcast app.
+Also, please consider seeing us rating or leaving a review, as that really helps other listeners find the podcast.
+You can find all past episodes or learn more about the show, past.com.
+See you in the next episode.

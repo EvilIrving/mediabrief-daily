@@ -1,0 +1,331 @@
+Welcome to Sintax on this, Monday hasty treat.
+We're, going to be talking about node modules and a, a, a, a, a, a,
+I'm going to be talking about node modules and, uh, why are the node modules folder inside
+inside of that giant behemoth of a folder inside of every single one of your projects?
+I'm a developer in Denver and with me as always is Wes, the Node Modules boss.
+Yeah, so it's for a bit of a meme in the web development world that the Node is massive.
+Anytime-anytime anyone brings up working in JavaScript,
+Oh well, it's so huge and then there's that meme with the heaviest things on earth and the node module is the biggest one.
+It's like this how do you center stuff in CSS of CSS. And I laugh at those, but also like, well like, it's not, your end JavaScript is not actually going to be that big.
+most
+of that, I would say almost all of it is
+not the actual JavaScript that will make
+into your bundle or your run time or something like that.
+So I thought let's do a show and just talk about what is actually in there, why are these things so big because people like
+being so big. And certainly there are issues that could but there's a lot of stuff in there that makes your development environment
+very smooth and simple and make sure that it runs on older versions of Node.
+So let's get on into it. The spoiler alert is text. Text is surprisingly large, especially
+when you get into things that are descriptions and polyfills. And I'm working on the syntax
+transcripts right now. And we have annotations for every single word of
+when they start and finish. And some of these files are
+a little. So I'm a mags and I was like, we can't look, we
+can't load that
+on the, the website. But yeah, it's, that's weights,
+that's way too big to load on a website. But it actually
+jizzips very well because there jizzip is the compression. Compression
+algorithm that servers consent and the browser can unpack
+it. And it, it's, actually, like 100 times smaller, I
+I- I was only like, I, I still have to trim it down but, but it was like 300k or something
+like that when I, I gzipped it because the, the the JSON keys of start and end are the
+same thing on every single word, right, and the browser only has to send that once
+for every time that it is, even if it's in there 6,000 times.
+Yeah.
+You know, one common way that developers can illustrate just how big text is in general
+is log files, right?
+We all have had the experience where a log file gets written in, and written in, and all
+of this on your hard drive disk is out of space.
+And you're wondering where that went.
+And it turns out it's just from writing a lot of text to log file.
+So at the end of the day, any time you're dealing you're dealing with anything that gets
+stored in a file, bigger it is the more space it's going to take up, and eventually
+it could take up a lot of space.
+So, yeah, you know, there doesn't need to be a lot
+of multi-media or things to have
+very large files.
+If you ever used a desk or any of those things
+that will help you.
+I love Daisy's disk.
+Yeah, Daisy's disk is fantastic if you are a Mac user.
+I'm very positive there's similar things for Windows,
+but what it does is it's a visualizer
+that shows you how big all of your folders are
+and then you can dive in and see where exactly
+the space on your hard disk is being taken up with.
+Anybody who's ever used any of those
+will instantly see how big their cash node modules
+their project node modules folders actually are on your hard disk.
+They are taking up a lot of space, which is one of the reasons why we also
+often don't commit them to GitHub or anything like that.
+I mean, and we can generate them automatically anytime we run an
+NPM install anyways. I actually don't know if I
+did this to research the show.
+I just took, I took a couple, like I opened up a couple instances of it.
+of it. And I took BossMonster, which is my course platform. I took the whole, like, the
+back modules, popped that in there. And then I took the front end, like the React application
+node modules. And I took a couple other projects and I just opened them up and said, all right,
+what's actually big in here? And like, where's it coming from? So the first one is
+source files. So when somebody publishes something to NPM, it's generally run through a bundler.
+can publish straight up JavaScript to NPM. However, often people are writing it in TypeScript
+or people are writing it ESM and they want to be able to ship a common JS version. Or
+for whatever, someone wrote it in CoffeeScript and they need to be able to transpile.
+It's JavaScript. So generally, they are shipping the built version, but a lot of people don't
+take the source files out of the bundled version either either whether that's because
+they like to be able to reference it. You can pop up in your no modules. You can see
+the actual source or whether that's because people don't know that there is a file called
+npm ignore and that will exclude it. I've had published a couple of those modules and
+I had some screenshots from the github read me and that screenshot was like, I don't
+know, like 400k and it was, it was added to the bundle and like that's totally unnecessary
+because there's no world where somebody needs to see that screenshot in the readme in their
+node modules folder. And that's half a meg right there, you know? And like, so times
+that by a thousand node modules, everybody's adding an accidental extra 200K. It really adds
+up. We've had node modules folders that are gigs and gigs, which is like a good
+spot to find space if you run out of hard drive space.
+what's in there, because chances are, especially like the one
+that's in your use wherever it may live for cash modules
+can end up getting pretty big.
+You know, I personally
+When I'm working in a third party package, I really do a pretty
+able to get into the source code for what I'm working on, to
+further understand it, because not all documentation is great.
+, not only that, but it, but it honestly helps me become a better to be able to read
+source code and being able to read the source code of the thing I'm using,
+especially in, in components or bringing a svelte component or something like that,
+being able to dive into that, but that component,
+it actually looks like under the hood will allow you to understand its
+implementation a little bit more and how to use it properly under the hood.
+We did a check. I did a
+search and we said under the hood in a quarter of them, which is
+significant. Definitely significant. Next up, we have types.
+This actually is pretty large in that the AWS SDK, so the
+this is one of my projects had the S
+S S S and they had 14 megs alone of just types. So
+so you want your type
+you want your TypeScript to just work in that's probably an outlier but like the AWS SDK is a single package and it has literally like AWS has
+a million services and I needed to
+and I was installing the transcription package
+but you install literally
+the SDK for
+those types are, are still used by VS code to give you really nice
+There's just like a whole document full of semi-colons.
+And that takes up a lot of space.
+And source maps are, are just kind of wild.
+If you ever, if you ever look into one exactly what's going on.
+Somebody actually, maybe I- I'll find a link to that tweet because somebody explained what's
+up with all of those semi-colons in a source map.
+But you know the source map files are text and they have to be shipped if you
+want to have a better debugging experience.
+Polyf- so in the most modern version.
+So even if you are running on the most modern version.
+So even if you are running on the most modern version, they will often include core j s as the dependency and when you n p m install it that comes along.
+comes along and you're literally every package, not every package, but CoreJS is one of the
+most popular node modules out there. Let's take a look at it on NPM
+to type in my package and it brings me right to the NPM.
+You are on.
+I love it.
+Yeah.
+Is that an extension or did you write that?
+No, it
+it's extension that you can just install.
+Oh yeah.
+Do you read it?
+Yeah.
+Bundlephobia shows you how big an NPM package is,
+which I guess is relevant to this episode.
+Maybe we should link to NPM phobia allows you to look,
+up,
+up and see, you know,
+I use NPM phobia a lot myself when I'm trying to debug
+something that I'm shipping to see how big it actually is
+or what I'm shipping to users.
+And also speaking of Raycast in the sideways,
+I accidentally set up a snippet for Raycast
+and like not thinking that SC would autocomplete
+to my email.
+Now I can't type any words with SC in it
+without it autocompleting my email
+and me getting really frustrated.
+So I'm going to delete that at this very second.
+I prefix all my expansions with a colon.
+And that- Oh, that's some-
+Yeah, that way never. Why are you so smart?
+I've been doing that for probably like 10 years and it's awesome because very rarely
+do I ever hit a weird thing where it expands unintentionally..
+So just colon and then whatever it is.
+All of my inventions are are prefixed with that.
+You could you could use
+another something else like a plus or something.
+But I'm going to use colon.
+Yeah, colon is a great.
+It's driving through.
+I have another one which is CC for the fake credit card number for
+brain tree and stripe.
+Oh, man, colon CC.
+Let me tell you what I've done in a better touch tool.
+So better touch tool will allow you to orchestrate actions.
+So I have one that is if I hit hyper S,
+it paste the fake stripe credit card 424242,
+hits the tab key, paste in the month and day expiry,
+hits a tab key, paste in
+it in the CCV, hits a tab key twice, puts in a postal code,
+and then hits a tab key and enters it.
+So if you're testing Stripe, so that's Bane.
+You know, one of those processes where you just tried over and over again.
+All
+where we polyfills it's Babel or Babel or Babel every single Babel plug-in which is included in most node modules includes 8K of code and almost 860K of types and I couldn't really one out because I think it's because every Babel plug-in ships every other Babel plug-in of types.
+every other bubble plug-ins types, but every bubble plug-in has a meg,
+almost a meg of types in it, which is quite a bit.
+Cause you might have 20, 30, 40 bubble plug-ins per project.
+So that's, that's easy 30, 30 megs, right?
+Add it to your project every time that you install it.
+That is significant. I didn't think I realized. No, I didn't either.
+That's why I love this daisy disk.
+just drop it in and you could take a look at, oh wow, I didn't realize that I was there,
+right? Because you almost never look at the exported value. Like you look on GitHub, you,
+you don't see what's actually published to NPM. And now NPM finally has like a search,
+You can click on the tab and see the code and see what's there. It will tell you where
+everything is, but it's not very good. So I, I kind of wish that was better.
+Yeah. Well, and also too, OK, we're living in this world where we have ESM, ECM script
+modules, as well as CJS, CommonJS, we, you know, they're not super compatible all the
+time.
+Yeah. Yeah. It's sort of that's the ecosystem. Right. You got to make it work with both of them. So you ship literally two versions of each of them or sometimes there's even three versions of being ship. What was the reason for that?
+I think sometimes what I was the reason for three. Yeah. I think maybe there was like a browser version, a node, ESM version and then a node common JS version or and then sometimes there's even just like a version. You can include
+with a script tag. You know, so it's pretty crazy.
+Next one is Markdowns. Again, a lot of room.
+So I opened up my react project for the player for my boss monster and
+I did a search for all Markdown files and then I tallyed up the total 10
+mags of Markdown.
+There's licenses like you have to ship licenses
+with your open source code, that's kind of the rule, right?
+You can't, you can't root of those things.
+The licenses are your allowed to distribute code
+or you're allowed to link back to code.
+So the license sort has to come along,
+change logs for every single thing that has ever changed.
+Readme's all of those good
+That is significant.
+Yeah.
+strings alone. Wow. I find myself just thinking like, wow, this is all significant. All of
+the stuff that isn't the actual code we're using at any given point, right? Just dump it.
+Yeah. If you want to know like, what is this type doesn't have significant enough overlap?
+I don't like it doesn't make any sense that you would just go
+Oh, I'm installing type script now. Let me go install the the Chinese translations for that. Yeah, it's just just has to work
+So that's why every single person that installs typescript gets every single language that it's ever been translated to and that's
+Right none of these things significant like that the translations can just could be almost be bumpy. Copy
+It's not, but they add up.
+Speaking of all of this though a kind of makes you wonder
+if somebody like PNPM or any of these install scripts
+could have like some sort of configuration option
+Nuke out certain things.
+Now, granted, this sounds like a tricky situation.
+but like imagine you had a, package installer
+that just removed, any changelog or read me
+or license file automatically,
+automatically removed CJS
+if you're using an ESM project,
+automatically removed any of the,
+little things that we've been talking about here
+that you might not be using.
+I feel like that would just, you would just run
+like automatically nuke those files
+So, first of all, chill out, it's not that big of a deal.
+Yeah, for sure.
+Second of all, bundle your in code and- even if it's- if you do care about what that looks
+like, then if you could- you could bundle your code and- and ship it.
+like...
+Like if you are like, okay, well, I need to- like the example is, we have a show coming
+up on this, is that note allows you to package the- your entire application into a single executable
+file and that includes your code that includes the run time and all of your dependencies.
+If you are worried that this thing needs to be as small as possible and I can't be having
+four megs of TypeScript translations being put into the final thing, then you can just
+run your code through any bundler, V, or ES build or any of these tools and out the other
+and you're going to get under a meg, probably just 50, 100,
+depends on how large the application is.
+But the actual code that runs your application
+is not very large in comparison to the rest of the rest of the stuff.
+Yeah, I mean, none of it really matters.
+It's just a mistake.
+My computer's got two terabytes of hard drive space.
+What's a couple hundred megs?
+Oh, man, when I was on one terabyte, I was on one terabyte,
+I was struggling, but as like Scott and I,
+the record video for a living, right?
+Yeah, you want to see what takes up big files in this video.
+It's true, I have like one hour of screen recording
+can be like a 30 gig file for me, you know?
+It
+let me tell you, I've been working in videos since like 2004 2004,
+, maybe even longer.
+back when my hard drive was 40 gigabytes.
+Doing anything in video was,
+I had a Lacy 200 gigabyte external hard drive
+a joke.
+But now that the SSDs are somewhat coming downing down, Apple still charges you through
+to NPM. So you can add NPM ignore use and use P.
+N. P. N. P. about that clean up after you drop older versions of node or older versions
+of browsers. This I the um
+Babel N. V. Is very good at
+in that it will tell it. I'm supporting these browsers and it will figure out
+these are the polyfills you need and iton add in anymore.
+Yeah, you could also just use PNPM,
+which isn't necessarily an option for everybody,
+considering moving your package manager is a bit of a buy-in.
+But you know what?
+I've been using PNPM for a little while.
+The switch was not that painful.
+Maybe there's a couple of things here and there,
+but PNPM what it does-
+is it stores all of them in a root folder
+under your user name and caches them.
+So that you only have to download each of them once
+and then it does, what's it called?
+SimLinks for everything.
+You have a mono repo, it's doing SimLs.
+It's always Simlinking everything together
+so that way it's not loading.
+One package 100 times on your machine,
+you're just loading it once per version, so to say.
+So PNPM is a great solution and it's very,
+it's very fast because of that.
+It has to download less.
+it's more efficient because
+it all it it doesn't have to take up as much hard drive space
+and it's also a great feature for me.
+If you're like a Y
+or an NPM folk, give PNPM an actual try
+. It's really easy to switch over to.
+And I think you might like.
+It's been a nice little shift for me.
+I've been on it for over a year and a half and
+have nothing but great things to say.
+And then finally there's a tool called N.P.Kill.
+You just run this. You run N.P.X. N.P.Kill.
+and it will search that.
+And it will search your hard drive for node modules, folders.
+It will tell you how
+long you last worked on that project and it will tell you how large those are.
+And if you are looking...
+Looking to free up some space on your hard, hard, like I remember I did it once and I
+hadn't done it.
+It was the first time I've done it, like ever.
+And I, I, I had 30 gigs of node modules that I deleted, which is significant.
+because I am working on six or seven projects.
+I don't want to delete those known modules just yet.
+No, you would run it from the directory
+that you're currently in.
+I'm in an A directory, I would like to remove it from this directory.
+I would like to remove it from this directory, and I would like to
+just nuke out my known modules sometimes instead of just an RMRF.
+You can run the same thing for all of your site experiments, I don't have you structure your sites folder, but for me, I have an EXP
+which is my experience folder.
+Anytime I'm working on anything
+that I just want a quick hack on,
+I throw it in there.
+And sometimes you forget about that stuff.
+So to just a just regularly run all of the node modules
+within this experiments folder, Nuke it
+that's fine.
+Experiments is one that I again it scares me. I know that it works fine, but I love the the
+NP kill has like the best UI like use your arrow keys hit space to delete it. And I don and that
+Oh man, it's the best. I'm gonna say it on you come to me when you delete the wrong directory by accident
+Hey, man, you're talking to the guy who ran get, get clean on his home. Oh, yeah
+All right, that's it for today. Thank you everybody for tuning in catch you on Wednesday

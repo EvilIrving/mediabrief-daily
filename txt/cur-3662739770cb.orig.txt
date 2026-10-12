@@ -1,0 +1,353 @@
+Oh, welcome to syntax. Today, we're going to be talking about react server components.
+It is April of 2025. I just had to look at my clock to know that it is April of 2025.
+And you might not know where we're at with these things, you know, some people might
+still view react server components as this next JS feature. So what is the status
+of them, how could you use them?
+Even what are they to a?
+A degree and just generally was up with react server components.
+What's the deal with the deal with react
+react server components?
+What's the deal?
+Like they've been around, they've been around since like, like for
+five years, but also they're still having, I don't feel like they
+have fully caught on yet.
+So we're going to try to attempt to explain why and what they are and,
+and sort of where you can use them right now.
+and it's not just NextJS.
+And what's the deal with bad websites?
+Your website shouldn't be bad.
+You should be able to have a tool like Sentry.
+If your website's bad,
+it's probably because spew you're not using Sent.
+Sentry at sentry.io, the perfect place to make sure your application is running as good as it can.
+, fast, friendly, not crashing for users, no errors, or even functioning at all, if you want to make sure your application is working.
+and not only just make sure, but let's get this straight.
+It's about fixing it fast.
+You have things like session replay to see exactly a video
+of what happened, what went wrong when the thing crashed.
+You have all kinds of tools to make solving the bugs
+really, really fast.
+There's even some AI Assistant in there as well.
+It's the best.
+It's seriously the best.
+So this podcast is presented by Century.
+Head on over to Century.io for a syntax.
+Sign up and use the coupon code TastyTreat
+all lowercase all one word and get two months for free.
+Let's give a quick rundown of what React server components actually are because I do feel like
+even today, when people talk about them, there is some misunderstanding, maybe a little bit
+about what exactly they do.
+Mm-hmm.
+Yeah, a lot of people think, well, my client components are already server rendered, so
+like isn't that good enough?
+So server components in React are components that are rendered either as part of a build
+step, which is like ahead of time, like server components don't require a server, which is
+kind of funny. But in most cases, you're probably going to be rendered on demand entirely on
+the server. That differs from client components, which client components are read often rendered,
+obviously in the client, but they can also still be be server rendered. The difference
+that you can simply just await before you return data,
+which is amazing API for many use cases.
+So you don't have to do like a weird loading state
+and if it's loading, then return nothing.
+You can simply just await like a database call
+and then right once that await resolved
+you can go ahead a head and render out your markup, your JSX.
+Yes.
+Server components they can also be suspended.
+So basically you can continue rendering
+rest
+of your app while these things are working on their their render.
+So it's not like it's.
+Going to hold up if you are eating them.
+Yeah.
+Modern react is is often streamed, meaning that the browser will start to
+to render pieces of the website.
+And then if you have something that might take a little while, for example,
+on my new website, it's probably by time you're listening to this Westboss.com.
+there's a like a Twitter in the footer, right?
+And I don
+So you can suspend that and then the rest of the website will get sent and then when that one component is done, it's no longer suspended and then it will send the mark-up from the server to the client and render it on out.
+Do you got a Twitter in the footer, my guy, yeah, I had to I had to do some
+somewhat seedy sketchy stuff in order to get the
+Twitter API working, but I've I've I've got it entirely reverse engineered. I'm
+pretty and it's been working solid for a couple months now. Nice.
+Yeah, server components. Basically, the way that it sends a an RSC a react server component
+payload to browser. It's basically sending text, right, which is
+it is it's rehydrated, right? Is that the word you would use
+in this? No, because, because rehydrated assumes that
+things are bound to it. Okay, rehydrated means that the
+browser is setting it up. So server components are simply
+just sending either their HTML to the browser. Or if you
+you are doing something, one of the components, it is simply just, just sending the outputted
+react payload.
+You can think of it as a server sending HTML is not technically HTML is technically react
+code that is used to embed it, but it's not, no, it's not fair to say that it's rehydrated
+because there's no, there's no client side stuff happening on a server function.
+Unless you're explicitly using a client component.
+Gotcha.
+That tracks.
+Forgive me if I'm a little off on some of these things.
+This felt way of doing things doesn't have any of this stuff. so I, my understanding,
+my understanding of this stuff is definitely from a React developer who hasn-t used React
+server components beyond.
+Yes.
+This is a very basic.
+And so because of that, you could think of this conceptually, like you said it's not HTML that's being sent from the server,
+You could think of it conceptually as if you were,
+you know, like when we're doing HTMLX stuff, right?
+People say you have something and it just returns HTML
+instead of data and swaps HTML.
+Conceptually, it's similar to that,
+except for it is React code and not
+HTML straight up.
+Exactly, but it's not bringing anything else with it.
+So, if you had like an expensive library to do, like mark down parsing or code highlighting
+is a good example.
+In order to do code highlighting in the browser, you either have to use own a smaller library
+that's not as good, or you can use a very large library, you have to download the entire
+thing in the browser, which is not awful in some cases, but in the case of a server
+component for my code blocks, I render it a 100% on the server and it simply just sends
+the HTML to the browser. And I don't have to worry about how large any of my plug-ins or
+markdown parsing or for code highlighting or anything like, because it all happens
+on the server and just a thin little markup is sent to the client.�
+Yeah, it sends the result.
+Exactly, the result, the cd.
+The.
+Yes, yeah.
+Exactly.
+Server functions, which are, were previously called server actions, are, functions that on-
+More on a form submission, meaning that you essentially get RPC, meaning that you can
+write a function that, thatชruns on the server, you can simply just call that from your UI
+and instead of it importing that server function into your client side application, it will
+just run the RPC back and forth commands between the two and send the data from one
+to another.
+You can use for use-action-STADES is the big one for maintaining what comes back.
+What comes from back from any pending like if something is waiting, clearing caches,-all
+that stuff.
+Word.
+That's like a very quick rundown of what React server components are.
+So where are we at now nouve all of the different frameworks?
+Yeah.
+So I guess the joke of it being just a Next.js feature doesn't really track these days, but
+you will see that there is not a ton of support still out there with two major platforms supporting it well,
+And then other things, you know, potentially.
+So JS, full support, it's, you know, the first one to really embrace React server components.
+The Waku, which is honestly really exciting framework, waku.dot, it's the mid framework,
+So, I moved my entire website, which was on Gatsby, I moved it to Next.js and I found
+myself frustrated not with 3x server components, but just with having to do things in a very
+specific Next.js way, which normally I don't mind because I'm building stuff from scratch,
+But having to try to shoehorn my like Gatsby code into Next.js specific way, it was just
+it was a bit too frustrating for me and the builds kept breaking and stuff like that.
+So I was like, you know what, I'm gonna try Waku.
+three or four VIT processes put together because there
+which I really like because you will have a lot of things with that.
+Pleasant in the scroll bar is a great way of looking at anything you've seen before. Is that even possible? How is that- how are they doing that? I didn't know you could put a gradient scroll bar or have they implemented it? They possibly implemented the scroll bar. I don
+I don't know I haven't done that. There's a lot of great ingredients stuff here on
+this website whether that's gradient text. Oh yeah scroll bar thumb. It looks good.
+I've never seen that before. Well today I learned what about what does it look like in safari hold on.
+on scroll bar, scroll bar, we're every, oh it works in Safari, let's try it on Firefox, fire
+fox is the most likely, no, the standardization of the scroll bar CSS API, but from what
+I remember it's it was relatively limited. Okay. No gradient on my
+Firefox. No, no gradient on Firefox. This it's still using the older like
+colon colon web kit scroll bar web kit. Yeah. Big fan. That looks cool. Yeah. Cool
+site. Candy code. Yes. Work. React router. Not shipped yet.
+Rack router has been talking about react server components for probably like
+well a couple of years now. It was supposed to
+be the like the remake to React Rider 7 and then spew
+and then it never got its way in. There's been a pull request open for a long time.
+It's a very hard time to get right.
+I think it's very hard for these library authors to try to bring it in alongside Michael Jackson who's
+one of the creators of React Router, he put out a tweet that says,
+react server components are nice in theory, but five years in,
+it's not working out. It's been fun. React, you taught me a lot,
+but I'm done. And he says,
+have fun with your react server DOM ESM V-Client server bundles.
+And I think that that's what it is, is that a framework that
+supports react server components
+goes so deep into
+And you cannot share a singleton between the two like it's just it's not possible at all
+It's it's really frustrating even to be clear people are asking are you done with react or just react server components?
+And he the whole thing on the greener pastures, so it seems like he's done with react
+This has been like the straw that broke the camel's back. Yeah, I I'm curious
+I maybe we should have Manda to talk about this because I've been following his gith out for about a year now
+And he's been cranking out
+all kinds of
+the standards based modules
+that are based on ESM, things that are based on web standards,
+things that are.
+, browser built-ins and.
+And just like something that I've been kind of, I've been beating this drum asילו
+well.
+I did a couple of conference talks a couple of times about this.
+It's just like standards-based JavaScript is the future.
+And a lot of this React server component stuff is not that.
+It's very heavy on bundlers.
+And I like I like that components, but itner the like the standards that that we know and love
+So I'd be curious to see he's cooking. He's cooking on something. No, you can tell cuz like like they they said that something will come of
+remix and like they haven't announced what that is
+He's been cranking out all these tiny little modules. Which?
+He's doing that for a reason. He's he's definitely
+I'm curious to see what it's cooking.
+Wasn't there some new HTML or a new
+new JavaScript API for swapping DOM elements or something recently?
+What's that called?
+I'm trying to Google it and I cannot find the
+the name of it.
+It's moved before.
+This is a new JavaScript API which I will allow you to move parts of your DOM
+Somewhere else without
+Normally what happens is if you move a DOM element you take it out of the DOM you lose all of your state
+You lose all of your bindings all of your event listeners everything and then you put it back in and it has to
+Render it and it's got to re-add your bindings and all of that and this new move before API will allow you to
+Simply just move things in the DOM without having to detach any of that. So
+Why why you asking a about that? What do you what are you thinking?
+Oh, just that like, you know, the ways that we work in front end frameworks, they seem to be being aided
+a little bit more by newer JavaScript APIs and even newer CSS APIs, like whether that
+is, you know, view transition, you know, easier ways to swap our elements that are
+more less needing of a shadow DOM type of situation.
+I don't really know.
+, it just feels like the web-platform itself is getting more friendly towards the types of
+things that we've been really leaning on things like the virtual DOM for.
+And React itself is working on something called React activity.
+It used to be called React off-screen.
+I haven't looked into it too much but I think it's going to use that API and I think
+the idea with that is you can pre-render things off-screen and, and then when it comes time
+to having to show them, you can swap them in lightning fast without having to do any of
+the reattaching that we talked about.
+Interesting stuff.
+Yes
+the whole stack of like both my server and my client
+all are running through VIT instead of having to do
+some weird like bundling, you know,
+the running that on the on node has always been tricky.
+So Waker doesn't use that this.
+I'm assuming they will move over to that
+and then that will
+get rid of the three or four processes.
+There's a couple of plugins,
+a couple of people have taken stabs at plugins
+for Vs using
+React server components, but nothing that is like simply, you know, how how easy V
+is to get up and running.
+I bet we will start to see that soon where there will be like a quick
+that gives you a server and a client all running
+running through V. Yeah, let's hope so.
+Tan stack, a lot of people use tan stack query, you can use react server
+components and be a next JS with tan stack query currently.
+is something called Tanstack Start, which is their whole platform. Tanstack Start itself
+does not support React server components just yet. It does do SSR. I know we talked to Tanner
+and there's an emphasis on client-side stuff within Tanstack Start, but you can do SSR with
+it. Start does have React server components planned, but like you said, it's also like
+React router been delayed many times. I personally don't know the status of where it's at
+right now.
+and I was like, hmm, what should I, I was like maybe start.
+And I, I was like, Hey, like, where are you at with this type of thing?
+And it seems like they're more focusing on getting like a solid start.
+Um, not solid start, but, uh, like getting everything with 10 stack start,
+just to kind of like figured out and finish and out the door because then
+adding server components to that is, is just another thing.
+because then adding server components to that
+is just another thing.
+So, I think they want to get everything else stabilized first
+and then they will move
+but they are planning on it and Tanner is a big fan of server components
+he said so eventually but it is kind of interesting that we are a couple of years in and really only
+Wacoo and Next.js are like the two solid ways.
+And even Wacoo is, I maybe would say don't build,
+And they have quite a few demos of kind of similar ideas.
+So we, I wonder if we'll see something like that
+or we'll see something similar to React Server components
+come out of bun.
+And then DIY, you can try to do it yourself.
+I got it running with like Express at one point,
+highly not recommended.
+It's bundler problems all the way down.
+So I, yeah.
+Good luck with that.
+Yeah, yeah. It's a little bit of exhaustion on some people's, I think, with all-
+with all of the different bundling and everything.
+And a lot of people want to get back to just standards.
+I'm somewhere in between where I just want everything to work together.
+But then when it is too tight, sometimes you hit these these issues, you know?
+And that's maybe my next thing is like, why the hate?
+Why do some people not like React server components?
+bundling complexity, probably a big one. Limitations. There's no explicit methods. Get, post,
+put, wear, all the things. These things are very simple with a
+a 10 stack start where they're just not possible. If you build things in the React server in
+a server component way, you're probably fine,
+but a lot of people have existing code.
+A lot of people want to do things
+the way they understand them.
+And if you just don't have those knobs to turn
+or in the the React server component world.
+Yeah, I mean, in that case,
+I mean, it's still pretty much just
+A lot of those, as I moved from next to We Iriya,
+a lot of those limitations are not next's,
+they are Iriya's fault.
+They are simply just because of limitations in streaming.
+Oh, streaming.
+And you simply cannot do things like set a cookie
+when you have already started streaming.
+A lot of that hate gets put on next JS
+also just cause a lot of people weirdly hate react
+and next in, in general-general, but there's that and then there's also just like next chance is very
+a pity about the way that they do things, right? And that's fine. You can use whatever it is that
+you the lot of people much prefer that because there's not as many guns of doing doing potentially
+expensive things.
+Yeah.
+I think another reason that people hate this is because there's just a lack of parity
+.
+Amongst React frameworks, as we've talked about here, you aren't getting the same React in
+all of the frameworks.
+And so React server components, a React core feature is only available in Next.js and
+yeah, Waku and, you know, these these kind of fragmented ways.
+So because of that, it is like fracturing the React landscape completely.
+There's no parity.
+You're not using React as a platform.
+You're using parts of React at any given point.
+And I think for me, the features that exist within RSC are all things that I would have spew that I I would have said yes, yes, yes, give me that give me the give me that give me that give me that and now I'm like, oh, but not like this, you know, not like this, you know, not like this, I want one of these features, but yeah, yeah, the hilarious thing about that is that is that, yeah, yeah, yeah, the hilarious thing about that is that is that.
+React server components, if the whole
+all get along and we would all have a single way to do things like data fetching is
+out there. You should be able to just npm install some random component and that component
+will bring your client-side, your server-side, your data fetching. It should bring them all
+and you don't have to worry about integrating into it. But we're not there just
+just quite yet. Yeah.
+It's been several years. I don't know that we will ever get there. I hope we do.
+It's been too long is really what the answer is. I agree.
+It's been too long. Yeah.
+Bummer.
+Bummer.
+Yes.
+Last thing I want to say is React server components lock-in.
+Because I see this a lot on the Next.js and React Reddit.
+I don't think so because most of my logic code
+moved from Catsby to Next.js and moved to Wacu
+because I tried to keep everything as standard on server.
+And even things like the actions API in React
+on thankfully a standard and that's the the form data API so is a little bit
+of like weird code that needs to be written in some cases if you're moving
+some JavaScript from one to another but it's no different than if you're moving
+express code to to something standard as well so I
+Quickly I don't think I could get out of JSX very quickly and people are gonna. Be asking me like what about why, why didn't you choose x y and z
+Why don't you use felt I had no interest in
+R
+to get into a time machine here and now it's X amount of days from
+you know when they were first announced just wonder hey, what is going on with
+that I'm not using next what what's the deal with that so
+here's the status that's where we're at today and
+I gotta say hopefully this list changes a little bit in six months or else I
+think you know I don't know
+like you could call reacts of a component say he at some point
+yeah I think if it's not picked up
+by Rick Redder and Tansac, or if it doesn't
+have any more momentum in six months a year from now, I think people will either maybe
+move
+feel good about it, but that's just me out of one community.
+And I certainly would have not have expected
+it would take this long to implement
+and we're still here five years in.
+I'm gonna disagree, disagree and say,
+All right, thanks everybody so much for tuning in.
+We will catch you on Wednesday.
+Peace.

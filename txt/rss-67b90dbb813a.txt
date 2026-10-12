@@ -1,8 +1,0 @@
-Cory Doctorow is a science fiction author, journalist, and technology activist, and a special advisor to the Electronic Frontier Foundation. He is the author of dozens of books, including the nonfiction Enshittification: Why Everything Suddenly Got Worse and What to Do About It and the novel Picks and Shovels. His work spans tech policy books like The Internet Con and Chokepoint Capitalism, the solarpunk novels Walkaway and The Lost Cause, and the bestselling YA Little Brother series. He holds honorary doctorates from York University and the Open University, writes the daily blog Pluralistic.net, and lives in Los Angeles and London.
-
-In this episode, Cory joins Josh Goldberg to talk about his latest book, The Reverse Centaur’s Guide to Life After AI. They discuss the difference between a centaur and a reverse centaur, why the same AI tools leave some workers empowered and others feeling exploited, why companies impose worse-performing workflows anyway, and what workers can do about it.
-
-Sponsorship inquiries:
-sponsor@softwareengineeringdaily.com
-
-The post Cory Doctorow on AI, Work, and Power appeared first on Software Engineering Daily.

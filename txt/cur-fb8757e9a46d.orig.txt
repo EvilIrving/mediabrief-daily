@@ -1,0 +1,444 @@
+[Introduction](https://www.joshwcomeau.com/css/has/)
+I don’t know if you’ve noticed, but the CSS world has been on fire recently. 🔥
+
+Behind the scenes, all major browser vendors and the CSS specification authors have been working together to deliver _tons_ of highly-requested CSS features. Things like container queries, native CSS nesting, relative color syntax, balanced text, and so much more.
+
+One of these new features is the `:has` pseudo-class. **And, honestly, I wasn’t sure how useful it would be for me.** I mostly build webapps using React, which means I tend not to use complex selectors. Would the `:has` pseudo-class really offer much benefit in this context?
+
+Well, I’ve spent the past few months rebuilding this blog, using all of the modern CSS bells and whistles. **And my goodness, I was wrong about `:has`.** It’s an _incredibly_ handy utility, even in a CSS-in-JS context!
+
+In this blog post, I'll introduce you to `:has` and share some of the most interesting real-world use cases I’ve found so far, along with some truly mindblowing experiments.
+
+## [Link to this heading](https://www.joshwcomeau.com/css/has/#the-basics-1)The basics
+
+Historically, CSS selectors have worked in a “top down” fashion.
+
+For example, by separating multiple selectors with a space, we can selectively style a _child_ based on its _parent_:
+
+Code Playground
+
+Code editor:
+
+Result
+
+The `:has` pseudo-selector works in a “bottom up” fashion; it allows us to style a _parent_ based on its _children:_
+
+Code Playground
+
+Code editor:
+
+Result
+
+This might not seem like a big deal, but it opens _so many interesting new doors._ Over the past few months, I’ve had one epiphany after another, moments where I went _“Woah, that means I can do **this??**”_
+
+## [Link to this heading](https://www.joshwcomeau.com/css/has/#browser-support-2)Browser support
+
+Before we get to all the cool demos, we should briefly talk about browser support. `:has` is supported in all 4 major browsers, starting from:
+
+*   Safari 15.4, introduced in March 2022
+
+*   Chrome/Edge 105, introduced in August 2022
+
+*   Firefox 121, introduced in December 2023
+
+As I write this in September 2024, `:has` is at ~92% browser support. Here's a live embed with up-to-date values:
+
+Honestly, 92% isn’t _great_ when it comes to browser support… That means roughly 1 in 12 people are using an unsupported browser!
+
+Fortunately, most of the use cases I’ve found for `:has` are optional “nice-to-have” bonuses, so it’s not really a big deal if they don’t show up for everyone. And in other cases, we can use feature detection to provide fallback CSS.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/has/#feature-detection-3)Feature detection
+
+The `@supports` at-rule allows us to apply CSS conditionally, based on whether or not it’s supported by the user’s browser. Here’s what it looks like:
+
+```
+p {
+  /* Fallback styles here */
+}
+
+@supports selector(p:has(a)) {
+  p:has(a) {
+    /* Fancy modern styles here */
+  }
+}
+```
+
+If the selector passed to the `selector()` function isn’t understood by the current browser, everything within is ignored. And if the user’s browser is even older, and doesn’t recognize the `@supports` at-rule, then the whole block is ignored. Either way, it works out.
+
+Now, the thing is, there is no way to “mimic” `:has` using older CSS. Our fallback styles won’t really be able to reproduce the same effect. Instead, we should think of it as having two sets of styles that accomplish the same goal in different ways. I'll include an example in the next section.
+
+## [Link to this heading](https://www.joshwcomeau.com/css/has/#styling-based-on-states-4)Styling based on states
+
+On this blog’s new [“About Josh” page](https://www.joshwcomeau.com/about-josh/), I use a “bento box” layout containing a bunch of little cards. Some of these cards have clickable children:
+
+For folks who navigate with a keyboard, however, the experience was a bit more funky. Some of the children dynamically change size, leading to curious focus outlines like this:
+
+To solve this problem, I moved the focus outline to the parent container. Here’s what it looks like now:
+
+This solves our problem, and I think it also looks pretty nice!
+
+Let’s dig into how this works. Here’s roughly what the HTML looks like:
+
+```
+<div class="bento-card">
+  <p>
+    I'm
+    <button>188cm</button>
+    tall.
+  </p>
+</div>
+```
+
+In the past, I might’ve solved this by making the whole `.bento-card` container a `<button>`, but this isn’t a good idea. Cramming so much stuff into a button would introduce several usability and accessibility issues; for example, users can't click-and-drag to select text inside buttons!
+
+Fortunately, we can keep our nice semantic markup and accomplish our goals with `:has`:
+
+```
+.bento-card:has(button:focus-visible) {
+  outline: 2px solid var(--color-primary);
+}
+
+/* Remove the default button focus outline */
+.bento-card button {
+  outline: none;
+}
+```
+
+When `.bento-card` contains a focused button, we add an outline to it. The outline is applied to the parent `.bento-card`, rather than to the button itself.
+
+If you’re not familiar with the `:focus-visible` pseudo-class, it works exactly like `:focus`, but it only applies when the browser detects that the user is using the keyboard (or other non-pointer device) to navigate. When a mouse-wielding user focuses the button by clicking it, `:focus-visible` won’t be triggered, and no focus outline will be shown.
+
+I'm also removing the default focus outline from the button, to prevent double focus indicators. **This is something we should be very cautious about.** In fact, our solution isn’t yet complete, since we also need to provide a fallback experience for folks using older browsers.
+
+Here’s what that looks like:
+
+```
+@supports selector(:has(*)) {
+  .bento-card:has(button:focus-visible) {
+    outline: 2px solid var(--color-primary);
+  }
+
+  .bento-card button {
+    outline: none;
+  }
+}
+```
+
+In this updated version, the outline modifications will only be applied for folks who visit using modern browsers. If someone is using a legacy browser, none of this stuff will apply, and they’ll see the standard focus outlines. Even though it’s a little funky, I think it’s a reasonable fallback experience.
+
+I'm also taking a little shortcut here: rather than test for the specific selector I'm using (`.bento-card:has(button:focus-visible)`), I'm instead using the smallest valid `:has` selector, `:has(*)`. The browser won't actually try and _resolve_ the selector we supply, so it doesn’t matter which elements are selected. `@supports` works by looking at the syntax and establishing whether it's valid or not.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/has/#another-state-based-example-5)Another state-based example
+
+CSS has dozens and dozens of pseudo-classes beyond `:focus-visible`, and we can use any of them to apply CSS conditionally with `:has`!
+
+Let’s look at another example from this blog. Here’s a custom form control I use in a couple of places. I call it an “X/Y Pad”:
+
+X:0.00
+
+Y:0.00
+
+(_This is an interactive element!_ You can click and drag the handle to change the X/Y values. For keyboard users, you can focus the handle and use the arrow keys.)
+
+Notice that while you drag/adjust the handle, _the container_ changes color! The code looks something like this:
+
+```
+<style>
+  .xy-pad {
+    --dot-color: gray;
+  }
+  .xy-pad:has(.handle:active),
+  .xy-pad:has(.handle:focus-visible), {
+    --dot-color: var(--color-primary);
+  }
+</style>
+
+<div class="xy-pad">
+  <svg>
+    <!-- Dotted background here -->
+  </svg>
+
+  <button class="handle"></button>
+</div>
+```
+
+If you’re not familiar, the `:active` pseudo-class is applied when a button is being clicked and held. While the user is dragging the handle, our `:has` selector matches, and we change the value of a CSS variable, `--dot-color`.
+
+Additionally, I've added a secondary selector with `:focus-visible`, so that keyboard users get the same treatment.
+
+The `--dot-color` CSS variable is used in several places, for the borders and lines and dots. The dots themselves are dynamically generated as a bunch of SVG circles:
+
+`<circle fill="var(--dot-color)">`
+
+## [Link to this heading](https://www.joshwcomeau.com/css/has/#global-detection-6)Global detection
+
+**This is maybe the coolest use-case I've found so far.** We can use `:has` as a sort of global event listener.
+
+For example, suppose we’re building a modal/dialog component. When the modal is open, we want to disable scrolling on the page. We can do this by applying some CSS to the `<html>` tag:
+
+```
+/* Scrolling disabled while this is set: */
+html {
+  overflow: hidden;
+}
+```
+
+Here’s how I would have solved this in the past, using a JS framework like React:
+
+```
+// Register a side-effect that runs whenever `isOpen` changes:
+React.useEffect(() => {
+  if (isOpen) {
+    // Save the current value for `overflow`,
+    // so that we can restore it later:
+    const { overflow } =
+      document.documentElement.getComputedStyle();
+
+    // Apply the new value to disable scrolling:
+    document.documentElement.style.overflow = "hidden";
+
+    // Register a cleanup function that undoes this work,
+    // when `isOpen` flips back to `false`:
+    return () => {
+      document.documentElement.style.overflow = overflow;
+    };
+  }
+}, [isOpen]);
+```
+
+Don’t worry if you’re not familiar with React. The point here is that this is a really clunky way to solve this problem!
+
+We can solve this in a much nicer way with `:has`:
+
+```
+html:has([data-disable-document-scroll="true"]) {
+  overflow: hidden;
+}
+```
+
+If the HTML contains an element that sets this data attribute, _no matter where it is in the DOM_, we’ll apply `overflow: hidden`.
+
+Inside our `Modal` component, we’ll trigger it by conditionally setting the data attribute:
+
+```
+function Modal({ isOpen, children }) {
+  return (
+    <div
+      data-disable-document-scroll={isOpen}
+    >
+      {/* Modal stuff here */}
+    </div>
+  );
+}
+```
+
+_How friggin’ cool is that??_ The instant our modal opens, this data attribute gets flipped to `"true"`, which means our `:has` selector becomes fulfilled, and scrolling becomes disabled. If this data attribute flips back to `"false"`, or if the element itself is removed from the DOM, scrolling will automatically be restored. ✨
+
+This example uses React, but we can leverage the same trick in a vanilla JavaScript context. Here’s a quick sketch:
+
+```
+function toggleModal(isOpen) {
+  const element = document.querySelector('...');
+  element.dataset.disableDocumentScroll = isOpen;
+}
+```
+
+### [Link to this heading](https://www.joshwcomeau.com/css/has/#javascript-free-dark-mode-7)JavaScript-free Dark Mode
+
+Jen Simmons discovered that we can use this trick to create a JavaScript-free “Dark Mode” toggle. Here’s an example:
+
+```
+<style>
+  /* Default (light mode) colors: */
+  body {
+    --color-text: black;
+    --color-background: white;
+  }
+
+  /* Dark mode colors: */
+  body:has(#dark-mode-toggle:checked) {
+    --color-text: white;
+    --color-background: black;
+  }
+</style>
+
+<!-- Somewhere in the DOM: -->
+<input id="dark-mode-toggle" type="checkbox">
+<label for="dark-mode-toggle">
+  Enable Dark Mode
+</label>
+```
+
+When the user clicks the checkbox, the `:checked` pseudo-class is applied to it, which causes our `:has` selector to match. We overwrite the baseline CSS variables with new dark-mode ones, and the theme is effectively swapped!
+
+To be clear, Dark Mode is a [surprisingly complicated thing](https://www.joshwcomeau.com/react/dark-mode/), and this approach isn’t really a complete implementation (for example, it doesn’t save/restore the user’s preferred option, or inherit the default theme from the operating system). Plus, I wouldn’t want a core piece of functionality to depend on a CSS feature with only ~92% support. But still, it’s friggin’ cool that we can add a “Dark Mode” toggle with only a single CSS rule and no JS!
+
+You can read more about this approach, and see lots of other cool examples, in [Jen’s wonderful blog post(opens in new tab)](https://webkit.org/blog/13096/css-has-pseudo-class/).
+
+## [Link to this heading](https://www.joshwcomeau.com/css/has/#the-missing-selector-8)The missing selector
+
+So far, all of the examples we’ve looked at involve styling the parent based on one of its descendants. This is very cool, but it’s only the tip of the iceberg.
+
+Check this out:
+
+Code Playground
+
+Code editor:
+
+Result
+
+In this scenario, I'm selecting all paragraphs that come _right before_ a `<figure>` tag. The big difference here is that there’s no parent/child relationship; the paragraphs and figures are siblings!
+
+Now, to be clear, we’ve been able to do _similar_ things in CSS for quite a while, using the “next-sibling combinator”, `+`. This little fella allows us to select an element that comes _after_ a given selector:
+
+Code Playground
+
+Code editor:
+
+Result
+
+On its own, the `+` combinator can only be used to select elements that come _after_ a given selector in the DOM. It only works in one direction. With `:has`, we can flip the order, which means that together, we can select elements in either direction!
+
+Code Playground
+
+Code editor:
+
+Result
+
+**We’re not limited to direct siblings, either.** With `:has`, we can style one element based on another element in a totally different container!
+
+Here’s a wild example, adapted from [Ahmad’s comprehensive blog post on:has(opens in new tab)](https://ishadeed.com/article/css-has-guide/). Try hovering over the category buttons and/or the books:
+
+Code Playground
+
+Code editor:
+
+Result
+
+Hovering over one of the category buttons will add a hover state to the buttons themselves, _as well as any books that match the selected category!_ Likewise, hovering over one of the books highlights the matching category.
+
+It’s hard to parse the CSS in the constrained space within the playground, so here’s the core CSS logic in a more spacious box:
+
+```
+html:has([data-category="sci-fi"]:hover) [data-category="sci-fi"] {
+  background: var(--highlight-color);
+}
+```
+
+```
+html:has(
+  [data-category="sci-fi"]:hover
+) [data-category="sci-fi"] {
+  background: var(--highlight-color);
+}
+```
+
+The first part of this selector uses the same “global detection” logic we saw earlier. We’re checking to see if the DOM contains a node that:
+
+*   Sets the `category` data attribute to `"sci-fi"`, and
+
+*   Is currently being hovered.
+
+Instead of applying styles directly to the `<html>` tag, though, we’re instead looking for any _descendants_ that have the `category` data attribute set to `"sci-fi"`.
+
+To paraphrase the logic here, I'm essentially saying: _“If the HTML document contains at least 1 hovered element with `category` set to `"sci-fi"`, apply the following CSS to all elements with that category”_. In this particular case, the CSS I'm applying is a lilac background color, but it could be anything!
+
+The wild thing about this example is that the actual DOM structure doesn’t matter. The category buttons are in a totally different part of the DOM from the book elements. There’s no parent/child relationship, or even a sibling relationship! The only thing they have in common is that they’re both descendants of the root `<html>` tag, same as any other node in the document.
+
+**It kinda feels like `:has` is the “missing selector” in CSS.** Historically, there have been a bunch of relationships we just couldn’t express in CSS. With `:has`, we can select any element based on the properties/status of any _other_ element. No limits!
+
+## [Link to this heading](https://www.joshwcomeau.com/css/has/#the-best-tool-for-the-job-9)The best tool for the job
+
+As we’ve seen, the `:has` selector is _incredibly_ powerful. Things that used to require JavaScript can now be accomplished exclusively using CSS!
+
+But just because we _can_ solve problems like this, does that mean we _should?_
+
+I'm a big fan of using whichever tool can solve the problem with the least amount of complexity. And when a problem can be solved either with CSS or JavaScript, the CSS solution tends to be much simpler.
+
+With `:has`, however, things can get pretty complicated. Here’s a “final” version of the snippet we just saw, including alternative controls for mobile/keyboard:
+
+```
+html:where(
+  :has([data-category="sci-fi"]:hover),
+  :has([data-category="sci-fi"]:focus-visible),
+  :has([data-category="sci-fi"]:active),
+) [data-category="sci-fi"],
+html:where(
+  :has([data-category="fantasy"]:hover),
+  :has([data-category="fantasy"]:focus-visible),
+  :has([data-category="fantasy"]:active),
+) [data-category="fantasy"],
+html:where(
+  :has([data-category="romance"]:hover),
+  :has([data-category="romance"]:focus-visible),
+  :has([data-category="romance"]:active),
+) [data-category="romance"] {
+  background: var(--highlight-color);
+}
+```
+
+(The `:where` pseudo-class allows us to “group” related selectors. It’s equivalent to writing each clause out as a separate selector.)
+
+If I was building this UI using a framework like React, I think it would actually be simpler to create a state variable that tracks which category is currently active. It would also be more flexible; we could have dynamic categories, rather than hardcoded ones. And books could belong to multiple categories. And it would work in Internet Explorer.
+
+I included this example because it really is an incredible demonstration of what `:has` can do, but if I was building this particluar UI for real, I would implement this logic in JavaScript.
+
+In practice, I find myself using `:has` in less grandiose ways, like the focus outlines on the [“About” page](https://www.joshwcomeau.com/about-josh/), or for disabling scroll on mobile. It’s a _super_ handy selector in these circumstances, and works very well in the context of a React application!
+
+**As I mentioned earlier, I recently rebuilt this blog, using a bunch of modern CSS.** This is the first of several blog posts I plan to write 😄. If you’d like to be notified when I publish new content, you can join my newsletter:
+
+And if you'd like to learn more about `:has`, there are tons of amazing resources out there. Here are some of my favourites:
+
+### Last updated on
+
+September 9th, 2024
+
+
+## Code blocks from the page not captured inline above
+
+```
+<style>  /*    Style all <a> tags that are    contained within <p> tags:  */  p a {    font-weight: bold;    color: inherit;    text-decoration-color: hotpink;    text-decoration-thickness: 2px;  }</style>
+<p>  This paragraph includes <a href="/">an anchor tag, commonly known as a “link”</a>. Using the child combinator, we’re applying styles to anchor tags when they’re included in a paragraph.</p>
+<p>  By contrast, these links aren’t in a paragraph, so they don't get the same styles:</p>
+<footer>  <ul>    <li>      <a href="/">Home</a>    </li>    <li>      <a href="/">About</a>    </li>    <li>      <a href="/">Contact</a>    </li>  </ul></footer>
+```
+
+```
+<style>  /*    Style all <p> tags that contain    at least 1 <a> tag:  */  p:has(a) {    outline: 4px dashed hotpink;    outline-offset: 4px;    border-radius: 1px;  }</style>
+<p>  This paragraph includes <a href="/">an anchor tag, commonly known as a “link”</a>. As a result, it is given a dashed outline.</p>
+<p>  By contrast, this paragraph does not contain a link, and so it does not receive an outline.</p>
+```
+
+```
+.bento-card:focus-within {
+  outline: 2px solid var(--color-primary);
+}
+```
+
+```
+<style>  p:has(+ figure) {    font-weight: bold;  }</style>
+<p>  This is a regular paragraph, with no  custom styles applied.</p>
+<p>  This paragraph introduces this figure:</p>
+<figure>  <img    src="/images/css-has/punk-cat.png"    alt="Photo of a hairless cat with a doodled mohawk"  ></figure>
+<p>  See how the paragraph right before the <em>figure</em> was given bold text, while the other paragraphs like this one are untouched?</p>
+```
+
+```
+<style>  figure + p {    font-weight: bold;  }</style>
+<p>  This paragraph comes <i>before</i> the figure.</p>
+<figure>  <img    src="/images/css-has/fancy-cat.png"    alt="Photo of a gray cat with a doodled top hat and monocle"  ></figure>
+<p>  This paragraph comes <i>after</i> the figure.</p>
+```
+
+```
+<style>  p:has(+ figure),  figure + p {    font-weight: bold;  }</style>
+<p>  By combining the previous two selectors, we can select paragraphs on either side of the figure!</p>
+<figure>  <img    src="/images/css-has/sparkly-cat.png"    alt="Photo of an orange cat with doodled glasses and sparkles"  ></figure>
+<p>  See? This paragraph is bold too! ✨</p><p>  This paragraph is unselected, since it isn’t adjacent to a &lt;figure&gt;.</p>
+```
+
+```
+<style>  html:has(    [data-category="sci-fi"]:hover  ) [data-category="sci-fi"],  html:has(    [data-category="fantasy"]:hover  ) [data-category="fantasy"],  html:has(    [data-category="romance"]:hover  ) [data-category="romance"] {    background: var(--highlight-color);  }</style>
+<header>  Categories:  <ul>    <li>      <button data-category="sci-fi">        Sci-Fi      </button>    </li>    <li>      <button data-category="fantasy">        Fantasy      </button>    </li>    <li>      <button data-category="romance">        Romance      </button>    </li>  </ul></header>
+<!--  These are 4 of my favourite books!  If you like sci-fi/fantasy, check  them out. 😄--><div class="book-grid">  <a data-category="sci-fi">    <img      alt="Book cover"      src="/images/css-has/psalm.jpg"    />    A Psalm For The Wild-Built  </a>  <a data-category="fantasy">    <img      alt="Book cover"      src="/images/css-has/season.jpg"    />    The Fifth Season  </a>  <a data-category="sci-fi">    <img      alt="Book cover"      src="/images/css-has/glory.jpg"    />    Some Desperate Glory  </a>  <a data-category="romance">    <img      alt="Book cover"      src="/images/css-has/winter.jpg"    />    Winter’s Orbit  </a></div>
+```

@@ -1,3 +1,0 @@
-The Open Group의 UNIX 인증 제품 등록부에 IBM, Hewlett Packard Enterprise, The SCO Group 제품이 나열돼 있으며, 제공된 목록에는 Apple/macOS가 없음
-
-Single UNIX Specification을 완전히 준수하고 인증받은 시스템만 UNIX 상표를 사용할 수...

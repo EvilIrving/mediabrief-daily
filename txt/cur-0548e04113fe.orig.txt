@@ -1,0 +1,214 @@
+Share
+            
+            
+          
+            Embed
+            
+            
+          
+In this episode, Daniel and Chris unpack the Model Context Protocol (MCP), a rising standard for enabling agentic AI interactions with external systems, APIs, and data sources. They explore how MCP supports interoperability, community contributions, and a rapidly developing ecosystem of AI integrations. The conversation also highlights some real-world tooling such as FastAPI-MCP.
+Featuring:
+Links:
+Making artificial intelligence practical, productive & accessible to everyone. Practical AI is a show in which technology professionals, business people, students, enthusiasts, and expert guests engage in lively discussions about Artificial Intelligence and related topics (Machine Learning, Deep Learning, Neural Networks, GANs, MLOps, AIOps, LLMs & more).
+The focus is on productive implementations and real-world scenarios that are accessible to everyone. If you want to keep up with the latest advances in AI, while keeping one foot in the real world, then this is the show for you!
+Welcome to Practical AI, the podcast that makes artificial intelligence practical, productive, and accessible to all. If you like this show, you will love the changelog. It's news on Mondays, deep technical interviews on Wednesdays, and on Fridays, an awesome talk show for your weekend enjoyment. Find us by searching for the changelog wherever you get your podcasts. Thanks to our partners at fly.io.
+Jerod:
+Launch your AI apps in five minutes or less. Learn how at fly.io.
+Daniel:
+Welcome to a fully connected episode of the Practical AI Podcast. In these episodes where it's just Chris and I without a guest, we try to keep you up to date with a lot of different things that are happening in the AI industry and maybe share some tips and tricks or resources that will help you level up your machine learning and AI game. I'm Daniel Witenack. I am CEO of PredictionGuard, and I'm joined as always by my cohost, Chris Benson, who is a principal AI research engineer at Lockheed Martin. How are you doing, Chris?
+Chris:
+I'm doing really good today, Daniel. We got some interesting stuff to talk about.
+Daniel:
+Yeah. Yeah. You know, it's been as always an interesting season, you know, new model releases, new tooling, new frameworks. Of course, it does seem like 2025 is set to be the year of agentic AI, and what a lot of people are are talking about.
+Chris:
+Indeed.
+Daniel:
+And, you know, of course, it it keeps keeps coming up for us. Is agentic AI impacting your world in any way, shape or form?
+Chris:
+Without giving away any of the stuff I'm not allowed to talk about, yes, it is most Okay,
+Daniel:
+okay. So yeah, I would say in a lot of ways, I see a bit of a pattern developing with our customers where it's kind of like they've done the rag thing. So like a knowledge based chatbot. They've done maybe a structured data interaction, maybe like text to SQL, something like that. Maybe they've created an automation like, hey, I'm gonna drop this file in here.
+Daniel:
+And these few things will happen, some of which are driven by an LLM, then something will pop out the other end or I'll email this person. So they kind of start developing those individual assistants. And then I see them start to kind of have this light bulb moment of the layer on top of those individual assistants or tools, which I think we could generally call that agentic layer, which is now saying, well, I can interact with unstructured data. I can interact with structured data. I can interact with these automations.
+Daniel:
+Maybe I can interact with other systems via API. How do I start tying those things together in interesting workflows and in various ways? That's sort of what I'm seeing. I don't know if you've seen that pattern as well.
+Chris:
+I have, and I just wanna point out that you and I have been talking about all of these things coming together for a while. Before AgenTik came out, we weren't using the term because that's the term that ended up being But we kind of went through a lot of the generative thing and we were kind of saying, okay, the next step is for a lot of these different architectures to tie back in. And we're definitely seeing that now. And it has a name.
+Daniel:
+Yeah, and it has a name and actually it has a protocol.
+Chris:
+It has a protocol, yeah, nice segue.
+Daniel:
+Or anyway, has a developing protocol, which is definitely something I think we wanna dig in today now that we can kinda we don't have a guest, we can take a step back a minute and just dig in a little bit to model context protocol. So where did you first see this pop up, Chris?
+Chris:
+Well, when Anthropic did the blog post, you started seeing it all over the place pretty quickly. So it was only hours after the blog post and I'm sure it was the same for you. And then all of the follow-up posts and articles have come out about it and everything, but that's yeah. It made us flash.
+Daniel:
+Yeah. So technically this was last if I'm looking at the announcement date right, this was last year, November twenty fifth of twenty twenty four. Anthropic released an announcement introducing model context protocol. And of course they wrote a blog post about it. It came from Anthropic, but then also linked to an open project, Model Context Protocol, which is just Model Context Protocol at GitHub.
+Daniel:
+There's a website, ModelContextProtocol.io, which talks about the specification and all of that. There is this origin with Anthropic, but I think from the beginning, Anthropic hoped that this would be of a widely adopted protocol. Maybe we should talk about the need for this first. We've talked a little bit about tool calling on the show before, Chris. I don't know if you remember some of those discussions, but there's very often this I think we even talked about this cringe moment of people talking about an AI model renting you a car or something like that and interacting with kayak.com.
+Daniel:
+Well, the AI model does not do this. Something else happens below the hood of that, which I think has been for some time maybe called tool calling or function calling, which is essentially the steps would be the LLM. You would give the LLM context for maybe the schema of the kayak.com API. You would then ask a query and have the LLM generate the appropriate maybe JSON body to call the kayak.com API. And then you would just use regular good old fashioned code, Python requests or what have you, to actually execute the API call to the external tool get a response.
+Daniel:
+Does that flow generally? Am I misspeaking anything?
+Chris:
+No, that's my understanding. There's a fair amount of custom code that people would put in there to glue those different aspects together. And it varied among organizations widely.
+Daniel:
+Yeah, yeah. So that's kind of the, I guess, stress point or the need that came about is that everyone saw, okay, maybe it's better if we plug in AI models to external tools rather than having the AI model do everything. There are certain things that AI models don't do very well. When I say AI models, I'm kind of defaulting to GenAI models, and let's just zoom in on language models, large language models. They're not going to be your best friend in terms of doing a time series forecast, for example, maybe with a lot of data.
+Daniel:
+But there's tools that do that. So what if I just leverage those tools via API and I could ask my agent, quote unquote, to give me a time series forecast of X. There's a tool under the hood that interacts with the database, pulls the data. Then there's a tool that makes the time series forecast, and boom, you tie these two together. It looks like your AI system is doing the forecast, but really you're calling these external tools under the hood.
+Daniel:
+The thing is everybody has different tools. Everybody has different databases. Everybody has different APIs. Every product has different APIs. Everybody has different function code.
+Daniel:
+And so similar, I think, to in the early days of the web, everybody was sort of posting things and creating their own directories of content on the web, their own formats of things. There was no protocol necessarily that everyone followed in terms of their usage of the internet or the web. But then there were protocols that were developed, right? Like HTTP. And now it's common practice.
+Daniel:
+Like I have a web browser, right? And I can go to any website and I expect certain things to be served back to me from the web server that gives me the website. And those things should be in specific formats for my browser to interpret them and me to get the information. And so there's a protocol or a standard in place for each of those web servers. So when I visit Netflix or whatever, it's sending back similarly, let's say, structured or formatted or configured data to me as if I go to Amazon.com and I'm searching for products.
+Daniel:
+This was not the case until recently with these tool calls. An AI model, everybody was on their own to integrate tools into their AI models using whatever custom code, whatever custom prompts, whatever custom stuff, which means, Chris, if you have created a tool calling agent and I now want to use some of your tools that you've developed, and I have my own tool calling agent, I may have to modify my agent to use your tools, or you may have to modify your tools to be compatible with my agentic framework. And that's kind of the situation that we've been in for some time, I guess is painful, reasonably painful.
+Chris:
+It is. We've talked about this general idea a number of times across a number of episodes. And in my mind, it kinda comes back to that notion of the AI field maturing over time. And we've talked a lot about the fact that AI is not a standalone thing. It's in a software ecosystem of of various capabilities, many of which become standardized.
+Chris:
+And and I think this is yet another step of this field that we have been in and that is, you know, raging forward, maturing naturally in the way that it needs to go. You have you know, now we have a protocol that operates as that standardized glue that we that can be adopted, and everyone knows what to expect. Just a great analogy with HTTP, as you pointed out, in terms of being you have a standard format, standard serialization, and you can plug right into it. So, yeah, this was good news from my standpoint.
+Daniel:
+Yeah. And I think I had a ton of questions about this because it certainly impacts the world that I'm working in directly. Indeed. And it brings up all sorts of questions. So, you know, questions like, well, how do you build an MCP server?
+Daniel:
+Who's creating MCP servers? What kind of model can interact with an MCP server? What, you know, payloads go back and forth? And so, so it it may be worth just kind of digging into a couple of those things. So first off, it may be good to dig in a little bit to what kind of how an MCP system operates.
+Daniel:
+And then that may make sense of some of the other things that we talk about in terms of models that can interact with MCP servers. So there's a series of great posts, which we'll link in the show notes. I encourage all of you to take a look at those mini posts. We'll of course post the main blog posts for Anthropic, but also the Protocol website, but a few of these blog posts as well. So one of the ones that I found that I really liked was from Phil Schmidt, Model Context Protocol and Overview.
+Daniel:
+And this one is really useful. And I think it's useful because it helps you form a mental model for the various components and how they interact in one of these systems. So you might be in your car listening to this. I'll kind of talk through these main components because you might not be looking at the article. But in the system that's using MCP, there are hosts, there are clients, and then there are servers.
+Daniel:
+So the host would be an application that the end user application. So let's say this is my code editor, and my code editor under the hood somehow is going to use MTP stuff. I'm going to be coding, I'm going to be vibe coding, right? And ask for various things, and it's
+Chris:
+going to
+Daniel:
+interact in the ID somehow and cause things to happen. So that's the host, the sort of end user application. There's a client which lives inside the host application, which is an MCP client, meaning this client might be a library, for example, that knows how to do MCP things. An analogy would be in Python, I can import the request package, which knows how to execute HTTP calls back and forth to web servers. Think about the client, maybe an MCP client, as a similar thing that lives within your application and knows how to do this back and forth with MCP servers instead of web servers.
+Daniel:
+And then the servers are those external programs or tools or resources that you reach out to from the client. And those expose, like I say, tools, resources, prompts over this sort of standardized API. So it's a client server architecture. The client lives within the host, which is the end user application. And then there's the server, which you could think of again as this MCP server.
+Daniel:
+Now we should talk a little bit about what the MCP server does, but you could think about the client as invoking tools, making requests for resources, making requests for prompts or prompt formats or templates. The MCP server is exposing those tools, resources, and prompts. Does that make sense, Chris?
+Chris:
+It does. I mean, it's kind of a new form of middleware in that sense. Those who And I realize that term may not resonate with everybody that's listening, but that's kind of a classical term of that, the notion of connecting different aspects of services and systems together in a way to try to simplify and standardize. And so, you know, it's a different way of putting it, but yeah.
+Daniel:
+Yeah, yeah, I think that's a great way. Even Phil in his blog post has this kind of MCP in the middle as this mediator. So I think that that's a good analogy. And we mentioned tools, resources, and prompts. So an MCP server within the specification of the protocol can expose tools, resources, or prompts.
+Daniel:
+So the tools are maybe things like we already talked about with the Kayak API or calling into a database. They are functions that can perform certain actions like calling a weather API to get the current weather, or like I mentioned, you know, booking cars, or there's MCP servers that will help you perform GitHub actions right on your code base. So these are the tools or the functions that are that are exposed. So that's thing one that an MCP server can expose. Thing two would be resources, which you could think of as datasets or data sources that an LLM can access.
+Daniel:
+So things that you want to expose either as configuration contacts or datasets to the application. And then the third would be prompts. And these would be kind of predefined templates that the agent can use to operate in an optimal way. So let's say that your tools in your MCP server are related to kind of question and answer and knowledge discovery. You might have some preconfigured question and answer prompts that the LLM could use that you know would be optimized for a certain scope of work or something.
+Daniel:
+You could think about it like that. So these are tools, resources, and prompts that are exposed in the MCP server. Does that make sense?
+Chris:
+It does. I know in that particular article you pointed out one of the things that I had really keyed in on that helped me kind of grok that immediately was the tools for model control, resources are application controlled and prompts for user controlled. That was easy enough for me to wrap my mind around quickly. So yeah, that's a great explanation from you there.
+Daniel:
+Yeah, yeah, definitely. So then there's kind of a couple things that are possible in the interaction between model client or MCP client and MCP server. One of the things is an application needs to understand how to connect and initialize a connection with an MCP server and sort of open that connection. That can happen over standard input output, meaning your server might be running locally or, you know, as part of an application, or it may be running remotely and you could interact via server sent events back and forth to the to the server. But then you also need to execute a kind of discovery process.
+Daniel:
+I was thinking back to the good old microservices days, Chris, which you may fondly or not fondly A
+Chris:
+bit of both, depending on what I was doing.
+Daniel:
+This made me think of microservices discovery things where it's like, Hey, what services in my big microservices environment, how do I discover where those are at and what domain I connect to them on and those sorts of things. What are they? So this was a whole topic, I guess it maybe still is a whole topic, but there's this discovery type of mechanism where you can, between the MCP server and the MCP client, actually expose kind of a list of tools or a list of prompts or a list of resources. And those are discoverable to the AI application so it knows what it can do. Can I book a car?
+Daniel:
+No, I can't because that's not exposed as part of the MCP service, but maybe I can do GitHub related stuff, or maybe I can do, you know, database related stuff or or whatever that is. Alright, Chris. So we've talked a little bit about MCP clients and MCP servers. There's certainly much more that is available, to talk about and dig into in the protocol itself. And, you know, we've scratched a little bit of the surface here.
+Daniel:
+We're not gonna go through the whole protocol on the podcast. Maybe that's a relief to to our listeners, but there is a whole protocol there. I think it would be good to talk though about kind of two additional things, which immediately popped into my mind when I saw Anthropic releasing MCP and talking about it is, number one, how do I create an MCP server or where do I get access to MCP servers to tie into my own AI system? And then secondly, well, what if I don't use Anthropic models? Can I use MCP?
+Daniel:
+Those were two immediate questions from my end. I don't know, Chris, if you've there's various GitHub repos that are popping up and also examples of various MCP servers. Have you seen any that are interesting to you?
+Chris:
+The one that's most interesting to me because when I'm not focused on, you know, AI with Python specifically, I'm very focused on edge with Rust, and there's an official Rust SDK for the model context protocol. So that is that's naturally where I gravitated to.
+Daniel:
+Yeah. Yeah. And there's Python implementations. I think there's many programming language implementations. There's also sort of example servers that are kind of prebuilt.
+Daniel:
+I've seen various ones for like Blender, which is a three d kind of modeling animation type of thing.
+Chris:
+Which is open source.
+Daniel:
+Yeah. Exactly. And then Ableton Live, which is platform that is like a music production platform. There's ones for GitHub, I already mentioned that. Unity, the game development engine.
+Daniel:
+There's ones that can control your browser, integration with Zapier, all sorts of things. So people have already created many, many of these MCP servers. And again, when you're creating this MCP server, basically you just have to create essentially a you could think of it like a web server that has various routes on it, but these are specific routes that expose specific sorts of things, these tools, resources, and prompts over a certain protocol. And there is communication back, for example, back and forth of JSON, for example, over server sent events. But again, there's a specific protocol that's followed.
+Daniel:
+Now you can look through all of the specific details of the protocol if you want to say create a model context protocol server for your tool. And I actually wanted to do this. So we have an internal tool that we use for doing text to SQL. It's very frequent. I often call it the kind of dashboard killer app.
+Daniel:
+It's like everyone's created tons of dashboards that no one uses in their life. And wouldn't it be better if you could just connect to your database and ask natural language questions? So we have a whole API around this and you can add your database schema information and all sorts of fun things and do natural language query. And so there's, I don't know, six or seven different endpoints in this kind of simple little API that does structured data interaction. So I'm like, Okay, cool.
+Daniel:
+We've written that with FastAPI, which is awesome. So it's a web server. It has certain endpoints that allow you to do the SQL generation or allow you to modify database information or allow you to do various elements of this operation. And we utilize that as a tool internally via tool calling. So I thought, well, what would it take for me to convert that into an MCP server that I could plug into an agent?
+Daniel:
+Well, you could kind of do that more or less from scratch just following the protocol, but people have already started coming up with some really great tooling. So there's a thing called FastAPI MCP. If you just search for that, this is a Python framework that essentially works with FastAPI and basically converts your FastAPI web server into an MPC server or MCP server. It works. From my experience, I just added a few lines of code to my FastAPI endpoint, wrapped my FastAPI application in this framework, and then ran the application, which is, again, this FastAPI application.
+Daniel:
+That was immediately discoverable as an MCP server, meaning that I could, if I had an AI system, which we'll talk about that bit here in a second, if I had an AI system that could interact with MCP servers, my service now, the Text to SQL system that we use, would be available to that agent to use as a potential tool that's plugged into a database that we would connect it to. Does that make sense?
+Chris:
+It does. That was a good explanation.
+Daniel:
+Yeah. So I'm sure also, I mean, you mentioned this Rust client that you talked about. I imagine a similar thing is possible there with a bunch of convenience functions and that sort of thing. I don't know Rust quite as well, but I imagine that's the case.
+Chris:
+It is. It's one of those I love the fact that MCP is rapidly gaining so much language support off the bat. I think you've heard me say this before. One of my pet peeves is kind of the Python only nature of a lot of AI. At least it starts there and depend from and I think I've said in previous episodes, it's a maturity thing when you can get to where you're supporting lots of different approaches to accommodate the diversity that real life tends to throw at us.
+Chris:
+That's good. I love and MCP has shot up that very, very quickly. So yeah, in the world that I'm in, playing it, kind of combining MCP as a protocol that works at the edge as well as in the data center is a big deal for me.
+Daniel:
+Yeah, and it does actually work also kind of single node. I mean, we've talked about client server, right? But you can run an MCP quote server in this sort of embedded way that is discoverable in a desktop application or in a single node application. So there's certainly no so I guess what I mean is if you're using MCP and this is security and authentication related, it doesn't mean that you need to connect over the public Internet That's right. To an MCP server.
+Daniel:
+And it doesn't mean that all of that is unauthenticated or you can't apply security of any type. What it does mean is that if you are for example, in the example that I gave, so I've now converted our text to SQL engine into an MCP server. I can plug in a database connection to that, connect to a database. But depending on how I set up the connection to the database, there could be potential problematic vulnerabilities there. And if I don't have any authentication on my MCP server, and I put that on on the public internet, anyone could use it.
+Daniel:
+So there's two levels of kind of security or authentication or threat protection that's relevant here. One is the actual connection level authentication to the MCP server. And the other is, well, I can still create a tool that's vulnerable, right? Or has more agency than it should. Yeah.
+Chris:
+I think one of the things I love about that call out from you is that you can be operating on that one physical device and tying various systems together. And just like if you take it outside the AI world and you talk about protocols that we are commonly using, you mentioned HTP earlier, protobufs are really common and things. You may be using all of those other ones that we've been using for years on one device. It doesn't mean that they're by definition many services in many different remote places. It can all be collected there.
+Chris:
+And it still brings value because you still have that standardization and the various vendors, whether they be commercial or open source, can provide interfaces to that to make it easier. So it becomes a much more pluggable and yet not tightly integrated, which is a good thing, architecture. And I think MCP really gives us that that same capability now in this space. And so it's like I said, it it it really is pushing it up the maturity, you know, you know, for up the maturity level from from we're all writing custom glue code to now, hey. I I'm gonna standardize on MCP and away we go.
+Daniel:
+Yeah. And I think similar to people can carry over some of their intuitions from working with web servers into this world. Like, you wouldn't necessarily just download some code from GitHub and expect there to be no vulnerabilities in it when you run that server, you know, locally. Same goes with MCP. Right?
+Daniel:
+You would you would definitely want to know what you're running, you know, what's included, where you're running it, how authentication is set up, etcetera, etcetera. Similarly, if you're connecting to someone else's MCP server, like Chris, you're running one and I wanna connect to it, depending on the use case that I'm working with, I may very much want to know what what data does your MCP server have access to? How are you logging, caching, storing information, etcetera, etcetera? You know, is it multitenant? Is it single tenant?
+Daniel:
+Etcetera, etcetera. So you can bring some of those intuitions that you have from working in the world that we all work in, which involves a lot of, you know, client server interactions and bring that into into this world. Okay, Chris. We've talked about MCP in general. We've talked about creating MCP servers or the development of them.
+Daniel:
+There's one kind of glaring thing here, which is Anthropic released or announced this model context protocol, and certainly others have picked up on it. And you see OpenAI also now supporting MCP where before they had this kind of their version of tool calling in the API. So there's a more general question here, which is, well, I'm using LaMa 3.1 or DeepSeek. Can I use model context protocol? And more generally, as models proliferate, which they are, and people really think about being model agnostic, meaning they're building systems where they wanna switch in and out models, do I have to use Anthropic or now OpenAI to use MCP.
+Daniel:
+So the answer to this question, at least as far as what we've discovered in our own work is as of now, sort of yes and no. But in the future, definitely there will be flexibility to many things. So what I mean by that is Anthropic has a kind of head start in a sense, in the same way that OpenAI has released certain things like various agent protocols or tool calling or stuff. It was something they released, something they had been working towards and they had maybe an advantage initially. Anthropic obviously has been working towards this.
+Daniel:
+Their models, their desktop application, etcetera, supports it well. Others are playing a little bit of catch up and that would include open models. If you think about something like a LAMA 3.1 or Quinn 2.5 or whatever model you're using, those open models, there's nothing preventing them from generating model context protocol aligned things. Agreed. But they haven't necessarily been trained as part of their training dataset to generate those things.
+Daniel:
+Meaning you can have an open model that generates what you need for model context protocol interactions, but you're probably going to have to load the prompt of that open model with many, many examples of model context protocol and information about it for it to be able to generate that, which is totally fine. You can do that. We've done that internally and I've talked to others who have and there's blog posts about it, etcetera. In that sense, that's why I say yes and no. There's nothing preventing you from doing this with open models right now or models other than Anthropic.
+Daniel:
+You might just have to kind of load that context window with many, many examples that are MCP related and aligned for you to generate consistent output for MCP servers. But what will happen similar to what happened with tool calling. So if you remember, you know, tool calling was released. Everybody The progression, I kind of see it this way. It's like people found out There've been a lot of cases of this.
+Daniel:
+People found out that models generally can follow instructions. And so at a certain point, people developed prompt formats like Alpaca, ChatML, etcetera, that had a generalized form of instruction following. And those generally got more standardized and now all training sets, well, not all training sets, but many training sets for kind of the main families of models like LAMA and others include instruction following examples. Then people started doing tool calling. And then people started developing tool calling specific examples to include in their data sets that they're using for models, including tool calling formats, which are in Hermes and other datasets now.
+Daniel:
+And so now many models do have tool calling examples in their training datasets. Now we're going to have the exact same progression with MCP. People can do MCP right now with open models if they perform in a certain way. It will become more efficient though as MCP examples are then included in training datasets for open and other closed models moving forward. So it's kind of now and not yet situation.
+Chris:
+Yeah, I agree. I mean, and at the end of the day, there'll be Different organizations will go both ways. Some are just going to say, let's adopt MCP outright. Others, like the open AIs that tier of providers, some of them will open source their own approaches to try to compete. And the marketplace will will you know, people will try it out.
+Chris:
+And based on, you know, things like, you know, providing examples that make it easy, there'll be a certain amount of kind of all the things competing and probably something that will kinda shake out as more popular than the others in the alarm because this is what we see over and over in software. And there'll also be a point where any that are genuine contenders, you'll have servers that support both MCP and all those top contenders with examples of each until it becomes clear kind of what the world is is going to go do. So I I think, yeah, I I think Anthropic was smart to do this, and they got a a leg up. And they put out a high quality protocol with a lot of great examples and SDKs right off the bat. And that was a smart thing to do to try to kind of win the marketplace very early in the game.
+Chris:
+So it'll be interesting to see how that but I think the the key point that I'm trying to make is and that you're making clearly is that the the world has changed in that way, in a small way, in terms of, you know, everyone's gonna now have to level up into having this kind of AI specific middleware that ties the model into all the resources in the resourcing and tooling and and prompting that it needs. So I'm I'm very happy to see it come into place, and we'll see some shakeout in the months to come.
+Daniel:
+Yeah. Yeah. Well, I, I definitely am interested to see how things develop. There are certainly toolkits of all kinds that are that are developing, and maybe I can share a couple of those. And and, Chris, you could share the the Rust one, and think you had another Rust resource that you wanted to share.
+Daniel:
+But but the ones that I were really was, using from the Python world, if people want to explore those and and look at those a little bit more, The one, if you're a FastAPI user, then I would definitely recommend you look at FastAPI dash m c p.
+Chris:
+Yep.
+Daniel:
+That's the framework that I use. You can I imported, or inserted three lines of code into FastAPI app and was up and running? Now you may wanna kinda modify a few more things than that eventually, but that will get you up and running. The the other thing that was helpful for me is there is actually, an MCP inspector application. So one of the things like, for example, in FastAPI I like is you can spin up your application and you immediately have API documentation that's in Swagger format.
+Daniel:
+You can go and look at that. Well, the MCP inspector can help you check if you're connect to your MCP server, validate which tools are listed, execute example interactions, see what's successful, see what's returned from the MCP server, all of those sorts of things. So very useful little tool that is actually also linked in the fastapi MCP documentation as well. And, Chris, you you had mentioned a a Rust client. I'm sure there's a lot of other ones that are out there.
+Daniel:
+I am intrigued kind of generally, you you you've been exploring this Rust world quite a bit. Would love to hear any resources that you've been exploring there. People might be interested.
+Chris:
+Yeah, there's one that I'll mention. It's separate from MTV, but it's one that I think is very interesting for inference at the edge in particular. It's hosted at Hugging Face. It's called Candle as in I think I like a candlestick. And you can find it.
+Chris:
+And it is it advertises itself as a minimal ML framework for Rust, but it's really caught my attention because as I'm often, you know, advocating for edge context and edge, you know, use cases where we're getting AI out of the data center strictly and and and doing interesting things out there in the world that may be agentic, may be physical as we go forward. Candle is an interesting thing. And if we're lucky, we might have an episode at some point in the future where we can kinda dive into that in some detail. But if that if edge and and high performance minimalist things are interesting to you in this context, go check out Candle at Hugging Face.
+Daniel:
+Yeah. Yeah. Encourage people to do that. All the crustaceans out there, isn't that the
+Chris:
+Rustations. Rustations. That's right. It's a crustacean theme though, you're right.
+Daniel:
+Definitely. Okay, cool. We'll definitely check that out. As I mentioned, we'll share some notes in our show notes with links to all of the blog posts we've been talking about, the MCP protocol, the Python and Rust tooling. So check that out.
+Daniel:
+Try it out. Start start making and and creating your own MCP servers and let us know on, you know, LinkedIn or X or wherever, what cool MCP stuff you you start building. And, and we'll see you next time. Great talking, Chris.
+Chris:
+Good talking to you. See you next time, Daniel.
+Jerod:
+Alright. That is our show for this week. If you haven't checked out our changelog newsletter, head to changelog.com/news. There you'll find 29 reasons. Yes.
+Jerod:
+29 reasons why you should subscribe. I'll tell you reason number 17. You might actually start looking forward to Mondays.
+Chris:
+Sounds like somebody's got a case of the Mondays.
+Jerod:
+28 more reasons are waiting for you at changelog.com/news. Thanks again to our partners at fly.io, to Brakemaster Cylinder for the Beats, and to you for listening. That is all for now, but we'll talk to you again next time.

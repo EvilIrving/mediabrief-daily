@@ -1,3 +1,0 @@
-There is a lil’ UI detail on this blog. Most people don’t even notice it, but the ones who do often reach out, asking how on earth it works. It feels like it defies the rules of CSS! In this blog post, I’ll break down the surprisingly-straightforward implementation so you can start using this trick yourself.
-
- Keep reading.

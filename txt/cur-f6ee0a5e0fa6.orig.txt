@@ -1,0 +1,877 @@
+are now able to produce more. The ROI of building technology has actually gone up.
+This actually means
+Today my guest is Varun Mohan, Varun is the founder and CEO of Windsurf, which has quickly
+become one of people's favorite AI coding tools and is basically the main competitor
+to cursor with over 1 million users 4 months.
+The next one is what makes Windsurf unique, why they decided to invest heavily in enterprise
+sales very early in their history, why agency is going to be the most important will for
+and I'm really excited to bring it to you.
+If you enjoy this podcast, don't forget to subscribe and follow it in your favorite podcasting app or YouTube.
+You get a year free of Perplexity Pro, Notion Plus, Linear, Gornola, and Perhuman.
+And super check it out at LenniesNewsletter., with that I
+To help Bound
+Treasury and FDIC insurance in one powerhouse account.
+Pulse, a new voice of customer solution.
+Built-in intelligence helps you
+analyze trends to your feedback and then dive deeper by asking AI your follow-up questions.
+Varun, thank you so much for here and well the podcast buddy. Thanks for having me
+a long time listener. Oh, I really appreciate that. I'm so excited to have you here. I feel
+like just you guys have become this overnight success, which is definitely not an overnight
+success. But I feel like I've been hearing about Windsurf more and more as people's
+favorite AI tool. And I just don't think people know the story behind Windsurf,
+behind, Codium, the company that you built.
+So I thought it'd be interesting to hear and have you just briefly
+share the history of Codium and how Windsor have I merged out of Codium.
+Yeah. So the company was actually started close to four years ago. As you as you know, AI coding
+was not a thing four years ago chat a few years ago. At the time, we actually started out
+building GPU virtualization and compiler software, right. Before this, I don't autonomous vehicles
+like co-founder who had known since middle school worked on AR VR at Meta and believe
+deep learning would touch many
+a couple, a couple million in revenue, we were managing upwards of 10,000 GPUs, we had 8 people,
+at the time we were free cash flow positive.
+But once these generative models started to get very good, we felt a and felt a lot of what we built
+built was valuable. This was a very hard moment for us at the company. We were only 8 people
+at the time. But we felt, would people be training these very bespoke, segment classifier models
+anymore that were very very custom models. Or would they just ask GPTN the latter right and in a
+everyone was going,
+why would an infrastructure company be a differentiator?
+Because everyone is going to run the same kind of infrastructure down the line.
+So instead what we decided to do is we believe
+generative AI was almost.
+spew will be like, like the next internet.
+and in that case, what we should go out and build the next great apps like Google and Amazon
+and we vertically integrated and actually took our infrastructure and built our infrastructure
+then to VS Code, JetBrains, Eclipse, Visual Studio, Vim, Emacs.
+And the reason why we were a able to build it for free
+was because of our infrastructure back then.
+And I guess very quickly after that,
+some large businesses also wanted to work with us.
+And we built out the kind of this enterprise motion
+to work with these large companies like Dell,
+JP Morgan Chase.
+And for them, the bigger thing wasn't just,
+hey, could we autocomplete code
+at the code base, it was could you offer us a secure offering that was also personalized
+to all the private data inside the company?
+So we took our infrastructure and made it so that we invested a ton and made sure that
+we deeply understood these large company's code bases, right?
+And that's what we were working on until six months ago.
+And it's not that we've stopped working on that, but basically what we realized
+six months ago was we were getting limited by the IDEs that we were already working in. So
+VS Code, which is a very popular ID, had a ceiling for the AI capabilities we could
+showcase our users.
+Because of that, we decided to go out and fork VS Code
+and build our own IDE.
+With some of these new agentic capabilities,
+and over time in the last couple of years,
+the model capabilities have also been growing
+exponentially year over year.
+That's sort of where we are right now I skipped
+a lot of pieces there, but that's where we landed.
+There's so many threads there.
+one is just there's always this question of
+just where value will accrue in
+people call GP a GPT wrapper not not actually but so I
+guess any lessons there just thoughts on just where you think value will end up a
+in this world of AI and the stack of AI tools.
+Maybe I, I can start by just saying like one thing about startups that I spe
+that I think are like really true it's very unlikely the first
+that you believe you should go work on is going to be the right thing which is
+like a very hard thing to kind of wr with being a startup founder.
+啊nd then you need to be really, really realistic because most ideas that are that are, I guess,
+B
+you're getting new information you need to kind of kill the
+people. And if
+I were to, to start with the infrastructure piece, we first
+went to the model architectures. We were going to be really
+really heterogenous working from an autonomous vehicle
+background. There were many different types of model
+architectures out there. There were convolutional neural
+networks graph neural networks for neural networks LSTM's
+sort of lighter neural nets with with frustrum point
+networks. Right. And there were maybe like 10s of
+architectures we were dealing with. And at that
+point, we were like nouve complexity of this is so high, that it's very clear if someone
+offloaded the complexity, there'd be a lot of value. Fast forward to the middle of 2023,
+everything looks like it's going to be a transformer. So now. Now our hypotheses, they're, just wrong.
+So at this point, then, most of the value is probably not going to accrue at purely,
+at least this is our belief at the infrastructure layer, it's going to accrue somewhere else.
+the second thread that I thought
+was really interesting here is just how you guys pivoted.
+Uh,
+a,
+a,
+a,
+a,
+a,
+a,
+a,
+a,
+a,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a big,
+a,
+like, no, we're going to completely change the business. So the question there is just
+like, what have you learned about knowing what to follow? And one thing I heard there
+that was really interesting is just, just once your assumptions change about that, you built your
+idea on, it's time to rethink this idea, maybe try something else.
+You know, I think the
+I think the way we sort of think about this is, you know, even when we just when
+we're working right now, we just accept that we're going to get a lot of things wrong. We're going to get a lot of things
+wrong. We're just going to I think we're going to get a lot from the other side of things. Obviously that's a big
+We're making money on this.
+We had already raised $28 million of capital and we were just going to pivot entirely from
+this.
+And we did that overnight.
+Right.
+This thing where we just said, hey, maybe a one or two quarters because one of the things
+we knew that's very important for startups is focus.
+And if you're trying to do another thing that you think is big, focus on something that
+you don't believe is valuable, you're guaranteed going to fail at the thing you think
+is going to be there.
+Right.
+So that's a very obvious thing there.
+You have an organization, and you have an organization that is very true to you.
+I think a lot of people at the company have had their ideas tested
+this year, the-total amount of engineering, we've had since the beginning of the company's creation
+till now. So that almost means every year is a new lease on life for us, right? It's
+is almost, it's almost a new way for us to test out an entirely new set of hypotheses
+-
+Um, the, the, you know, we're crazy I think a lot of people who use the product don't even probably know what an ID is, uh, which is, which is crazy and we'll get in, we'll get into that in a second.
+But why spe why did we go out and build windsurf and what is windsurf maybe. Why couldn't? Why couldn't we have just done this on that on top of conventional ideas like visual studio.
+So maybe just to get into this a little bit, as, as we saw that AI was getting more powerful, the way people go out and build technology, we thought the interface was going to change it change remarkably.
+It was not going to be a conventional pure text editor where you the users writing a handful of the lines of code or most of the code and the
+and modify large chunks of code.
+to actually make it so that it was easier to actually go out and do that right because the developer is,
+is not spending all their time writing code. This is the fundamental premise on why we built
+the product. We thought we were going to get limited a ton if we had very, very basic UI out
+there and I'll give you even a simple example here. We have this autocomplete product right
+that completes a handful of lines of code. Now, we've actually launched a
+called WinSurfTab that basically shows you refactors as well.
+And these refactors are almost inline refactors,
+to build a custom UI for that for that for that for that.
+but in VS Code we needed to because of the access to the API
+we needed to dynamically generate images right alongside the user's
+because we because we just didn't have access to the capabilities
+to showcase and edit properly.
+And what we realized is immediately by porting over to WinSurf
+our acceptance rate same ML models.
+So what that I guess gave us confidence in is, yeah,
+like you could
+like you could like you could argue technology is a little
+value from the
+building.
+So the big bet you took there just to make
+make this super clear is you were initially working with
+and then it was likes like this isn't going to get us where we need to go. Try to convince
+and so on and so forth. And they might use the JEPR
+was limiting the sort of user interface
+that we could the give to our actual customers.
+What is the current state of traction of Windsor?
+If you hear all these crazy numbers about,
+all the competitors in your space,
+what can you share there for folks just to know?
+Yeah, so maybe we launched the product
+a bit over four months ago
+and in that period of time,
+over a million developers have tried the product
+and, obviously, we have many hundreds of thousands
+of monthly active users right now.
+I love how like these days like, oh, no big deal.
+Like it's just, the numbers are absurd these days.
+Like we're just getting used to just 100 million ARR,
+a million users in four months there.
+It's just like, oh, of course,
+how could you not have that?
+You touched on something that I
+when we think about what we are actually doing, it probably falls into three, right?
+What should I say?
+What should I do?
+What should I do?
+What should I, what should I do?
+What should I do?
+What should I do?
+If you're getting done, if you deeply understand the environment inside an organization, if
+you deeply understand the code base, how you should solve it given best practices when the,
+the company also gets solved.
+So I think what engineering kind of is actually what you wanted engineers to do in the first
+place, which is what are the most important business problems that we do in the past.
+, what are the most important capabilities that we need, our application
+or product to have.
+And ante actually going and prioritizing those and actually the right technical, technical
+.
+and I think. And I think that's where engineering is probably heading towards.
+and why their applications are slow?
+Do they help them in understanding
+why some design decisions are better than the other??
+Yeah, that makes them a much better engineer
+than another engineer.
+I think that idea understanding of what
+is going on at the bottom of the list
+will make a good engineer even better
+even better, right, but also the same time it empowers a bunch of people that never understood all of those things
+Actually build as well, which is another remarkable sort of thing that fell
+us at the company went to MIT together on the engineering team.
+And I think like when I think about what we learned the most for engineering or computer
+science, it was not exactly like how do you write code, that's maybe that is like almost a
+given that you can kind of write code after a program.
+It's more like the principles of how you think about a problem and how you break
+it down, right?
+And how you solve it in, in an interesting way, right?
+So an example I really enjoyed was our distributed systems class.
+They're reading through literature and understanding how
+how some
+If you shouldn't go get a computer science degree,
+a computer science is always a problem solving.
+In that case, I think it's pretty valuable.
+Is everything you learn in your computer science degree useful?
+I'd say a lot of things that I learned in my computer science degree are not useful.
+I'll give you an example.
+I took a parallel computing class in Julia.
+And I don't think Julia is a very popular programming language anymore.
+I think some version of computer science is kind of like building the mental model of how computers
+and systems work, parallel processing,
+be investing more with the rise of AI, building more and more of our products?
+I think one of the things that's maybe a little bit undervalued is this kind of agency piece.
+And in this a lot, which is you have a lot of people that could go through college and go
+through school. And they're basically told exactly a piece and they're given these very, very
+well-defined paths that they need to take. And I think maybe in society and in school,
+don't prioritize how do you make sure you get people with real agency that want to build
+something, right? Like their goal is not just to maybe graduate from college and then get
+a job at a big tech company where they're told told exactly what to do or where to put
+the pixel on for this one website. And I think that's maybe a skill set that is
+undervalued. Just right now, probably in the last, you know, maybe 10 years or so.
+And I think that's going to be really, really important. You know, a skill for us,
+you just look for.
+If we don't do crazy things and innovate, we're going to die, that would be a great
+title for this podcast episode. And I think I know it's 100%.
+There's just a lot of crazy things happening and a lot of innovation
+happening. And if you can't keep up, you'll die. So let's talk about hiring. You have a really interesting approach to hiring
+to hiring. There were a few questions I have here. One is just how do you try to stay a common theme across all the AI startups these days? How do you know when it's I'm to hire someone?
+I love the, but I don't know, I me and I love the idea of being a lean company, but I don't idolize it in the way that, hey, like, it is a dream to be a 10% or 20% company the 50, 100, 200 million and revenue. That's like not I think what we idolize inside the company
+I think what we idolize is be the smallest company we can be to satisfy our right. That's what the goals and maybe Lenny the way I would sort of put that out there is if I told you, hey, I'm going to the
+team as 10 people, you should rightfully say, hey, hey, Varun, you're not
+serious. I'm not serious. So I think the answer is, what is the minimum number of people to
+the crazy ambition project that you have.
+And I think the project we are trying to go out and do,
+which is completely transformed the way software gets built.
+We've mentioned this in the company,
+our goal is to reduce the time it takes to build apps
+and technology by $99%, right?
+It is a tremendously sort of ambitious goal.
+And it's not possible for us to be a 10, 20, 30,
+40% engineering team in the long term
+So that's maybe the first case.
+We can, we can crack, actually being a zero everybody, but still operate as if we're a startup.
+That's the dream.
+Right, that's that's the, that's the dream in terms of hiring philosophy, the way we
+sort of think about things is we only hire for a role if we're actually underwater for
+that function.
+So let's say we're going onleans building inference technology, unless we're underwater
+We will not go out and hire hire someone to
+to go out and work work for that right and the reason for that is I actually think this is like
+This is a this is a feature right when when you hire for a role and you already have enough people there
+What you have you know you get a lot of weird politics
+It ends up happening and it's not because people are bad people
+I don't I think most people are really well-intentioned
+but what happens when you have people that join a company and in reality you didn't really need them they will go out and
+Manufacture some other thing that they should go work on
+They should, they will go out and figure out something else to work on.
+And realistically, it's not that important, but they will go out and try to convince the
+rest of the organization that it is important.
+And I just think as a startup, we don't have the bandwidth to go out and deal with that.
+For me, I would like to see everyone just almost be raising their hands up being like,
+I'm dying.
+Like we need one more person, and that's when we go out and hire someone.
+And one of the analogies I like to give is, I want the company to almost be like
+this dehydrated entity.
+every higher result is like a little bit of water, right? And we only go back and hire someone when
+we're back to being dehydrated. I love this metaphor so much. And it sounds painful. It sounds
+painful that you need to be underwater and raising your hand. I'm about to die and dehydrated.
+But I also know that it's a really exciting way to work. Like it sounds hard, but if you're
+in it, it's just like, I guess talk about just that side of it, because I think it could
+Sound like this is terrible. I don't want to work this way. You know what? I actually think Lenny
+It's it's it's really good for a handful of reasons
+Which is that a lot of the people we respect and trust the people that work at the company
+So this force is ruthless prioritization, you know, you have a team that's going out of doing something
+They will never ask to work on something that's not important
+In fact, if there are two things that they're working on they're just gonna
+Hey, hey, I just don't have the ability to do two
+I can only do one and they will pick the one that's most important
+And it actually goes back to one thing that I think is true about startups and just companies in general
+You don't win by doing, you know, 10 things well
+You win by doing like one thing really well, and maybe you fail nine things
+This is the thing that I've told the company. This is very different than school, right in school
+You optimize for your total GPA, but for companies
+I just need to get an A plus and the one class that matters and
+then I can get an F in all the other classes and an F in all the other classes doesn't mean, you know being
+just doing illegal things that that basically means you just deep prioritize things that don't matter
+you know that actually forces this organization is a
+d
+d
+d I
+am nouve
+really really good right and you know dog
+� you know dog
+we put the company has 20% more people than necessary what are those what's gonna ultimately happen right it's
+It's saying that we let people Allea and I tell you that we don't know what they're saying,
+to use it.
+.
+Our teams are very flexible that, hey, actually we do need to get to the things that we've
+kind of tried to make sure is true on our team is people's value to the of the company
+does not have anything to do with the size of their team.
+There are projects inside the company that are directly responsible.
+individuals for these projects inside the company. And if we feel like,
+one project is very important,
+then people can move from one project to the next, right?
+There's no-notion of someone owning people at the company.
+That is a very bad and gnarly idea, right in fact the person that is the most valuable at the company is the person. They can do
+The most crazy sort of project out there with as few people as possible and that's what you should be
+You know how many people do you have it Cody met this point
+So we have we have close to a lot of people on the engineering team is over 50 people right awesome
+Oh, what a what's the other bigger functions? So we have to go to market. We have a yeah
+Oh, right. Okay. I want to talk about that the sales learning that you guys had okay. Okay
+Right. Well, let's close out this hiring conversation.
+So we talked about what you look for to tell you that hire.
+What do you look for in the people that you interview and hire?
+One of the key pieces that we look for, we have a very high technical bar.
+So assuming that they actually meet the technical bar,
+I think we sort of look for people that are really,
+really passionate about the mission of what we're actually trying to solve
+and people that are that are willing to work very hard.
+I think one of the,
+some of the things that we don't try to do
+is convince people, hey, look, we're,
+we're a very chill company and it's great,
+it's great to work you.
+I think, no, this is a very exciting space.
+It's very competitive.
+You should expect us to lose if
+work hard, what's the differentiator going to be? Are you just going to pull them down?
+Right? One of the things that's true about companies is it's like a massive group
+I think the thing about a person that is not pulling their weight is that it's not the productivity. At some point when the company becomes many hundreds of engineers, I'm not going to be thinking
+about the one engineer that's not pulling their weight. It's the team of people they work with that are almost basically saying is this the bar internally at the company?
+the expectation. And I guess Lenny, if I told you you, you have a team of five people, and
+I guess Lenny, if I told you you you have a team of five people and the four other people you're working with don't care, how much are you going to feel like you should care will a care? Not too or not care. I think that, that's what we care about. We have a culture where it's very collaborative. It's not an individual sport, but people feel like they can rely on other people to get complex tasks done. So the question you asked there is how hard are you willing to work? How hard do you want to work?
+I know some people, there's this whole group of folks that are like Alan, how dare you ask
+me to work crazy hours and I love just the filter up front of if you work hard you work
+a lot of hours it's a crazy space to be in and we will
+Yeah, it's probably post or take home. It's probably that actually and they take home itself filters
+probably another you know 10 15x on top of that
+Here's a question that I've been hearing more and more is just how do
+Do you interviews these days with tools like winster found there that solve all your problems?
+We're okay with people using the tools because I think one of the worst things is like if someone comes here
+And doesn't like using these tools like like massive productivity improvements
+Bring people like into the company like on site so we can actually like see how they think through
+Today's episode is about Coda.
+I personally use Coda every single day to manage my podcast and also to manage my
+community.
+It's where I plan to ask every guest that's coming, to where I put my community resources,
+it's how I manage my work flows.
+Here's how Coda can help you.
+Imagine starting a project that work, and your vision is clear, you know exactly
+who's doing what and where to find the data that you need to do your part.
+In.
+In fact, you don't have to waste time searching for time searching for a team needs from project trackers and OKRs to documents and spreadsheets lives in one tab of all in Coda.
+With Coda's collaborative all-in-one workspace, you get the flexibility, the structure of spreadsheets, the power of applications, and the intelligence of AI, all in one easy to organize tab.
+Like I mentioned earlier, I use Coda every single day and more than 50,000 teams, trust Coda to keep them more aligned and focused.
+If you're a startup team looking to increase a line and agility, Coda can help you move
+from planning to execute your time.
+To try it for yourself, go to Coda's website and get 6 months free of the startup team.
+Okay, the second one is the go to market sales.
+Saals experience that you guys had.
+So you started without obviously like most people started building
+without sales team and then you realized from what I hear that
+that was a huge miss and a big opportunity to talk about
+there because that's that's really unique I think that you
+guys have a.
+A large sales team and go to market team.
+Yeah we actually made this decision pretty early in the
+And I think that's why we're going to be doing
+to do
+a little bit of a backstory here.
+So when we started the company, actually, we had
+had a handful of actually were all
+great or go to market operators.
+So an example of one was Carl
+dea who used to be the CRO of.
+I think we never viewed sales and sales, sales is
+like a very nice.
+We're going to be doing a
+I think this is like a interesting thing
+that technical founders sometimes don't really like.
+They think sales is like a very negative sort of part
+of the process.
+Everything should be product, product, and growth.
+And I think it's not that black,
+like I think enterprise sales is,
+but maybe when we were a,
+a,
+and we're an infrastructure company,
+the reason why we never hired a salesperson,
+person who,
+I didn't know how to scale the function.
+I was the one who was selling the product.
+So ultimately speaking,
+we could, we could make that into a process,
+if I can do one, I didn't know how we could take the revenue of the business from a couple million to hundreds of millions, and I let alone even tense. So if I didn't know how to do that, how could I go out and hire someone and make them scale it
+it out. On the other hand, very quickly, a lot of large enterprises sort of reached out to us. And from that alone, in in the middle of 2023, we started I guess, me and a handful of other folks at the company started selling the product.
+And we were doing tens of pilots concurrently with large enterprises and we were veryly able to understand that there was a large enterprise motion that needed to be built in the space.
+So by the end of 2023, we actually hired our VP of sales and very quickly after that scaled a sales team.
+And yeah, I mean, I mean, look, if you want to sell to the Fortune 500, it is very hard to do that.
+Let's talk about, I hate, I don't want to spend too much time on competitors but everyone's always thinking about when they think of you guys, you guys are kind of the leading players I think in the space also, that's different.
+So what's the simplest way, way to understand how you guys are different from cursor and also just how you think you win in the space long term.
+Maybe, maybe a handful of things that I could share.
+So on the product side, I think
+think we've invested a lot in making for code base understanding for very large code bases is really high quality.
+And that's just because of where we started, right?
+We know what worlds are just companies like Dell,
+JP-JP-Mark and Chase.
+So being able to understand that really really,
+really quickly to make large scale changes
+is something that we've spent, a lot of time doing.
+And that requires us like actually building our own models
+that can consume large chunks of their code
+code base in thousands of GPUs and almost rank them
+to be able to find out what the most important
+sort of snippets of code are for any question asked
+about the code base, right?
+So we've gone out and built large distributed
+systems based on our infrastructure background
+to go out and do that's maybe one.
+Let me actually follow that the right because I
+I think people may misunderestimate just how big of a deal
+that that that
+So when we we talk we had the founders of bolt and lovable on the podcast
+So those products they built something from scratch
+They build they write write the code for you so that versus is just
+is just loading say windsurf on your million of line code base
+say it or being the,
+So, you know, in a bit here, the the second probably is we're not only tied to the to Windsor, actually,
+this is probably like a weird statement given even we are talking about Windsor, which is
+that actually we're pretty focused on supporting ID's like Jebrans.
+Jebrans has over 70 to 80% of all Java developers code in Jebrans based ID's.
+The reason why we don't feel as big a need to almost build a competing product to
+there
+That's fine. We work with a lot of large enterprises that have 10 plus thousand developers. We're over 50% of the developers are on
+Jebrans. It's a very large product. By the way, that company is a privately held company that a
+company that makes hundreds of millions of dollars a year invested. That's another key piece. We want
+to meet developers where they are and if they use a different platform we'll work on that too.
+The third key piece, and this probably sounds
+in other key piece for enterprises,
+we work in a lot of very secure environments.
+We, we have FedRAM compliance,
+we have, which means we can sell
+to very large government entities, entities.
+We have a hybrid mode of actually using the product,
+which means that code that is indexed
+actually lives on the tenant of the user.
+Code is one of the most important
+I, the pieces of IP for the company.
+So I think just if you were to look at it
+from a big company perspective,
+there, are many reasons why over the years
+We've handled a lot of complexities that large in large companies want to see, but that's part of it is because
+of the history of how we got here.
+that large companies want to see.
+But that's part of it is because of the history
+of how we got here at the first place.
+Okay, Veroen, enough to do a live demo of Windsurf the folks can see what it's like
+and, and then I'm just going to ask you a bunch of questions as we're going through it.
+So I'll let you pull up a little shared screen where you have Windsurf pulled up.
+Some context, this is a very basic React project.
+There's nothing in it right now, so you were to open any sort of files.
+It's the default React app project.
+I have this basic image here.
+you can pass WinSERV images of what you'd like the project to kind of look like,
+of what I would like an Airbnb for DAW's website to kind of look like.
+, I, I, I love that this is like all you need.
+This is all you need. This is,
+a, so basically what we're going to do is
+we're going to say, hey,,
+one of the cool parts about WinSERV,
+we're going to work in an existing project already, right?
+So I can, can basically say, hey,
+change this React app
+Sit next to every single new user that opens up WinSurf and whisper a couple tips in their ear
+to help them be successful with the product. What would be a couple tips you'd share?
+One of the things I sort of ask people to do is in the beginning start by making smaller changes, right?
+If there's a very large you don't go out and make it refactor the entire directory
+Because then if it's wrong, it's gonna like the way destroy 20 files
+And I think from there one of the key pieces I think that it comes from the users
+They use the product as they sort of learn what the hills and valleys of the product are and the analogy
+I like to give or kind of similar to autocomplete, right when you use a product like autocomplete
+And that is suggesting things but, only getting accepted 30% of the time would be really really
+annoying. But the reason why it's not very annoying is actually because you've actually
+learned 70% of the time I don't need to accept this. And the times that I do, I know how
+to get value from it. And you also know beforehand if a sort of command that you write is very
+I think it's like a, like understand what the hills and valleys are, the crazy thing
+that would tell users.
+and I guess I could
+kind of say I could point
+to different elements and say
+make the background
+this is not great design
+You don't even, maybe even, even, granted. This looks hideous, but, uh, a, but in some
+ways if I wanted to I could go out and do that.
+Um,
+there's nowhere designers.
+Yeah.
+Maybe the answer is like when you ask me what's your, you know, what's your, maybe
+the answer, the the answer, maybe the other key piece Lenny that I wanted to showcase
+here is like obviously could keep going here like
+like I could I could take different components
+and can, you know, like like a lot of plans here
+that are beyond just like going to click
+changing components, but one of the cool piece
+is that there, um, there's like an air review
+flow as well, right, which is kind of like what I was年
+the goal of the eyes now change a lot in that
+is now modifying large chunks of code.
+For you and the job of the developer now is to
+is to actually review a lot.
+Of the code that the eyes and I didn't
+right now during this podcast,
+agent has, it also knows
+for all the users that imagine doing a refactor migration and you just change one part of the
+code you can just tell the
+the code it should go out and find all the corresponding places to go out and make the change and obviously
+now when I reload my app there's no no bug in the app it still loads properly I can obviously
+tell it to do even cooler things like make the make the app retro right I don't know what
+that means but I guess I can do that and you should go out and
+and make the change correspondingly for me.
+But yeah, that's maybe the high level parts there
+where the AI
+AI is not only not only not only not only not only not only not only not only not only
+but it's not only not only not only not only the app space but also on the code space of the users going out and modifying code.
+And to bridge the gap between the two.
+So it should add leverage not only not just purely building apps
+but also, but also developers that just hands on keyboard too the
+Reflin and apps like that. They're literally doing all the things those
+Wow, there's the retro version, that's good.
+I like that it built on.
+I like that it built on your red and made it really nice.
+Actually the red looks way better.
+Yeah, the little green button. This is great.
+Okay, so, people realize this,
+but apps like Windsurf, it could actually do
+a lot of agent work for you or you just tell it here.
+I want you to, it's auto completing code for you.
+Let me know the interesting thing is like, like the base app that you saw, for this was also generated by Windsurf, we sort of didn't generate it
+is all the dependencies takes like three or four minutes. And for the demo, I didn't want to wait. But totally actually most of the users within with the product probably zero
+So, and we've actually come up
+I think maybe my viewpoint are these very verticalized niche products I think are going to get that they're going to down a ton.
+And I think sales products are an example of one of these things, right?
+And maybe this is a very negative, but hard inside a company like ours to our best engineers to
+to do that or to build in best in class legal, legal software
+product or finance software product. It's very, very hard
+for us to right. And actually, that's a very big moat for
+these companies that they were that built
+higher, good enough engineers to go out and build the software.
+And our company is unwilling to do that. So previously, we would
+go out and and buy y the technology, right, because there
+would be no alternative. But now one of the crazy things is,
+Uh, is that the dough is specialist.
+Now I have access to the tools that they, ultimately, wanted.
+Right, which is actually crazy.
+Right, if you think about why, why were these software companies able to
+to exist. These vertical software companies, the reason is because they
+need features, the kitchen sink features work for a lot, a lot of companies
+features. But the problem is, each individual company
+was not capable of maintaining a piece of software or building the custom
+piece of software for 10 percent of the features, but that is now changed
+entirely. Now they can. And there's always, yeah, there's always
+So I think what's cool is that when you go back to the beginning of when the demo, it's, basically,
+.
+talking to an engineer, hey, build me a Airbnb, here's a
+stupid mock that I made, like with some boxes, like
+that's, that's almost like a bad PM, talking to an engineer,
+and it just actually works. That's what's insane about this.
+And so that's why this example you're, you're sharing of go to
+market folks building their own things. It's like they don't
+need to know anything about product building. It's just
+describe it in some ridiculous way, and draw a couple boxes of
+you wanted to look it is something for you.
+Which shows that agency is what matters..
+If you have a product manager that has an idea,
+there's no reason for why that idea
+fleshed out
+flesh, right.
+like how many times do you have a product manager that just
+has ideas but it a just feels like, like they are unsure on how to execute on it just
+to say of the same things but for the people that are
+the people
+agency they can go out and like kon't prove
+without any ectrional resources
+I think even more
+even more
+for product folks listening to this
+it's the sales person coming to you being like hey I want this thing
+I don't have a million things to build. I don't
+so that problem goes
+The model that this is sitting on is it sonnet. Yeah, so just
+just read out how it ultimately works. We have a model that does planning and I
+would say right now sonnet is a really really good planning model I think
+of my three or four orders might be larger than the largest context right now. But you also wouldn't
+wanted that cost and latency standpoint too. So that's like one. And the second piece in piece that
+you saw was the model is able to very quickly make edits to the to the software as well. We have
+custom models that are post trained on top popular open source. The model is able to very quickly make edits
+that can make these edits really, really quickly to the code base. And the reason why you would want to
+do that is it's a faster and be also that model can actually have more of the code base
+in context too. So it can be better at applying changes than even anthropic model too
+So I think the way we like to think about it is our only goal is how do.
+How do we build the best product possible right? How do we build the best product
+possible and how do the ceiling as high as possible and we will go out and build
+models and train models wherever necessary but if we're not going to be good at
+Go to the task and we think the open source is better or and
+there are big concur
+Interestingly, for the one that does an autocomplete, that is also in-house, as you're typing, we actually do some
+autocomplete related stuff.
+I'm happy to do a lot of user with that capability.
+So I think the way we like to look at it is, what could we be best at and we will go out
+been trained, but if we, we should not just fill the sake of
+ego go out in trade some thing.
+This maybe going to technical budgets is there anything
+interesting around what you train on?
+Yeah.
+So one of the one of the interesting things that we
+have to make users and this is like where we try to think Dominik
+and what they don't like for something like autocomplete, we get a
+lot of preference data, a lot of preference data and the preference data is weird, it doesn
+The code's to be in a I don't care about the day, it's not going to be in a full-fledged form. It's not like you're not going to get a lot of data that will come in.
+So we're uniquely well positioned to actually build a good model that can complete code, even when it's in an incomplete state.
+When the models that are out there, the frontier models, have consumed very little code that looks like this.
+So for that case, we're like, hey, we can go out and do a much better job potentially.
+way- the way to find out are we retrieving the right data, right?
+Did the user accept the code change after that?
+Was the retrieval actually a good retrieval, a signal that we can get?
+So basically the way we like to look at it is if something is just purely
+like code planning, there's not a great reason why we would be the
+best at that, right?
+I think that would that would not be agree.
+I can't come up with a coherent argument, but for something that
+looks more along the lines of, hey, here's an intermediate code base that
+is very gnarly. And here are some changes that need to get made. And we know the evolution
+of the code or we've seen the evolution of code across millions of users. We feel like
+we can do a great job of that.
+I think what's interesting about this is this is another differentiator slash mode
+companies that end up winning in the spaces you just have more and more that data than
+other companies if you're ahead. Yeah this is sort of why maybe at a
+We have a lot of people who are in the middle of the day, so let's talk about that.
+, you know what?
+So, you know what?
+I'm- I'm-
+I'm-
+I'm-
+I'm-
+I'm-
+I'm-
+I'm-
+I'm-
+I see because if they're just sitting on top of sonnet and just doing whatever
+, every other sonnet wrapper is doing, there's a lot of differentiation or mode.
+年, it depends on how you do it, but maybe if I was to say this, if you're.
+If the inputs you're consuming are just web elements, like extremely high level web elements, then the interface
+Got it awesome one thing I wanted to come back to that I wrote down. I think is really important for people to understand. You talked about how with winchard it's not necessary
+Necessary there's like a boilerplate code, code base that you want to start with because it's actually because it's not a
+Abstracted zero to one app builder., it's a actual IDE you're coding in and you talked about how I asked to install dependencies
+Which is kind of this painful thing and the reason the. The reason has to do that is because it's running locally on your machine
+machine versus in the cloud like say,
+applications. You might have dependencies on your machine that are just
+just like system dependencies that are just gnarly to install. Let's
+imagine you're building a GPU based application and the Nvidia
+drivers are necessary. You just want to give people the flexibility to
+build where they can build. And I think, you know, the IDE and
+building locally has been a thing that people have done for, you know, decades.
+So probably it's not going toותר away in the next like a couple of I love, I love that your, your sales folks now are running like a little host servers.
+So you guys are kind of at the forefront of
+how so product teams are going. Like yours every day. And so I'm curious if there's ways you guys have structured your teams,
+, engineers, product design that might be different from other companies that are doing it, or
+tried stuff that is really well, or tried stuff that is not a huge disaster.
+You know, one interesting decision that we kind of have forerman engineering it that we don't
+have pure product managers  for the core engineering side of the company.
+And by the way, that's purely because we build for developers and our product is built
+by developers.
+I think the intuition from our own developers are hopefully valuable. If not, we might beילו hiring
+the wrong type of people. I think, our developers are in some sense flexing to be more conventional.
+On the other hand, if we were building something that looked more like Uber or the persona was
+very different and we didn't ourselves understand it, I think the organization wouldn't look
+the way it looks. For the enterprise side of the company, because we do work with a lot of
+large, like, this is probably something that a lot of us come to us with and tell us we
+we have peopleותר kind of like flex in this product strategy, we understand kind
+of what the customer wants and understands the technical capabilities that we have to
+under kind of build a, product that would that would sort of help them at scale.
+So, I think, I think we have an interesting organization in this
+the technicality or like I'm
+not built it like very, very dangerous
+because there's too much
+much like armchair quarterbacking.
+And so I think that's like maybe maybe
+a maybe one other decision we made.
+And then teams are very, very flexible.
+So if we decide something is a new priority
+priority we're very quick to kind of like
+the way a team looks.
+And it's very centrally planned in this regard.
+The two-pizza team concept I saw
+like, there's all these talk about two-in-pizza teams, but pizzas in India are much smaller,
+and so the teams end up being smaller, and they're like, why can't we build as much
+as in the US?
+Oh, man.
+How many PMs do you have?
+So you said you have 150 employees, something like that?
+Yeah, so in terms of like the product strategy function,
+we have three people, right now.
+I see, so it's like product,
+they're in their titles, like product strategy,
+not product manager.
+That's right, that's right.
+And then 50 engineers, you said 80-ish sales folks.
+Yes, that's right.
+And then obviously we have functions
+like recruiting parts of DNA, like finance, right?
+of marketing at
+amount of time. There's no limit of the amount of how much faster it made the whole process go.
+So maybe put simply, let's say you have a hundred units and only 30 units of time is being spent
+writing software. And I took the 30 and made it three. I only took the 100 and made it 73. It's
+only a 27% improvement, right? In the grand scheme of things. So I, I think, look, we're
+definitely seeing over 30 maybe closer 40% productivity improvements. But I think for
+station that we're solving for, I think like, you know, even if I were to say the company
+and the long tail
+inside the company, right?
+And you told her, hey, like each of these engineers
+방 And you told her, hey, like each of these engineers are now able to produce more technology. That's effectively what you've done, right?
+the right calculus that JP Warren Chase or some of these companies
+make is the of building technology has actually gone up.
+So the opportunity costs of not investing more into technology has gone up.
+I should just invest even more and maybekon, in the short term,
+you have even more engineers.
+Now, that's not true across the board.
+There are some companies that, that are happy
+with the amount of technology they're building,
+and there's a ceiling on the amount of technology they want to build.
+But for companies that are not have a very high technology ceiling,
+This doesn't mean you stop, this actually means you hire more.
+This is a great bull case for engineers.
+I feel like there's like it, the canary in the coal mine for the engineering profession
+is when companies like yours, slow down on hiring engineers.
+Yeah, that's not happening.
+Seems like anthropic is also hiring.
+Yeah, everyone is. So I think that's really promising.
+I think if you're in college still makes sense to get into engineering, at this point.
+Yeah.
+Okay, let me ask you this question as a kind of a final question, maybe.
+like what's maybe the most intuitive thing. and building windsurf in this just being in a space
+kind of like Lenny, what I was thinking before, like, one of
+the goals that I tell everyone at our company is we should be
+cannibal
+the existing in our product every six to 12
+months. Every six to 12 months, it should make our
+existing of our product look silly. It should almost make the form eject
+there's this weird tension where you want to have a product in
+market and you want to incrementally iterate and listen to
+users and keep making it making a better and better. But I
+would say we were the first
+agentic ID product out there.
+Right. that's what we landed
+with. And I think that the
+value of that is going to
+depreciate very quickly unless
+we continue to read.
+to read. And we will need
+prove ourselves in ways in
+which our users are not even
+asking. So there's this tension
+here where incremental feels
+very safe. Right. Add this one
+more button. Users say. Hey, spe, I would like
+to be able to have this drop down
+to do X. But that is not the
+reason why we're going to win.
+some of these we might not decide to, but it's like, it's these longer term efforts
+inside the company that almost disrupt the existing product that are ultimately the reason
+why we're going to succeed. And it a weird tension that you need to have in your head
+of, you can't also not listen to your users at all because they're the reasons you exist.
+This reminds me of a recent podcast guest. He told us that he had two roadmaps at the
+company. They have the typical road map based on feature requests and user feedback and
+data and things like that. And then they have the secret road map. Completely not
+Not informed by users or data, it's just them making bets on where they think the world
+is going.
+And I love that it could be a road map just to make it very, that's very smart.
+Okay, I have one more question.
+I apologize, but this idea of just being okay with being wrong faster, like I always think
+about things on, like, when we make decisions, me and I always talk about it, we're almost
+It's like, hey, I wish we had made the decision to do this a couple months earlier, we always
+talk about this.
+And the weird thing is outside looking at everyone's like, wow, like actually, you know,
+the decision was-made at the right time.
+But in my head, I'm always banging my head being like, what if we had made it a couple
+months earlier?
+And I think that is, you know, I wax, poetically about like, oh, you need to be irrationally
+sort of optimistic and uncomprom or my only realistic, but it's very hard to
+You won't get up out of bed, but the answer is already solved.
+It's not actually startups.
+The answer is Microsoft is going to be the be the winner in any software category.
+Right.
+Isn't that isn't that the answer just because of distribution is in capital, right?
+They're going to commoditize every space.
+So I think I think in some ways you this this amount of just understanding that hey
+like reevaluate your hypothesis and get into an uncomfortable space way more frequently.
+is something I need to remind myself even to this day.
+And probably something that I didn't know coming in
+and starting the company, right?
+and we started the company at peak Zerp time.
+At that time probably like everything seemed like it was
+and there was probably a lot of irrational confidence,
+I would say that we shouldn't have had.
+Raroon, we covered so much ground.
+What an incredible conversation.
+I learned so much just sitting here listening
+and asking you questions.
+Is there anything else that you wanted to share before
+or I leave listening with any last piece and not gets your wisdom before
+I let you go. To to be honest.
+I could get about the space.
+Probably most of them are going to be wrong.
+I think the best
+thing to do is just get your hands dirty with all of these products.
+And I think one of the most obvious things that's going to happen is in the next year, there will be a tremendous amount of alpha for anyone that is able to take maximum advantage of these tools.
+Just imagine how many of your coworkerss don't know what they can do and how much less productive they will be.
+In ways in which they never-wise.
+Right. Imagine if you were a product manager that could actually very quickly make edits to the code base and and just start pushing changes yourself.
+You know, you probably get a tremendous amount of respect from your own engineering peers.
+You could probably get way more done because of that.
+I feel like there's no, sort of...
+I think this is such an underestimated point you're making here.
+There's apps that can build things from scratch, and then there's apps like this that can edit
+your existing code base.
+If you're a PM at, what's the largest company you work with?
+People-wise?
+Probably.
+Like, publicly, I'd say, let's just say JPMorgan Chase.
+Okay.
+Okay, so you can be a P.M, a J.P.
+This is insane. The future is out of control. Okay, that was such an important point, because I think people may not realize this. They see all these other apps, they're like bill likes, but this is like legitimately something MPM can actually, do you work with?
+Yeah, when you think about the people at least that I don
+and just output just to the
+all the way down to the weeds to the highest level strategy is just perfection
+They know when to go all the way down and I think sometimes you see people that talk about
+and I think you know sometimes you see people that talk about roles and the irrational
+I feel like, like, oh because it's just because I'm not allowed to touch this. Well now everything's open season, right?
+and I think this as an opportunity, and I think this is the opportunity to almost go all the way down to the weeds and all the way up to the top, right?
+and just be effective on them.
+I don't believe the wall.
+we'll leave folks, Arun. Thank you so much for being here, awesome. Thanks, Wally. What an incredible conversation. Thanks for one. Thank you so much for listening. If you found this valuable, you can subscribe to the show on Apple Podcasts, Spotify or your favorite podcast app. Also, please consider giving us a rating or leaving a review, as that really helps other listeners find the podcast. You can find all past episodes or learn more about the show at LenniesPodcast.Dotcom. See you in the next episode.
+Good.

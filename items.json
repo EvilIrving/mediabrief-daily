@@ -13,7 +13,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/_HLLpvjg8EI.transcript.txt"
+    "url": "txt/_HLLpvjg8EI.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/_HLLpvjg8EI.m4a",
@@ -33,7 +33,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/om2lIWXLLn4.transcript.txt"
+    "url": "txt/om2lIWXLLn4.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
@@ -54,7 +54,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/Mph1H5u3yeA.transcript.txt"
+    "url": "txt/Mph1H5u3yeA.orig.txt"
    }
   ],
   "title_zh": "为什么我做 AI Agent 从 Python 转向 Docker Agent",
@@ -74,7 +74,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/Fhx_qNS2P8g.transcript.txt"
+    "url": "txt/Fhx_qNS2P8g.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Fhx_qNS2P8g.m4a",
@@ -94,7 +94,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/lnLWRJ2p_Mg.transcript.txt"
+    "url": "txt/lnLWRJ2p_Mg.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/lnLWRJ2p_Mg.m4a",
@@ -115,7 +115,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2108280456835727812.transcript.txt"
+    "url": "txt/2108280456835727812.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108280456835727812.m4a",
@@ -135,7 +135,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2108245975882166472.transcript.txt"
+    "url": "txt/2108245975882166472.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108245975882166472.m4a",
@@ -155,7 +155,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2108229753572343993.transcript.txt"
+    "url": "txt/2108229753572343993.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108229753572343993.m4a",
@@ -175,7 +175,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2108218392188518533.transcript.txt"
+    "url": "txt/2108218392188518533.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108218392188518533.m4a",
@@ -195,7 +195,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2108121268004536474.transcript.txt"
+    "url": "txt/2108121268004536474.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108121268004536474.m4a",
@@ -216,8 +216,12 @@
     "url": "txt/cur-995ffa137fb3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-995ffa137fb3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-995ffa137fb3.transcript.txt"
+    "url": "txt/cur-995ffa137fb3.orig.txt"
    }
   ],
   "title_zh": "退出码是绿的，不代表活真的干了",
@@ -238,8 +242,12 @@
     "url": "txt/cur-712b951e5e27.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-712b951e5e27.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-712b951e5e27.transcript.txt"
+    "url": "txt/cur-712b951e5e27.orig.txt"
    }
   ],
   "title_zh": "当 Python 的 GC 遇上多进程（Python 与 Airflow 排障记 2）",
@@ -259,7 +267,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/KVD_2SDDCzM.transcript.txt"
+    "url": "txt/KVD_2SDDCzM.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/KVD_2SDDCzM.m4a",
@@ -281,8 +289,12 @@
     "url": "txt/cur-ad1aae2024e5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-ad1aae2024e5.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-ad1aae2024e5.transcript.txt"
+    "url": "txt/cur-ad1aae2024e5.orig.txt"
    }
   ],
   "title_zh": "让 AI Agent 变得无聊（一）：确定性层",
@@ -303,8 +315,12 @@
     "url": "txt/cur-1f73001924ca.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1f73001924ca.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1f73001924ca.transcript.txt"
+    "url": "txt/cur-1f73001924ca.orig.txt"
    }
   ],
   "title_zh": "软件开发者们状态不太好",
@@ -325,8 +341,12 @@
     "url": "txt/cur-6113964daa9c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-6113964daa9c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-6113964daa9c.transcript.txt"
+    "url": "txt/cur-6113964daa9c.orig.txt"
    }
   ],
   "title_zh": "什么是 Codemode",
@@ -346,7 +366,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/chWNkwHHSYg.transcript.txt"
+    "url": "txt/chWNkwHHSYg.orig.txt"
    }
   ],
   "title_zh": "便利的人性代价：前 Yahoo 副总裁 Srinija Srinivasan",
@@ -367,8 +387,12 @@
     "url": "txt/cur-5a3f1f4a82c5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-5a3f1f4a82c5.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-5a3f1f4a82c5.transcript.txt"
+    "url": "txt/cur-5a3f1f4a82c5.orig.txt"
    }
   ],
   "title_zh": "几乎所有东西都需要默认的硬性预算上限",
@@ -389,8 +413,12 @@
     "url": "txt/cur-5ef119cef1ce.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-5ef119cef1ce.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-5ef119cef1ce.transcript.txt"
+    "url": "txt/cur-5ef119cef1ce.orig.txt"
    }
   ],
   "title_zh": "新的「大泥球」：为什么 Agent 化的 AI 系统会变得脆弱",
@@ -411,8 +439,12 @@
     "url": "txt/cur-f35f1062ecd8.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f35f1062ecd8.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f35f1062ecd8.transcript.txt"
+    "url": "txt/cur-f35f1062ecd8.orig.txt"
    }
   ],
   "title_zh": "做数据分析 Agent 学到的上下文设计",
@@ -432,7 +464,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2105099231300354100.transcript.txt"
+    "url": "txt/2105099231300354100.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105099231300354100.m4a",
@@ -452,7 +484,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2105046803674792166.transcript.txt"
+    "url": "txt/2105046803674792166.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105046803674792166.m4a",
@@ -473,8 +505,12 @@
     "url": "txt/cur-fd478e0e0292.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-fd478e0e0292.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-fd478e0e0292.transcript.txt"
+    "url": "txt/cur-fd478e0e0292.orig.txt"
    }
   ],
   "title_zh": "从 AI Agent 到 RCE：搭建一套漏洞研究工作流",
@@ -495,8 +531,12 @@
     "url": "txt/cur-aadfd31a222b.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-aadfd31a222b.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-aadfd31a222b.transcript.txt"
+    "url": "txt/cur-aadfd31a222b.orig.txt"
    }
   ],
   "title_zh": "与 Ben Schwarz 聊 Web 性能",
@@ -518,8 +558,12 @@
     "url": "txt/cur-558841854585.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-558841854585.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-558841854585.transcript.txt"
+    "url": "txt/cur-558841854585.orig.txt"
    }
   ],
   "title_zh": "2026 年的大模型（截至目前）",
@@ -539,7 +583,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/xZ5TEaleUdg.transcript.txt"
+    "url": "txt/xZ5TEaleUdg.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/xZ5TEaleUdg.m4a",
@@ -561,8 +605,12 @@
     "url": "txt/cur-4b83598dbd94.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-4b83598dbd94.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-4b83598dbd94.transcript.txt"
+    "url": "txt/cur-4b83598dbd94.orig.txt"
    }
   ],
   "title_zh": "多发 CSS，反而让网站更快",
@@ -583,8 +631,12 @@
     "url": "txt/cur-be094b8d7806.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-be094b8d7806.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-be094b8d7806.transcript.txt"
+    "url": "txt/cur-be094b8d7806.orig.txt"
    }
   ],
   "title_zh": "AI 与「正向摩擦」的消失，以及怎么应对",
@@ -605,8 +657,12 @@
     "url": "txt/cur-1eebafc5c762.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1eebafc5c762.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1eebafc5c762.transcript.txt"
+    "url": "txt/cur-1eebafc5c762.orig.txt"
    }
   ],
   "title_zh": "为什么好的产品点子活不下来",
@@ -626,7 +682,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/QcdpeFbuy8o.transcript.txt"
+    "url": "txt/QcdpeFbuy8o.orig.txt"
    }
   ],
   "title_zh": "Peter Deng：传奇产品经理只优化一件事",
@@ -646,7 +702,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/dNWkwrqAkcM.transcript.txt"
+    "url": "txt/dNWkwrqAkcM.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/dNWkwrqAkcM.m4a",
@@ -668,8 +724,12 @@
     "url": "txt/cur-b322932542f0.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b322932542f0.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b322932542f0.transcript.txt"
+    "url": "txt/cur-b322932542f0.orig.txt"
    }
   ],
   "title_zh": "GitHub 的饱和故障还在继续",
@@ -691,7 +751,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-d705870948e8.transcript.txt"
+    "url": "txt/cur-d705870948e8.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d705870948e8.m4a",
@@ -712,8 +772,12 @@
     "url": "txt/cur-fccabe30e41d.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-fccabe30e41d.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-fccabe30e41d.transcript.txt"
+    "url": "txt/cur-fccabe30e41d.orig.txt"
    }
   ],
   "title_zh": "存量项目里的 Agent 工程",
@@ -733,7 +797,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/HlpeP8Z1e5o.transcript.txt"
+    "url": "txt/HlpeP8Z1e5o.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/HlpeP8Z1e5o.m4a",
@@ -754,7 +818,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/n9xKblqyQ28.transcript.txt"
+    "url": "txt/n9xKblqyQ28.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/n9xKblqyQ28.m4a",
@@ -775,7 +839,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2095867276042154469.transcript.txt"
+    "url": "txt/2095867276042154469.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2095867276042154469.m4a",
@@ -795,7 +859,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/E7qB_p1D0Xk.transcript.txt"
+    "url": "txt/E7qB_p1D0Xk.orig.txt"
    }
   ],
   "title_zh": "曾鸣：残酷的真相、将会消失的公司，为什么\"优秀\"≠\"伟大\"",
@@ -816,8 +880,12 @@
     "url": "txt/cur-0ae88a845983.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-0ae88a845983.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-0ae88a845983.transcript.txt"
+    "url": "txt/cur-0ae88a845983.orig.txt"
    }
   ],
   "title_zh": "也许我们不该审查所有这些代码",
@@ -838,8 +906,12 @@
     "url": "txt/cur-6cfc099cfd57.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-6cfc099cfd57.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-6cfc099cfd57.transcript.txt"
+    "url": "txt/cur-6cfc099cfd57.orig.txt"
    }
   ],
   "title_zh": "最好的深色模式开关，可能就是没有开关",
@@ -861,7 +933,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-6eadb1839b73.transcript.txt"
+    "url": "txt/cur-6eadb1839b73.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6eadb1839b73.m4a",
@@ -881,7 +953,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/JFFmp-oTHdM.transcript.txt"
+    "url": "txt/JFFmp-oTHdM.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/JFFmp-oTHdM.m4a",
@@ -903,8 +975,12 @@
     "url": "txt/cur-5a6e0cf4629c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-5a6e0cf4629c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-5a6e0cf4629c.transcript.txt"
+    "url": "txt/cur-5a6e0cf4629c.orig.txt"
    }
   ],
   "title_zh": "TypeScript 7 及其之后",
@@ -925,7 +1001,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/Cmoh-yR-usA.transcript.txt"
+    "url": "txt/Cmoh-yR-usA.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Cmoh-yR-usA.m4a",
@@ -947,8 +1023,12 @@
     "url": "txt/cur-4cf9de1ed04a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-4cf9de1ed04a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-4cf9de1ed04a.transcript.txt"
+    "url": "txt/cur-4cf9de1ed04a.orig.txt"
    }
   ],
   "title_zh": "控制 CSS 自定义属性值何时计算",
@@ -969,8 +1049,12 @@
     "url": "txt/cur-42b5c011c8e3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-42b5c011c8e3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-42b5c011c8e3.transcript.txt"
+    "url": "txt/cur-42b5c011c8e3.orig.txt"
    }
   ],
   "title_zh": "愤怒、焦虑与能动性",
@@ -991,8 +1075,12 @@
     "url": "txt/cur-6b8dd5ebf8ce.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-6b8dd5ebf8ce.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-6b8dd5ebf8ce.transcript.txt"
+    "url": "txt/cur-6b8dd5ebf8ce.orig.txt"
    }
   ],
   "title_zh": "AWS EKS 取证：数据来源与调查工具",
@@ -1013,8 +1101,12 @@
     "url": "txt/cur-376a3bbfb6c1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-376a3bbfb6c1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-376a3bbfb6c1.transcript.txt"
+    "url": "txt/cur-376a3bbfb6c1.orig.txt"
    }
   ],
   "title_zh": "又快又硬的代码",
@@ -1035,8 +1127,12 @@
     "url": "txt/cur-80c0bfdc859c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-80c0bfdc859c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-80c0bfdc859c.transcript.txt"
+    "url": "txt/cur-80c0bfdc859c.orig.txt"
    }
   ],
   "title_zh": "Agent Harness 的演变",
@@ -1057,8 +1153,12 @@
     "url": "txt/cur-4b81eb57d0c1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-4b81eb57d0c1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-4b81eb57d0c1.transcript.txt"
+    "url": "txt/cur-4b81eb57d0c1.orig.txt"
    }
   ],
   "title_zh": "什么是推理",
@@ -1078,7 +1178,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/kzcI5F4tGiU.transcript.txt"
+    "url": "txt/kzcI5F4tGiU.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kzcI5F4tGiU.m4a",
@@ -1099,7 +1199,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/A63sedG-p5Q.transcript.txt"
+    "url": "txt/A63sedG-p5Q.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/A63sedG-p5Q.m4a",
@@ -1121,8 +1221,12 @@
     "url": "txt/cur-c4e116577a69.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c4e116577a69.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c4e116577a69.transcript.txt"
+    "url": "txt/cur-c4e116577a69.orig.txt"
    }
   ],
   "title_zh": "实用 Loop 工程",
@@ -1142,7 +1246,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/zawGTDLtWFY.transcript.txt"
+    "url": "txt/zawGTDLtWFY.orig.txt"
    }
   ],
   "title_zh": "英伟达副总裁刘洺堉：Cosmos 3、世界模型、功夫，以及黄仁勋教会我的事",
@@ -1163,8 +1267,12 @@
     "url": "txt/cur-0d3bab75e5d5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-0d3bab75e5d5.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-0d3bab75e5d5.transcript.txt"
+    "url": "txt/cur-0d3bab75e5d5.orig.txt"
    }
   ],
   "title_zh": "Agent 循环里的 TDD：作秀还是真有价值？",
@@ -1185,8 +1293,12 @@
     "url": "txt/cur-6c51c93f8ef4.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-6c51c93f8ef4.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-6c51c93f8ef4.transcript.txt"
+    "url": "txt/cur-6c51c93f8ef4.orig.txt"
    }
   ],
   "title_zh": "打造团队自己的 vLLM 插件（二）：从模型转换到部署的 AI 原生自动化",
@@ -1206,7 +1318,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/lwAG7bBg4n8.transcript.txt"
+    "url": "txt/lwAG7bBg4n8.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/lwAG7bBg4n8.m4a",
@@ -1227,7 +1339,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/mnjjM2e5oAI.transcript.txt"
+    "url": "txt/mnjjM2e5oAI.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/mnjjM2e5oAI.m4a",
@@ -1249,8 +1361,12 @@
     "url": "txt/cur-1130e94af268.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1130e94af268.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1130e94af268.transcript.txt"
+    "url": "txt/cur-1130e94af268.orig.txt"
    }
   ],
   "title_zh": "指挥家式开发者",
@@ -1270,7 +1386,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/sJ4VJWycX9M.transcript.txt"
+    "url": "txt/sJ4VJWycX9M.orig.txt"
    }
   ],
   "title_zh": "Alexandr Wang：\"这是文明级别千载难逢的机会\"",
@@ -1291,8 +1407,12 @@
     "url": "txt/cur-dafe9a2bbb83.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-dafe9a2bbb83.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-dafe9a2bbb83.transcript.txt"
+    "url": "txt/cur-dafe9a2bbb83.orig.txt"
    }
   ],
   "title_zh": "重构的经济收益",
@@ -1312,7 +1432,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/ifniRXf467I.transcript.txt"
+    "url": "txt/ifniRXf467I.orig.txt"
    }
   ],
   "title_zh": "游凯超：vLLM、开源基础设施、模型协同设计，从社区到创业",
@@ -1333,8 +1453,12 @@
     "url": "txt/cur-39fb82bc57e5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-39fb82bc57e5.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-39fb82bc57e5.transcript.txt"
+    "url": "txt/cur-39fb82bc57e5.orig.txt"
    }
   ],
   "title_zh": "谁在害怕中国模型？",
@@ -1355,8 +1479,12 @@
     "url": "txt/cur-bf7280b6ee49.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-bf7280b6ee49.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-bf7280b6ee49.transcript.txt"
+    "url": "txt/cur-bf7280b6ee49.orig.txt"
    }
   ],
   "title_zh": "软件工厂的光明与黑暗",
@@ -1376,7 +1504,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/QG1AkRe1oW4.transcript.txt"
+    "url": "txt/QG1AkRe1oW4.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/QG1AkRe1oW4.m4a",
@@ -1398,8 +1526,12 @@
     "url": "txt/cur-7e0346368a85.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7e0346368a85.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7e0346368a85.transcript.txt"
+    "url": "txt/cur-7e0346368a85.orig.txt"
    }
   ],
   "title_zh": "掌控外循环",
@@ -1420,8 +1552,12 @@
     "url": "txt/cur-51562230a5e4.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-51562230a5e4.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-51562230a5e4.transcript.txt"
+    "url": "txt/cur-51562230a5e4.orig.txt"
    }
   ],
   "title_zh": "DSL 让 LLM 用得可靠",
@@ -1442,8 +1578,12 @@
     "url": "txt/cur-d9c9ed7a60ba.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d9c9ed7a60ba.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d9c9ed7a60ba.transcript.txt"
+    "url": "txt/cur-d9c9ed7a60ba.orig.txt"
    }
   ],
   "title_zh": "你读代码吗？",
@@ -1465,8 +1605,12 @@
     "url": "txt/cur-9fd93c8ee8fc.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-9fd93c8ee8fc.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-9fd93c8ee8fc.transcript.txt"
+    "url": "txt/cur-9fd93c8ee8fc.orig.txt"
    }
   ],
   "title_zh": "锚点定位入门",
@@ -1487,8 +1631,12 @@
     "url": "txt/cur-2bc4a920b1b3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-2bc4a920b1b3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-2bc4a920b1b3.transcript.txt"
+    "url": "txt/cur-2bc4a920b1b3.orig.txt"
    }
   ],
   "title_zh": "面向自我改进的 Harness 工程",
@@ -1509,8 +1657,12 @@
     "url": "txt/cur-2462892d260e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-2462892d260e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-2462892d260e.transcript.txt"
+    "url": "txt/cur-2462892d260e.orig.txt"
    }
   ],
   "title_zh": "审慎看待 Scaling Laws",
@@ -1531,8 +1683,12 @@
     "url": "txt/cur-924729b6849e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-924729b6849e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-924729b6849e.transcript.txt"
+    "url": "txt/cur-924729b6849e.orig.txt"
    }
   ],
   "title_zh": "Biome 与 JavaScript 工具链的未来",
@@ -1555,7 +1711,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-791b3e241fa4.transcript.txt"
+    "url": "txt/cur-791b3e241fa4.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-791b3e241fa4.m4a",
@@ -1575,7 +1731,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/a93FT2340c0.transcript.txt"
+    "url": "txt/a93FT2340c0.orig.txt"
    }
   ],
   "title_zh": "SpaceX 口述史：太空与 AI，人类文明扩张的序曲",
@@ -1595,7 +1751,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/4hi93cDfVls.transcript.txt"
+    "url": "txt/4hi93cDfVls.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:45+08:00"
@@ -1614,7 +1770,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/kBsqirnWTpI.transcript.txt"
+    "url": "txt/kBsqirnWTpI.orig.txt"
    }
   ],
   "title_zh": "安克阳萌：消费电子的生与死、第三品类与产品哲学",
@@ -1634,7 +1790,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/VAuDJ3yrhDM.transcript.txt"
+    "url": "txt/VAuDJ3yrhDM.orig.txt"
    }
   ],
   "title_zh": "Telegram 创始人 Pavel Durov 在奥斯陆自由论坛：\"我见过政府如何压制自由\"",
@@ -1656,7 +1812,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-5988276564e5.transcript.txt"
+    "url": "txt/cur-5988276564e5.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:09+08:00"
@@ -1677,7 +1833,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-cd7321599382.transcript.txt"
+    "url": "txt/cur-cd7321599382.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-cd7321599382.m4a",
@@ -1699,7 +1855,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-0df73b10c6b6.transcript.txt"
+    "url": "txt/cur-0df73b10c6b6.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0df73b10c6b6.m4a",
@@ -1721,7 +1877,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-c63697a281da.transcript.txt"
+    "url": "txt/cur-c63697a281da.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c63697a281da.m4a",
@@ -1741,7 +1897,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/I-A_yaUXK2E.transcript.txt"
+    "url": "txt/I-A_yaUXK2E.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:45+08:00"
@@ -1761,8 +1917,12 @@
     "url": "txt/cur-2a8737247b26.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-2a8737247b26.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-2a8737247b26.transcript.txt"
+    "url": "txt/cur-2a8737247b26.orig.txt"
    }
   ],
   "title_zh": "滚动驱动动画",
@@ -1783,8 +1943,12 @@
     "url": "txt/cur-f00d750dd07e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f00d750dd07e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f00d750dd07e.transcript.txt"
+    "url": "txt/cur-f00d750dd07e.orig.txt"
    }
   ],
   "title_zh": "与 Scott Jehl 聊 Web 懒加载",
@@ -1805,7 +1969,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/V9eI-t3TApE.transcript.txt"
+    "url": "txt/V9eI-t3TApE.orig.txt"
    }
   ],
   "title_zh": "罗福莉：OpenClaw、Agent 框架，AI 范式已经剧变",
@@ -1826,8 +1990,12 @@
     "url": "txt/cur-0a061b050aa5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-0a061b050aa5.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-0a061b050aa5.transcript.txt"
+    "url": "txt/cur-0a061b050aa5.orig.txt"
    }
   ],
   "title_zh": "Cat Wu 谈 Anthropic 产品团队为何比谁都快",
@@ -1848,7 +2016,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/kK1TOpI948o.transcript.txt"
+    "url": "txt/kK1TOpI948o.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kK1TOpI948o.m4a",
@@ -1869,8 +2037,12 @@
     "url": "txt/cur-3a582dd37eed.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3a582dd37eed.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3a582dd37eed.transcript.txt"
+    "url": "txt/cur-3a582dd37eed.orig.txt"
    }
   ],
   "title_zh": "如何招到比你更强的人",
@@ -1891,8 +2063,12 @@
     "url": "txt/cur-cad5bdded1ef.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-cad5bdded1ef.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-cad5bdded1ef.transcript.txt"
+    "url": "txt/cur-cad5bdded1ef.orig.txt"
    }
   ],
   "title_zh": "读代码之前我先跑的几条 Git 命令",
@@ -1913,8 +2089,12 @@
     "url": "txt/cur-193f8d8e77cd.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-193f8d8e77cd.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-193f8d8e77cd.transcript.txt"
+    "url": "txt/cur-193f8d8e77cd.orig.txt"
    }
   ],
   "title_zh": "极限 Harness 工程：百万行代码、日耗十亿 token、零人工编码与评审（OpenAI Ryan Lopopolo）",
@@ -1935,8 +2115,12 @@
     "url": "txt/cur-d0c7d5449da9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d0c7d5449da9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d0c7d5449da9.transcript.txt"
+    "url": "txt/cur-d0c7d5449da9.orig.txt"
    }
   ],
   "title_zh": "编程 Agent 的组成部分",
@@ -1956,7 +2140,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/OmfP9WcGjBE.transcript.txt"
+    "url": "txt/OmfP9WcGjBE.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/OmfP9WcGjBE.m4a",
@@ -1979,7 +2163,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-29cd7b5f8d57.transcript.txt"
+    "url": "txt/cur-29cd7b5f8d57.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-29cd7b5f8d57.m4a",
@@ -2000,8 +2184,12 @@
     "url": "txt/cur-1ea34ba04923.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1ea34ba04923.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1ea34ba04923.transcript.txt"
+    "url": "txt/cur-1ea34ba04923.orig.txt"
    }
   ],
   "title_zh": "图解现代 LLM 中的注意力变体",
@@ -2021,7 +2209,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/rIwgZWzUKm8.transcript.txt"
+    "url": "txt/rIwgZWzUKm8.orig.txt"
    }
   ],
   "title_zh": "谢赛宁七小时访谈：世界模型、AMI Labs、Yann LeCun、李飞飞与 42",
@@ -2042,8 +2230,12 @@
     "url": "txt/cur-a4ec18135cb6.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-a4ec18135cb6.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-a4ec18135cb6.transcript.txt"
+    "url": "txt/cur-a4ec18135cb6.orig.txt"
    }
   ],
   "title_zh": "GitHub Agentic Workflows 的安全架构",
@@ -2064,8 +2256,12 @@
     "url": "txt/cur-13a6bc139eee.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-13a6bc139eee.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-13a6bc139eee.transcript.txt"
+    "url": "txt/cur-13a6bc139eee.orig.txt"
    }
   ],
   "title_zh": "Marc Brooker 谈规格驱动的 AI 开发",
@@ -2086,7 +2282,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/moXqSeVQ1Fk.transcript.txt"
+    "url": "txt/moXqSeVQ1Fk.orig.txt"
    }
   ],
   "title_zh": "如何把 ADHD 变成天才级优势",
@@ -2107,8 +2303,12 @@
     "url": "txt/cur-d1eea80cb6dc.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d1eea80cb6dc.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d1eea80cb6dc.transcript.txt"
+    "url": "txt/cur-d1eea80cb6dc.orig.txt"
    }
   ],
   "title_zh": "Agent 架构中的安全边界",
@@ -2128,7 +2328,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/c-ZVu-Cr1FQ.transcript.txt"
+    "url": "txt/c-ZVu-Cr1FQ.orig.txt"
    }
   ],
   "title_zh": "星海图创始人高继扬：鲶鱼效应、曾国藩、Waymo 与 Momenta，以及许华哲为何离开",
@@ -2149,8 +2349,12 @@
     "url": "txt/cur-4eb3668befb7.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-4eb3668befb7.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-4eb3668befb7.transcript.txt"
+    "url": "txt/cur-4eb3668befb7.orig.txt"
    }
   ],
   "title_zh": "Steve Yegge 谈 Gas Town、Beads 与 Agent 式开发的兴起",
@@ -2172,8 +2376,12 @@
     "url": "txt/cur-989e332f832c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-989e332f832c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-989e332f832c.transcript.txt"
+    "url": "txt/cur-989e332f832c.orig.txt"
    }
   ],
   "title_zh": "Harness 工程：在 Agent 优先的世界里用好 Codex",
@@ -2194,8 +2402,12 @@
     "url": "txt/cur-55f06cf70928.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-55f06cf70928.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-55f06cf70928.transcript.txt"
+    "url": "txt/cur-55f06cf70928.orig.txt"
    }
   ],
   "title_zh": "Thibault Sottiaux 与 Ed Bayes 谈 OpenAI 和 Codex",
@@ -2216,7 +2428,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/gWmyu3x5rXY.transcript.txt"
+    "url": "txt/gWmyu3x5rXY.orig.txt"
    }
   ],
   "title_zh": "印奇：执掌阶跃星辰、智能的诱惑，与一场残酷的长周期游戏",
@@ -2236,7 +2448,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/Ty5ZoD37xus.transcript.txt"
+    "url": "txt/Ty5ZoD37xus.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Ty5ZoD37xus.m4a",
@@ -2257,7 +2469,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/UqMtkgQe-kI.transcript.txt"
+    "url": "txt/UqMtkgQe-kI.orig.txt"
    }
   ],
   "title_zh": "Manus 被收购前的最后一次访谈：2025 年的魔幻漂流",
@@ -2278,8 +2490,12 @@
     "url": "txt/cur-b1581a551bbc.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b1581a551bbc.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b1581a551bbc.transcript.txt"
+    "url": "txt/cur-b1581a551bbc.orig.txt"
    }
   ],
   "title_zh": "2025 年 LLM 现状：进展、问题与预测",
@@ -2300,8 +2516,12 @@
     "url": "txt/cur-474cb50db531.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-474cb50db531.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-474cb50db531.transcript.txt"
+    "url": "txt/cur-474cb50db531.orig.txt"
    }
   ],
   "title_zh": "Node.js 里的 require(esm)：实现者的故事",
@@ -2321,7 +2541,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/hS9BOev_u5U.transcript.txt"
+    "url": "txt/hS9BOev_u5U.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/hS9BOev_u5U.m4a",
@@ -2344,7 +2564,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-2b898fcfc59d.transcript.txt"
+    "url": "txt/cur-2b898fcfc59d.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2b898fcfc59d.m4a",
@@ -2365,8 +2585,12 @@
     "url": "txt/cur-a5f012fc82c1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-a5f012fc82c1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-a5f012fc82c1.transcript.txt"
+    "url": "txt/cur-a5f012fc82c1.orig.txt"
    }
   ],
   "title_zh": "2025 年 LLM 年度回顾",
@@ -2386,7 +2610,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/-sowOoOeQz4.transcript.txt"
+    "url": "txt/-sowOoOeQz4.orig.txt"
    }
   ],
   "title_zh": "朱啸虎：现实主义、AI 盛宴与泡沫，以及偏离共识的十五度",
@@ -2407,8 +2631,12 @@
     "url": "txt/cur-f7c50df03425.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f7c50df03425.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f7c50df03425.transcript.txt"
+    "url": "txt/cur-f7c50df03425.orig.txt"
    }
   ],
   "title_zh": "预言：AI 会让形式化验证走进主流",
@@ -2429,8 +2657,12 @@
     "url": "txt/cur-cce64b2db70f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-cce64b2db70f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-cce64b2db70f.transcript.txt"
+    "url": "txt/cur-cce64b2db70f.orig.txt"
    }
   ],
   "title_zh": "心智的空间",
@@ -2451,8 +2683,12 @@
     "url": "txt/cur-e4717274827e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-e4717274827e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-e4717274827e.transcript.txt"
+    "url": "txt/cur-e4717274827e.orig.txt"
    }
   ],
   "title_zh": "可验证性",
@@ -2472,7 +2708,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/HvMANU1yc0U.transcript.txt"
+    "url": "txt/HvMANU1yc0U.orig.txt"
    }
   ],
   "title_zh": "理想汽车李想：MoE、梁文锋、VLA、能量、记忆、亲密关系与人类智能",
@@ -2493,8 +2729,12 @@
     "url": "txt/cur-e870210a6260.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-e870210a6260.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-e870210a6260.transcript.txt"
+    "url": "txt/cur-e870210a6260.orig.txt"
    }
   ],
   "title_zh": "uv 是 Python 生态十年来最好的事",
@@ -2514,7 +2754,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/RUfeYhsundg.transcript.txt"
+    "url": "txt/RUfeYhsundg.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:45+08:00"
@@ -2534,8 +2774,12 @@
     "url": "txt/cur-7bf82b8dcead.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7bf82b8dcead.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7bf82b8dcead.transcript.txt"
+    "url": "txt/cur-7bf82b8dcead.orig.txt"
    }
   ],
   "title_zh": "导入 JSON 还是 fetch JSON",
@@ -2556,8 +2800,12 @@
     "url": "txt/cur-602c94a61e4c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-602c94a61e4c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-602c94a61e4c.transcript.txt"
+    "url": "txt/cur-602c94a61e4c.orig.txt"
    }
   ],
   "title_zh": "如何修好任何 Bug",
@@ -2578,8 +2826,12 @@
     "url": "txt/cur-3911edc802c7.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3911edc802c7.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3911edc802c7.transcript.txt"
+    "url": "txt/cur-3911edc802c7.orig.txt"
    }
   ],
   "title_zh": "Nicole Forsgren 谈 2025 年如何衡量 AI 时代的开发者效率",
@@ -2601,8 +2853,12 @@
     "url": "txt/cur-864e807db47b.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-864e807db47b.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-864e807db47b.transcript.txt"
+    "url": "txt/cur-864e807db47b.orig.txt"
    }
   ],
   "title_zh": "渐进式图片渲染的现状与未来",
@@ -2623,8 +2879,12 @@
     "url": "txt/cur-f61e677d50bc.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f61e677d50bc.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f61e677d50bc.transcript.txt"
+    "url": "txt/cur-f61e677d50bc.orig.txt"
    }
   ],
   "title_zh": "理解 LLM 评估的四种主要方法",
@@ -2645,8 +2905,12 @@
     "url": "txt/cur-c1256801dc58.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c1256801dc58.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c1256801dc58.transcript.txt"
+    "url": "txt/cur-c1256801dc58.orig.txt"
    }
   ],
   "title_zh": "npm 被围攻（以及怎么办）",
@@ -2667,7 +2931,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/BV15oHwzBEYK.transcript.txt"
+    "url": "txt/BV15oHwzBEYK.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV15oHwzBEYK.m4a",
@@ -2687,7 +2951,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/qjPH9njnaVU.transcript.txt"
+    "url": "txt/qjPH9njnaVU.orig.txt"
    }
   ],
   "title_zh": "Pavel Durov：Telegram、自由、审查、金钱、权力与人性",
@@ -2708,8 +2972,12 @@
     "url": "txt/cur-d006fe49e0b0.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d006fe49e0b0.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d006fe49e0b0.transcript.txt"
+    "url": "txt/cur-d006fe49e0b0.orig.txt"
    }
   ],
   "title_zh": "动物与幽灵",
@@ -2730,8 +2998,12 @@
     "url": "txt/cur-70a9fe1c79b3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-70a9fe1c79b3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-70a9fe1c79b3.transcript.txt"
+    "url": "txt/cur-70a9fe1c79b3.orig.txt"
    }
   ],
   "title_zh": "Daniel Stenberg 谈为什么把 Rust 从 curl 里移除",
@@ -2753,8 +3025,12 @@
     "url": "txt/cur-66b3f5f3f7a3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-66b3f5f3f7a3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-66b3f5f3f7a3.transcript.txt"
+    "url": "txt/cur-66b3f5f3f7a3.orig.txt"
    }
   ],
   "title_zh": "RAG 大家都做过了，然后呢？",
@@ -2776,8 +3052,12 @@
     "url": "txt/cur-28a19bfcde1f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-28a19bfcde1f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-28a19bfcde1f.transcript.txt"
+    "url": "txt/cur-28a19bfcde1f.orig.txt"
    }
   ],
   "title_zh": "Fetch 流很好用，但别拿它测上传下载进度",
@@ -2798,8 +3078,12 @@
     "url": "txt/cur-145317f4848a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-145317f4848a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-145317f4848a.transcript.txt"
+    "url": "txt/cur-145317f4848a.orig.txt"
    }
   ],
   "title_zh": "Cognition：Devin 藏在细节里",
@@ -2819,7 +3103,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/91fmhAnECVc.transcript.txt"
+    "url": "txt/91fmhAnECVc.orig.txt"
    }
   ],
   "title_zh": "Kimi 创始人杨植麟：K2、Agentic LLM、缸中之脑与无穷的开始",
@@ -2840,8 +3124,12 @@
     "url": "txt/cur-6d3011a0c9c8.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-6d3011a0c9c8.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-6d3011a0c9c8.transcript.txt"
+    "url": "txt/cur-6d3011a0c9c8.orig.txt"
    }
   ],
   "title_zh": "从 GPT-2 到 gpt-oss：架构演进分析",
@@ -2862,8 +3150,12 @@
     "url": "txt/cur-3b1209689611.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3b1209689611.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3b1209689611.transcript.txt"
+    "url": "txt/cur-3b1209689611.orig.txt"
    }
   ],
   "title_zh": "范式转移与赢家诅咒",
@@ -2884,8 +3176,12 @@
     "url": "txt/cur-f860d82c521a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f860d82c521a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f860d82c521a.transcript.txt"
+    "url": "txt/cur-f860d82c521a.orig.txt"
    }
   ],
   "title_zh": "写给新手（和怀疑者）的 AI 编程路线图",
@@ -2907,8 +3203,12 @@
     "url": "txt/cur-32267b4e2347.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-32267b4e2347.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-32267b4e2347.transcript.txt"
+    "url": "txt/cur-32267b4e2347.orig.txt"
    }
   ],
   "title_zh": "LLM 架构大比较",
@@ -2928,7 +3228,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/g_Pf6R95SiI.transcript.txt"
+    "url": "txt/g_Pf6R95SiI.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:45+08:00"
@@ -2948,8 +3248,12 @@
     "url": "txt/cur-c9d8040bdb31.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c9d8040bdb31.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c9d8040bdb31.transcript.txt"
+    "url": "txt/cur-c9d8040bdb31.orig.txt"
    }
   ],
   "title_zh": "从零理解并实现 LLM 的 KV Cache",
@@ -2970,8 +3274,12 @@
     "url": "txt/cur-f0762e98ea80.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f0762e98ea80.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f0762e98ea80.transcript.txt"
+    "url": "txt/cur-f0762e98ea80.orig.txt"
    }
   ],
   "title_zh": "Jake Archibald 谈原生 HTML Include",
@@ -2994,7 +3302,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-c0b286a36bcb.transcript.txt"
+    "url": "txt/cur-c0b286a36bcb.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c0b286a36bcb.m4a",
@@ -3015,8 +3323,12 @@
     "url": "txt/cur-c4fd1b473658.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c4fd1b473658.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c4fd1b473658.transcript.txt"
+    "url": "txt/cur-c4fd1b473658.orig.txt"
    }
   ],
   "title_zh": "我那些怀疑 AI 的朋友都疯了",
@@ -3037,8 +3349,12 @@
     "url": "txt/cur-9919f5912c61.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-9919f5912c61.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-9919f5912c61.transcript.txt"
+    "url": "txt/cur-9919f5912c61.orig.txt"
    }
   ],
   "title_zh": "渐进式 JSON",
@@ -3059,8 +3375,12 @@
     "url": "txt/cur-77e6ca2a924a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-77e6ca2a924a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-77e6ca2a924a.transcript.txt"
+    "url": "txt/cur-77e6ca2a924a.orig.txt"
    }
   ],
   "title_zh": "Agent 化的 Web 与原罪",
@@ -3081,8 +3401,12 @@
     "url": "txt/cur-0548e04113fe.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-0548e04113fe.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-0548e04113fe.transcript.txt"
+    "url": "txt/cur-0548e04113fe.orig.txt"
    }
   ],
   "title_zh": "深入 Model Context Protocol（MCP）",
@@ -3104,8 +3428,12 @@
     "url": "txt/cur-93eae5222109.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-93eae5222109.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-93eae5222109.transcript.txt"
+    "url": "txt/cur-93eae5222109.orig.txt"
    }
   ],
   "title_zh": "平台的力量被低估了",
@@ -3126,8 +3454,12 @@
     "url": "txt/cur-87ed01723e4f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-87ed01723e4f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-87ed01723e4f.transcript.txt"
+    "url": "txt/cur-87ed01723e4f.orig.txt"
    }
   ],
   "title_zh": "我们为什么要\"思考\"",
@@ -3147,7 +3479,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2Qs4MfEzCO0.transcript.txt"
+    "url": "txt/2Qs4MfEzCO0.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:45+08:00"
@@ -3167,8 +3499,12 @@
     "url": "txt/cur-14116eca0eb9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-14116eca0eb9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-14116eca0eb9.transcript.txt"
+    "url": "txt/cur-14116eca0eb9.orig.txt"
    }
   ],
   "title_zh": "\"use client\" 到底做了什么？",
@@ -3189,8 +3525,12 @@
     "url": "txt/cur-3662739770cb.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3662739770cb.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3662739770cb.transcript.txt"
+    "url": "txt/cur-3662739770cb.orig.txt"
    }
   ],
   "title_zh": "React Server Components 走到哪一步了？",
@@ -3212,8 +3552,12 @@
     "url": "txt/cur-f6ee0a5e0fa6.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f6ee0a5e0fa6.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f6ee0a5e0fa6.transcript.txt"
+    "url": "txt/cur-f6ee0a5e0fa6.orig.txt"
    }
   ],
   "title_zh": "Varun Mohan 讲 Windsurf：四个月做出百万开发者在用的 AI 代码编辑器",
@@ -3235,8 +3579,12 @@
     "url": "txt/cur-7b05b9b64a58.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7b05b9b64a58.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7b05b9b64a58.transcript.txt"
+    "url": "txt/cur-7b05b9b64a58.orig.txt"
    }
   ],
   "title_zh": "用于 LLM 推理的强化学习现状",
@@ -3257,8 +3605,12 @@
     "url": "txt/cur-b987b39cfe9d.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b987b39cfe9d.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b987b39cfe9d.transcript.txt"
+    "url": "txt/cur-b987b39cfe9d.orig.txt"
    }
   ],
   "title_zh": "通过网络传输的 JSX",
@@ -3279,8 +3631,12 @@
     "url": "txt/cur-5699439df571.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-5699439df571.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-5699439df571.transcript.txt"
+    "url": "txt/cur-5699439df571.orig.txt"
    }
   ],
   "title_zh": "后开发者时代",
@@ -3301,8 +3657,12 @@
     "url": "txt/cur-c71caa492bfa.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c71caa492bfa.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c71caa492bfa.transcript.txt"
+    "url": "txt/cur-c71caa492bfa.orig.txt"
    }
   ],
   "title_zh": "面向两台计算机的 React",
@@ -3323,8 +3683,12 @@
     "url": "txt/cur-e95b42032d78.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-e95b42032d78.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-e95b42032d78.transcript.txt"
+    "url": "txt/cur-e95b42032d78.orig.txt"
    }
   ],
   "title_zh": "权力归于大众：LLM 如何反转技术扩散的剧本",
@@ -3345,8 +3709,12 @@
     "url": "txt/cur-8399d45055a2.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-8399d45055a2.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-8399d45055a2.transcript.txt"
+    "url": "txt/cur-8399d45055a2.orig.txt"
    }
   ],
   "title_zh": "LLM 推理模型的推理阶段现状",
@@ -3368,7 +3736,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-4fa1607ca7c7.transcript.txt"
+    "url": "txt/cur-4fa1607ca7c7.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4fa1607ca7c7.m4a",
@@ -3390,7 +3758,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-55bc79ce049c.transcript.txt"
+    "url": "txt/cur-55bc79ce049c.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55bc79ce049c.m4a",
@@ -3411,8 +3779,12 @@
     "url": "txt/cur-de8a882fa9b3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-de8a882fa9b3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-de8a882fa9b3.transcript.txt"
+    "url": "txt/cur-de8a882fa9b3.orig.txt"
    }
   ],
   "title_zh": "理解推理型 LLM",
@@ -3434,7 +3806,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-0cdfa6c0191d.transcript.txt"
+    "url": "txt/cur-0cdfa6c0191d.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0cdfa6c0191d.m4a",
@@ -3454,7 +3826,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/2nVmKcITs7k.transcript.txt"
+    "url": "txt/2nVmKcITs7k.orig.txt"
    }
   ],
   "title_zh": "社交、成功与睡眠",
@@ -3475,8 +3847,12 @@
     "url": "txt/cur-8b57107d8c76.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-8b57107d8c76.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-8b57107d8c76.transcript.txt"
+    "url": "txt/cur-8b57107d8c76.orig.txt"
    }
   ],
   "title_zh": "构建生成式 AI 应用的常见陷阱",
@@ -3497,8 +3873,12 @@
     "url": "txt/cur-adfd540de302.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-adfd540de302.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-adfd540de302.transcript.txt"
+    "url": "txt/cur-adfd540de302.orig.txt"
    }
   ],
   "title_zh": "Agent",
@@ -3518,7 +3898,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/4ZWJj0D_FSA.transcript.txt"
+    "url": "txt/4ZWJj0D_FSA.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:45+08:00"
@@ -3538,8 +3918,12 @@
     "url": "txt/cur-3ced6251d95e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3ced6251d95e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3ced6251d95e.transcript.txt"
+    "url": "txt/cur-3ced6251d95e.orig.txt"
    }
   ],
   "title_zh": "更快的网站：新的 Speculation Rules API",
@@ -3561,8 +3945,12 @@
     "url": "txt/cur-af1a476c6de0.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-af1a476c6de0.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-af1a476c6de0.transcript.txt"
+    "url": "txt/cur-af1a476c6de0.orig.txt"
    }
   ],
   "title_zh": "强化学习中的奖励投机（Reward Hacking）",
@@ -3583,8 +3971,12 @@
     "url": "txt/cur-5eb8ac407733.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-5eb8ac407733.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-5eb8ac407733.transcript.txt"
+    "url": "txt/cur-5eb8ac407733.orig.txt"
    }
   ],
   "title_zh": "构建经过测试、可靠的 AI 应用",
@@ -3606,8 +3998,12 @@
     "url": "txt/cur-1a22e095a98b.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1a22e095a98b.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1a22e095a98b.transcript.txt"
+    "url": "txt/cur-1a22e095a98b.orig.txt"
    }
   ],
   "title_zh": "理解多模态 LLM",
@@ -3628,8 +4024,12 @@
     "url": "txt/cur-fb8757e9a46d.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-fb8757e9a46d.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-fb8757e9a46d.transcript.txt"
+    "url": "txt/cur-fb8757e9a46d.orig.txt"
    }
   ],
   "title_zh": "CSS :has 不可否认的实用性",
@@ -3650,8 +4050,12 @@
     "url": "txt/cur-5c5ce0bdd096.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-5c5ce0bdd096.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-5c5ce0bdd096.transcript.txt"
+    "url": "txt/cur-5c5ce0bdd096.orig.txt"
    }
   ],
   "title_zh": "One Million Checkboxes 里的秘密",
@@ -3671,7 +4075,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/BV1dU411U7f5.transcript.txt"
+    "url": "txt/BV1dU411U7f5.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1dU411U7f5.m4a",
@@ -3692,8 +4096,12 @@
     "url": "txt/cur-c79cf86df951.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c79cf86df951.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c79cf86df951.transcript.txt"
+    "url": "txt/cur-c79cf86df951.orig.txt"
    }
   ],
   "title_zh": "微基准测试谬误",
@@ -3715,7 +4123,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-aab51f0b0545.transcript.txt"
+    "url": "txt/cur-aab51f0b0545.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aab51f0b0545.m4a",
@@ -3737,7 +4145,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-6dfa58b6019a.transcript.txt"
+    "url": "txt/cur-6dfa58b6019a.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6dfa58b6019a.m4a",
@@ -3759,7 +4167,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-307d4a6462c1.transcript.txt"
+    "url": "txt/cur-307d4a6462c1.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-307d4a6462c1.m4a",
@@ -3780,8 +4188,12 @@
     "url": "txt/cur-21fea981794b.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-21fea981794b.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-21fea981794b.transcript.txt"
+    "url": "txt/cur-21fea981794b.orig.txt"
    }
   ],
   "title_zh": "构建生成式 AI 平台",
@@ -3802,8 +4214,12 @@
     "url": "txt/cur-1198e993d447.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1198e993d447.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1198e993d447.transcript.txt"
+    "url": "txt/cur-1198e993d447.orig.txt"
    }
   ],
   "title_zh": "一切从 Postgres 开始",
@@ -3826,7 +4242,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-f7e8c46dcd44.transcript.txt"
+    "url": "txt/cur-f7e8c46dcd44.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f7e8c46dcd44.m4a",
@@ -3847,8 +4263,12 @@
     "url": "txt/cur-56a43a86fa41.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-56a43a86fa41.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-56a43a86fa41.transcript.txt"
+    "url": "txt/cur-56a43a86fa41.orig.txt"
    }
   ],
   "title_zh": "逆向 Ticketmaster 的动态条形码",
@@ -3869,8 +4289,12 @@
     "url": "txt/cur-f341118d2274.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f341118d2274.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f341118d2274.transcript.txt"
+    "url": "txt/cur-f341118d2274.orig.txt"
    }
   ],
   "title_zh": "LLM 的外在幻觉",
@@ -3891,8 +4315,12 @@
     "url": "txt/cur-528295bc610c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-528295bc610c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-528295bc610c.transcript.txt"
+    "url": "txt/cur-528295bc610c.orig.txt"
    }
   ],
   "title_zh": "从零理解 Promise",
@@ -3913,8 +4341,12 @@
     "url": "txt/cur-bb01c31c506a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-bb01c31c506a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-bb01c31c506a.transcript.txt"
+    "url": "txt/cur-bb01c31c506a.orig.txt"
    }
   ],
   "title_zh": "合规与可读性：用 CSS 生成文字颜色",
@@ -3935,8 +4367,12 @@
     "url": "txt/cur-d8629a423ebb.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d8629a423ebb.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d8629a423ebb.transcript.txt"
+    "url": "txt/cur-d8629a423ebb.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d8629a423ebb.m4a",
@@ -3958,8 +4394,12 @@
     "url": "txt/cur-7c9976f8bf06.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7c9976f8bf06.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7c9976f8bf06.transcript.txt"
+    "url": "txt/cur-7c9976f8bf06.orig.txt"
    }
   ],
   "title_zh": "上游 xz/liblzma 后门导致 SSH 服务器沦陷",
@@ -3980,8 +4420,12 @@
     "url": "txt/cur-ca2626424a19.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-ca2626424a19.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-ca2626424a19.transcript.txt"
+    "url": "txt/cur-ca2626424a19.orig.txt"
    }
   ],
   "title_zh": "【译】测试驱动开发的定义",
@@ -4002,8 +4446,12 @@
     "url": "txt/cur-7af6c18a0984.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7af6c18a0984.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7af6c18a0984.transcript.txt"
+    "url": "txt/cur-7af6c18a0984.orig.txt"
    }
   ],
   "title_zh": "给你的 Core Web Vitals 把把脉",
@@ -4025,8 +4473,12 @@
     "url": "txt/cur-d5e6bf97efd1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d5e6bf97efd1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d5e6bf97efd1.transcript.txt"
+    "url": "txt/cur-d5e6bf97efd1.orig.txt"
    }
   ],
   "title_zh": "Richard Rumelt 谈好战略与坏战略",
@@ -4048,8 +4500,12 @@
     "url": "txt/cur-b27f388466fb.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b27f388466fb.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b27f388466fb.transcript.txt"
+    "url": "txt/cur-b27f388466fb.orig.txt"
    }
   ],
   "title_zh": "Will Larson 谈工程师思维",
@@ -4071,8 +4527,12 @@
     "url": "txt/cur-3e93bd0576c9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3e93bd0576c9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3e93bd0576c9.transcript.txt"
+    "url": "txt/cur-3e93bd0576c9.orig.txt"
    }
   ],
   "title_zh": "两个 React",
@@ -4093,8 +4553,12 @@
     "url": "txt/cur-0435aec0d892.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-0435aec0d892.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-0435aec0d892.transcript.txt"
+    "url": "txt/cur-0435aec0d892.orig.txt"
    }
   ],
   "title_zh": "Maxim Fateev 谈用 Temporal 实现持久化执行",
@@ -4116,8 +4580,12 @@
     "url": "txt/cur-149072c1ad65.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-149072c1ad65.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-149072c1ad65.transcript.txt"
+    "url": "txt/cur-149072c1ad65.orig.txt"
    }
   ],
   "title_zh": "从 WebGL 到 WebGPU",
@@ -4140,7 +4608,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-ab61ff083285.transcript.txt"
+    "url": "txt/cur-ab61ff083285.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-ab61ff083285.m4a",
@@ -4161,8 +4629,12 @@
     "url": "txt/cur-fa4c575e2aa9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-fa4c575e2aa9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-fa4c575e2aa9.transcript.txt"
+    "url": "txt/cur-fa4c575e2aa9.orig.txt"
    }
   ],
   "title_zh": "CSS Grid 交互式指南",
@@ -4183,8 +4655,12 @@
     "url": "txt/cur-ce68292451aa.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-ce68292451aa.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-ce68292451aa.transcript.txt"
+    "url": "txt/cur-ce68292451aa.orig.txt"
    }
   ],
   "title_zh": "针对 LLM 的对抗攻击",
@@ -4204,7 +4680,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/5RnKD4vekF0.transcript.txt"
+    "url": "txt/5RnKD4vekF0.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/5RnKD4vekF0.m4a",
@@ -4225,7 +4701,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/BV1Cu411P7We.transcript.txt"
+    "url": "txt/BV1Cu411P7We.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1Cu411P7We.m4a",
@@ -4246,8 +4722,12 @@
     "url": "txt/cur-a899677de73f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-a899677de73f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-a899677de73f.transcript.txt"
+    "url": "txt/cur-a899677de73f.orig.txt"
    }
   ],
   "title_zh": "读懂 React Server Components",
@@ -4268,8 +4748,12 @@
     "url": "txt/cur-9a3b1e72e2f3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-9a3b1e72e2f3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-9a3b1e72e2f3.transcript.txt"
+    "url": "txt/cur-9a3b1e72e2f3.orig.txt"
    }
   ],
   "title_zh": "Shadow DOM 与样式封装的利弊",
@@ -4289,7 +4773,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/BV1bN4y1d7he.transcript.txt"
+    "url": "txt/BV1bN4y1d7he.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1bN4y1d7he.m4a",
@@ -4310,8 +4794,12 @@
     "url": "txt/cur-d184c9211eb8.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d184c9211eb8.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d184c9211eb8.transcript.txt"
+    "url": "txt/cur-d184c9211eb8.orig.txt"
    }
   ],
   "title_zh": "LLM 研究中的开放挑战",
@@ -4331,7 +4819,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/BV1y14y1Q7Cd.transcript.txt"
+    "url": "txt/BV1y14y1Q7Cd.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1y14y1Q7Cd.m4a",
@@ -4353,7 +4841,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-e53f5f1de63e.transcript.txt"
+    "url": "txt/cur-e53f5f1de63e.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-e53f5f1de63e.m4a",
@@ -4374,8 +4862,12 @@
     "url": "txt/cur-ad388d074085.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-ad388d074085.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-ad388d074085.transcript.txt"
+    "url": "txt/cur-ad388d074085.orig.txt"
    }
   ],
   "title_zh": "AI 工程师的崛起",
@@ -4396,8 +4888,12 @@
     "url": "txt/cur-97b2c5f4478d.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-97b2c5f4478d.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-97b2c5f4478d.transcript.txt"
+    "url": "txt/cur-97b2c5f4478d.orig.txt"
    }
   ],
   "title_zh": "基于 LLM 的自主 Agent",
@@ -4418,8 +4914,12 @@
     "url": "txt/cur-1f142b98463c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1f142b98463c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1f142b98463c.transcript.txt"
+    "url": "txt/cur-1f142b98463c.orig.txt"
    }
   ],
   "title_zh": "node_modules 为什么这么大？",
@@ -4442,7 +4942,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-71f3a4102da2.transcript.txt"
+    "url": "txt/cur-71f3a4102da2.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-71f3a4102da2.m4a",
@@ -4463,8 +4963,12 @@
     "url": "txt/cur-e3fa9e6175a1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-e3fa9e6175a1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-e3fa9e6175a1.transcript.txt"
+    "url": "txt/cur-e3fa9e6175a1.orig.txt"
    }
   ],
   "title_zh": "谷歌：\"我们没有护城河，OpenAI 也没有\"",
@@ -4485,8 +4989,12 @@
     "url": "txt/cur-a7f9a8777b4c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-a7f9a8777b4c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-a7f9a8777b4c.transcript.txt"
+    "url": "txt/cur-a7f9a8777b4c.orig.txt"
    }
   ],
   "title_zh": "前端开发的终结",
@@ -4507,8 +5015,12 @@
     "url": "txt/cur-1d65254430ae.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1d65254430ae.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1d65254430ae.transcript.txt"
+    "url": "txt/cur-1d65254430ae.orig.txt"
    }
   ],
   "title_zh": "提示词工程",
@@ -4529,8 +5041,12 @@
     "url": "txt/cur-afb42041661b.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-afb42041661b.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-afb42041661b.transcript.txt"
+    "url": "txt/cur-afb42041661b.orig.txt"
    }
   ],
   "title_zh": "Web 开发失落的十年",
@@ -4552,8 +5068,12 @@
     "url": "txt/cur-463897804367.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-463897804367.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-463897804367.transcript.txt"
+    "url": "txt/cur-463897804367.orig.txt"
    }
   ],
   "title_zh": "硬核方式：把 Rust 编译到 WebAssembly",
@@ -4575,7 +5095,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-8b88a5ec86c5.transcript.txt"
+    "url": "txt/cur-8b88a5ec86c5.orig.txt"
    }
   ],
   "title_zh": "积极的技术选型与消极的技术选型",
@@ -4596,8 +5116,12 @@
     "url": "txt/cur-84bd79354179.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-84bd79354179.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-84bd79354179.transcript.txt"
+    "url": "txt/cur-84bd79354179.orig.txt"
    }
   ],
   "title_zh": "为什么我不太喜欢单页应用",
@@ -4618,8 +5142,12 @@
     "url": "txt/cur-bd2a1c61491f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-bd2a1c61491f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-bd2a1c61491f.transcript.txt"
+    "url": "txt/cur-bd2a1c61491f.orig.txt"
    }
   ],
   "title_zh": "Transformer 家族 2.0 版",
@@ -4640,8 +5168,12 @@
     "url": "txt/cur-86c3df7f8dc0.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-86c3df7f8dc0.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-86c3df7f8dc0.transcript.txt"
+    "url": "txt/cur-86c3df7f8dc0.orig.txt"
    }
   ],
   "title_zh": "JS 框架的兴衰",
@@ -4663,8 +5195,12 @@
     "url": "txt/cur-4dab64a7e3ce.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-4dab64a7e3ce.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-4dab64a7e3ce.transcript.txt"
+    "url": "txt/cur-4dab64a7e3ce.orig.txt"
    }
   ],
   "title_zh": "大型 Transformer 模型推理优化",
@@ -4685,8 +5221,12 @@
     "url": "txt/cur-30e12c438296.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-30e12c438296.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-30e12c438296.transcript.txt"
+    "url": "txt/cur-30e12c438296.orig.txt"
    }
   ],
   "title_zh": "Flexbox 交互式指南",
@@ -4707,8 +5247,12 @@
     "url": "txt/cur-1d6ac3abd16f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1d6ac3abd16f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1d6ac3abd16f.transcript.txt"
+    "url": "txt/cur-1d6ac3abd16f.orig.txt"
    }
   ],
   "title_zh": "理解 useMemo 和 useCallback",
@@ -4729,8 +5273,12 @@
     "url": "txt/cur-8048e0704e5c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-8048e0704e5c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-8048e0704e5c.transcript.txt"
+    "url": "txt/cur-8048e0704e5c.orig.txt"
    }
   ],
   "title_zh": "React 为什么会重新渲染",
@@ -4751,8 +5299,12 @@
     "url": "txt/cur-89a0faaafa2c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-89a0faaafa2c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-89a0faaafa2c.transcript.txt"
+    "url": "txt/cur-89a0faaafa2c.orig.txt"
    }
   ],
   "title_zh": "便利的代价",
@@ -4773,8 +5325,12 @@
     "url": "txt/cur-80fd5e94bd7e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-80fd5e94bd7e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-80fd5e94bd7e.transcript.txt"
+    "url": "txt/cur-80fd5e94bd7e.orig.txt"
    }
   ],
   "title_zh": "训练大型神经网络的技术",
@@ -4795,8 +5351,12 @@
     "url": "txt/cur-e2b191b5e4d9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-e2b191b5e4d9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-e2b191b5e4d9.transcript.txt"
+    "url": "txt/cur-e2b191b5e4d9.orig.txt"
    }
   ],
   "title_zh": "SPA 是个大错误吗？",
@@ -4818,8 +5378,12 @@
     "url": "txt/cur-d44c6270a8c9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d44c6270a8c9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d44c6270a8c9.transcript.txt"
+    "url": "txt/cur-d44c6270a8c9.orig.txt"
    }
   ],
   "title_zh": "机械表",
@@ -4840,8 +5404,12 @@
     "url": "txt/cur-1ffd4d13c712.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1ffd4d13c712.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1ffd4d13c712.transcript.txt"
+    "url": "txt/cur-1ffd4d13c712.orig.txt"
    }
   ],
   "title_zh": "理解布局算法",
@@ -4862,8 +5430,12 @@
     "url": "txt/cur-721401d4a8e8.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-721401d4a8e8.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-721401d4a8e8.transcript.txt"
+    "url": "txt/cur-721401d4a8e8.orig.txt"
    }
   ],
   "title_zh": "WebGPU：用上所有核心，不碰画布",
@@ -4884,8 +5456,12 @@
     "url": "txt/cur-810c23f529df.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-810c23f529df.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-810c23f529df.transcript.txt"
+    "url": "txt/cur-810c23f529df.orig.txt"
    }
   ],
   "title_zh": "现代 CSS Reset",
@@ -4906,8 +5482,12 @@
     "url": "txt/cur-c811c8fa03ef.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c811c8fa03ef.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c811c8fa03ef.transcript.txt"
+    "url": "txt/cur-c811c8fa03ef.orig.txt"
    }
   ],
   "title_zh": "如何在多 GPU 上训练超大模型？",
@@ -4928,8 +5508,12 @@
     "url": "txt/cur-b50930ee63b8.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b50930ee63b8.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b50930ee63b8.transcript.txt"
+    "url": "txt/cur-b50930ee63b8.orig.txt"
    }
   ],
   "title_zh": "React 状态管理比较考察",
@@ -4951,7 +5535,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-93e53a97f2e3.transcript.txt"
+    "url": "txt/cur-93e53a97f2e3.orig.txt"
    }
   ],
   "title_zh": "什么是扩散模型？",
@@ -4972,8 +5556,12 @@
     "url": "txt/cur-512782471c98.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-512782471c98.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-512782471c98.transcript.txt"
+    "url": "txt/cur-512782471c98.orig.txt"
    }
   ],
   "title_zh": "npm audit：设计上就是坏的",
@@ -4994,8 +5582,12 @@
     "url": "txt/cur-c4187a39ed69.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c4187a39ed69.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c4187a39ed69.transcript.txt"
+    "url": "txt/cur-c4187a39ed69.orig.txt"
    }
   ],
   "title_zh": "测试奖杯与测试分类",
@@ -5016,8 +5608,12 @@
     "url": "txt/cur-c8f3f2a59bb8.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c8f3f2a59bb8.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c8f3f2a59bb8.transcript.txt"
+    "url": "txt/cur-c8f3f2a59bb8.orig.txt"
    }
   ],
   "title_zh": "对比表示学习",
@@ -5038,8 +5634,12 @@
     "url": "txt/cur-12fc6359a0fb.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-12fc6359a0fb.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-12fc6359a0fb.transcript.txt"
+    "url": "txt/cur-12fc6359a0fb.orig.txt"
    }
   ],
   "title_zh": "WebAssembly 是性能魔法粉吗？",
@@ -5060,8 +5660,12 @@
     "url": "txt/cur-cd810a923d14.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-cd810a923d14.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-cd810a923d14.transcript.txt"
+    "url": "txt/cur-cd810a923d14.orig.txt"
    }
   ],
   "title_zh": "我如何把 GTA Online 加载时间缩短 70%",
@@ -5082,8 +5686,12 @@
     "url": "txt/cur-657df9d55fbe.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-657df9d55fbe.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-657df9d55fbe.transcript.txt"
+    "url": "txt/cur-657df9d55fbe.orig.txt"
    }
   ],
   "title_zh": "在你用 memo() 之前",
@@ -5104,8 +5712,12 @@
     "url": "txt/cur-ffb36d12dab5.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-ffb36d12dab5.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-ffb36d12dab5.transcript.txt"
+    "url": "txt/cur-ffb36d12dab5.orig.txt"
    }
   ],
   "title_zh": "Ditherpunk：我一直想读到的单色图像抖动文章",
@@ -5126,8 +5738,12 @@
     "url": "txt/cur-395878f2316c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-395878f2316c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-395878f2316c.transcript.txt"
+    "url": "txt/cur-395878f2316c.orig.txt"
    }
   ],
   "title_zh": "Cloudflare Workers：把前端 / Node.js 扩展到 CDN 边缘",
@@ -5148,8 +5764,12 @@
     "url": "txt/cur-7ad776f566aa.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7ad776f566aa.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7ad776f566aa.transcript.txt"
+    "url": "txt/cur-7ad776f566aa.orig.txt"
    }
   ],
   "title_zh": "用餐巾纸数学估算系统",
@@ -5171,8 +5791,12 @@
     "url": "txt/cur-b64180a62e01.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b64180a62e01.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b64180a62e01.transcript.txt"
+    "url": "txt/cur-b64180a62e01.orig.txt"
    }
   ],
   "title_zh": "WannaCry 勒索病毒",
@@ -5194,8 +5818,12 @@
     "url": "txt/cur-2ba17fee23cc.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-2ba17fee23cc.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-2ba17fee23cc.transcript.txt"
+    "url": "txt/cur-2ba17fee23cc.orig.txt"
    }
   ],
   "title_zh": "用 React 管理应用状态",
@@ -5216,8 +5844,12 @@
     "url": "txt/cur-2e8b186c4b37.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-2e8b186c4b37.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-2e8b186c4b37.transcript.txt"
+    "url": "txt/cur-2e8b186c4b37.orig.txt"
    }
   ],
   "title_zh": "Alex Petrov 谈数据库存储引擎",
@@ -5239,8 +5871,12 @@
     "url": "txt/cur-51d8a6bc7159.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-51d8a6bc7159.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-51d8a6bc7159.transcript.txt"
+    "url": "txt/cur-51d8a6bc7159.orig.txt"
    }
   ],
   "title_zh": "Redis 冒险的终章",
@@ -5261,8 +5897,12 @@
     "url": "txt/cur-4e157190affd.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-4e157190affd.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-4e157190affd.transcript.txt"
+    "url": "txt/cur-4e157190affd.orig.txt"
    }
   ],
   "title_zh": "【译】债务隐喻之父 Ward Cunningham 亲自解释",
@@ -5283,8 +5923,12 @@
     "url": "txt/cur-7d7d3792ba2f.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-7d7d3792ba2f.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-7d7d3792ba2f.transcript.txt"
+    "url": "txt/cur-7d7d3792ba2f.orig.txt"
    }
   ],
   "title_zh": "AHA 编程",
@@ -5305,8 +5949,12 @@
     "url": "txt/cur-a3d03cc6ae0c.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-a3d03cc6ae0c.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-a3d03cc6ae0c.transcript.txt"
+    "url": "txt/cur-a3d03cc6ae0c.orig.txt"
    }
   ],
   "title_zh": "10 倍开发者神话",
@@ -5328,8 +5976,12 @@
     "url": "txt/cur-92a94e7953b1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-92a94e7953b1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-92a94e7953b1.transcript.txt"
+    "url": "txt/cur-92a94e7953b1.orig.txt"
    }
   ],
   "title_zh": "Samy 蠕虫",
@@ -5351,8 +6003,12 @@
     "url": "txt/cur-20bf2a9380b4.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-20bf2a9380b4.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-20bf2a9380b4.transcript.txt"
+    "url": "txt/cur-20bf2a9380b4.orig.txt"
    }
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-20bf2a9380b4.m4a",
@@ -5374,8 +6030,12 @@
     "url": "txt/cur-fe37d948c087.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-fe37d948c087.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-fe37d948c087.transcript.txt"
+    "url": "txt/cur-fe37d948c087.orig.txt"
    }
   ],
   "title_zh": "再见，整洁代码",
@@ -5396,8 +6056,12 @@
     "url": "txt/cur-6e3c127507ae.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-6e3c127507ae.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-6e3c127507ae.transcript.txt"
+    "url": "txt/cur-6e3c127507ae.orig.txt"
    }
   ],
   "title_zh": "影子经纪人",
@@ -5420,7 +6084,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-5e8f73181152.transcript.txt"
+    "url": "txt/cur-5e8f73181152.orig.txt"
    }
   ],
   "title_zh": "别同步状态，派生它！",
@@ -5441,8 +6105,12 @@
     "url": "txt/cur-a7b46eb825ad.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-a7b46eb825ad.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-a7b46eb825ad.transcript.txt"
+    "url": "txt/cur-a7b46eb825ad.orig.txt"
    }
   ],
   "title_zh": "从涉及当前时间的单元测试学习可测试性设计",
@@ -5463,8 +6131,12 @@
     "url": "txt/cur-b956e17edf61.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-b956e17edf61.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-b956e17edf61.transcript.txt"
+    "url": "txt/cur-b956e17edf61.orig.txt"
    }
   ],
   "title_zh": "JavaScript 工具链为什么这么烂",
@@ -5485,8 +6157,12 @@
     "url": "txt/cur-c8c1e5d67e9e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c8c1e5d67e9e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c8c1e5d67e9e.transcript.txt"
+    "url": "txt/cur-c8c1e5d67e9e.orig.txt"
    }
   ],
   "title_zh": "可观测性是为了未知的未知",
@@ -5508,8 +6184,12 @@
     "url": "txt/cur-d9f6fd20c2c4.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-d9f6fd20c2c4.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-d9f6fd20c2c4.transcript.txt"
+    "url": "txt/cur-d9f6fd20c2c4.orig.txt"
    }
   ],
   "title_zh": "写给普通人的代数效应",
@@ -5530,8 +6210,12 @@
     "url": "txt/cur-f2d301fc6cac.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-f2d301fc6cac.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-f2d301fc6cac.transcript.txt"
+    "url": "txt/cur-f2d301fc6cac.orig.txt"
    }
   ],
   "title_zh": "postMessage 慢吗？",
@@ -5552,8 +6236,12 @@
     "url": "txt/cur-c9e63ec9a46a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-c9e63ec9a46a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-c9e63ec9a46a.transcript.txt"
+    "url": "txt/cur-c9e63ec9a46a.orig.txt"
    }
   ],
   "title_zh": "写测试。别太多。以集成测试为主。",
@@ -5574,8 +6262,12 @@
     "url": "txt/cur-94ccaec24849.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-94ccaec24849.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-94ccaec24849.transcript.txt"
+    "url": "txt/cur-94ccaec24849.orig.txt"
    }
   ],
   "title_zh": "就近放置（Colocation）",
@@ -5596,8 +6288,12 @@
     "url": "txt/cur-86249fc6e081.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-86249fc6e081.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-86249fc6e081.transcript.txt"
+    "url": "txt/cur-86249fc6e081.orig.txt"
    }
   ],
   "title_zh": "什么时候该用 Web Worker？",
@@ -5618,8 +6314,12 @@
     "url": "txt/cur-3ee4eb46d282.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-3ee4eb46d282.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-3ee4eb46d282.transcript.txt"
+    "url": "txt/cur-3ee4eb46d282.orig.txt"
    }
   ],
   "title_zh": "拿满分 Lighthouse 做一个最不无障碍的网站",
@@ -5640,8 +6340,12 @@
     "url": "txt/cur-34d6ec20c098.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-34d6ec20c098.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-34d6ec20c098.transcript.txt"
+    "url": "txt/cur-34d6ec20c098.orig.txt"
    }
   ],
   "title_zh": "编写有韧性的组件",
@@ -5662,8 +6366,12 @@
     "url": "txt/cur-aefa0204ff8a.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-aefa0204ff8a.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-aefa0204ff8a.transcript.txt"
+    "url": "txt/cur-aefa0204ff8a.orig.txt"
    }
   ],
   "title_zh": "useEffect 完全指南",
@@ -5684,8 +6392,12 @@
     "url": "txt/cur-e458fea3d0db.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-e458fea3d0db.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-e458fea3d0db.transcript.txt"
+    "url": "txt/cur-e458fea3d0db.orig.txt"
    }
   ],
   "title_zh": "把 React 看作 UI 运行时",
@@ -5706,8 +6418,12 @@
     "url": "txt/cur-91409bfba7c1.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-91409bfba7c1.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-91409bfba7c1.transcript.txt"
+    "url": "txt/cur-91409bfba7c1.orig.txt"
    }
   ],
   "title_zh": "UI 工程的要素",
@@ -5728,8 +6444,12 @@
     "url": "txt/cur-828b5deefc4e.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-828b5deefc4e.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-828b5deefc4e.transcript.txt"
+    "url": "txt/cur-828b5deefc4e.orig.txt"
    }
   ],
   "title_zh": "小而专注的模块",
@@ -5750,8 +6470,12 @@
     "url": "txt/cur-1c9291c74af3.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-1c9291c74af3.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-1c9291c74af3.transcript.txt"
+    "url": "txt/cur-1c9291c74af3.orig.txt"
    }
   ],
   "title_zh": "Attention? Attention!（注意力机制详解）",
@@ -5772,8 +6496,12 @@
     "url": "txt/cur-63bd5d53fbe9.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-63bd5d53fbe9.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-63bd5d53fbe9.transcript.txt"
+    "url": "txt/cur-63bd5d53fbe9.orig.txt"
    }
   ],
   "title_zh": "用侧信道读取特权内存",
@@ -5794,8 +6522,12 @@
     "url": "txt/cur-25a0b4efb4da.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-25a0b4efb4da.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-25a0b4efb4da.transcript.txt"
+    "url": "txt/cur-25a0b4efb4da.orig.txt"
    }
   ],
   "title_zh": "Firefox 如何重新变快",
@@ -5816,8 +6548,12 @@
     "url": "txt/cur-66d963ce2471.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-66d963ce2471.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-66d963ce2471.transcript.txt"
+    "url": "txt/cur-66d963ce2471.orig.txt"
    }
   ],
   "title_zh": "John Allspaw 谈系统故障：预防、响应与复盘",
@@ -5839,8 +6575,12 @@
     "url": "txt/cur-bc8809708ee2.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/cur-bc8809708ee2.zh.txt"
+   },
+   {
     "label": "原文",
-    "url": "txt/cur-bc8809708ee2.transcript.txt"
+    "url": "txt/cur-bc8809708ee2.orig.txt"
    }
   ],
   "title_zh": "Mike Barker 谈 LMAX 架构",
@@ -5861,7 +6601,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/YM4If6YHN3s.transcript.txt"
+    "url": "txt/YM4If6YHN3s.orig.txt"
    }
   ],
   "title_zh": "乔布斯最具创新性的演讲",
@@ -5883,7 +6623,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-4e8227e28349.transcript.txt"
+    "url": "txt/cur-4e8227e28349.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:09+08:00"
@@ -5904,7 +6644,7 @@
    },
    {
     "label": "原文",
-    "url": "txt/cur-6064b6036f12.transcript.txt"
+    "url": "txt/cur-6064b6036f12.orig.txt"
    }
   ],
   "added_at": "2026-10-11T05:09+08:00"

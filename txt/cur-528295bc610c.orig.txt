@@ -1,0 +1,417 @@
+There are a lot of speed bumps and potholes on the road to JavaScript proficiency. One of the biggest and most daunting is *Promises.*
+
+In order to understand Promises, we need a surprisingly deep understanding of how JavaScript works and what its limitations are. Without that context, Promises won’t really make much sense.
+
+It can be frustrating because the Promises API is *so important* nowadays. It’s become the de facto way of working with asynchronous code. Modern web APIs are built on top of Promises. There’s no getting around it: if we want to be productive with JavaScript, it really helps to understand Promises.
+
+So, in this tutorial, we’re going to learn about Promises, but we’ll start at the beginning. I’ll share all of the critical bits of context that took me years to understand. And by the end, hopefully, you’ll have a much deeper understanding of what Promises are and how to use them effectively. ✨
+
+## Link to this headingWhy would they design it this way??
+
+Suppose we wanted to build a *Happy New Year!* countdown, something like this:
+
+––
+
+If JavaScript was like most other programming languages, we could solve the problem like this:
+
+```
+function newYearsCountdown() {
+  print("3");
+  sleep(1000);
+  print("2");
+  sleep(1000);
+  print("1");
+  sleep(1000);
+  print("Happy New Year! 🎉");
+}
+```
+In this hypothetical code snippet, the program would pause when it hits a `sleep()` call, and then resume after the specified amount of time has passed.
+
+Unfortunately, there is no `sleep` function in JavaScript, because it’s a *single-threaded* language.Technically, modern JavaScript has access to multiple threads via Web Workers, but those extra threads don't have access to the DOM, so they can’t really be used in most situations. A “thread” is a long-running process that executes code. JavaScript only has one thread, and so it can only do one thing at a time. It can’t multitask. This is a problem because if our lone JavaScript thread is busy managing this countdown timer, it can’t do anything *else*.
+
+When I was first learning about this stuff, it wasn’t immediately obvious to me why this was a problem. If the countdown timer is the only thing happening right now, isn’t it fine if the JS thread was fully occupied during that time??
+
+Well, even though JavaScript doesn’t have a `sleep` function, it *does* have some other functions that occupy the main thread for an extended amount of time. We can use those other methods to get a glimpse into what it would be like if JavaScript had a `sleep` function.
+
+For example, `window.prompt()`. This function is used to gather information from the user, and it halts execution of our code much like our hypothetical `sleep()` function would.
+
+Click the button in this playground, and then **try to interact with the page** while the prompt is open:
+
+Code Playground
+
+HTML
+
+Result
+
+**Notice that while the prompt is open, the page is totally unresponsive?** You can't scroll, click any links, or select any text! The JavaScript thread is busy waiting for us to provide a value so that it can finish running that code. While it’s waiting, it can’t do anything *else*, and so the browser locks down the UI.
+
+Other languages have multiple threads, and so it's no big deal if one of them gets preoccupied for a while. In JavaScript, though, we only have the one, and it’s used for everything: handling events, managing network requests, updating the UI, etc.
+
+If we want to create a countdown, we need to find a way to do it without blocking the thread.
+
+## Link to this headingCallbacks
+
+The main tool in our toolbox for solving these sorts of problems is `setTimeout`. `setTimeout` is a function which accepts two arguments:
+
+1. A chunk of work to do, at some point in the future.
+2. The amount of time to wait for.
+
+Here's an example:
+
+```
+console.log('Start');
+setTimeout(
+  () => {
+    console.log('After one second');
+  },
+  1000
+);
+```
+The chunk of work is passed in through a function. This pattern is known as a *callback.*
+
+The hypothetical `sleep()` function we saw before is like calling a company and waiting on hold for the next available representative. `setTimeout()` is like pressing *1* to have them *call you back* when the representative is available. You can hang up the phone and get on with your life.
+
+`setTimeout()` is known as an *asynchronous* function. This means that it doesn’t block the thread. By contrast, `window.prompt()` is *synchronous*, because the JavaScript thread can't do anything else while it’s waiting.
+
+The big downside with asynchronous code is that it means our code won't always run in a linear order. Consider the following setup:
+
+```
+console.log('1. Before setTimeout');
+setTimeout(() => {
+  console.log('2. Inside setTimeout');
+}, 500);
+console.log('3. After setTimeout');
+```
+You might expect these logs to fire in order from top to bottom: `1` > `2` > `3`. **But remember, the whole idea with callbacks is that we’re scheduling a call back.** The JavaScript thread doesn’t sit around and wait, it keeps running.
+
+Imagine if we gave the JavaScript thread a journal and asked it to keep track of all the things it does while it runs this code. After running, the journal would look something like this:
+
+- `00:000`: Log "1. Before setTimeout".
+- `00:001`: Register a timeout.
+- `00:002`: Log "3. After setTimeout".
+- `00:501`: Log "2. Inside setTimeout".
+
+`setTimeout()` registers the callback, like scheduling a meeting on a calendar. It only takes a tiny fraction of a second to register the callback, and once that’s done, it moves right along, executing the rest of the program.
+
+Callbacks are used all over JavaScript, not just for timers. For example, here’s how we listen for The term “pointer” is an umbrella category for all UI input methods that involve pointing at something, including the mouse, tapping a finger on a touchscreen, a stylus, etc. events:
+
+Code Playground
+
+window.addEventListener('pointermove', (event) => {
+  const container = document.querySelector('#data');
+  container.innerText = \`${event.clientX} • ${event.clientY}\`;
+});
+
+`window.addEventListener()` registers a callback that will be called whenever a certain event is detected. In this case, we’re listening for pointer movements. Whenever the user moves the mouse or drags their finger along a touchscreen, we’re running a chunk of code in response.
+
+Like with `setTimeout`, the JavaScript thread doesn’t focus exclusively on watching and waiting for mouse events. It tells the browser “hey, let me know when the user moves the mouse”. When the event fires, the JS thread will circle back and run our callback.
+
+**But OK, we’ve wandered pretty far from our original problem.** If we want to set up a 3-second countdown, how do we do it?
+
+Back in the day, the most common solution was to set up nested callbacks, something like this:
+
+```
+console.log("3…");
+setTimeout(() => {
+  console.log("2…");
+  setTimeout(() => {
+    console.log("1…");
+    setTimeout(() => {
+      console.log("Happy New Year!!");
+    }, 1000);
+  }, 1000);
+}, 1000);
+```
+This is *wild*, right? Our `setTimeout` callbacks create their own `setTimeout` callbacks!
+
+When I started tinkering with JavaScript in the early 2000s, this sort of pattern was pretty common, though we all sorta recognized how not-ideal it was. We referred to this pattern as *Callback Hell.*
+
+Promises were developed to solve some of the problems of Callback Hell.
+
+## Link to this headingIntroducing Promises
+
+So, as discussed, we can't simply tell JavaScript to stop and wait before executing the next line of code, since it would block the thread. We’re going to need *some way* of separating the work into asynchronous chunks.
+
+Instead of nesting, though, what if we could chain them together? To tell JavaScript to do this, then this, then this?
+
+Just for fun, let’s pretend that we had a magic wand, and we could change the `setTimeout` function to work however we wanted. What if we did something like this:
+
+```
+console.log('3');
+setTimeout(1000)
+  .then(() => {
+    console.log('2');
+    return setTimeout(1000);
+  })
+  .then(() => {
+    console.log('1');
+    return setTimeout(1000);
+  })
+  .then(() => {
+    console.log('Happy New Year!!');
+  });
+```
+Instead of passing the callback directly to `setTimeout`, which leads to nesting and Callback Hell, what if we could chain them together with a special `.then()` method?
+
+**This is the core idea behind Promises.** A Promise is a special construct, added to JavaScript in 2015 as part of a big language update.
+
+Unfortunately, `setTimeout` still uses the older callback style, since `setTimeout` was implemented long before Promises; changing how it works would break older websites. Backwards compatibility is a great thing, but it means that things are sometimes a bit messy.
+
+But modern web APIs are built on top of Promises. Let's look at an example.
+
+### Link to this headingWorking with Promises
+
+The `fetch()` function allows us to make network requests, typically to retrieve some data from the server.
+
+Consider this code:
+
+```
+const fetchValue = fetch('/api/get-data');
+console.log(fetchValue);
+// -> Promise {<pending>}
+```
+When we call `fetch()`, it starts the network request. This is an asynchronous operation, and so the JavaScript thread doesn't stop and wait. The code keeps on running.
+
+But then, what does the `fetch()` function actually *produce?* It can’t be the actual data from the server, since we just started the request and it’ll be a while until it’s resolved. Instead, it’s sort of like an An IOU is a note that acknowledges a debt. Pronounced like “I Owe You”., a note from the browser that says “Hey, I don’t have your data yet, but I promise I'll have it soon!”.
+
+More concretely, Promises are JavaScript objects. Internally, Promises are always in one of three states:
+
+1. `pending` — the work is in-progress, and hasn't yet completed.
+2. `fulfilled` — the work has successfully completed.
+3. `rejected` — something has gone wrong, and the Promise could not be fulfilled.
+
+While a Promise is in the `pending` state, it’s said to be *unresolved*. When it finishes its work, it becomes *resolved*. This is true whether the promise was fulfilled or rejected.
+
+Typically, we want to register some sort of work to happen when the Promise has been fulfilled. We can do this using the `.then()` method:
+
+```
+fetch('/api/get-data')
+  .then((response) => {
+    console.log(response);
+    // Response { type: 'basic', status: 200, ...}
+  });
+```
+`fetch()` produces a Promise, and we call `.then()` to attach a callback. When the browser receives a response, this callback will be called, and the response object will be passed through.
+
+## Link to this headingCreating our own Promises
+
+When we use the Fetch API, the Promises are created behind the scenes, by the `fetch()` function. But what if the API we want to work with doesn’t support Promises?
+
+For example, `setTimeout` was created before Promises existed. If we want to avoid Callback Hell when working with timeouts, we’ll need to create *our own* Promises.
+
+Here’s what the syntax looks like:
+
+```
+const demoPromise = new Promise((resolve) => {
+  // Do some sort of asynchronous work, and then
+  // call `resolve()` to fulfill the Promise.
+});
+demoPromise.then(() => {
+  // This callback will be called when
+  // the Promise is fulfilled!
+})
+```
+Promises are generic. They don’t “do” anything on their own. When we create a new Promise instance with `new Promise()`, we also supply a function with the specific asynchronous work we want to do. This can be anything: performing a network request, setting a timeout, whatever.
+
+When that work is finished, we call `resolve()`, which signals to the Promise that everything went well and resolves the Promise.
+
+Let’s circle back to our original challenge, creating a countdown timer. In that case, the asynchronous work is waiting for a `setTimeout` to expire.
+
+We can create our own little Promise-based helper, which wraps around `setTimeout`, like this:
+
+```
+function wait(duration) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
+}
+const timeoutPromise = wait(1000);
+timeoutPromise.then(() => {
+  console.log('1 second later!')
+});
+```
+This code looks *super intimidating.* Let’s see if we can break it down:
+
+- We have a new utility function,`wait`. This function takes a single parameter, `duration`. Our goal is to use this function as a sort of `sleep` function, but one that works fully asynchronously.
+- Inside`wait`, we’re creating and returning a new `Promise`. Promises don’t do anything on their own; we need to call the `resolve` function when the async work is completed.
+- Inside the Promise, we start a new timer with`setTimeout`. We’re feeding it the `resolve` function we got from the Promise, as well as the `duration` supplied by the user.
+- When the timer elapses, it will invoke the supplied callback. This creates a sort of chain reaction:`setTimeout` calls `resolve`, which signals that the Promise is fulfilled, which causes the `.then()` callback to be fired as well.
+
+**It’s OK if this code still hurts your brain** 😅. We’re combining a lot of hard concepts here! Hopefully the general strategy is clear, even if all the pieces are still a bit fuzzy.
+
+One thing that might help clarify this stuff: in the code above, we’re passing the `resolve` function directly to `setTimeout`. Alternatively, we could create an inline function, like we were doing earlier, which invokes the `resolve` function:
+
+```
+function wait(duration) {
+  return new Promise((resolve) => {
+    setTimeout(
+      () => resolve(),
+      duration
+    );
+  });
+}
+```
+JavaScript has “first class functions”, which means that functions can be passed around like any other data type (strings, numbers, etc). This is a lovely feature, but it can take a while for this to feel intuitive. This alternative form is a bit less direct, but it works exactly the same way, so if this is clearer to you, you can absolutely structure things this way!
+
+### Link to this headingChaining Promises
+
+One important thing to understand about Promises is that they can only be resolved once. Once a Promise has been fulfilled or rejected, it stays that way forever.
+
+This means that Promises aren’t really suitable for certain things. For example, event listeners:
+
+```
+window.addEventListener('mousemove', (event) => {
+  console.log(event.clientX);
+})
+```
+This callback will be fired whenever the user moves their mouse, potentially hundreds or even thousands of times. Promises aren’t a good fit for this sort of thing.
+
+How about our “countdown” timer scenario? While we can’t re-trigger the same `wait` Promise, we can chain multiple Promises together:
+
+```
+wait(1000)
+  .then(() => {
+    console.log('2');
+    return wait(1000);
+  })
+  .then(() => {
+    console.log('1');
+    return wait(1000);
+  })
+  .then(() => {
+    console.log('Happy New Year!!');
+  });
+```
+When our original Promise is fulfilled, the `.then()` callback is called. It creates and returns a new Promise, and the process repeats.
+
+### Link to this headingPassing data
+
+So far, we’ve been calling the `resolve` function without arguments, using it purely to signal that the asynchronous work has completed. In some cases, though, we’ll have some data that we want to pass along!
+
+Here’s an example using a hypothetical database library that uses callbacks:
+
+```
+function getUser(userId) {
+  return new Promise((resolve) => {
+    // The asynchronous work, in this case, is
+    // looking up a user from their ID
+    db.get({ id: userId }, (user) => {
+      // Now that we have the full user object,
+      // we can pass it in here...
+      resolve(user);
+    });
+  });
+}
+getUser('abc123').then((user) => {
+  // ...and pluck it out here!
+  console.log(user);
+  // { name: 'Josh', ... }
+})
+```
+### Link to this headingRejected Promises
+
+Unfortunately, when it comes to JavaScript, Promises aren’t always kept. Sometimes, they’re broken.
+
+For example, with the Fetch API, there is no guarantee that our network requests will succeed! Maybe the internet connection is flaky, or maybe the server is down. In these cases, the Promise will be *rejected* instead of *fulfilled*.
+
+We can handle it with the `.catch()` method:
+
+```
+fetch('/api/get-data')
+  .then((response) => {
+    // ...
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+```
+When a Promise is fulfilled, the `.then()` method is called. When it is rejected, `.catch()` is called instead. We can think of it like two separate paths, chosen based on the Promise’s state.
+
+When it comes to hand-crafted Promises, we can reject them using a 2nd callback parameter, `reject`:
+
+```
+new Promise((resolve, reject) => {
+  someAsynchronousWork((result, error) => {
+    if (error) {
+      reject(error);
+      return;
+    }
+    resolve(result);
+  });
+});
+```
+If we run into problems inside our Promise, we can call the `reject()` function to mark the promise as rejected. The argument(s) we pass through — typically an error — will be passed along to the `.catch()` callback.
+
+## Link to this headingAsync / Await
+
+One of the really great parts of modern JavaScript is the `async` / `await` syntax. Using this syntax, we can get pretty darn close to our ideal countdown structure:
+
+```
+async function countdown() {
+  console.log("5…");
+  await wait(1000);
+  console.log("4…");
+  await wait(1000);
+  console.log("3…");
+  await wait(1000);
+  console.log("2…");
+  await wait(1000);
+  console.log("1…");
+  await wait(1000);
+  console.log("Happy New Year!");
+}
+```
+**But wait, I thought this was impossible!** We can’t pause a JavaScript function while it’s halfway through, since that blocks the thread from doing anything else!
+
+This new syntax is secretly powered by Promises. If we put on our detective hat, we can see how this works:
+
+```
+async function addNums(a, b) {
+  return a + b;
+}
+const result = addNums(1, 1);
+console.log(result);
+// -> Promise {<fulfilled>: 2}
+```
+We’d expect the returned value to be a number, `2`, but it's actually a *Promise that resolves to the number `2`*. The moment we slap that `async` keyword on a function, we guarantee that it returns a Promise, even if the function doesn’t do any sort of asynchronous work.
+
+The code above is essentially syntactic sugar for this:
+
+```
+function addNums(a, b) {
+  return new Promise((resolve) => {
+    resolve(a + b);
+  });
+}
+```
+Similarly, the `await` keyword is syntactic sugar for the `.then()` callback:
+
+```
+// This code...
+async function pingEndpoint(endpoint) {
+  const response = await fetch(endpoint);
+  return response.status;
+}
+// ...is equivalent to this:
+function pingEndpoint(endpoint) {
+  return fetch(endpoint)
+    .then((response) => {
+      return response.status;
+    });
+}
+```
+Promises give JavaScript the underlying infrastructure it needed in order to provide syntax that looks and feels synchronous, while actually being asynchronous under the hood.
+
+It’s pretty friggin’ great.
+
+## Link to this headingMore to come!
+
+For the past couple of years, my full-time job has been building and sharing educational resources like this blog post. I also have a CSS course(opens in new tab) and a React course(opens in new tab).
+
+One of the most popular requests from students has been for me to make a course on vanilla JavaScript, and it's something I've been thinking a lot about. I’ll likely publish a few more posts on vanilla JavaScript topics in the months ahead.
+
+If you’d like to be notified when I publish something new, the best way is to join my newsletter. I'll shoot you an email whenever I release any new blog posts, and keep you updated with my courses. ❤️
+
+### Last updated on
+
+March 18th, 2025

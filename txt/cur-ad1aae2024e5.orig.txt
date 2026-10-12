@@ -1,0 +1,261 @@
+The trick to putting LLM agents in high-stakes systems isn’t a smarter model — it’s containing the model to one node so the rest of the system is ordinary, testable code. Here are the structural moves, with the contracts *and types to implement them.*
+
+Demos love autonomous agents that loop, call tools, and “figure it out.” Production hates them. The moment an agent’s behavior depends on which path the model wandered down today, you can’t test it, can’t audit it, and can’t let it touch anything that matters. In a regulated or high-consequence system — money movement, healthcare, infrastructure — “it usually works” is a non-starter.
+
+This is Level 1 of a six-level maturity model for running LLM systems in production: **the determinism layer**. Before you can do evals, confidence routing, or anything else higher up the stack, you need the part underneath to hold still. The whole game at this level is one idea — **contain the model to a single node so everything around it is ordinary, testable code** — expressed through a handful of design moves. You keep the model’s intelligence and remove almost all of the unpredictability. This post gives the contracts, not just the concepts.
+
+### Agents propose; they don’t act
+
+The most important rule: **an agent is a pure function** from context to a *proposed* decision — pure with respect to business state, and deterministic given its gateway (the one nondeterministic call, the model, is injected so tests can fake it). It has no authority to change the world. A separate, dumb, heavily-tested component — the **substrate** — applies proposals, and only after the required approval.
+
+```
+from typing import Protocol, Literal
+from dataclasses import dataclass
+@dataclass(frozen=True)
+class Proposal:
+    decision_id: str
+    capability: str
+    action: dict                  # the structured, proposed change — NOT yet applied
+    confidence: float
+    routing: Literal["auto", "hitl_recommended", "hitl_required", "reject"]
+    reasoning: list[str]
+    evidence: list[dict]
+class Agent(Protocol):
+    def propose(self, ctx: "Context") -> Proposal: ...     # pure: no side effects on business state
+class Substrate(Protocol):
+    def apply(self, proposal: Proposal, approval: "Approval") -> "Effect": ...  # the ONLY mutator
+```
+Because `propose() is pure, its headline property is one assertion:`
+
+```
+def test_propose_is_pure():
+    agent = ClassifyAgent(gateway=FakeGateway(scripted))
+    assert agent.propose(ctx) == agent.propose(ctx)   # same context → same proposal; no world touched
+```
+The boundary buys you three properties:
+
+- **Testable.** `propose()` is a pure function — same context, same proposal. No mocking the world to test the logic.
+- **Safe.** A jailbroken or buggy agent produces a bad *proposal*, not a bad *action*. The blast radius stops at “a guardrail or a human said no.”
+- **Composable.** Agents never call other agents. Work flows through the substrate (e.g. a cases table + a scheduler), so there are no hidden chains of side effects to reason about.
+
+This single constraint turns “an AI did something we can’t explain” into “an AI *suggested* something, and here’s exactly what approved it.”
+
+### One fixed graph per capability
+
+Free-form ReAct loops are great for exploration and terrible for guarantees. Model each capability as a **fixed sequence of nodes** where the model is used only where judgment is needed and everything else is ordinary code. The arrow sketch below is abridged for readability; the full node list (with `pre_check and` memory\_write\`) is in the next section.
+
+```
+entry → load context → reason (LLM) → output guardrail → verify →
+        judge (sampled) → compose confidence → route → prepare proposal → record → exit
+```
+```
+                Free-form ReAct loop     Fixed-graph (this)
+--------------  -----------------------  ---------------------------------
+Control flow    model decides next step  known in advance
+Testable        hard (path varies)       each node in isolation
+Latency / cost  unbounded                bounded, predictable
+Audit           reconstruct from trace   uniform row every time
+Right for       open-ended exploration   decisions that must be guaranteed
+```
+You give up some cleverness; you get back the ability to reason about what the system will do. The clever part — judgment on messy inputs — stays exactly where the model is good at it, in one node, surrounded by code you can read.
+
+### Anatomy of a request
+
+“Make agents deterministic” is hard to act on until you’ve seen the shape of one. So let’s walk a single request through the graph, node by node — the implementation behind the diagram above.
+
+**The state object.** Every node reads and writes one typed state value threaded through the graph. Making this explicit is half the battle — it’s what lets you test a node in isolation by constructing a state and asserting on the result.
+
+```
+from typing import TypedDict, Literal, Optional
+class GraphState(TypedDict):
+    decision_id: str
+    tenant_id: str
+    identity: dict                      # who/what authority (set at entry)
+    inputs: dict                        # validated request
+    context: dict                       # loaded memory/reference slices
+    model_output: Optional[dict]        # raw structured output from the LLM node
+    guardrail: dict                     # blocks/redactions applied
+    verification: dict                  # deterministic check results
+    judge: Optional[dict]               # second-opinion result (if sampled)
+    confidence: Optional[float]         # composed score
+    routing: Optional[Literal["auto", "hitl_recommended", "hitl_required", "reject"]]
+    proposal: Optional[dict]            # final shaped proposal
+    ledger_entry_id: Optional[str]
+```
+**The node contract.** Every node is the same shape: `state -> state`. Deterministic except the one model node. This uniformity is why you can unit-test each node and reason about the whole.
+
+```
+from typing import Protocol
+class Node(Protocol):
+    name: str
+    def run(self, state: GraphState, deps: "Deps") -> GraphState: ...
+```
+**The graph.** Eight nodes are shared across every capability; only a few are capability-specific. New capability = implement \~4 nodes, inherit the other 8.
+
+```
+1  entry              mint decision_id, bind tenant + identity              [shared]
+2  pre_check          validate inputs, resolve refs, cheap early-outs       [capability]
+3  context_load       fetch only the context this decision needs            [shared]
+4  llm_decision       the reasoning step — structured in, structured out    [capability]
+5  output_guardrail   PII / policy scrub on the model output                [shared]
+6  verification       deterministic, capability-specific correctness checks [capability]
+7  judge              sampled second-model review (high-stakes)             [shared]
+8  confidence_compose composed score from the signals                       [shared]
+9  routing            auto vs hitl vs reject                                [shared]
+10 prepare_proposal   shape the final proposal                              [capability]
+11 memory_write       write the agent's own audit memory (not business state)[shared]
+12 exit               append the immutable ledger entry                     [shared]
+```
+The two load-bearing nodes are `llm_decision and` verification\`. The first is the only nondeterministic node — structured input, schema-constrained output, retry-on-mismatch — and everything around it treats its output as untrusted until checked (more on that next section). The second is deterministic, capability-specific code that the whole “contain the model” thesis rests on:
+
+```
+def run(self, state, deps):
+    out = state["model_output"]
+    checks = {
+        "in_enum":   out["decision"] in ALLOWED_DECISIONS,        # can't return an off-list action
+        "schema_ok": matches_schema(out, DECISION_SCHEMA),
+        "rules_ok":  deps.rules.check(out, state["inputs"]),      # business invariants
+    }
+    state["verification"] = {"checks": checks, "score": sum(checks.values()) / len(checks)}
+    return state
+```
+The point of the fixed shape: you can read the control flow (the path *is* the graph), the model stays contained to one node, and every decision is uniform — same shape every time means the same audit row every time, and the same place to add a check, a metric, or a guardrail.
+
+### Structured output over free-form
+
+Node 4 deserves its own treatment, because a surprising amount of LLM fragility comes from one choice: letting the model return free text and then parsing it. Prose is ambiguous, the format drifts between calls, and your downstream code is one unexpected phrasing away from breaking. “Sure! It’s probably Approve, though it could be Escalate” — now you own an NLU problem to extract `Approve`, and tomorrow's rephrase breaks your regex. You've coupled your system to the model's *prose style*, the least stable thing about it.
+
+The fix is boring and powerful: **constrain the model to emit a validated structure**, and treat anything else as a failed call to retry. There are three ways to constrain, picked by how hard the guarantee must be:
+
+```
+method                                         how                             guarantee                             use when
+---------------------------------------------  ------------------------------  ------------------------------------  --------------------------------------
+Schema-guided (JSON Schema / response_format)  ask for JSON matching a schema  strong, provider-enforced             most cases
+Tool / function call                           model emits a typed tool call   strong; natural for "do X with args"  the decision maps to an action
+Grammar-constrained decoding                   constrain tokens to a grammar   hard guarantee (can't emit invalid)   strict/regulated formats, local models
+```
+```
+# the contract as types — downstream consumes a typed object, never prose
+from pydantic import BaseModel
+from typing import Literal
+class Decision(BaseModel):
+    decision: Literal["approve", "escalate", "reject"]   # an enum is itself a guardrail
+    confidence: float
+    reasons: list[str]
+```
+Constrained generation reduces malformed output; it doesn’t eliminate it. So close the loop: validate every response, and on a mismatch retry — feeding the validation error back. Bound the retries and fail closed.
+
+```
+from pydantic import ValidationError
+class NonConformingOutput(Exception): ...
+def decide(base_prompt, model, max_retries=2) -> Decision:
+    prompt = base_prompt
+    for _ in range(max_retries + 1):
+        raw = model.generate(prompt, schema=Decision.model_json_schema())
+        try:
+            return Decision.model_validate_json(raw)            # success: typed object
+        except ValidationError as e:
+            # rebuild from base_prompt — don't append onto the already-appended prompt (it compounds)
+            prompt = f"{base_prompt}\n\nYour previous output was invalid: {e}. Return JSON only."
+    raise NonConformingOutput()      # fail closed — never hand downstream a guess
+```
+Validation at the boundary means the rest of the system only ever sees well-formed decisions; the messy “did the model behave” question is contained to this one function. You trade a vague NLU problem for a crisp validation problem — no parsing layer, stability across model/prompt swaps, a built-in guardrail (a fixed enum *cannot* return something off-list), and a typed contract golden tests can assert against.
+
+One caveat worth stating loudly: structure constrains *form*, not *correctness*. A perfectly valid `{"decision":"approve","confidence":0.99}` can be completely wrong. Structured output removes the parsing failure mode, not the judgment failure mode — which is why it's the *floor* of a production system, under evals, verification, and confidence, not a substitute for them.
+
+### The glue: confidence → routing
+
+Confidence (model signal + verification + sampled judge) is composed at the confidence node; the routing node turns it into one of four paths with a single threshold, and `prepare_proposal` later stamps that result onto the proposal:
+
+```
+def route(confidence: float, verified: bool, T: float = 0.85) -> str:  # T is per-capability config, not a constant
+    if not verified:           return "reject"
+    if confidence >= T:        return "auto"
+    if confidence >= T - 0.2:  return "hitl_recommended"   # close: pre-fill the proposal for a human
+    return "hitl_required"                                 # low: a human decides from scratch
+```
+`verified` is derived from the verification node (`verified = all(checks.values())`), not a field the agent sets on itself, and the router emits all four `routing` states. Note the order: routing runs *before* the proposal is shaped (node 9 → node 10), so it takes a plain confidence and a verified flag — not a `Proposal`. Start `T` conservative — everything to a human — and lower it per slice only as data proves it safe. Human attention, the expensive resource, gets spent exactly where the system is unsure.
+
+### The ledger: an append-only record of record
+
+Every proposed decision becomes **one immutable row** — written as the last node of every decision, unconditionally. Not a log line; the canonical record of what happened and why.
+
+```
+CREATE TABLE decision_ledger (
+  decision_id     TEXT PRIMARY KEY,
+  ts              TIMESTAMPTZ NOT NULL,
+  tenant_id       TEXT NOT NULL,
+  capability      TEXT NOT NULL,
+  inputs_hash     TEXT NOT NULL,          -- hash, not the raw sensitive payload
+  model_version   TEXT NOT NULL,
+  prompt_version  TEXT NOT NULL,
+  decision        JSONB NOT NULL,
+  confidence      REAL NOT NULL,
+  routing         TEXT NOT NULL,          -- auto | hitl_* | reject
+  outcome         TEXT,                    -- recorded later as a NEW superseding row, never an in-place UPDATE
+  supersedes      TEXT REFERENCES decision_ledger(decision_id),
+  prev_hash       TEXT,                    -- optional hash-chain for tamper-evidence
+  entry_hash      TEXT
+);
+-- append-only: no UPDATE/DELETE grants; corrections are new rows that set `supersedes`.
+```
+Hash the inputs, don’t warehouse them — verifiability without the liability. Make it append-only: corrections supersede, never overwrite. If you can `UPDATE` the ledger, it’s not an audit trail; revoke the grant. And never skip the write under load — it’s the record of record, not droppable telemetry.
+
+### Bounded ReAct: the one place loops belong
+
+If you’ve followed all of the above — fixed graphs, the model contained to one node — you’ll eventually hit a problem that doesn’t fit: something open-ended where the model must look something up, reason about what it found, maybe look up more, then decide. That *is* what ReAct-style tool loops are for. The mistake isn’t the loop; it’s the *unbounded* loop. Allow autonomy as a deliberate, rail-guarded exception — and nowhere else.
+
+Four rails keep it controlled: **(1) a hard iteration cap** — `for, never` while(not done)\`, so the model doesn’t decide when to stop; **(2) a per-capability tool allow-list** — it can only call tools on an explicit list scoped to this capability; **(3) a full per-iteration trace** — every step recorded, so the decision is replayable; and **(4) the same exits as everything else** — the loop’s *output* still flows through guardrails, verification, confidence, and routing, and still *proposes*, never acts.
+
+```
+class DisallowedTool(Exception): ...    # raised when the loop reaches for an off-list tool
+ALLOWED_TOOLS = {                       # rail 2: per-capability allow-list, not "all tools"
+    "enrich_request": {"search_kb", "fetch_record", "lookup_reference"},
+}
+@dataclass
+class Step:                              # rail 3: one trace row per iteration
+    i: int; action: str; args: dict; result_digest: str
+def bounded_react(state, deps, capability, MAX_STEPS=6) -> Proposal:
+    allow = ALLOWED_TOOLS[capability]
+    trace: list[Step] = []
+    for i in range(MAX_STEPS):                                   # rail 1: hard cap
+        action = deps.model.next_action(state, tools=sorted(allow))
+        if action.is_final:                                     # check FIRST — a final answer carries no tool
+            return finalize(action.proposal, trace)             # rail 4: still a PROPOSAL
+        if action.tool not in allow:                            # defense in depth
+            raise DisallowedTool(action.tool)
+        result = deps.tools[action.tool](**action.args)
+        trace.append(Step(i, action.tool, action.args, digest(result)))
+        state = state.with_observation(result)                  # loop-local state type, not the fixed-graph GraphState
+    return escalate("hit step cap", trace)                      # bounded: cap hit → returns a Proposal routed "hitl_required"
+```
+The `trace` rides into the ledger entry, so a loop-based decision is exactly as reconstructable as a fixed-graph one. The two rails worth a test each — it always terminates, and it can't reach an off-list tool:
+
+```
+def test_always_terminates():
+    deps = fake_deps(model=never_final)                 # a model that never returns is_final
+    p = bounded_react(state, deps, "enrich_request", MAX_STEPS=3)
+    assert p.routing == "hitl_required"                 # hit the cap → routed to a human, didn't hang
+def test_disallowed_tool_refused():
+    deps = fake_deps(model=calls("danger_tool"))        # a tool not on the allow-list
+    with pytest.raises(DisallowedTool):
+        bounded_react(state, deps, "enrich_request")
+```
+The decision rule for whether you even need this: *does reaching the decision require steps whose number and order depend on what’s discovered along the way?* No → fixed graph (most capabilities). Yes → bounded loop, four rails, documented as an exception. If you reach for a loop “to be safe” or “for flexibility,” stop — that’s usually the fixed-graph case in a costume. Flexibility you don’t need is nondeterminism you’ll debug at 2am.
+
+### Anti-patterns
+
+- **The agent writes business state “just this once.”** Now it’s not pure, not testable, and a bug is an incident instead of a bad proposal. Keep the substrate the *only* mutator.
+- **Implicit state** passed as ad-hoc tuples/dicts between steps — you lose the ability to test a node in isolation. Make the state a typed object.
+- **“Return JSON” in the prompt with no schema enforcement** — you’ll still get prose, fences, or trailing commentary. Use schema/tool/grammar enforcement, then validate and retry; constrained ≠ guaranteed.
+- **“Confidence” lifted from the model.** Miscalibrated; compose it from independent signals instead.
+- **Mutable or skipped audit.** If you can `UPDATE` the ledger it's not an audit trail; if you drop the write under load you have no record of record.
+- **Unbounded loop “for flexibility.”** Default to the fixed graph. When you do loop, use a `for cap and a per-capability allow-list — never` while not done\` or “all tools available.”
+
+### The takeaway
+
+Level 1 is one discipline applied consistently: contain the model to one node, make the agent a pure function that only *proposes*, constrain that node to a validated schema, compose confidence from independent signals to route the close calls to a human, let a dumb substrate be the sole mutator after approval, and write every decision to an append-only ledger. When a capability genuinely needs autonomy, budget it — a step cap, a tool allow-list, a trace, the same output checks as everything else.
+
+The model still does what it’s uniquely good at — judgment on messy inputs — but the system around it is deterministic, testable, and auditable. Boring, in the best way: predictable enough to test, contained enough to trust, and defensible enough to ship. That’s the floor everything else in this series is built on.
+
+*Series: Running LLM systems in production — Level 1 of 6: Determinism.*

@@ -1,0 +1,954 @@
+how you doing Scott? Hey, I'm doing well Chris. Thanks for having me on. Yeah,
+yeah good. I'm great. You're at-square space now. We'll just say that. Yeah, yeah.
+Coming up on a website for building websites. Change the world I'd say. I'll
+let you speak for that. Yeah, I think yeah they're great. I like that too. I
+think that certain things should be easier and build site for your barber is
+I don't even know the details of all of what you do
+just didn't work. I would imagine there's probably a decent amount of those tags already
+on the internet that just assumed that it did.
+Right, right. But it doesn't, actually.
+From the auto-completes already, yeah.
+Yeah, totally. But that didn't work. And it does now, in thanks partially to you,
+perhaps other Squarespace people, I don't know who was ever involved. But that's pretty.
+Pretty cool. Lazy loading is freaking huge. I'm glad we got it on images first. That
+probably has a huge impact because there's a lot of images all over the web and probably
+most of them should have it. Yeah, most I mean basically
+basically any that are not you know in the in the main area of the viewport when the page
+you don't want to hard to know a little bit but yeah you need some kind of heuristic for
+that but so what is lazy loading it just so people know a lot of us know
+It loads, but lazily, but what really does it mean?
+Exactly.
+Yeah.
+I mean, that's pretty much it, deferring.
+Deferring when a resource is fetched until it's needed is kind
+of like, I think, a broad way to scroll down to it, right?
+It's like in the viewport.
+Yeah.
+Yeah.
+Although, it could be even more than that.
+It's really when it intersects with the viewport, which could be in a carousel
+or simply interesting.
+Like it would know if it's like on slide three of a thing.
+How
+and for iframes, so it's been that way for a while
+and videos built the same way.
+So yeah, I
+There could and have been lazy loading libraries that existed before the platform had lazy loading,
+but man, their work was robust.
+Yeah, I mean, do all kinds of work.
+I amounted, a JavaScript to do it properly, and really, it was still always a compromise,
+like the common way you might see on like, YouTube pages, social media, that kind of thing,
+is that posts, as they scroll into the viewport,
+you use something of client side to actually write the video element into existence.
+Right, into existence or the source attribute or something.
+Yeah, so it wasn't there to begin with and that effectively lazy loads it.
+Yeah, totally ruin your RSS feed in the process, cool.
+Yeah, exactly. Yeah, so now you can put thousands of them in static HTML
+HTML and they'll just fetch when they're visible.
+Yeah, how great is that?
+Obviously, that's how it should work really great
+saves a tremendous amount of-a bandwidth.
+We're practically eco-warriers.
+Yeah, saving the world.
+It's funny, the window that browsers use varies.
+So like Chrome, and Firefox,
+if you compare the two,
+have different outlooks on prioritizing bandwidth usage versus making sure that an image is
+going to be visible as soon as it scrolls into the viewport, right? So like one's more aggressive
+than the other with that intersectioning.
+Well, I see, like if you're scrolling a pretty fast, it might be like, ah, I see what's going
+on here. Let me get a fetch going for that image right away because we're trying to make a good
+user experience too. I find the browsers do a good job. I don't have any horrible fatigue.
+We'll get to that. That's amazing. There's a whole story to that. I think we could weave.
+to me. So iframes have it too, like images got it. Yeah. And if,
+frames, got it, I don't know if images and I frame is got at the same
+time, but not shortly after extra super interested-interested in the
+iframe one just from a personal business perspectivet perspective for.
+Me because I run a company that makes a bunch of iframes
+essentially. So yeah, you know, I always
+have to. I can't get away from it, you know, who's
+for just all, yeah, I mean, that's yeah, that's the nature of
+It's a little dangerous in the advanced, not to make this whole thing about this, because
+whenever this is already shipped and all that, but if you have a script that wants to talk
+to an iframe, which I do, and that iframe isn't there, you've got to know that, you
+know?
+Because right when that stuff started to roll out to browsers, all of a sudden there
+was this possibility that the iframe wasn't there.
+That was like that.
+Yeah.
+Right.
+Yeah.
+Anyway.
+Yeah.
+Programming.
+Yeah.
+And so the timing of this thing, and we're talking about straight up,
+good studies on the estimated savings from and that feature over the last five or six
+years. It's massive. So yeah, pretty excited about this.
+Other performance attributes, you would know you're kind of a performance guy. Let's say
+to other things that need to load.
+Like let's say the script that has the click handler
+for your buy now button or something.
+Is it possible that that has impact
+on that type of thing too or less so?
+Yeah, well, I mean, as far as other performance attributes attributes年
+your initial question. Video had some already. It wasn't
+lazy specifically, but it has this, this attribute called
+preload, which, you know, is kind of a loaded the extra
+aggressive. Yeah, it sort of lets you decide what should be
+preloaded. So the default is basically leave it up to the
+browser. It's called auto. So pretty aggressive. They'll
+download most are all of the video. And that's pretty
+default setting and then you can limit that.
+So you can say preload equals metadata.
+That's just like, just load enough of this video to
+maybe draw the poster frame,
+figure of it if you only have a video- a video to work with and there's no poster image.
+Um, even the- even the like the- if you didn't tell it,
+the width and height, it would figure that too.
+Yeah, but you get the same sort of scenario as images if you
+don't have it, it'll kind of snap into the
+layout shift using the poster or the video size.
+So yeah, you definitely still want to do that somehow with and
+height, just like images.
+Do that.
+Do that.
+Good, I, I'm glad they're in that way.
+Do the same thing.
+Yeah but then the third value for that was none,
+means just don't load, any of the video data.
+And that's sort of like lazy load.
+Even if it's in view, right?
+Like if it's in view, for it to do anything.
+Yeah, so like to work around, you know,
+the lack of this feature before it existed,
+you could do preload none and then
+an intersection, observer, and, you know,
+when it, you know, rolls into the viewport,
+you could load it, it or hip- hit play, auto play.
+You know, all that kind of stuff.
+Okay. You haven't ruined your RSS feed at least.. It's okay. Um,
+the video isn't like totally useless if you've got a video, you
+you know, several view
+which
+you might want because video, the angle
+bracket video probably out like a I think a great
+use case for it is that is that sorry everybody
+gifts suck, you know, gifts are huge, they're
+hard to compress, they don't their memory hogs,
+they look bad like, you know, they're fun
+and all, but there's like a message we all
+got a couple years ago, I think mine came
+in the mail or something, stop using GIFs because there's this soup you can put on the
+video tag that make it behave the same way.
+Which is like, oh play, plays in line, I forget a lot of stuff.
+it's muted.
+You have to have it muted as well for a while.
+Until you give the browser permission to just auto-play stuff without being able.
+And then you get some advantages because it wouldn't be like click to stop and stuff
+of what you wouldn't get if and absolutely better.
+And that's an excess requirement, you know?
+You gotta be able to stop motion.
+So yeah, I mean, that's kind of like that dovetails
+into the last feature of this loading equals lazy
+is that it'll defer autoplay also.
+So,
+so that's a number of the,
+I do think it's interesting. Is it like if it's a hundred pixels away from the edge of the bottom?
+You would think but it's quite a bit further. So I think Firefox was either 800 pixels or 1200,
+something like that range. Chrome was more,
+you know, relatively farther from the view-port so that, they're ready to get to them, whereas
+Firefox is more comfortable, you know, like, if it scrolls in maybe, maybe it's just starting
+That seems so on-brand for both of them, doesn't it?
+Like, if you had to guess, everybody would guess right.
+Yeah, and they, they've both been adjusting their windows, like Chrome had a post a couple
+years ago about images that they tightened it up a little bit.
+So, yeah, these are all active, you know, actively debated standards.
+And are they different for video and audio and image and
+and iframe?
+Same numbers.
+Same numbers.
+Yeah.
+Same.
+Right.
+And you might argue maybe video is a little costlier for
+element tends to be heavier.
+Definitely the heaviest media we're
+and it's not close.
+Right.
+Like compared to images.
+Yeah.
+So, maybe it would make sense to have a different
+Yeah, 60 frames, a second. You're saying
+Right. Right.
+Images, kind of
+Yeah, yeah. I also don't know, like, not to throw too many wrenches in this, but isn't there some thing, a first streaming video that like, I get that if you do the wrong cocktail or whatever, you
+Yeah, download the whole video, you know, like you're like, oh shoot, preload a lot of one, and the browser decided off. And the,
+video is like, I don't know, eight megabytes or something. That would probably be conservative for a video, really.
+Yeah.
+And it just starts ripping and downloads the whole thing. Isn't there, there some, but I don't know if it involves servers or what, where it
+doesn't do that. It, it literally like chunks of video.
+Yeah, absolutely.
+Streaming video, if you are able to set it up as an alternative to, say, responsive video sources,
+which are also an option, streaming video is largely better for a
+lot of use cases, it's going
+And then you got to tell me if you want some more.
+Yeah, kind of the video element points to more of like a manifest that describes, you know,
+like scenarios of chunks, depending on the conditions in the viewport, you know, and
+and other things like bandwidth, whatever the browser wants to factor in.
+So it's very smart.
+But yeah, regardless of where the video source is coming from, these features still defer.
+Yeah, I remember that from the the old or the responsive images days there was like a
+There was always a caveat right that was like but actually the you know
+intentionally and this is desirable the browser can do
+Whatever it feels as necessary if you give it that I think that was kind of one of the big differentiators between
+Kind of image with source set on it and the picture element was the picture element was very useful and powerful
+but tended to be like a set of strict rules
+that it would follow no matter what
+or is the source set thing that gave the browser some leeway.
+I don't know if the browser used that leeway,.
+but it sounds like it probably did.
+Yeah, absolutely.
+You got the distinction right.
+When media queries are in play,
+they're
+which video, and a source set and sizes is the opposite.
+Here are all the available sizes I have,
+and you figure it out, like,
+what's the user's connections?
+And it kind of felt like instructions,
+because you're like, pick this one if it's a size.
+There's some overlap, yeah.
+Yeah, right, yeah.
+But it is very, very much deferring.
+You know, it's like suggestions, I guess.
+Like, you're- Yeah, that felt good too.
+I think everybody kind of liked that.
+you're like, yeah, what if doesn't the browser know?
+In fact, I know that it knows.
+If you're in kind of like a what would be considered a low band
+with situation or something, it could just punt on the larger
+Whereas with picture, or with responsive video,
+either would be forced to do it
+because it might be a different source.
+Or it could be a vertical-orientation, you know.
+Right, right, right.
+Yeah, so.
+Yeah, we have-
+Oh, I forgot about that kind of inherent promise
+that the source set was like,
+these are different versions of the the video.
+You have to be.
+It doesn't have to be,
+it doesn't have to have them be,
+but they probably should have been.
+Right.
+This episode of Shop Talk Show is brought to you
+by Sanity, that's sanity.io slash shop talk to check it out.
+If you go there,
+you get an extended 60 day, trial of their growth plan.
+So thanks for the support, Sanity.
+Imagine this, you're, building full speed tools
+like cursor or Claude or whatever,
+but your CMS part is
+.
+Your coding agent can't read it.
+It can't, generate queries against it.
+can scaffold components that match it.
+content models in TypeScript.
+Guess where your AI can now read them and do work against?
+cursor co-pilot cloud.
+They can read the content model now, generate grot queries,
+which is the powerful query syntax that Sanity has.
+They can scaffold components against the real types
+of your content.
+You can connect their M-C-P server,
+and any agent framework gets the same access.
+Inside Sanity Studio, AI understands your content model.
+Editors write naturally, the AI maps the input
+to the structured types.
+No more copy and pasting from GPT, for example.
+So translation translation review generation work across your whole model not one field at a time and you can build on it functions, functions, trigger content events
+historical stuff before we fast-forward to how you and Squarespace helped,
+make this happen in actual browsers. This wasn't like, we want this,
+like, oh, dang, Scott, way to flex, you know, where you thought that
+that videos should have, should like images do, like we were just talking about, videos should have
+responsive formats too. And there was this weird thing where, like, Safari used to have
+it and then I don't know maybe the spec wasn't done or something so they just ripped it out
+and that felt weird., you're like of all, of all that should have alternate sources,
+it's something that might be a hundred freaking megabytes, you know? Like, if I could ship
+one that's two instead, wouldn't that be
+be, wouldn't that be like, 50 times better? Like, so we should have this and it didn't and I
+And I think that bugged you or something and so not only we're vocal about it, but we're
+like, you know what I'm going to do?
+I'm just going to- like
+I'm just going to download whatever the terminology is there and I'm going to run it and add the code and
+you did it before there was Claude code.
+that sounds right.
+That sounds hard.
+Issue a ton of caveats here but yeah, first of all, thank you, that was awesome and you blogged about that
+So it was I was really cool to see that on your,
+I think it was on CodeBen or one of those blogs, but,
+anyway, yeah, that was reallyUm interesting,
+you know, background wise I come from,
+well originally Graphic major, right?
+And kind of self taught into web Dev.
+I don't have formal training in like C++ and all that.
+So a lot of thisTC
+was previously a standard.
+between open brackets in the video tags
+to describe these things.
+Absolutely, yeah.
+So you could use it to say, do type selection.
+Like, here's a web m source with a type of video web m.
+So if the browser supports it, it'll take you
+if it doesn't, it doesn't, it doesn't.
+So back to this one, that's mg4.
+You can also put media attributes
+on each source element.
+And that gives you, you know,
+say you want to serve a vertical video for like a YouTube shorts kind of thing.
+Versus, oh, they're on a, on a laptop.
+Let's serve the wide format, you know, same video, different formats.
+Yeah.
+So you can use your sponsor video for that.
+So that was through the source tags, but did those just get nixed entirely?
+So around the the time we had the responsive images community group, right?
+And we were planning the picture element and source that sizes.
+we used video and it's like
+like source media.
+You're like, look at this, they're doing it right.
+Yes, we used it as precedent and said,
+This
+the time we were trying to plan how picture would work.
+Meanwhile, picture did land with that feature,
+and that's how we know
+responsive images to work today.
+Like picture with source and media,
+it's the core of the feature.
+Yeah. But anyway, when the spec changed.
+So now video can, point that that,
+like a total Oroboros freaking eating its own tail,
+paying me like, look at this implementation.
+Exactly. So it came back around.
+I mean, it was removed from the spec,
+two browsersers Firefox
+changed exactly, but at some point Simon Peters at Mozilla chimed in. He's like,
+I think we're into this. And then someone at Apple was like, yeah, let's do it. And suddenly it was
+like, oh, okay, we're going to bring it back. So yeah, I mean, to, I guess, to summarize my
+involvement on the Mozilla side, I was really fortunate in that there was, you know, get
+history for this feature that used to work in Firefox. And I just, I went back.
+Oh, I can see why you're trying to caveat it,
+because you're not like, I'm gonna write this from scratch.
+You're like, I'm gonna yank this out of'
+I had to drink some things.
+to add theirs back as well, so the implementation side was pretty quick and it came back. It was
+great to see.
+That's cool. What was wrong with it? Did you dig
+That's cool. What was wrong with it? Did you dig up the threads that were like, because ripping something
+out as a big deal, they surely knew it was a big deal, so they must have been some legitimate, even
+if you disagreed with it, some were reasoning they had for the removal or no.
+Well, I think there, I think there is some power in web developers voicing their opinion,
+and the issue thread was full of plus ones that, people wanted to see this come back,
+and it seems straight forward.
+I mean the other direction though, why did it get in the hold at all?
+Yeah, well, you know, I wasn't involved in those days, and I can't really speak
+to it. But I think there's probably other precedent for spec changes that you could call them breaking
+changes I suppose. In that case it would have been.
+I know. I'm just so curious if it was like somebody had an alternate idea that they thought was
+better. Or that there was some actual performance problems with this.
+I think streaming video was sort of positioned as a better alternative.
+Oh, that I could see, like why do we need this when we have all these other things?
+Sure. Yeah, so I think, you know, that I don't agree with that. I mean,, clearly, because I-
+Right. spew right to bring it back. But I think streaming video is often the better,
+better solution and� it's just nice to have different ways to art direct video when you want to.
+So the example I gave of orientation change,
+like serving of the third big video.
+I mean, stuff like that.
+R.
+It's very intuitive and it requires 1 HTML file
+versus server coordination.
+So I think the barrier to using it is.
+Yeah, that seems good like if you I don't even know if I if was my
+Charge today absolutely had to get streaming video set up on some server that I run
+No, no idea
+Research mode it's surprisingly, you know more. I don't know if it's like
+Approachable, but it�s relatively straightforward like it's an export format though. I wouldn't write it by hand, you know
+But you got a man that's baked into the file that you're serving.
+You get a man.
+You know, the versions of the video.
+Yeah.
+That's right. speckled.
+Yeah, it's still, you know, it's doable, but you need some, you need some access to the server and you
+know, I just feel, I just feel like a lot of the video I do is like, this is just me.
+I realized the web is a the big place.
+But you're like, oh, wipe my screen and go, and save it and it's an MP4 file.
+That's as deeply as I want to think about it, you know.
+But so how, do I export that
+as a streamable format?
+I don't know, I'd prefer like responses,
+the
+Just like, yeah, I would say, like, using new formats, right?
+Like WebM is dramatically lighter in weight.
+So yeah.
+Yeah.
+Okay.
+So you get a little confidence boost.
+Like, you know, when the idea comes up, we should do something with video again.
+You're like, hey, I've messed with video before.
+Yeah.
+So Squarespace, there are a couple engineering blog posts that I put.
+I've got Squarespace.com, a couple posts on there.
+One, one we went through for this new feature,
+which is lazy loading video.
+And then a second post that's aimed more담2 more at web developers,
+like, here's, here's how you use it.
+Yeah, yeah, I see that.
+There's the story one and the how to one, which is cool.
+Which is soыш, yeah.
+Yeah.
+Thanks.
+So, yeah, the story one was we have a semi-annual hack week, and you can work on what you want.
+And I thought it would just be neat to see if we could take a stab at some more standards work,
+particularly something that benefits Squarespace websites. So lazy loading video,
+a lot of Squarespace, customers use video. No surprise there. So, yeah, that was sort of the the impetus
+for it. And I think, you know, the post gets into detail about the process. But in the, in the week of
+hacking at it, we made pretty good process progress rather, to the point that we're like,
+was your entry point like, I'm going to do the thing again, where I mess with the browser
+So we, I guess we started on all aspects at the same time.
+We had enough people involved.
+There were four of us.
+And some were interested in, you know, all of us, web engineers,
+not browser developers, but, you know, some had a proper background
+with like, you know, C++.
+It had maybe a NNAYNA, but those were the teammates who were eager
+to download a browser source and see how it builds
+and what's involved in writing the patch.
+Oh, they were into that idea.
+Yeah, yeah.
+And I really think for any web developer,
+it's a really cool process just to download,
+source, build it locally, tweak a line or two,
+build it again, see what, you know,
+they just kind of get a sense of how it works.
+Well, I've never done it.
+That sounds very fun to me though.
+And it sounds like somebody fun to work with, too,
+who's like super down with, like, yeah, let's mess with it.
+Fun.
+Yeah.
+So I mean, some of those, some of those teammates
+were wildly successful at making a patch pretty quickly
+that, that, you know, on currently we're working
+on spec changes.
+But before you PR is there's some etiquette, isn't there?
+Like, you know, if you were to make a post
+that says your intention and such, right?
+Yeah.
+Well, I think so.
+So I had filed a issue tracker issue
+for the HTML standard about a year prior.
+This is like, I have like a little blog post with like a punch list of like,
+responsive video works, but it could be better.
+Here's a few issues I filed for.
+This is one of them.
+So, you know, poster and video should be able to lazy load.
+And that one just sat there for a year.
+So it was just sort of, you know, hack we came along.
+You know, it's like there's a little, you know, you know, you know, you know, you know, you know, you know
+you know, you have to get at least two out of the three browser vendors.
+browser vendors to express their positive sentiment about at least exploring developing the future.
+Like they think it's a good idea. And there's a like for WebKit and for
+Firefox, there are actual GitHub repos where you can file an issue that says,
+please take a look at our our proposal and let us know your position.
+Right? So like all of these steps, in fact, the minute you open a pull request against the HTML
+standard, you'll get this nice template in the pull request with all the steps that you're going to
+have to do to eventually get your pull request to merge. So those are two of them. Another one,
+You need tests, right? So web platform tests are the sweet of unit tests that every browser
+checks out and runs as part of their build. And if a feature is in the standard,
+it's got to be tested, right? They got to be able to verify that their implementation works,
+right? So as part of it, you need to-
+What a miracle that that exists, too, because it didn't forever, right? Like,
+I don't know when the first year that was rolled out, but my gosh.
+No, it's a relatively recent thing to become sort of a community effort.
+I think it was Boku that kind of spearheaded that.
+I could be wrong, but I'm pretty sure that's right.
+That's a wrong way of curling.
+Yeah, so it's a massive project, and I got to say, really fun.
+Like if you're a web developer who's looking to get involved in web standards work and you're
+like, you know, looking for the first commit, right?
+like go to web platform tests and see how these work because they're literally,
+I mean, for one thing, you will gain familiarity with the way a feature works just by writing tests
+about it, you know, because you're going to want to use the event handlers that are available to
+that element. You don't want to just rely on timers, right? Like page loads, five seconds
+later, what's it look like now, you know, you don't want flaky things like that. So everything
+in there is, you know, it's written according to, okay, like, in our case, we've got a video
+element that's display none when the page loads, and it's loading equals lazy. And then
+we verify that it didn't fetch any video. That's the first test, and then make it display
+block, make sure that it, you know, fires a loading event, you know, those kind
+of things. So if you know web standards, if you know vanilla JavaScript, you can
+and write web platform tests, you know, it's not browser work.
+So, yeah.
+What are they, jest or what?
+What's the thing?
+Oh, gosh, uh, I don't actually.
+But there's assertion, so I'm sure, right?
+Pt serve is all I would hit for the commands.
+I don't know if it's running.
+But it's really nice.
+Like, you know, you get the local server running the test
+suite and then you can, you can search for tests using
+certain filename strings, I guess.
+So I could find all the tests for video really easily
+and run just those.
+Yeah, nice.
+Yeah, yeah, yeah.
+So yeah, you got to make sure you didn't break the other ones,
+too, which is not a problem.
+Yeah, so long story short, I tended
+to be working on the spec writing part of our hack team.
+We had a teammate working on the web platform
+or alignment with the spec that we were actively writing.
+And then we had teammates making a webkit
+and Firefox builds, anachromium build,
+which we didn't end up contributing,
+and
+sort of like, yeah,
+Um, and all of those I think really informed each other, you know, yeah, yeah
+Yeah, that's good, right?
+all that stuff should inform each other.
+It's hard to work in isolation like that.
+You got to get in there and likewise,
+I could see a test and because when you're in
+the inside, I want to be comprehensive.
+So I'm going to test all these variations and then if it so happens,
+there's a weird variation.
+You could change this back,
+which would change the implementation Right, right.
+Yeah. So all those steps go into getting feedback and eventually,
+When you feel like your proposal is in a decent place,
+you can start to try to get it into the more
+forms of the what working group,
+which is who controls the HTML spec these days.
+and that involves presenting to their weekly meeting
+and getting feedback in these meetings,
+and another thing I'd really recommend joining sometime,
+I'm on CSS working group now, Scott, and the meeting is right now.
+I'm, I don't know if there
+I haven- I haven't even gone to one yet. I just got in and I was traveling one week and then this one, but I'm looking forward to it.
+I don't know if there's a straight up public or not, but maybe they are, it's just a Zoom one.
+I think you can ask me to zoom in.
+It looks fun
+fun. I look forward to it.
+So you've been to a
+I haven't been to a CSS one,
+but I like to yeah.
+So we we went to a few
+some Squarespace colleagues
+and me and I'm presented at
+one of them and yeah,
+it was it was so cool,
+you know, just to to see all
+the names that you see
+in the issue tracker up on
+the screen, you know,
+people you don't get to see
+that they
+because each time it was sort of a call for more feedback, and there are stages one through four
+or five. So, just, the literal stages of acceptance. Yeah. Yeah, you can go to the
+site and read about the stages of approval,- but yeah, at each
+step it was like they would talk about, whether or not we're ready to go to stage one
+and stage two, you know, and everyone sort of, you know, gets their feedback.
+Yeah, at one point, there needs to be actual browser implementations, but you actually had that.
+You were ready foring for that one.
+Yeah, so we, like, let's say you're like really and have some HTML feature that you think would be in amazing.
+You could do a lot of this, but not, it's not absolutely everybody that's going to rip a PR on Chrome, or whatever.
+agree, you could get up so far in the stages and then just be at the mercy of an engineer
+wanting to pick up your idea.
+Yeah.
+Absolutely.
+Yeah.
+I mean, the vendor, what is it called?
+Vendor approval or vendor interest.
+You have to have two of those.
+You want all the vendors to be on board, right?
+The standard that you're there. the standard can land before any implementations all
+the time.
+It seems like the most likely one.
+It certainly helps to move things along if you can get
+Our two implementations, to be clear, have not landed yet.
+They're not merged into Firefox or WebKit,
+but they're being actively reviewed
+and can see Chrome, however, Helmet,
+one of the Chromium code the owners decided to jump in.
+Third party developer doesn't work for Squarespace,
+fully spec compliant implementation in the Chromium.
+Nice.
+Like within a day or two.
+It was really impressive.
+But those tests were, we're already there.
+The tests are shared, right?
+You know, if they're like Chrome specific tests,
+that's the point.
+Yeah.
+So he was able to pull our test suite from web platform tests,
+which before the spec landed the tests were actually.
+Able to merge.
+And you can do that by giving them this tentative status.
+So they test for a feature that's not standard yet.
+Then once the standard lands,
+you send a pull request,
+, remove the tentative status.
+So we took that approach and I have to give a shout out to Keith.
+Keith Circle at Mozilla.
+He was like a champion of this project,
+really helping us along throughout and yeah,
+really helped with the web platform tests side of things.
+That was new to me.
+Yeah.
+It's not funny.
+Like part of this sounds so reasonable and doable.
+And, you-know-you just you-have a good idea.
+And you just, you post about it.
+And you get ready and you write the spec and you write some tests.
+And all, you know, sure.
+But in the end, it really is a Herculean effort, I think, especially because
+it's it's pretty highly technical work that requires
+often many people and I don't a feel like both ways about it.
+It's fine, but it's still a bunch of work.
+Yeah. And spec writing is written in a proprietary version of HTML.
+So it's like, yeah.
+The spec is in a non-standard HTML.
+I mean, maybe they put it who gets to say non-standard HTML.
+I mean,
+I mean,
+I mean,
+I mean,
+Yeah. The- the HTML spec is in a non-standard HTML.
+I mean, maybe they- but who gets to say non-standard?
+They can just stamp it standards if they want to.
+It's written in one.
+It- yeah.
+It's a source file that generates out to standard HTML.
+But, uh- Oh my- gosh.
+But the reason they do that is they have all these
+these conventions for terminology that can be linked
+and cross-referenced and so they use-
+Yeah, that's what anchor links are for.
+Vocabulary. Yeah, we should tell them about that.
+I could get it if you just, if it's a 20-year-old pile of documents that are cross-
+referenced and you know, and you know, and
+you don't want to do that, go ahead. I'm all about tools. I made a
+by that, you know, single source.
+But yeah, it's a big file.
+it's like what eight megabytes, I think text file that
+the whole HTML spec is eight megabytes about
+of text.
+Yeah, that's like an enormous text file.
+it is right isn't it one of those I feel like I remember
+Jake Archibald like doing some like he uses it as
+demo for various web features, features when the when the
+The problem at
+speach.
+The problem at hand is a DOM that's too big.
+Just go to that page.
+I'm sure browsers do smart stuff with that kind of thing.
+You still get some performance gain if you
+I forget the specific one I'm
+the one I'm
+I'm
+there is some
+esoteric
+CSS feature
+that is like wait to render this
+It's kind of like.
+Lazy loading for Dom.
+What is that?
+Yeah, a visibility.
+What is it?
+I'm reminded of that CSS quiz that was going around last week.
+last week where. Where I would just plausible CSS property names.
+Wasn't that also key?
+Yeah, yeah. I did terrible on that.
+Really? Oh my God, I have a weird success for it.
+Because I feel like anything with like two or more dashes is real to me. I'm like that.
+I'm sure.
+Really? Oh, that's funny. Yeah. Yeah. Text a line left or something. You're like,
+Yeah, especially like SVG related CSS, I don't know.
+Yeah. It's just a little outside the normal wheelhouse. You're like, yeah, that's legit.
+I write short hand enough that that a long hand you know at me I'm like
+You know I'm like, yeah that looks right
+Spec writing you know definitely
+There's a learning curve to it, but I don't think to be far along on that learning
+curve, but you can get acquainted to it and borrow the convention.
+No colorful language, no jokes, right?
+It's probably standard now.
+Yeah,. You can just the implementations aren't there, but it's officially okay now.
+It's officially I'm there.
+And it's already in Chrome stable behind a flag.
+Like, you know, not flags like in about flags.
+You have to actually start it from the command line with a developer.
+What is the distinction with that?
+Like is it we want to make this extra hard for you?
+I was trying to find out I think the ones in the panel are a specific type that are not.
+not for temporary development status, but like more like preference. I'm not really sure.
+But I did ask if it would be in there.
+It, it's okay. It's just fun to think about though, because I have occasionally
+used one where you have to start it from the, from the command line, but it's up to us.
+Never said a leases
+set aliases or anything and then I lose it and then I got to go find somewhere to copy and paste it again
+and I think it's annoying.
+Totally.
+But it was worth it for a minute.
+Chrome was messing with split tabs which I think are awesome and they did a good job with it.
+I don't know if they ever released that or not but they do have a big fan of which I'm a big
+fan of but that's just straight up shipped.
+You can just read the left tabs.
+I haven't tried that.
+Just a big ARC fan.
+Yeah, right.
+They're like, they just forced them on the left,
+and I just got really used to it.
+So now I kind of require that.
+When I jump around browsers, and if stable Chrome has it, that's cool, but then the tab splitting was
+a big one to me too.
+Just as somebody writes, and I know you do too, I think it's nice to be writing and looking at two
+tabs at the same time.
+you just open up and two windows and position them side by side yes but it's not a same no
+it's not yeah it it's too much work yeah and I get the value of a side tabs too because I mean
+your screen's wide so you've got more room that's the whole thing yeah it's a freaking wider
+yeah and you can see more of the tab it's easier to drag them up and down I just think it's
+It's clearly better, but there it is a lot of muscle memory to the top tabs, so if you
+like them, I feel like that's okay to like them, but understand that you might like them
+just because you lived your whole life like that and that sometimes if you forced yourself
+out of a comfort zone that you might prefer that you like it the other way.
+Yeah.
+Okay.
+It's another new thing, new, new thing and that maybe not even everybody knows this because
+I feel like you just have to know HTML a little bit and sometimes perhaps your software just
+does this for you.
+But there's another attribute on video called poster.
+You give it a, it's like a JPEG or a PNG or whatever, A spew it out and it, um.
+Then that's what you see when you see the video tag.
+You don't see the video tag, you don't see the video tag, you don't see the video tag, you don't see the
+video tag, you don't see the video tag, you don't see the video tag, you don't see the video
+tag, and you don't see the video tag.
+something. Yeah, well this is pretty new as of this morning actually. We commented on
+taking it in the HTML tracker for a new one
+poster has a limitation in that you can only point to one image source
+currently so it's it's not responsive as we would know image and video to be so
+So if you want to look really good on a really big screen,
+you're going to give it a 2000, 2000 pixel image or something.
+And then you're stuck with that on the smaller screen,
+that kind of thing.
+Yeah.
+Yeah.
+So it's limiting.
+It's also, images have gotten a lot of features
+in the last decade or so for controlling,
+like cross origin, cores behavior on the image tag,
+decoding, async versus sync, fetch priority,
+images can do right that like poster is the poster starting to show its age right and it can't be responsive and
+Maybe maybe my favorite part about this problem or most important. It's there's no accessible name for it
+Right, so like when when the poster is showing
+Describe that image right you can you can sort of like you can, have descriptive qualities about the video for accessibility
+But the poster has never had a proper
+proper description like an alt
+you have descriptive
+qualities for the video.
+How do you do that?
+You just put stuff in the video.
+Well, you can do ARIA label,
+ARIA described by.
+Oh, sure.
+Okay.
+And then, you know,
+there.
+playing that alternate or provide text,
+if you need subtitles, that sort of thing.
+There's a lot of accessibility in generalותר.
+Poster has been kind of underpowered.
+Again, another for the video,
+I filed this ticket about a year ago around the same time.
+This one is poster attribute responsive responsive
+responsive and accessible by introducing this new idea of a child image element that could poster source it well that is
+is one avenue right you could you could take the avenue of like adding new attributes like poster source that poster sizes yeah but
+at this point, not, you know and it could be get picked and something else goes. But
+if we're talking about it anyway, I have a child element, image element inside the video
+that can control the poster. So if it's present, that image element, which could have source
+set and sizes on it, and it could, it could have a child element, and it could have a
+sorry, picture element parent.
+So it could
+So if it's a direct child child of the, of whatever of the video element,
+then that's the poster, essentially.
+Yeah, alongside, and track elements.
+So you could with like so you've got a couple source elements for
+the video that are for, you know, landscape and
+portrait orientation videos.
+Now you could make a poster.
+Yeah, yeah, the same thing that pairs with those.
+All text for the poster.
+So I think it's pretty exciting.
+I mean, it's kind of cool to have a potential solution
+that I think is kind of simple, right?
+Like we're already reusing another image that already,
+sorry, another already does its thing.
+But yeah, just taking a look at it.
+I left a long comment with my on my team's
+the design planning around how we think it should work.
+Like for example, if there's a poster attribute
+and there's
+an image which would take precedence.
+We think the image, right?
+Like it's sort of a good fallback to you
+because an older-browser won't know that that image.
+I tend to agree with that because it's like
+if that works almost A, it's newer.
+So probably you did it intentionally and B,
+there's just,
+is just more information to work with there so use
+the one that has more stuff.
+Multiple sizes.
+Yes, and like multiple sizes, responsiveness.
+Yeah, so things like that.
+We were thinking this time around, it would be fun to get feedback in
+the tracker.
+Here's what we're thinking.
+Before you just rip it.
+Sometimes we noticed last time we sent a PR to the spec.
+And the feedback was incredible, like so, it was so good.
+But it was, there were a lot of revisions requested, right?
+Oh, there were.
+Yeah, and some maybe most were language related or like move this to this algorithm instead of
+of, but we're really design decisions like should actually take priority over this
+and that should have been maybe decided in the issue tracker ahead or ahead of time
+So we were thinking, the design planning saves you a
+a little time in code if it's all agreed on before you code around
+around it.
+That's fun.
+Yeah, I think it's not like a massive
+to this, you know, you know, like, just chill. Just, it'll, all the best ideas will come.
+Absolutely. Yeah. Yeah.
+That's nice.
+You know, it's sort of, it's sort of the opposite of like, you know, like coming from like a
+s- something like that, where, uh, you know, you're, you're just hustling to like
+get, get product features out and stuff like standards, they need to never change.
+Right. So like, yeah, you- you got to decide on something that, that feels like it's
+It's going to last and it deserves deliberation.
+I have a plan for you though.
+This is what we're going to do.
+, like the number one thumbnail guy that's ever lived, MrBeast to get behind this, you
+ever seen MrBeast thumbnails?
+I watched a thing on them, they worship them internally at the company.
+They decide on the thumbnail first and make the thumbnail first before they shoot
+the video.
+Wow.
+is the video that they shoot?
+I'm not close enough to YouTube to know,
+but did he sort of like, at least popularized that sort of, you know,
+the big surprise you'd be?
+Well, your dumb face the face on it, yeah.
+I would think so.
+Yeah, so.
+And I think they pretty quickly hone in on the most successful one and?
+And stuff so like yeah, I think like surprised face dude is still doing pretty good on YouTube
+You know, but it depends and then they have to know who you are first
+I've heard, whereas if you if you started a YouTube channel, and it was just Scott's you know
+You are clearly just trying it on this trope. It doesn't actually be nobody knows that guy right? Yeah
+It looks like you're just copying the beast man
+Yeah, anyway, but you know, he's a billion dollar guy.
+Well, let's just get his support behind it.
+You know, he's a listener, right?
+I'd imagine.
+Oh, I'm sure at this point.
+Yeah.
+OK, cool.
+Yeah, yeah, yeah.
+Mr. At Beast.com, I think.
+Great.
+Cool. Yeah, yeah.
+That's great.
+But you, you know, making thumbnails better is cool, too.
+I do.
+If anything encourages people doing it,
+I think that's a good idea.
+I think there's probably an awful lot of video out there
+that just doesn't even bother with it,
+which is not great.
+I think different browsers do different things, right?
+I think iOS just does nothing, right?
+Or I remember it doing that at one point in history,
+like it looks like a gray nothing,
+which is not my favorite, you know?
+of behaviors and mis-behaviors of video loading sometime last year.
+It helped us a bit on this lazy loading-loading feature.
+But I remembered his
+post documents like a varying support for how much of a video is loaded at all by default by.
+by each browser and whether or not they obey
+obey the preload none, preload metadata.
+Interesting. See that's not the thing I didn't,
+even know, too, it could just be like, I know I'm like, I have a directive almost
+to download this video because it's, you know, present the DOM and it's present and it's
+whatever. But it may or may, it still may not load every last bite of that video. It's
+totally spea.
+Yeah, I think, you know,ệc, I think like if it's not, if it's flat out not respecting
+a value in the preload attribute, for example, and it's only supposed to load metadata, that's
+If it's supposed to download the whole video and it
+All right, I hope this works out too.
+It has that smell of a good feature to me where you're not like,
+Is there precedent for the cascading of laziness?
+Like what if your video is lazy and your image is not?
+Then that's weird.
+Yeah, so our, at least our planning allows for that possibility.
+So if you put loading lazy on a video element,
+then the image can just inherit that laziness
+for the poster.
+But if you specify differently on the image,
+load it, get it over.
+That'll override.
+And maybe a video that the video source lazy loads,
+but the poster loads at a high priority immediately.
+Yeah, just because you want it to be extra fast,
+even, I don't know, maybe your Netflix
+and the way people scroll through videos,
+thumbnails is really, fast or something.
+Right, yeah, and admittedly,
+that's why we posted some notes is we're sort of,
+I mean, I think we have an opinion,
+but we're sort of undecided on all this.
+So yeah, it's good to get a feedback.
+It's very community-oriented standards.
+Anyone can chime in there, so.
+Yeah, yeah.
+It's amazingly, like, feels like manageable mostly.
+Like the whole world can weigh in.
+And 8-2, you know?
+Cool.
+That's the right number, thank you.
+Yeah, right.
+Wait till you do something that's clearly wrong
+and you'll get more than 8.
+OK.
+OK, that's good, that's good.
+All right, that sounds good.
+Well, thanks Scott for sharing that journey.
+This is a perfect little bottle episode.
+I feel like we didn't have Dave,
+so we had to shoot the whole thing in a parking lot, you know?
+What's gonna say, we missed Dave today.
+Hey Dave, but the yeah, thank you so much for having me on.
+It's been good to see you.
+It's been a little while.
+Yeah, absolutely.
+I hope to run into you soon.
+And yeah, any, any last words?
+What does Dave say is like,
+how are people following you and giving you money?
+We can do that.
+Oh man.
+Yeah, showgel.com.
+I try to, I try to keep the blog up.
+These
+that's what it is. But then there's something about Star Heart
+that's how people had catcher of your choice. Oh my God, this is rough Dave.
+Why did you write this down for me?

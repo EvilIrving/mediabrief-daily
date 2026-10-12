@@ -1,0 +1,975 @@
+Hey there shop with me next you're listening to another
+episode of the show.
+I'm Dave Rupert with me is Chris Coyer.
+Hey Chris, who do we have in the studio today?
+under the best possible circumstances, which is,
+you I'll recall not so long ago in the past
+when I published a, click baby kind of article
+because I was, I am genuinely curious about the answer
+to this.
+I've wondered about this pretty much my entire career
+and discouraged for it in this way.
+CSS is a language that can import itself use the import keyword
+to have two CSS files and they smash together as far as thes
+the browser is concerned, or maybe it treats them as separate files, but you link up one
+of them I think.
+only somewhat recently with ESM I guess, you know,
+within the import keyword.
+JavaScript is a language that can import itself.
+Can HTML import itself?
+No, it cannot.
+It can import images, it can import other languages,
+but there is no such thing as in what I'll call
+and we'll probably call for the rest of this episode
+an HTML include.
+They don't exist.
+It's not a thing that can happen.
+Is that true, Jake?
+It's true, right?
+The object tag could do that.
+The object tag.
+Yeah.
+Okay.
+When people say the object.
+Like there's no difference between the object tag and the object tag.
+Like in terms of this, in terms of document inclusion.
+Yeah.
+the object tag.
+It really is like, it has like a brick wall around it.
+It's not the same, thing.
+The CSS cannot like penetrate through that wall.
+And intrinsic sizing doesn't grow
+with the content inside it and stuff.
+It's really just not a possible scenario here.
+So we should throw that one out right, right now.
+Like, nope, it's not iframes, it's not object.
+That's not what I mean.
+I mean, just put.
+There's an interesting thing around that
+Because this was on Blink Dev, last week, the week before,
+Chrome is working on responsive iFrames.
+There was a proposal while I go to one of the i
+iFrames where you put the seamless attribute on the iFrame
+and, then it kind of grows for the content.
+It would suck up some CSS or something.
+It wouldn't, it, wouldn't do any of the CSS,
+but it would, it wouldn't, it wouldn't be a fixed size,
+It would just be like, is if you do the content in, you know, you get
+the CSS passing through, but it would, just do you go anyway. Yeah, basically,
+G. I think. That's that's.
+Remember, I, you know, what have I
+first start up jobs is that would in it was a big deal for the business to
+I frame the form on the on-on another, you know, a third party.
+But there are some
+things that could go wrong for you know it would set the
+height of do
+set the height at first
+but then if you click the button in it had like a form
+validation
+to please
+increase the height of this I frame now that the
+the height is
+in it you know it ended
+ended up it
+post message and complicated that.
+But yeah, it's a classic problem that if frame does not do a
+So I'm interested to know how you feel about this this Chrome proposal then.
+So the way it works is you need like you the embedding page opts into this
+behavior is fire and attribute I think awesome CSS whatever.
+And then the page that is being embedded needs to have a meta tag that says
+it's allowed to be embedded in this special, growing way.
+Now, what you get then is, yes, the iframe will adapt,
+will sort of become the height of the content.
+But, here's the thing, it only does it once.
+It does it at the load event of the in a document.
+We'll call it, it just does that doesn't work
+That's what I think.
+Like, and this was my feedback to them in the
+blink dev list is like, this doesn't solve any
+of the problems, we have.
+And in their explainer we're like load more comments or, you know, like discuss style, load more comments.
+It doesn't do that, right, right?
+Discuss is one of the use cases they say in the explainer that they're solving and it's like, you're not though.
+And they say that we might have an API, the JavaScript API, to sort of update the height.
+So the inner i-frame content can say, I've changed height, can you fix that please?
+But it's just like, well, but yeah, how is that different to the post message thing?
+We do that, yeah.
+Yeah, the benefit of this system be if it does it itself.
+Otherwise, okay, this seems like...
+Well, this is a wild card for you.
+I'm pretty sure I, I'm right about this,
+even though I think this,
+it seems like I'm about to say something wrong.
+I think iOS already does this,
+and you actually can't opt out of it.
+Iframes only behave this way,
+and it's been annoying for CodePen
+in our various iframing, but yeah.
+But yeah, I was going to look this up. But yes, I of encountered that. And I don't know if they ever
+fixed fixed that. So one of the architectural issues with it is, if you're, sort of having an iframe,
+it's just,
+expanding all the time. The reason that the seamless
+suddenly becomes like the jumping complexity.
+Okay, well, I I would be happy to chime in on that thread, so maybe I'll find a
+bit and because it really does seem like a half-assed.
+I mean, you know, no offense to anybody that worked on it or whatever, but like,
+solve it all the way.
+Yeah.
+Well, you're ante there.
+Yeah.
+If you're going to do this, it needs to be better than what we can do ourselves,
+right?
+Like with a bit with.
+I think that's it, because you've got to do this metag thing.
+You've, you've got to do some other thing.
+So you've already got the complexity there, so it's like, well, you know, if I've got to do that,
+I may as well just do the
+post-message thing myself, because then then I can do it sooner than the load event, and I can do it more often, so,
+well, okay, so we're throwing that out.
+If I own both pieces of content, yeah, like, I could also just slurp that content into the
+first, you know, like, it's weird because it's like, when I don't own the content, it's when
+when I care about the iframe, you know, working good.
+So.
+Whoever's working,
+feel free to shoot me an e-mail for my own little list
+of grievances with iframes that you could solve for me.
+I have a couple in my head,
+but I don't wanna derail this
+because we're talking about HTML includes,
+which is, iframes are fine.
+They're good.
+In in fact, every ding business I've ever been a part of,
+it's, if they didn't exist,
+I still remember my first iFrame.
+It was a magical, like I'm putting a teleport inside a website and it was magic, it was just magical.
+Yeah, it's incredible. They power lots of stuff.
+So another way to frame this then is, you know, I started out saying CSS can import itself,
+JavaScript can import itself, HTML cannot import itself. Why would you do it?
+Well, the situation I always set up is this classic, like, you know, it's week two of your front-end web development class
+and you're making a three-page website with a contact page about page and home page and all three of them have the same header and footer
+What do you do on those three pages?
+It's it. It's it's unclear. The answer is either repeat yourself or you reach for tooling and
+Both of those are kind of like they're not the end of. The world there
+. It's not like a disaster that you would have to do either of those two things
+but it's just funny, like the web platform has always been
+we use that term, pave the cow paths.
+What are developers doing?
+Can we
+seems like it feels almost feels like low hanging a little bit.
+Like, could we do this?
+Why am I just wrong?
+it not really a need or like or what?
+I guess I'll pass it to you, Jake, then to be like,
+what's going on here?
+Yeah, I mean, people absolutely want this, right?
+This is we've seen your article.
+There's lots of people on GitHub.
+Her.
+Her.
+I guess I'll pass it to you.
+So I thought what we could do is talk about
+Well, it would be. It's HTML. So what else would it be? It's a tag.
+Yeah. Exactly. Yeah. Unless, yeah, it's going to be a tag of sorts.
+And then it tells you, it tells the browser where to go and get the content from.
+So at that point, it can stop parsing completely.
+And it starts fetching the, the, the, the URL.
+Is there precedent for that?
+Isn't that how the link tag works? Or am I wrong about that?
+There is precedent for this.
+it in a roundabout way, it is how script tags work.
+So if you have a script tag that isn't a module script,
+, it's not got a defer, it's not
+not got an async. When it hits that script tag, it stops pausing the document and fetches the other thing
+and waits for that script to execute. And the reason that happens is because that inner
+inner script can call document.write and inject stuff into the parser.
+Really, there's one thing that it might do.
+Yeah. Oh, my gosh.
+It's all because of this document.write which injects into theparza,
+which is what we're talking about doing here, right?
+We're just, we're talking about doing that same thing just without script.
+Mm-hmm. Right.
+And so immediately, at least a yellow flag that says like,
+hey, introducing what would the call that render blocking tags is parsed.
+Yeah, blocking, yeah, okay.
+And that's pretty low level, that's even worse than render blocking,
+because it's earlier.
+Exactly, so if you've got something that render blocks like CSS does,
+then in the background, it can still make the browser can still be parsing the page,
+it can start loading other things that it finds.
+Now browsers have a work-around for this in that they all have these kind of like
+token parsers, pre-parsers, whatever you want to call it,
+Although it's not parsing the document and putting elements in the page, it will discover
+this looks kind of like an image tag, this kind of looks like a link tag, this kind of
+looks like a script tag.
+I'll start fetch a fetching those probably going to need them when we resume.
+And that might not always be true because that document dot writes could obliterate
+it.
+Well it could a start an HTML comment and then all those things are gone.
+it could open a template tag, which means those things shouldn't load yet.
+Like, but, you know, browsers have had to, unfortunately had to solve this, but it's still
+not.-
+Got to imagine a theoretical
+future where document.write doesn't exist.
+That's where I'm going, let's kill the Batman.
+If he's the problem, let's kill him.
+That's maybe a tangent.
+But isn't it theoretical that this is parser blocking it all?
+We said, this could be pars
+the choice that, it's not parser blocking.
+If it wasn't parser blocking by defaults,
+then I think we'll inject the HTML.
+Gross, you know, and that not only gross, but like I just didn't really have a good name
+for it.
+Like that thing of where you start reading a thing and it moves around or you try to click
+a thing and it moves around like we know no one like that.
+So it's good that call with vitals are that would never get high like then right.
+There's no way a proposal for an include would get through where it was, not parser blocking
+and thus it would sometimes happen. It would just always happen with includes.
+Yeah, unless you know, you know, create a size-sized container, scrolling and all that.
+But I can imagine a
+a solution where you put the async attribute on it,
+and you get this version of it,
+you know, there's an opt-in, it's like,
+right, if you really know what you're sharing.
+Yeah, the same way
+that the thing you're including, by which I mean. So if you open a div in your include, it would be automatically
+closed once the include has finished processing. So I guess my question to you, folks, is does
+does that remove a lot of use cases for you?
+Like I remember when I've done, like PHP includes in the past,
+I've definetly had such a hacky way of doing it,
+like one include which is like open container,
+open wrapper, open thing,
+and then another include which is div, div, div, div,
+slash, you know, closing everything.
+Right, I would do that in WordPress themes,
+because there's a header.php and a footer.php,
+and rather than the rest of the the rest of the
+10 templates, having those three complete divs in it, including opening and closing tags,
+you could just do it once in the header and footer, and then you, you'd get those on all
+your pages.
+I feel like I was always conflicted about that as a concept, because.
+Like how, what if we say, okay, it's got to be a complete tree, but you don't make it
+a complete tree, then what happens?
+Like the browser technology, technology kicks in and closes all those divs for you or whatever.
+Same as what happens when you put something in an HTML that doesn't have a closing tag.
+So what happens?
+How it negotiates or whatever.
+Yeah, it treats it as if it's a kind of complete document kind of, thing.
+So it would do all of its like kind of as if the document ended,
+it's like, okay, what am I going to do to
+close this out? What do I need to shift around to make this work?
+And that's the tree you end up with.
+So I think the logic would just be the same as that.
+Um, if you want the, if you want all the wrapping stuff, you, you know, we could have a feature,
+which is like, where you have, or you're opening and closing divs, but then you have like, like
+a little, in the middle of like outlet, which is like, this is where I want the rest of
+the document to go or, or something like that.
+A slot?
+A slot?
+Yeah, of course.
+remix recently and they call it outlet should be thinking in terms of the
+the web platform yet like a slot come back to the web platform
+I mean maybe we could make a JavaScript analogy you can't do an import for some
+JavaScript you have an if statement with speach
+statement with an opening curly brace and then another include with a closing
+like that's not happening in JavaScript so maybe I'd be nouve I'd be okay with that
+restriction. That's a really good comparison and the same is true for CSS.
+So the other system of JavaScript importing is import scripts, which you get in a worker.
+stuffed into the PTag, if I didn't close an LI, it figures it out. There are times where
+you mess up HTML really good and it's like you didn't close the UL and so it just tries
+to chuck the rest� page in the UL. I would just expect it to do that.
+It doesn't close off the use case of nesting it in there. You could still have nav with
+the closing nav, but in between it, you have an include, it would still be the complete,
+you know, tree of the navigation. You can still like nest it in there, right? It's not, there's
+no restriction that the include has to be top level or something, right?
+Exactly. I think about too, like this is maybe like work specific or something, you
+know, but like something like AI chat bot or something, you know, you're like, Hey,
+And it'll like go and it'll find a constitution, that HTML somewhere and I'll just start streaming
+that in that response.
+And you know, like almost
+like an HTML.
+Yeah, maybe I'm jumping too far ahead, but like, you know, that's going to give you a
+half a tag at some point, you know, just by the chunks, right, that are
+that are coming back.
+So, you know, you know, you know, I could, I think though my expectation would be it would just kind of work
+as HTML. I'm trying to import HTML. If it's bad HTML, it's bad, HTML. I don't know. I know
+you have to think about, but I always get like, ah, when we think about, oh, what if
+somebody's going to use this bad? It's like, yeah, dude, people are going to use this bad.
+This is like, people are horrible. Yeah.
+We've talked about that. It's like my least favorite reason to mix a feature is people
+do bad.
+I mean, if it's security, that's one thing.
+Security is obvious.
+Yeah, yeah.
+I've said in the past about this is like, you can commit a hate crime just using text.
+So like, what are we trying to protect people from here?
+And I think the right way to think about it is you don't want to create a system
+that helps people do the강 thing unintentionally, and I think that's the bar.
+So I got a, a
+a little annoyed at a CSS feature that was a
+it was view transition name auto.
+And I didn't end and I found that there's a lot of
+complex behavior hidden behind that auto and a lot of
+things that could bite the developer that they wouldn't
+is there until it was there until it was breaking in production and so I think that's
+the class of problem we want to avoid.
+So yes, if we release this feature but it's got these hidden gotchas, then I think that's problematic.
+If people want to knowingly do the wrong thing.
+The not parser blocking by default would be one of those but maybe the only one.
+on a local machine loads so fast that they don't see the layout shifts.
+And then-
+And that's late.
+So layout shift sucks, we know that.
+And then, so let's say we make it parser blocking by default, that also has a negative
+implication of a little performance hit.
+So all the people that chimed in that says, just let tooling do this, just let your
+11.
+You're argument that you made before stands like JavaScript has in that was introduced
+relatively recently and that creates this potential for waterfalls like it
+it has it request a thing to then discover it needs to request another thing that means it needs to request
+So we added.
+Yeah, we, we added to this problem in JavaScript land and the advice is like, yeah, you can get
+around it using a bundler and so we, right, right?
+All right.
+Yeah.
+Very few people are anti yes, I mean, okay, yeah, so we're just, we're just moving
+the same.
+I don't want to call it a problem, but situation.
+No.
+.
+Yeah, fair enough.
+I like that.
+the like can one of those imports import another thing?
+Is that a foregone conclusion that we allow that?
+It feels like it should, but I, I mean,
+it would be easy in this back or something to say you couldn't,
+but it seems fine.
+Right? Like it, I bring it up in the,
+cause people are like, well, what if it imports itself?
+Ah, gotcha.
+Iframes, you can do this.
+Like it's, it's like a problem, right?
+Yeah. Yeah. Right.
+Six, whatever.
+Yeah, I think iFrames just has some sort of limit applied to it.
+But whereas with this new say, cyclical is not allowed, right?
+Yeah, if accordion.html imports accordion.html continue,
+like it's not continue semi-colon, things like that.
+And people want to give it a different query string
+to work around that, then fine.
+Again, like they're deliberately doing that.
+That's OK.
+Okay, so so far we're really scoping out this feature we got we're gonna make it
+parser blocking by default we're going to allow it to import multiple things and we're
+going to requireBread.com Complete Trees. So we've scoped out the feature a little bit is there
+more to scope out the stuff around security and stuff around like adoption issues. I think
+I think this feature as we've described it is well can't be, third party or it would be
+So you could say it's the third part as long as
+Wow check. Wow. We're making a lot of progress here. This is it. It's almost out of this. Yeah, this is good
+Is there
+Is there other security problems? Is that on your list here? Okay. It is. So I think
+There will be systems out there. There are definitely systems out there like you know old forums and stuff which let people
+Put HTML in their posts
+But they go well you're not allowed to do script because that would be
+That would allow you to hack the site so no
+No script, but you can kind of do yeah, you know none of
+Comment section of a WordPress site would be an
+You know like you can they have a white list of tags
+You know strong is allowed script is not you're saying this white list or this black list is off one tag
+Yes. Well, so if it's an allow list is kind of fine.
+We're okay, but there will be things out there
+which operate on a, on a block list.
+Like we've
+We've got a new, we're adding a new include tag
+and that includes right, can suddenly execute scripts.
+We're free to think which has a script tag.
+I feel like, you you
+like your GitHub profiles existed
+before the details element went out,
+and then all of a sudden we,
+got details and it's like, check it out,
+I don't, I, I don't know, I don't know.
+And now all of a sudden, they support this new include tag.
+What could go wrong?
+What's the problem?
+Well, it's just another way to execute script.
+Because you're pointing at something else.
+You're injecting content.
+Yeah, and script.
+It's just it's going to run on the same origin.
+There's your problem.
+I think one way you could get around this
+is if instead of an include tag,
+have a script tag with type document include.
+form-styling things, which I think there's been some movement out.
+We had Jen on last week from Apple, Jen Simmons, and she was talking about how Apple wants
+to, they want to go big on that.
+Now that Select is done, and I think you were talking about it, so much crap had to
+happen just for that one, that now we're more ready to do all the rest of them.
+And here's why, one of the reasons why is because we've agreed on an opt-in,
+But there's now a way that you can say,
+I want this new behavior for form elements
+and I'm asking for it.
+So I'm not risking old stuff on the web.
+Because you have to go into it eyes wide open.
+Is there an eyes wide open version of this?
+Could it be like, yes, there's an include tag in HTML now,
+but it doesn't work unless you put this meta tag in the header
+and then it does work.
+So you could have a meta tag, a CSS opt in.
+Yeah, exactly.
+That would be another way around the same problem.
+I mean, we are stacking up these opt-ins at an alarming rate.
+We've got loads in CSS now for like discrete animations
+for this styling thing.
+It's surprising to me almost.
+It's like we could fix that whole list of CSS mistakes
+just to have an opt-in at the top.
+It's like, I'm opt-in into CSS5 or whatever the hell.
+A new doc type.
+Let's have a new doc type and solve the whole.
+Yeah. And we could use an emoji for it.
+Like that would be the one good thing that came out of the lightning bolt thing
+that we've all put to rest, right?
+I can't even remember what it was called, which is a good thing.
+Meta box model 2005.
+Yeah, because he went to war.
+Yeah. Amp is, Amp was a big part of my life when I didn't want it to be
+as a, as a devil at Google.
+Cause it was, you know, outside of my control yet.
+Seemed down from on high, fair enough.
+Seemed down from on high, yeah, okay.
+I stayed away from it mostly.
+All right, what else do we need to solve with this thing?
+Well, I thought you were almost gonna talk me out of it.
+Before this, not me out of it,
+but I thought that this would be harder somehow,
+that there was, it feels like we're,
+if anything we're erring on this kind of
+being a decent idea that we should do,
+what are all the other people saying
+that are naysayers against this or whatever.
+Can we speak for the people that hate it that aren't here?
+Absolutely.
+There's an adoption issue in that it's
+one of those features that is going
+to be a bad experience for older browsers
+until it's everywhere.
+Now, that's not unusual.
+Like CSS Grid, right?
+It's the same.
+It's not, but we're talking about some content here, you know, that's a different ballgame.
+Yes.
+Document query selector all include run includes like fetch Ajax.
+Like I'm not like it's polyfillable, right?
+Like it seems you can make a web component for it.
+Yeah.
+People are making web components already.
+Like it's not a, it's a polyfillable feature, right?
+Under a different tag name for sure.
+Good to make it a web component.
+But yeah, yeah, I think so.
+Hard to get the pause a blocking thing.
+But sure, right, The stuff is doable.
+I think a bigger problem here is going to be overcrawlers,
+like search engines and LLMs.
+Like LLM crawlers are dumb.
+They don't run a page with JavaScript.
+So if you're a client rendered page,
+the LLMs aren't seeing it right now.
+So Sam Rose, on Blue Sky, was saying he wants this feature because it would allow him to
+do a lot of repetition in his head tag, so all of that kind of meta stuff.
+just social media includes.
+Yeah, social media includes.
+They're never going to, they're never going to process this, right?
+Like, or, you know, if this arrives in all browsers, Twitter or X or on Facebook
+that they're not going to, they're not going to crawl those includes for, you know,
+the metta social image and all that kind of thing.
+If they found value in it, that would make it maybe a unique tag in that it could
+be used in the head and in the body.
+Like that's maybe kind of a unique.
+If we're making this an HTML.
+Like link the link element can be.
+.
+Yeah, just kind of that level script link, it's like that level of a primitive kind of
+course style.
+Yeah.
+Yeah.
+So yeah, so rollout is going to be rough, you know, like nobody's going to use it until
+it's very well supported probably because it would be rough
+except for that it's it's kind of like polyfillable.
+So maybe.
+Yeah, but not, but it's not polyfillable in a way that the social media services
+and LLM, all of that sort of stuff are going to understand.
+the lack of LLM scraping is a benefit because it's polyfillable through JavaScript, which
+they don't run, which they don't run.
+a DDoS potential like include super large video dot HTML and that has a video that's, you
+know, whatever, the entire criterion, the entire criterion collection, you know, dot
+MOV or whatever
+text HTML or similar content type or maybe even a new content type if there was a security
+benefit for that.
+What if I blobbed it?
+What if I put a blob?
+That's a slash blob.
+No.
+Any of this stuff, it's like, well, you can call fetch with JavaScript and fetch whatever
+you want.
+Yeah.
+Yeah. So again, I don't think you're doing anything you I can't already do.
+Jake, are we con at the fetch element?
+I'm sold if it's not the fetch element.
+I'm still. Maybe.
+Smaller than Include, isn't it?
+Yeah, he is.
+Yeah, he is. Yeah, he is.
+Which is not bad.
+That sounds good.
+Oh, we're making fetch happen.
+This is great.
+And it would be multi-purpose, right?
+Like if it happened to get an image, then it turns into an image.
+The
+and I think the reason it keeps getting blocked in standards line is because they see it as a real drag on the status quo, like I real step down from the status quo that is quo.
+So the status quo being, do it on the server.
+Right.
+And they're not wrong, right?
+This is, I'm actually quite sad that a lot of
+the serverless hosts don't have some kind of basic
+include system, because would we be even talking about this
+if GitHub pages and Netlify and all of this supported
+like the old Apache style SSIs with this would just
+be a these would just be a non topic.
+Yeah, if all servers had like a patchy server side.
+They, I've like counted them in the past.
+This is, there are so many different technologies
+that solve this issue.
+It
+I don't like that because it's
+like the education angle like we
+should be able to use HTML to write
+HTML we shouldn't have to like jump
+We shouldn't have to like jump to another language.
+Oh, cool, you like getting your feet wet and HTML?
+Psych, you have to learn.
+PHP.
+It has all these security issues.
+It sucks, like, you know, or it's fine.
+Don't stop.
+I heard a thousand Lambos coming at me, but it's
+PHP is fine, but like when we're immediately pushing learners off to this whole other complex system, the second
+they want to automate the second they want to automate copy pasting.
+I think so. This is why folks haven't wanted to add it, it's because it's slower than what we have now, unless you flip the question to saying what we have now is people calling fetch, getting a lot of text, and then putting it in a HTML.
+And I had this example I used to use in performance talks where I was on GitHub and I clicked the
+still kind of works is it yeah you click the link it goes and fetches all the content and
+Then once it's got all the content it displays it and this was a crazy long thread
+And I was on airport Wi-Fi at the time
+So everything was really slow and it was faster for me to trigger a. A full page reload and that content was like all it needed
+To do is just as it was downloading the HTML it was able to
+You're probably hitting the Ruby endpoint with that stream to HTML response versus hit
+a JavaScript and then get all the JavaScript that page needs to load, then
+paint the page, right?
+Assemble and paint.
+Exactly that.
+So I think one of the things that we could do that I think standards people would be very
+happy with or not object to is, can that the problem be solved first? Like, can we create
+a slightly higher level than it is right now way of you call fetch, you get your response
+and then you say, I want to stream this into this element, start parsing this response
+I think that's
+I know that's not, it's not the tag people want.
+It would make,
+Kruijen of this so much easier,
+because you're not having to do all of that manually.
+So instead of a fetch element,
+we have a bucket element to,
+this is the bucket I want you to pour all this HTML in too.
+Well, I would hope it would just be like,
+Yeah, yeah, response response dot body pipe to
+Yeah.
+Dom receiver, something something. I don't know.
+No bucket.
+Yeah.
+What's declarative, is that what we're saying?
+from a little Google that they are working on what they call declarative streaming content.
+Oh, interesting.
+Yeah.
+.
+And I think when I hear the word declarative it just, to me it just means HTML in this context
+context.
+The solution I was talking about there was imperative rather than declarative.
+Yeah.
+Yeah.
+Because you're saying fetch then inject.
+Right.
+JavaScript side and pointing it at something and saying,
+that container bucket is happy to receive streamed content,ing.
+Which is just, just not a thing right now, right?
+I'd be interested spew interesting to know what that thing you've heard about is,
+I wonder if it just became this response of I frame thing or if it's-
+I'll quote the email but not the person just in case.
+We're looking at a way to declaratively stream content into the page this year,
+can confirm it will ship but we have
+I would like it could be that they are working on this that we're discussing now
+it seems weird, if they're saying it's async, they are.
+Then you've got the layout shift issue, that's I would‑ say that falls back into the non‑starter
+thing.
+And with this streaming solution that lower level one I'm mentioning where you get the
+content, you pie element, you're going to have the layout shifting issues there, but I think
+because you're having to do this a bit manually with JavaScript, there's more of a
+a suggestion of exactly what you're doing here, like that you kind of know that this is going
+to execute some time later.
+Let's see, it's like partial assembly, like,
+Tick, tick, tick, tick, tick..
+Exactly, exactly.
+I wouldn't doubt this comes down on high.
+You know how that works, Jake.
+Like, now they have Gemini and, all that.
+And the default UI experience from these chatbots is da-da-da-da-da-da-da-da-da-da-da-da.
+So, I'm sure some high-up is like, what platform should support da-da-da-da-da-da-da.
+Yeah.
+It is interesting, actually, that part of AI, because it is a slower stream when
+you're on a fast kind of, it's really kind of, a lot of people have woken up to
+the possibility of streams, even though we've had it since like 2016.
+And it's only because like it, like in computer terms, it takes impossibly long for an AI
+to like generate a response. Like it's taking minutes to generate this response, you know,
+and we're finally like, what would make that appear faster? You know, it's relatively new
+to me because isn't there like, like a, it's not just one technology that needs to support
+it or at least a full-on implementation of it, like if you have a client-side rendered
+JavaScript app and one of the things that it does is it queries Dave's book library,
+but that query is maybe a little slow because Dave's spew on some cheap bluehost thing
+or whatever, and it takes 1.5 seconds to even do the query that you could set up a streaming situation
+that won't wait until it has all 15 books.
+It'll get one book and render it, it'll get the second
+book and render it, but like isn't there like multiple
+bits of technology that need to all support that
+like your Shavascript framework needs to be
+HTML streaming, and the server itself needs
+to like hold the connection open while it's
+delivering these books slowly as it's getting them
+Content in general is is ancient right, like browsers have been able to render, to receive it for like
+Before I was working on it. Um, but being able to from JavaScript get
+That streaming data is is newer
+The were ways of doing it with xml, ml, htp requests kinder. It wasn't great, but yeah, we got it with fetch
+Fetch, not straight way, fetch, it came slightly afterwards.
+But yes, at that point you were able to sort of like,
+receive chunks of the data as it
+came down.
+For a lot of explaining, it just like sits open.
+Just wait, because it hasn't got the last like,
+bit or whatever over the wire that says I'm done now.
+It just sits open and receives stuff.
+Exactly.
+And then call back, while it's getting stuff.
+Yeah.
+Right.
+So in an HTTP2 world, you only have one connection,
+HTTP2 onwards, you only have one connection
+ideally to the server anyway,
+one connection like per server you're talking to.
+And there are multiple requests responses
+going on through that.
+So yes, keeping a response open is not a problem.
+It just has, like you say,
+hasn't received the I'm done message.
+So that's not a problem at all.
+And you could do it in HTTP one as well,
+but you would then you would have multiple connections open,
+that was one of the big innovations that we got with like speedy,
+And this is called a duplex stream now this no browser supports this, but no JS Dino they do
+So there's that's a way topic facts, but they are they are nonetheless facts
+All right, I hope you are weird thank you
+Okay
+I don't know.
+I have a question.
+I have a question.
+I've taken his way off track.
+Sorry.
+I know, I know what I want to go after Dave.
+On December 14th, 2014, Mozilla killed
+we're going to see how, ESM lands and rethink the situation.
+That was checking my watch 10� ago or 11 years ago.
+Haven't said anything much past that.
+How different is this solution from that solution?
+Do you feel like?
+So we could have, because you can import Jason now in,
+in various type assertions with type assertions and I'm kind of okay about that.
+Like, it's not changing my life, like it's like three lines of code, but cool.
+Exactly. And if you're importing Jason from somewhere else, you want to deal with failure.
+So you don't want to use a stash. Anyway, because that one external Jason fails brings
+down your entire app, no thank you. So you would be using a dynamic import, but that has a sort of
+side effect of that once it's imported, it's imported forever, it, it becomes part of the module
+graph. If something else tries to import it again, it just gets the response back that it already has,
+which often isn't what you want to do nouve an external API. So yeah, when it comes to import,
+They, I'm like data, that's time, yeah, you know, change the query string, whatever.
+Yeah.
+So I'm kind of like, yeah, I'm glad we've got it because it's nice because it's, it's
+something you can do in bundler tools and it's nice to, to kind of have a web standard
+way of doing it, but it's not, it's not changing my life.
+That's funny.
+We use Apollo at work and to do graph QL requests and there's like a way in a graph
+QL request that you can do a signify.
+If you run the same query again later in the app, it uses the cache that it already has,
+which is a benefit.
+That's kind of one of the biggest reasons to even use it.
+But you can, in a query, say network only, so when it hits that one, it won't use the
+cache.
+I wonder if we need type assertions with network assertions.
+I think then it's kind of just so different to how the module graph system on the app
+works.
+you say it's so easy to just do that in user land like you can because you can
+store the dates that you received the last thing and you can use that to
+decide if you go to the cash or not and blah blah blah like it's yeah but we could
+have an import that imports a document but in the same way it's kind of like
+how I don't know how this is different to like XML HTTP requests you know
+getting a document.
+That's kind of not fully here yet. If I, remembering correctly, um, there's also talk of like HTML modules where like I, I could write a template and in poor that into my react component and make that better, um, or my web component or whatever that, to me, but again, I don't know the motion on those, but, like,
+you doing it in JavaScript is fine but I get to sort of away from this declarative idea of
+like using HTML the right a right like that's not what I want so this kind proposal we've
+outlined like is it different than HTML like we just did the tag and so there we're different
+here what's different you know so HTML imports were never they never rendered they were definition
+files essentially. So they contained a, it was almost like a sort of package that contained
+a template, some CSS and some JavaScript to define that component.
+Some sort of single, single file component.
+Right, so you didn't
+call dot define element, it was like
+right. So yeah, it's it's it's
+Um, it didn't stream, I think we did the right thing by not
+Not well by unshipping that in terms of Firefox and Safari, like not shipping that.
+Um, I know a lot of people upset that a lot of APIs changed, some for the better,
+some for the worse, but I don't know.
+It was a slightly ugly part of the standards process that other browsers came to that
+so late and then wanted changes, but I think things ended up in a better shape
+in the end. And I still think some of that stuff ship.
+And what about now though, what if it came, if it back, you don't in think anything's fundamentally
+changed.
+It's still a bad idea.
+I think if you wanted a way to package up a web component, I think that I think we could
+have something like that.
+It's not something I've thought too much about, about like what, you know, it being put
+on the spot and kind of thinking, is there a lower level, like a package primitive that
+we would benefit from.
+And that's something people over and again
+like, could I have the benefit of having different files but wrap them all into one thing?
+Because if you're downloading the My. . . like some JavaScript and CSS that are independent, it's
+kind of silly that they're two the separate files because it could be one and you get a performance
+performance bump from it.
+, if you're really chasing the fastest performance, one of the big gaps that we've got is that you can't inline JavaScript modules. As soon as you have an import, that has to be going to a different file. There's no way of sort of like packaging that whole together. We're just running into this issue where you can only have one import map. I know that's a little different, but I think it's probably related in a way that it doesn't want to like look too many places for that information or something.
+but I thought that was such a weird limitation.
+So your advice has been looking at that,
+and he's written a blog post about it,
+which I haven't fully read yet,
+but I think he's been working on solutions to that problem,
+because I know we've had those problems at shopify.
+So yeah, it was a kind of initial shipping restriction,
+but yes, there, I think there's-
+I think the advice of the import is that,
+let's say my web component is just like a card,
+it's a really nicely designed card element,
+my dash card, and all it does is shadow DOM up
+some really nice looking card thing, no JavaScript at all.
+It's not necessary, that's not what this web component does.
+Isn't that feel good that I have to script that up
+for it to work at all, that it would be nice
+if my Allele little card component, which is only job
+is to make a isolated thing look nice,
+involves JavaScript at all, it would just be
+nice to not even involve it.
+I think
+I think so. Although as soon as you start getting into like we've got declarative
+shadow DOM now, like you and create shadow DOM without JavaScript.
+Um, but right now you need to put that shadow DOM inside every instance of the
+components. Yeah, it's a little repetitive.
+That's what you that's that's okay to me is it makes sense somehow?
+Yeah, I.
+I out.
+But I think the bit where it starts to like make sense is that's the shadow
+would have can be different per component instance.
+And often is, like if you make a grid component,
+Or more that it's like you could literally do it for the simplest of cases
+But as soon as you hit that case where you need a different
+Depending on the when you then really like we need an if statement. We need an if tag
+We need a like you start, you know, creating conditional logic in HTML, which maybe we'll have money like that's
+That's for the reason we don't just have that yet. I think there is a
+I think of components of two types of thing
+there is like an interactive component.
+Then there's another thing which I refer to as HTML macro.
+which, yeah, it's just like input in
+and it will generate some HTML as a result,
+which I think Chris is like the thing you're more referring to.
+And the nice thing in terms of server rendering,
+the frameworks do both pretty well,
+whereas web components don't do the HTML macro thing.
+So, well, you're still having to, yeah,
+involve script to do this thing
+that feels like it shouldn't have to have script.
+It was just to go off topic even just to smidge more
+for a second is that another interesting,
+you know, like one of the reasons you might use
+tag just in the DOM arbitr, you know, just put it wherever and then if you do that the at scope
+Thing in CSS that scope you don't have to put any parentheses or after any where it's normally where you'd explain what scope
+It is the scope just becomes whatever the parent element is
+Oh, that you know, I didn't know that that's neat
+It is neat. Cuz it's that is as close as the web platform has ever gotten to selector
+scoping because otherwise scope doesn't help with that.
+So now you have the style block that the styles,
+as long as you put it in an at scope thing,
+apply to only just that parent,
+it will not leak outside of it.
+But I was as like, well, it has the same vibes
+as Shadow DOM stuff to me.
+So you use a hundred cards on the component,
+each one of those hundred cards has its style block,
+if that's how you want to roll.
+But it is almost like tooling free scoping,
+which I've never seen before.
+So like I'm kind of into it, but how much,
+like how painful is it to have a hundred identical style blocks
+versus one CSS thing?
+Like how bad is that?
+Like I don't know how to test it, but...
+It's not great.
+Or the
+or the
+or the
+or
+or the
+or the
+is it's difficult, you could put.
+Put a link tag that points to that has an h
+href, but then that's nice and you have a separate yeah, exactly.
+There is a Microsoft proposal and I can dig out the link
+and put it in like show notes or whatever that they are looking
+a way of inside your declarative shadow DOM to say,
+use this other script tag that's already on the page.
+Oh, that rules.
+Yeah, so it will avoid that duplication at both a
+text and pausing level, which is really, really nice.
+Okay, sweet.
+All right, well, I hope I can tell you.
+We
+We were saying partial blocking could be an opt-in.
+No, I think I think parser blocking
+would have to be the
+it won't, it
+it won't continue to pause,
+but it doesn
+That should be the selling point.
+So that's not an opt-in or anything.
+That's just how it works.
+Yeah.
+Yeah.
+Because that would be the thing that's better than
+almost all of the hand-rolled solutions.
+Yeah.
+I'm so like, let's do this.
+So it seems like the upsides are better than the downsides here.
+I do think that the path to this is to do the low-level streaming part and then introduce
+the elements.
+There's two battles.
+There's the initial battle of the JavaScript API, which I don't think is going to be
+The last time I- it worked to browser people, they were all sort of keen on it, they just needed someone to do the work, it wasn't high priority for them.
+That would be the special element for it, but once you've got the building blocks, it's an easier proposition.
+Yeah, whatever will happen, whatever will happen.
+And will it be include?
+Ooh, I don't know.
+Here's a few.
+Container, because we talked about it being a bucket.
+I guess that's containment.
+Uh, Rupert, we could just call it a Rupert.
+Um, oh, that sounds good.
+We could, uh, you know, there's a lot of options here, you know, I'm happy to
+praise the HTML spec has Jake diagrams.
+Oh, see, nice, you left your mark.
+You know, there's like my dream.
+My dream in life, my dream in life is to get a breakfast platter named after me.
+Yeah, like a restaurant, a dining diner and you feel like you've done it with the jake diagram.
+So yeah, this is when I was working on it. I was trying to explain how the navigation history
+should, should work because all the speck and all the browsers did it differently.
+And yeah, I had these these kind of timeline diagrams and then someone else
+Dominic put them in the spec and labeled them jake diagrams. I don't get hung up on legacy actually,
+But do you know what? I think that might outlive me.
+I honestly believe the HTML spec will outlive me and still be being used in that kind of the rules.
+I do like that. Someone has to deal with my nonsense.
+I got a good one too. My fart acronym, which is flash of inaccurate color themes made it into
+a spec somewhere.
+Oh, that's very good.
+Wow, that's very good.
+I really, and I tell him this all the time, flip animation, which is first
+Last invert play and it's like mate, you came up with the word flip first and then had to
+crowbar every word into that and I hate so much that it got adopted because it's awful
+and he's got I've got this thing he can say he invented.
+It's dead now
+now because we got views transition.
+She's got a little plaque from Google somewhere.
+Now you see my plan all along.
+Yeah.
+It was to kill flip.
+Yes.
+That's awesome.
+That is great.
+Now, we absolutely don't have time for this, but there, there's like a doled Jake video
+where you're explaining some weird CSS thing that like prevents the rendering of content.
+Remember that
+ability.
+Yeah, yeah, yeah.
+So this is, you can defer layout for parts of the page.
+It means the scroll bar can, well, you see it on.
+On mobile or any bar, you scroll down and it's like, oh, no, no, no, it's
+actually, oh, no, it's actually
+this, yeah, um, which that's the sort of downside to it.
+But yeah, you can cut down a lot of layout cost
+a bit.
+But it just only reminds me of it because it's like, gosh, if the browser knew, it's
+the footer that I was including that it could behave in a different way or it could
+turn that on while it's loading and fetching.
+And then, oh, are we talking about loading
+lazy on these includes now?
+Basically, yeah.
+I mean, we could have it on the async ones.
+Right. Too much.
+Look, I feel like we're reinventing the platform
+one step at a time.
+Yeah. I know.
+Give what's another primitive.
+What's next?
+What's next?
+Oh, how do you fight?
+Oh, transitions there we go.
+I know they're working on that.
+So it's for you transitions that are just within one element.
+And you can have many of them happening at once.
+Oh my gosh really?
+Yeah, that somebody asked me about that this week.
+They're like, can I do it like a mini inside of a one?
+And I was like, I don't think so soon.
+You will be able to hopefully.
+All right.
+Well, Jake, thank you so much for coming on the paving
+the cow path of HTML of another brick in the cow path.
+Thank you so much and for people who aren't following you and giving you money, a lot and
+they do that.
+Oh,.
+I don't.
+I'm okay for money.
+I think this nonsense just comes out for free.
+Well, I say this so, I resigned today so there is going to be-
+Holy crap, really today?
+the next thing lined up and I'm looking forward to it but I'm going to take a little break
+in between.
+So going to be a great, you know, going to be
+You know, you can do both.
+One time in my entire life of reading tweets, somebody announced in the same tweet the job
+that they're leaving and the job that the
+job that they're starting.
+It's just not done.
+It's not done.
+It's not done.
+I'll tell you what, I'll type it in because I don't think I can announce it yet.
+Yeah, fair enough.
+I'll type it in the chat and you can react.
+I
+– Yeah, well, thank you so much. Yeah, and thank you dear, listening for downloading
+than the d-d-d-d-d-discordpitchin.com
+slash shop.docs.
+Actually, I'd like to say not really.
+I ever include ending.ht.html.
+Amazing.

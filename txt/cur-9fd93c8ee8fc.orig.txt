@@ -1,0 +1,259 @@
+[Introduction](https://www.joshwcomeau.com/css/anchor-positioning/)
+A common UI pattern on the web is having one element stick to another. Tooltips need to float above their targets, dropdown menus need to drop down from their triggers.
+
+It seems pretty straightforward, but the devil is in the details. We might want our tooltip to float above its target, but if that target happens to be right at the top of the viewport, it’ll overflow:
+
+This is a tooltip displaying additional information about this button.
+
+The tooltip fits comfortably.
+
+This is a tooltip displaying additional information about this button.
+
+The tooltip’s getting cut off!
+
+Historically, we’ve used JavaScript to solve these sorts of problems, and the code that manages this stuff can get pretty hairy. Fortunately, a shiny new browser API handles all of the tough stuff for us: the _Anchor Positioning API._
+
+I’m still learning about this new API myself, and truthfully, I felt a bit overwhelmed by all of the options at first. The underlying problem space is complex, and the Anchor Positioning API is designed to solve a wide range of problems. I think the The 80/20 rule: 80% of outputs come from 20% of inputs. In this case, I think ~20% of the Anchor Positioning API can solve ~80% of real-world use cases. applies here, and so in this post, we’re going to cover the most critical parts of this API so that you can start experimenting with it today!
+
+## [Link to this heading](https://www.joshwcomeau.com/css/anchor-positioning/#anchors-and-targets-1)Anchors and Targets
+
+Let's start with a basic “Hello world” example:
+
+Code Playground
+
+Code editor:
+
+Result
+
+When we work with Anchor Positioning, we typically care about two elements:
+
+1.   **Anchor element.** This is the base element we want to stick something to.
+
+2.   **Target element.** This is the floating element that should become attached to the anchor element in some way.
+
+The Anchor Positioning API is an extension of the _positioned_ layout mode; in order to use it, our target element must set either `position: absolute` or `position: fixed`.
+
+**This really helped me understand what's going on here.** Typically with absolute/fixed positioning, we anchor our element to the edges of its containing block. For example, we can stick an absolutely-positioned element to the top-left corner by setting `top: 0; left: 0;`. The Anchor Positioning API gives us a new superpower: we can use _another element_ as the anchor!
+
+In order for this to work, we need to specify _which_ element should be used as the anchor element. This is a two step process:
+
+1.   The anchor needs to be given a unique name with the `anchor-name` property.
+
+2.   The target element needs to specify that anchor element with the `position-anchor` property.
+
+Anchor names use the “dashed-ident” type. This means that they’re developer-defined names that start with two dashes. This makes them _look_ like CSS custom properties, but they’re not actually the same thing (there is no underlying value to access with the `var()` keyword, for example). This is becoming a pretty common pattern in modern CSS; we saw the same sort of thing in my recent [scroll-driven animations post](https://www.joshwcomeau.com/animation/scroll-driven-animations/)!
+
+Finally, we need to define _where_ our target element should sit, relative to its anchor. We can do that with the `position-area` property. In the “Hello world” example from earlier, I want my tooltip to sit _above_ the button, so I set `position-area: top`.
+
+To understand `position-area`, we can imagine a 3×3 grid cut into the target’s containing block, with the anchor element in the center cell. We can control its exact position by specifying one or two values:
+
+Vertical:
+
+Horizontal:
+
+Anchor
+
+Target
+
+```
+.target {
+  position: absolute;
+  position-anchor: --some-anchor;
+  position-area: top center;
+}
+```
+
+We can pick any of the 9 cells by specifying both a horizontal/vertical value (eg. `position-area: top left`). If we only pass a single value, the target will spread across the full grid in the perpendicular direction; for example, if we set `position-area: top`, our target will span across all three columns.We can also specify this explicitly by setting `position-area: top span-all`.
+
+In order for the Anchor Positioning API to work, we need to provide some constraints. If we don’t specify at least one `position-area` value, the target element won’t be anchored to the anchor element, and it’ll float in its default location.
+
+By default, target elements will sit _right against_ their anchor. Sadly, there’s no `gap`-like property, but we can add some space using `margin`:
+
+Code Playground
+
+Code editor:
+
+Result
+
+## [Link to this heading](https://www.joshwcomeau.com/css/anchor-positioning/#handling-overflow-2)Handling overflow
+
+The most useful part of the Anchor Positioning API, in my opinion, is the fact that it’s dynamic.
+
+For example, check out what happens with the “Hello World” example when we shrink the viewport:
+
+Pretty cool, right? Our target element will automatically scale down with its container to avoid overflowing. This works as long as the target element has a flexible size; in the example above, I’m using `max-width` instead of `width` to set the default size.
+
+This might not seem like a big deal, since most things in CSS work this way, but if you’ve ever tried to write your own tooltip logic in JavaScript, you know how much of a headache this stuff can be. 😅
+
+**But the real challenge is detecting when there's just not enough space.** When the anchor element is near the top of the viewport, we probably want the tooltip to flip over to the bottom.
+
+Fortunately, the Anchor Positioning API has a solution for this too. Check this out:
+
+Code Playground
+
+Code editor:
+
+Result
+
+**Now, it's not perfect yet.** The target has flipped to the underside of the anchor, but the little tooltip caret is still pointing downwards! We’ll deal with that in a moment, but first, let’s make sense of what’s going on here.
+
+As we scroll the page, the browser is constantly monitoring to see if our target is still neatly contained by its container, or if it’s overflowing. When an overflow is detected, the browser will check if we’ve supplied any _fallback positions_ through the `position-try-fallbacks` property. In this case, we’ve specified a fallback position of `bottom`, and so the browser will test to see if the target element can fit in that location. If it works, the element moves to that area, and it’ll remain there until another overflow is detected.
+
+The property is plural (“fallbacks” instead of “fallback”) because it accepts a comma-separated list of `position-area` values. This means we can supply _multiple_ fallback areas that will be tested when an overflow is detected, though in practice I have yet to encounter a situation where I’ve needed multiple fallbacks.
+
+## [Link to this heading](https://www.joshwcomeau.com/css/anchor-positioning/#flipped-carets-with-anchored-container-queries-3)Flipped carets with anchored container queries
+
+Alright, so how can we fix our tooltip so that the caret always points towards the anchor?
+
+It turns out that this was a pretty significant gap in the original Anchor Positioning API. There wasn’t any way to tell whether our target element was using its preferred `position-area`, or if it had switched to a fallback. We would need to use JavaScript to test whether our target is above/below the anchor, which feels like taking two steps forward and one step back.
+
+The CSSWG came up with a solution to this problem in the second version of the Anchor Positioning API. Unfortunately, level 2 of this API is currently only available in Chromium browsers as of July 2026, but the Anchor Positioning API is [included in Interop 2026(opens in new tab)](https://github.com/web-platform-tests/interop/blob/main/2026/README.md#css-anchor-positioning), an agreement between all major browser vendors to focus development on key goals, so I would expect this to land in other browsers by the end of the year.
+
+**The solution is a new kind of container query.** Our anchor can be made into an “anchored” container, and we can then apply custom CSS based on the fallback value using a `@container` query.
+
+This took me a minute to wrap my mind around, but here’s what I came up with:
+
+Code Playground
+
+Code editor:
+
+Result
+
+In order for this to work, I need to tweak the DOM structure a bit: I now have a parent `.target` element that becomes our anchored container, and a child `.tooltip` element that holds all of the cosmetic styles. This is because containers can’t react to themselves, as discussed in my blog post, [A Friendly Introduction to Container Queries](https://www.joshwcomeau.com/css/container-queries-introduction/#solving-an-impossible-problem-2).
+
+And so, our `.target` element handles all of the Anchor Positioning stuff, including setting up the anchored container. If this element leaves the viewport, it’ll move from the `top` position area to the `bottom` position area. The child `.tooltip` element handles all of the cosmetics, including the `border-shape` that draws the caret, and we use a container query to change the border shape when the fallback position is being used.
+
+### [Link to this heading](https://www.joshwcomeau.com/css/anchor-positioning/#using-the-flip-block-keyword-4)Using the flip-block keyword
+
+Instead of explicitly specifying `bottom` as the fallback position area, we can instead use the special `flip-block` keyword:
+
+```
+.target {
+  position: fixed;
+  position-anchor: --example-anchor;
+  position-area: top;
+  position-try-fallbacks: flip-block;
+}
+```
+
+`flip-block` does exactly what it says: it flips around to the opposite side in the “block” axis, which is typically vertical.It could also be horizontal if the website uses a vertical writing-mode, but my understanding is that vertical text is very rare on the web, even for languages that are traditionally written vertically.
+
+Interestingly, the `flip-block` keyword will also flip _other_ directional properties. For example, if our `.target` element has `margin-bottom`, that margin will flip to the _top_ of the target when the position fallback is used.
+
+So, instead of adding `margin-top` in our anchored container query, we can instead move it to the parent `.target` element:
+
+```
+.target {
+  position: fixed;
+  position-anchor: --example-anchor;
+  position-area: top;
+  position-try-fallbacks: flip-block;
+  /*
+    Will automatically switch to top margin when the
+    target is under the anchor:
+  */
+  margin-bottom: 8px;
+}
+```
+
+In this particular case, we still need the anchored container query for our `border-shape` override, but in many other cases, this could provide more than enough control. And unlike anchored container queries, which are currently only available in Chromium browsers, `flip-block` is implemented in all major browsers!
+
+Thanks to Jake Archibald for letting me know about this. You can learn more in his wonderful blog post, [The Goldilocks customizable select height(opens in new tab)](https://jakearchibald.com/2026/goldilocks-select-height/)
+
+## [Link to this heading](https://www.joshwcomeau.com/css/anchor-positioning/#supporting-older-browsers-5)Supporting older browsers
+
+So, how can we go about using this new feature responsibly, to avoid breaking the user experience for people on older browsers?
+
+One option is to consider using a polyfill! The wonderful folks at Oddbird have an [Anchor Positioning polyfill(opens in new tab)](https://github.com/oddbird/css-anchor-positioning), though it doesn’t support the “Level 2” container query stuff, and there are [several more limitations(opens in new tab)](https://github.com/oddbird/css-anchor-positioning#limitations) to be aware of.
+
+If the polyfill doesn’t work for you, we can always use feature queries to provide fallback experiences. Here’s a quick sketch:
+
+```
+.anchor {
+  anchor-name: --example-anchor;
+}
+
+.target {
+  position: fixed;
+  /* Fallback experience: Stick to the top of the viewport */
+  top: 0;
+
+  /*
+    Improved experience, using anchor positioning, but without
+    a visual caret:
+  */
+  @supports (position-area: top) {
+    top: revert;
+    position-anchor: --example-anchor;
+    position-area: top;
+    position-try-fallbacks: flip-block;
+    margin-bottom: 8px;
+  }
+}
+
+/*
+  The ideal experience, using Anchor Positioning level 2.
+  Adds the top/bottom caret, flipped using container queries.
+*/
+@supports (container-type: anchored) {
+  .target {
+    container-type: anchored;
+  }
+
+  .tooltip {
+    padding: 16px 16px 24px 16px;
+    border-shape: var(--downwards-caret);
+
+    @container anchored(fallback: bottom) {
+      padding: 24px 16px 16px 16px;
+      border-shape: var(--upwards-caret);
+    }
+  }
+}
+```
+
+Depending on what you’re building, these options may or may not work. Truthfully, I think there are still lots of cases where it's better to rely on JavaScript libraries, at least for now. As [Jake Archibald says(opens in new tab)](https://bsky.app/profile/jakearchibald.com/post/3mq2pbeml2c24), there are some active bugs that cause certain parts of the API to not work reliably across all browsers. So, please don’t blame yourself if you run into any issues with it!
+
+Fortunately, browser vendors are actively working on this, and I believe that this will be the best way to create anchored UI on the web, within a year or two. 😄
+
+## [Link to this heading](https://www.joshwcomeau.com/css/anchor-positioning/#wrapping-up-6)Wrapping up
+
+So, that’s a quick intro to the Anchor Positioning API. Pretty cool, right?
+
+Like I mentioned earlier, the Anchor Positioning API has a lot of other bells and whistles. Here are some resources if you’d like to go deeper:
+
+And if you found this blog post useful and would like to keep learning from me, I have several self-paced courses that dig way deeper into CSS and the web:
+
+*   [CSS for JavaScript Developers(opens in new tab)](https://css-for-js.dev/)
+
+*   [Whimsical Animations(opens in new tab)](https://whimsy.joshwcomeau.com/)
+
+### Last updated on
+
+July 7th, 2026
+
+
+## Code blocks from the page not captured inline above
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    position: absolute;    position-anchor: --example-anchor;    position-area: top;  }</style>
+<button class="anchor">  Example button</button><div class="target">  This tooltip’s layout is calculated  with the Anchor Positioning API!</div>
+```
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    position: absolute;    position-anchor: --example-anchor;    position-area: top;    /* 👇 Add 8px gap using margin: */    margin-bottom: 8px;  }</style>
+<button class="anchor">  Example button</button><div class="target">  This tooltip has been shifted up slightly using margin!</div>
+```
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    /* Switch from “absolute” to “fixed”: */    position: fixed;    position-anchor: --example-anchor;    position-area: top;    /* Specify a fallback area: */    position-try-fallbacks: bottom;  }</style>
+<button class="anchor">  Example button</button><div class="target">  This tooltip’s layout is calculated  with the Anchor Positioning API!</div><p>  👇 Scroll down 👇</p>
+```
+
+```
+<style>  .anchor {    anchor-name: --example-anchor;  }  .target {    container-type: anchored;    position: fixed;    position-anchor: --example-anchor;    position-area: top;    position-try-fallbacks: bottom;  }  .tooltip {    /*      Default styles, for when the target is      above the anchor:    */    padding: 16px 16px 24px 16px;    margin-bottom: 8px;    border-shape: var(--downwards-caret);
+    /*      Alternative styles for when the target      is below the anchor:    */    @container anchored(fallback: bottom) {      padding: 24px 16px 16px 16px;      margin-top: 8px;      border-shape: var(--upwards-caret);    }
+    /*      Fallback styles for browsers that don’t      support “border-shape”:    */    @supports not (      border-shape: shape(from 0 0, hline to 100%)    ) {      clip-path: var(--downwards-caret);      @container anchored(fallback: bottom) {        clip-path: var(--upwards-caret);      }    }  }</style>
+<button class="anchor">  Example button</button><div class="target">  <div class="tooltip">    This tooltip’s layout is calculated    with the Anchor Positioning API!  </div></div>
+<p>  👇 Scroll down 👇</p>
+```
