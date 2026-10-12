@@ -1,0 +1,311 @@
+https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-implementers-tales/
+
+Node.js 里的 require(esm)：实现者的故事
+
+在之前的文章里，我写过如何复活 require(esm) 以及它的迭代过程。一旦理解了 ESM 的语义，这个想法看起来很直接，但实战检验揭示了一些互操作上的边界情况，它们根源于生态系统中现有的各种变通做法。在这个过程中，我们设计了几个“逃生口”来解决它们。
+
+伪 ESM：模块命名空间中的 __esModule
+
+正如上一篇提到的，那些为浏览器打包的包，在 Node.js 上往往发布的是转译后的 CommonJS（也称为“伪 ESM”，faux ESM）。典型的模式是这样的：
+
+```json
+// 在 package.json 中
+{
+  "name": "faux-esm-package",
+  "main": "dist/index.js",  // Node.js 识别的转译后 CommonJS 版本
+  "module": "src/index.js"  // 打包工具识别的原始 ESM 代码
+}
+```
+
+有人可能以为，有了 require(esm)，伪 ESM 包现在只要把 main 指向 src/index.js 就行了。但这里 ESM 和 CommonJS 之间的语义不匹配会碍事。看这个例子：
+
+```js
+// src/index.js，ESM 写法
+export default class Klass {};
+export function func() {}
+```
+
+按照规范，用 import() 动态导入时，默认导出出现在返回的命名空间对象的 default 属性下：
+
+```js
+console.log(await import('faux-esm-package'));
+// {
+//   default: class Klass{},
+//   func: [Function: func]
+// }
+```
+
+这与 CommonJS 不同：在 CommonJS 中，require() 直接返回 module.exports。所以把 ESM 转译成 CommonJS 的工具需要一种办法，在 CommonJS 中复用 ESM 的导出结构。多年来，一个源自 Babel 的事实约定逐渐形成，并被转译器和打包工具广泛采用：在转译后的导出中加一个 __esModule 标记，表示“这原本是 ESM”。上面的 ESM 会被转译成：
+
+```js
+// dist/index.js，转译后的 CommonJS
+;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = class Klass {};
+exports.func = function func() {};
+```
+
+当伪 ESM 的使用方加载它时，转译器生成的代码会检查 __esModule 并构造一个对应的命名空间，从而让 ESM 风格的导入按预期工作：
+
+```js
+// 伪 ESM 使用方的源代码
+import Klass, { func } from 'faux-esm-package';
+import Klass2 from 'commonjs-package';  // 假设它写的是 module.exports = Klass2;
+```
+
+```js
+// 伪 ESM 使用方转译后的 CommonJS 代码
+;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+  return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+// 由于存在 __esModule，faux_esm_package_1 会是
+// { default: Klass, func: [Function: func] }
+const faux_esm_package_1 = __importDefault(require("faux-esm-package"));
+const Klass = faux_esm_package_1.default;
+const func = faux_esm_package_1.func;
+// 由于不存在 __esModule，commonjs_package_1 就是
+// require() 返回的结果，也就是直接的 Klass2。
+const commonjs_package_1 = __importDefault(require("commonjs-package"));
+const Klass2 = commonjs_package_1.default;
+```
+
+开始试验 require(esm) 之后，Nicolò Ribaudo 指出：如果一个伪 ESM 包迁移成纯 ESM，那么当它的伪 ESM 使用方 require() 它时，命名空间里不会有这个人为添加的 __esModule，从而破坏现有的转译后使用方：
+
+```js
+// 如果 __esModule 不是由转译器添加的，faux_esm_package_1 会是
+// { default: { default: Klass, func: [Function: func] } }
+const faux_esm_package_1 = __importDefault(require("faux-esm-package"));
+const Klass = faux_esm_package_1.default;  // 它变成了命名空间对象本身
+const func = faux_esm_package_1.default.func;  // undefined！
+```
+
+考虑到外面有大量相互依赖的伪 ESM 包，这种破坏会让它们难以各自独立迁移。为了降低过渡成本，最直接的办法是在 require(esm) 返回的命名空间对象上加上 __esModule，让现有的伪 ESM 使用方继续正常工作。
+
+添加 __esModule 的不同方案评估
+
+这个想法看似简单，但有一个问题：按照规范，模块命名空间对象是不可变的——即使作为宿主，Node.js 也无法修改它们来添加 __esModule。在一个头脑风暴讨论串中，社区成员提出了几种方案：
+
+1. 返回一个添加了 __esModule 的新对象副本
+   - 按照规范，ESM 命名空间上的导出表现为数据属性。普通的副本会破坏实时绑定（live binding），所以在 JS 引擎之外做的副本必须通过其他手段（例如 getter）把每次导出访问转发到原命名空间。
+   - 然而 getter 会给每次访问增加开销。转译后的使用方经常使用动态访问（例如上例中的 faux_esm_package_1.default）来维持实时绑定，即便它们在 ESM 源码里看起来像是“缓存”了的，因此这个开销会落在热路径上。
+   - 返回的对象不是真正的命名空间，会破坏 instanceof 和一些调试工具。
+2. 返回一个以命名空间为底、拦截 __esModule 的 Proxy
+   - 在大多数情况下解决了身份（identity）问题。
+   - 仍然会给每次导出访问增加开销。
+3. Object.create(namespace, { __esModule: { value: true } })，这是 Bun 在其实现中使用的方式，由 Jarred Sumner 提议
+   - 通过原型查找访问更快，但身份问题依然存在。
+   - 破坏了导出名称的可枚举性，因为它们现在被藏在原型里了。
+4. 使用一个内部 ESM 门面（facade）模块，对原模块做 export * from 和 export { default } from，并额外加上 export const __esModule = true;
+   - 返回真正的命名空间，保留了身份和可枚举性。
+   - 在 V8 中，通过 export ... from 实时绑定进行的访问很高效，因为它们在模块编译时会被转换为直接访问。
+   - 这会让每个通过 require() 加载的 ESM 多出一次模块实例化/求值的开销，可能会影响性能。
+
+为了评估每种方案的性能影响，我们写了一个基准测试来测量开销。结果表明，模块加载时间本来就主要花在解析、文件系统访问和编译上，相比之下所有 __esModule 修补带来的开销都可以忽略不计。在导出访问性能上，方案 1 和 2 的开销高得无法接受（超过 50%），而方案 3 和 4 可以接受（约 2%–4%）。最终，出于正确性和性能的考虑，选择了方案 4。
+
+为了进一步降低开销，实现中还缓存了门面模块的编译结果，并且只在提供方有默认导出时才应用修补（另一个脚本发现，npm 上高影响力的 ESM 中约 30% 有默认导出）。这样做没问题，因为当使用方没有默认导入时，转译器一般也会跳过这一修补。
+
+CommonJS：特殊的 "module.exports" 字符串导出名
+
+如前所述，CommonJS 和 ESM 组织导出的方式不同。不过对于那些没有把 module.exports 重新赋值为对象字面量以外东西的 CommonJS 模块来说，这个差异对迁移包的维护者来说很少有影响。但如果有影响呢？
+
+```js
+module.exports = class Klass {};
+module.exports.func = function func() {}
+```
+
+这个包的 CommonJS 使用方可以这样写：
+
+```js
+const { func } = require('package');
+const Klass = require('package');
+```
+
+ESM 使用方可以这样写：
+
+```js
+// 只要具名导出以可检测的方式赋值，Node.js 就会把它们
+// 加到命名空间中。
+import { func } from 'package';
+// 在 Node.js 中，导入 CJS 时会把 module.exports 对象作为默认导出
+import Klass from 'package';
+// 或者，如果使用动态导入：
+{
+  const { func, default: Klass2 } = await import('package');
+}
+```
+
+要迁移到纯 ESM 并让 ESM 使用方继续工作，这个包需要同时提供具名导出和默认导出：
+
+```js
+class Klass {};
+function func() {}
+Klass.func = func;  // 这是一个静态方法
+export default Klass;  // 让 import Klass from 'package' 继续工作
+export { func };  // 让 import { func } from 'package' 继续工作
+```
+
+但这会破坏 CommonJS 使用方，因为规范把默认导出放在 default 属性下：
+
+```js
+const { func } = require('package');  // 具名导入仍然可用
+// ……但默认导入现在坏了，因为它需要从命名空间对象中解包
+const Klass = require('package');
+```
+
+这里可能会很想让 require(esm) 直接返回默认导出，但在另一些具名导出没有被作为默认导出的属性赋值的情况下，这会导致具名导出丢失。即使只限定在没有具名导出的情况下，也会让包“新增一个具名导出”变成破坏性变更——有点像埋了一颗雷。
+
+为了解决这个问题，Guy Bedford 提议识别一个特殊的导出，让 ESM 提供方可以自定义 require(esm) 应该返回什么。讨论了几个提案，投票后选定的名字是 "module.exports"（这利用了 ESM 一个不太为人所知的特性——从 ES6 起就允许使用字符串字面量作为导出名，只是不常见，而这恰好有助于避免冲突）。
+
+为了让 CommonJS 和 ESM 使用方都能继续工作，如果原模块写的是 module.exports = notAnObjectLiteral，迁移时只需加上 export { notAnObjectLiteral as "module.exports" }：
+
+```js
+class Klass {};
+function func() {}
+Klass.func = func;  // 这是一个静态方法
+export default Klass;  // 供 import Klass from 'package' 使用
+export { func };  // 供 import { func } from 'package'
+                  // 以及 const { func } = require('package') 使用
+export { Klass as "module.exports" };  // 供 const Klass = require('package') 使用
+```
+
+（对于那些在公开模块中不重新赋值 module.exports、或者只把它赋值为对象字面量的包，这个特殊导出通常没有必要。）
+
+双格式包："module-sync" 导出条件
+
+上一篇讨论了使用 "exports" 条件来控制加载哪种格式的双格式包（dual package），以及这如何导致“双包风险”（dual package hazard）。避免它的一种模式是在 Node.js 上始终提供 CommonJS，即使是 import 也一样：
+
+```json
+{
+  "type": "module",
+  "exports": {
+    // 在 Node.js 上，提供从原始 ESM 版本转译而来的 CJS 版本
+    "node": "./dist/index.cjs",
+    // 在其他任何环境中，使用 ESM 版本。
+    "default": "./index.js"
+  }
+}
+```
+
+有了 require(esm)，我们希望最终能简化成这样：
+
+```json
+{
+  "type": "module",
+  "exports": "./index.js"  // 无条件提供 ESM
+}
+```
+
+但有些包可能还需要在一段时间内支持旧版 Node.js。有没有办法在 package.json 里做特性检测，在新版 Node.js 上指向 ESM，在旧版上指向 CommonJS？一个直接的解决办法是再加一个导出条件，同时为 require() 和 import 提供 ESM。结果发现打包工具已经有类似的东西了——"module" 条件：
+
+```json
+{
+  "type": "module",
+  "exports": {
+    "module": "./index.js",     // 供支持 require(esm) 的打包工具使用
+    "node": "./dist/index.cjs", // 供旧版 Node.js 使用
+    "default": "./index.js"     // 供其他环境使用
+  }
+}
+```
+
+我们尝试在 Node.js 中采用同样的约定，但生态检查显示，好几个高影响力的包已经把 "module" 指向了无法在 Node.js 上运行、只供打包用的 ESM。为了避免破坏它们，转而引入了一个名为 "module-sync" 的新条件：
+
+```json
+{
+  "type": "module",
+  "exports": {
+    "module-sync": "./index.js", // 供支持 require(esm) 的 Node.js 使用
+    "module": "./index.js",      // 供支持 require(esm) 的打包工具使用
+    "node": "./dist/index.cjs",  // 供旧版 Node.js 使用
+    "default": "./index.js"      // 供其他环境使用
+  }
+}
+```
+
+这又多了一个条件，但它只是给仍需支持旧版 Node.js 的包用的权宜之计。到 2025 年底，不再支持已停止维护（EOL）的 Node.js 版本的包就可以把这些条件统统忘掉，像前面那样无条件指向 ESM。"module-sync" 现在主要对那些复刻 Node.js 解析逻辑的运行时有意义（打包工具除外，它们已经有自己的 "module"）。
+
+process.getBuiltinModule()
+
+上一篇提到，顶层 await 的一个用例是动态检测内置模块。例如：
+
+```js
+try {
+  // 不确定是不是 Node.js，只能用顶层 await 和动态导入
+  const os = await import('node:os');
+  // 用操作系统信息做一些调优
+} catch {
+  // 不是 Node.js，退回到别的方案
+}
+```
+
+这其实与顶层 await 本身无关，而是关于在 ESM 中进行动态内置模块解析的能力，而当时唯一可行的办法就是异步的 import()。TypeScript 团队的 Jake Bailey 也提出，这是当时阻碍 TypeScript 发布 ESM 的一个问题。经过 TC39 模块协调小组（module harmony group）和 GitHub 上的讨论，引入了 process.getBuiltinModule() 来同步检测内置模块，这有助于减少 Node.js 上 ESM 中不必要的顶层 await：
+
+```js
+if (globalThis?.process?.getBuiltinModule) {
+  const os = process.getBuiltinModule('os');
+  if (os) {
+    // 用操作系统信息做一些调优
+  } else {
+    // 退回到别的方案
+  }
+} else {
+  // 退回到别的方案
+}
+```
+
+防止共享缓存可能引发的竞态条件
+
+下面是 require(esm) 的简化伪代码——概念上很直接：
+
+```js
+function requireESM(specifier) {
+  // 宿主可以让获取/链接同步进行。
+  const linkedModule = fetchAndLinkSync(specifier);
+  if (linkedModule.hasTopLevelAwaitInGraph()) {
+    throw new ERR_REQUIRE_ASYNC_MODULE;
+  }
+  // 没有顶层 await 时，规范保证返回的 promise
+  // 会*同步地*被拒绝，或者被解决为 undefined。
+  const promise = linkedModule.evaluate();
+  const state = getPromiseState(promise);
+  assert(state === 'fulfilled' || state === 'rejected');
+  // 借助 V8 API，可以同步地取出异常或结果。
+  if (state === 'rejected') {
+    throw getPromiseException(promise);
+  } else {
+    assert.strictEqual(unwrapPromise(promise), undefined);
+  }
+  // 没有顶层 await 时，命名空间会被同步填充。
+  return linkedModule.getNamespace();
+}
+```
+
+实际上，fetchAndLinkSync() 比看起来要棘手。虽然 require(esm) 可以发起同步的获取/链接，但它和 import 共享一个缓存，而在 Node.js 中 import 历来是异步获取/链接依赖的。如果某个 ESM 正在被 import 异步获取/链接，而此时 require(esm) 试图同步地获取/加载它，就可能出现竞态。这种情况非常罕见，但确实在一些工具/框架中发生过——它们在 Node.js 内置模块加载器之上实现了自己的模块加载。
+
+import 原先的获取/链接流程是为未来的异步扩展（异步自定义钩子、网络导入等）而设计的，但这些扩展各自遇到了问题（钩子对 require() 的自定义很别扭、网络导入的安全隐患等），多年来一直停留在实验阶段。由于 Node.js 生态十多年来一直建立在同步的 require() 加上独立的包管理器之上，对这一模式做侵入式改动被证明是一场艰苦的战斗。最终，这些努力要么没有成功，要么被逐步淘汰，让位于同步版本。获取/链接流程实际上只在做同步的工作，却白白付出异步的开销和怪癖，于是它们被简化为完全同步，重新与 CommonJS 的加载方式保持一致。此后，竞态问题也随之消失了。
+
+保护 ESM 求值的重入
+
+当时正在推进“延迟模块求值”（Deferring Module Evaluation）提案的 Nicolò Ribaudo 注意到，早期的 require(esm) 实现可能违反规范中的一个不变式：已经在求值中的 ESM 不能再次进入求值。在纯 ESM 内部，JS 引擎可以跳过重入；但当循环跨越 ESM/CommonJS 边界时，更深层 ESM 依赖中的重入就必须由宿主来阻止：
+
+```js
+// a.mjs
+import './b.cjs';
+```
+
+```js
+// b.cjs
+require('./a.mjs');
+```
+
+```js
+// c.mjs
+import './a.mjs';  // a 已经在求值中；必须阻止重入。
+```
+
+目前，Node.js 通过检测此类循环、在第一条回指的边上抛出 ERR_REQUIRE_CYCLE_MODULE 来防范这一问题。处于第 3 阶段的“延迟模块求值”提案将在规范中引入一种方式，允许在重入时安全地跳过同步求值，所以等它在 V8 中实现后，将来就有可能支持这类循环。
+
+结语
+
+正如上一篇所说，require(esm) 是靠众人之力才养大的。希望这几篇新文章能更清楚地展示，这样一个曾经停滞的计划如何通过社区的协作和支持向前推进。非常感谢一路上做出贡献的每一个人！

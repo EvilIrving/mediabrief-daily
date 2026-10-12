@@ -1,0 +1,11 @@
+https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-implementers-tales/
+
+require(esm) in Node.js: implementer's tales ｜ Joyee Cheung ｜ 文章 ｜ https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-implementers-tales/
+
+Node.js 核心贡献者 Joyee Cheung 回顾 require(esm) 落地时实战中冒出的互操作难题。这些难题大多来自生态里多年的变通做法，最后靠几个“逃生口”解决。
+
+最大的坑是“伪 ESM”：许多包在 Node.js 上发布的是转译后的 CommonJS，靠 Babel 传下来的 __esModule 标记让使用方的转译代码正确拆出 default 和具名导出。一旦包改成纯 ESM 被 require，命名空间里没有这个标记，旧使用方会拿到套了两层的 default，func 变成 undefined。规范规定命名空间不可变，社区提了副本加 getter、Proxy、Bun 的 Object.create 和内部门面模块四种方案。基准测试显示前两种访问开销超过 50%，最终选了既保留真命名空间又几乎零开销的门面模块，且只在有默认导出时才启用。
+
+第二个问题是 CommonJS 包原本把类直接赋给 module.exports，迁移到 ESM 后 require 只能拿到命名空间。经 Guy Bedford 提议并投票，引入了特殊的字符串导出名 "module.exports"，让包作者自行指定 require 返回什么。另外，为了让包在新版 Node.js 上用 ESM、在旧版上退回 CJS，原想借用打包工具的 "module" 条件，但生态里已有包把它指向跑不了 Node 的代码，只好新增 "module-sync"，作为过渡期的权宜之计。为免除检测内置模块时被迫用顶层 await，又加了同步的 process.getBuiltinModule()。
+
+实现层面，require 与 import 共用缓存，异步链接和同步加载可能竞态；由于那些异步扩展多年没成气候，加载流程干脆改为全同步，竞态也随之消失。跨 ESM/CJS 的循环还可能造成规范禁止的求值重入，目前由抛出 ERR_REQUIRE_CYCLE_MODULE 来拦截，待“延迟模块求值”提案在 V8 实现后或可支持。作者最后感谢社区，称这个曾经停滞的项目是靠众人协作推动起来的。

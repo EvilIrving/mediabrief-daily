@@ -1,0 +1,5 @@
+http://martin.kleppmann.com/2025/12/08/ai-formal-verification.html
+
+预言：AI 会让形式化验证走进主流 ｜ Martin Kleppmann ｜ 文章 ｜ http://martin.kleppmann.com/2025/12/08/ai-formal-verification.html
+
+《数据密集型应用系统设计》作者 Martin Kleppmann 预言，AI 会把形式化验证带进主流。这门技术用 Lean、Isabelle 等工具从数学上证明代码永远满足规约，过去只用于 seL4 这类研究项目，因为太难太贵：seL4 每行代码配 23 行证明，耗费 20 人年。如今大模型已能写证明，成本将骤降；AI 代码也需要它，与其人工审查，不如让 AI 证明代码正确。证明检查器会拒绝一切错误证明，所以模型幻觉无妨。难点将转向规约本身写得对不对，但写规约远比写证明容易。他认为最终阻碍会是文化而非技术。

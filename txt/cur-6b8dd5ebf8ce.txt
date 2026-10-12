@@ -1,0 +1,11 @@
+https://www.synacktiv.com/en/publications/aws-eks-forensics-data-sources-and-investigation-tooling.html
+
+AWS EKS 取证：数据来源与调查工具 ｜ Synacktiv ｜ 文章 ｜ https://www.synacktiv.com/en/publications/aws-eks-forensics-data-sources-and-investigation-tooling.html
+
+法国安全公司 Synacktiv 的应急响应团队在这篇实务文章里讲，托管 Kubernetes 被入侵后，证据分散在控制面、工作节点和周边 AWS 服务三层，而 Pod 一删一重启状态就没了，所以调查成败在事发前的日志部署就已决定。第一步是看部署模式：标准 EKS 能用 SSH/SSM 上节点，Auto Mode 要靠特权调试 Pod，Fargate 则完全碰不到宿主机。
+
+数据源方面，控制面五类日志默认全关，必须手动开启，其中审计日志是主干，记录谁从哪个 IP、用什么客户端对什么资源做了什么，创建 Pod 时还完整保留清单，堪称金矿。Container Insights 用 Fluent Bit 收集容器、宿主机和 kubelet 日志并附上 K8s 元数据。AWS 层有 GuardDuty、记录节点和 Pod 角色 API 调用的 CloudTrail，以及难以归属到 Pod 的 VPC 流日志。节点 IAM 角色尤其敏感，因为它能为 Pod 角色分发凭证。
+
+工具上，作者给出一组 Logs Insights 查询：按身份筛变更操作，发现 SelfSubjectRulesReview 式的权限侦察、改角色提权、被 Pod Security 拒绝的 403，以及节点账户自查权限这种合法 kubelet 不会做的事；用 Traefik 日志找回真实客户端 IP。GuardDuty 告警的价值在上下文：特权容器本身常见，但由应用 ServiceAccount 从陌生 IP 创建才是线索；节点凭证被外部 IP 使用则说明身份被盗。它是黑盒，运行时监控又不支持 Fargate，所以告警只是线索不是结论。节点上可以找投射的 ServiceAccount 令牌，kubectl debug 只能作最后手段。案例部分讲静态 Pod 持久化：要先改 kubelet 配置，再由 system:node 身份创建、带 config.source=file 注解的镜像 Pod 坐实。
+
+方法论上，事前开日志并用权限边界和最小权限加固；遏制时别 kubectl delete，用网络策略隔离并轮换被盗凭证；采集先抢易失的 Pod 和令牌；分析时以身份和源 IP 为支点串起三层，拼出一条攻击链。

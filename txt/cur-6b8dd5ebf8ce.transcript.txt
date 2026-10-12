@@ -1,0 +1,278 @@
+https://www.synacktiv.com/en/publications/aws-eks-forensics-data-sources-and-investigation-tooling.html
+
+AWS EKS 取证：数据来源与调查工具
+
+调查 Amazon EKS 中的入侵事件，意味着要把分散在三个层面的证据拼起来：托管的 Kubernetes 控制面、工作节点，以及周边的 AWS 服务。本文梳理 EKS 集群为数字取证和威胁狩猎提供的数据来源，以及用来关联这些数据的工具，从 Kubernetes 审计日志一直到节点的 AWS 身份。
+
+本文属于我们的 Kubernetes 取证系列，建立在《Kubernetes 取证 1/3：容器里有什么》（容器内部机制与一套应用分析方法）的基础上。更宏观的背景，另见《AWS 取证：你需要知道的事》，介绍了 AWS 全平台的调查工具。
+
+## 引言
+
+Kubernetes 集群如今经常出现在 Synacktiv CSIRT 处理的事件中。这项技术本身就很复杂：组件众多且相互依赖，托管服务中还有一层厚重的抽象，客户无法掌控整个技术栈。监控和安全往往是后来才加上的，一旦发生入侵，响应人员能看到的东西很有限。这些入侵越来越多地始于应用层，比如通过 ArgoCD 这类 GitOps 控制器进行 Helm 模板注入，就能把一个 chart 值变成集群内的工作负载执行（Paul Barbé，《一路画进来：Helm 模板注入》，SSTIC 2026）。本文不再讨论集群如何被攻破，而是关注入侵留下了什么，以及如何调查。
+
+Kubernetes 取证仍是一门相对不成熟的学科，受两个结构性因素制约：数据易失（一个被删除或重启的 pod 会带走它的大部分状态），以及在大型分布式集群中定位痕迹的困难。实践中，一次 EKS 调查的结果在很大程度上在事件发生之前就已决定了，取决于事先部署的日志和监控。本文总结 Amazon EKS 提供的数据来源以及利用它们的工具。
+
+注：本文聚焦 AWS 原生的数据来源和工具。第三方运行时安全方案（Falco、Sysdig、Wiz 等）可以显著提升容器内的可见性，但不在本文讨论范围内。
+
+## Amazon EKS 概况
+
+Amazon EKS 是 AWS 的托管 Kubernetes 服务。部署模式决定了响应人员对节点有多少访问权限，从而决定了能采集什么：
+
+| 模式 | 工作节点由谁管理 | 取证时的节点访问 |
+|---|---|---|
+| 标准 EKS（托管/自管理节点组） | 客户（节点是 EC2） | 直接在工作节点上用 SSH 或 SSM |
+| EKS 自动模式（Auto Mode） | AWS | 不可变的 Bottlerocket AMI，禁止 SSH/SSM，需要特权调试 pod；此外节点最长寿命为 21 天 |
+| Fargate | AWS（每个 pod 一个微虚拟机） | 宿主机完全抽象：无法访问节点，也无法运行逐节点代理（Fluent Bit 或 GuardDuty 运行时代理这类 DaemonSet 不能在 Fargate 上运行） |
+
+在标准集群上，工作节点是 EC2 实例，响应人员可以通过 SSH 或 SSM 访问；在自动模式或 Fargate 下，宿主机由 AWS 管理，无法直接访问节点。因此，确定计算模式是分诊的第一步，同时还要弄清几个实际问题：实际启用了哪些遥测（控制面审计日志、Container Insights、GuardDuty），以及可疑 pod 是否已被删除或重启、带走了它的状态。
+
+## 数据来源
+
+EKS 调查依赖三类日志，它们都可以集中到 CloudWatch：Kubernetes 控制面、数据面（容器与宿主机），以及周边的 AWS 服务。
+
+### 控制面日志
+
+默认情况下，这些日志一个都没有启用。共有五种日志类型，通过控制面日志 API 按集群开启，并按文档建议以详细级别 2 导出：
+
+```
+aws eks update-cluster-config --name <cluster> --region <region> \
+  --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":true}]}'
+```
+
+| 类型 | 内容 | 取证价值 |
+|---|---|---|
+| api | API 服务器处理的请求（例如通过 kubectl） | 高 |
+| audit | 详细审计记录：身份、动作、资源、requestObject | 核心 |
+| authenticator | 认证（IAM → RBAC 映射），EKS 特有 | 中 |
+| controllerManager / scheduler | 控制器状态和调度决策 | 低/非常专门 |
+
+五种日志都进入同一个日志组 /aws/eks/[cluster]/cluster，作为各自独立的日志流（kube-apiserver-audit-*、authenticator-* 等）。
+
+审计日志是调查的主干：它记录了谁、在哪个资源上、从哪个源 IP、用哪个用户代理做了什么。相关字段有 user.username、verb、objectRef.resource、objectRef.namespace、objectRef.name、responseStatus.code、sourceIPs.0、userAgent 和 requestObject.*。
+
+requestObject 的内容随涉及的资源类型而变。例如创建 pod 时，它会记录为该 pod 提交的完整清单：镜像、命令、环境变量、挂载卷等等。对取证分析师来说，这是一座金矿。
+
+注：GuardDuty EKS Protection 通过自己独立的数据流读取 EKS 审计日志，所以把控制面审计日志开启并导出到 CloudWatch 并不是使用 GuardDuty 的前提，但要做正经的分析和留存，仍然必须开启。
+
+### 数据面日志（Container Insights）
+
+amazon-cloudwatch-observability 这个 EKS 附加组件会以 DaemonSet 形式部署 CloudWatch 代理（指标）和 Fluent Bit（日志）。Fluent Bit 把数据面日志发送到三个日志组：
+
+| 日志组 | 来源 |
+|---|---|
+| /aws/containerinsights/[cluster]/application | 来自 /var/log/containers 的容器日志（stdout/stderr） |
+| /aws/containerinsights/[cluster]/host | 工作节点操作系统日志：/var/log/dmesg、/var/log/secure、/var/log/messages |
+| /aws/containerinsights/[cluster]/dataplane | kubelet、kube-proxy 和容器运行时的 journald 日志 |
+
+第四个日志组 /aws/containerinsights/[cluster]/performance 存放系统和网络指标，它由 CloudWatch 代理而非 Fluent Bit 产生。
+
+容器日志会附加 Kubernetes 元数据（kubernetes.namespace_name、kubernetes.pod_name、kubernetes.host），这样就不必逐个节点、逐个 pod 地去采集（以及寻找！）日志。
+
+### AWS 层面的来源
+
+| 来源 | 作用 | 说明 |
+|---|---|---|
+| GuardDuty | 托管威胁检测 | EKS Protection（审计日志分析）和可选的 Runtime Monitoring（eBPF 代理，系统调用） |
+| CloudTrail | AWS API 活动 | eks.amazonaws.com 端点（管理员、自动化/IaC 工具以及作用于集群的 AWS 服务主体）；eks-auth.amazonaws.com 端点记录 pod 承担角色（通过 Pod Identity Agent） |
+| VPC 流日志 | 网络元数据 | 投递到 CloudWatch Logs、S3 或 Firehose。注意：要把一条流归属到某个 pod，需要把 ENI 的 IP 地址与带时间戳的集群资产清单相关联。没有原生的 Kubernetes 上下文字段（只有 ECS 有） |
+
+节点和部分 pod 带有 AWS 身份：节点 IAM 角色，或者工作负载的 IRSA / EKS Pod Identity。当节点或 pod 被攻陷时，这个身份可能被滥用于其他 AWS 资源；节点角色尤其敏感，因为它本身就能为集群上的 pod 角色分发凭证。CloudTrail 会保留相应的 API 活动。
+
+## 调查工具
+
+### CloudWatch Logs Insights
+
+Logs Insights 是用一种类 SQL 语言查询所有日志组的控制台。下面这些通用查询作用于 EKS 审计日志。
+
+按身份分组的变更操作：
+
+```
+fields @timestamp, user.username, verb, objectRef.resource, objectRef.namespace,
+       responseStatus.code, sourceIPs.0, userAgent
+| filter verb in ["create", "update", "patch", "delete"]
+| sort @timestamp desc
+```
+
+这个查询有意放得很宽，会返回大量结果。把它收窄到某个已知指标，比如某个 ServiceAccount、某个源 IP 地址，或从 GuardDuty 告警中取得的 pod 或命名空间名称，就能把结果限定在某个可疑身份和时间附近的活动上。例如，下面是搜索特定命名空间（jupyter）时的结果（原文此处为截图）。
+
+一连串 SelfSubjectAccessReview 和 SelfSubjectRulesReview 对象暴露了 RBAC 侦察：某个主体在逐个命名空间地枚举自己的权限，就像 kubectl auth can-i --list 所做的那样：
+
+```
+fields @timestamp, user.username, sourceIPs.0
+| filter objectRef.resource in ["selfsubjectreviews", "selfsubjectrulesreviews"]
+| stats count(*) as n by user.username, bin(1m)
+| sort n desc
+```
+
+对 RBAC 角色的修改，是集群内提权的关键一步。角色上的 escalate 动作允许主体通过编辑该角色来扩大自己的权限。所应用的规则集可以在 requestObject 中看到：
+
+```
+fields @timestamp, user.username, objectRef.namespace, verb, objectRef.name, sourceIPs.0
+| filter verb in ["update", "patch"]
+| filter objectRef.resource in ["roles", "clusterroles"]
+| sort @timestamp desc
+```
+
+所应用的规则集从原始事件中读取。
+
+被 Pod Security Admission 拒绝的 pod 创建（结果码为 HTTP 403），这是规避尝试的可靠指标：
+
+```
+fields @timestamp, user.username, objectRef.namespace, responseObject.message
+| filter verb = "create" and objectRef.resource = "pods" and responseStatus.code = 403
+| sort @timestamp desc
+```
+
+节点账户评估自己的权限，而合法的 kubelet 从不这样做：
+
+```
+fields @timestamp, user.username, verb, objectRef.resource, sourceIPs.0, userAgent
+| filter user.username like "system:node:"
+| filter objectRef.resource in ["selfsubjectrulesreviews", "selfsubjectaccessreviews"]
+| sort @timestamp desc
+```
+
+除审计记录外，Container Insights 日志组存放着工作负载和宿主机日志。同样的查询语言适用，可使用附加的 Kubernetes 属性（@entity.Attributes.K8s.Namespace、@entity.Attributes.K8s.Workload）；filterIndex @data_source_name in ["amazon_eks"] 可把搜索收窄到来自 EKS 的条目。
+
+应用日志对位于工作负载前端的组件特别有用。反向代理或 ingress 控制器（例如 Traefik）会记录客户端源 IP 地址，而下游应用日志往往丢掉了这一信息。这样，即便目标服务只记录了内部地址，也能把某个动作归属到外部地址：
+
+```
+fields @timestamp, @entity.Attributes.K8s.Namespace, @entity.Attributes.K8s.Workload, log
+| filter @entity.Attributes.K8s.Namespace = "traefik"
+| sort @timestamp desc
+```
+
+宿主机日志（/aws/containerinsights/[cluster]/host）覆盖工作节点操作系统：按 sshd、sudo 或 systemd 过滤，可以发现节点级活动，比如新增的服务或交互式登录。
+
+```
+fields @timestamp, @message
+| filter (@message like "kubelet" and @message like "systemd" and @message like "Stopped") or (@message like "systemd" and @message like "Starting")
+| sort @timestamp desc
+```
+
+### GuardDuty
+
+GuardDuty 通常是第一个告警来源。启用 EKS Protection 后，每条与集群相关的告警都携带 Kubernetes 上下文：集群、命名空间、pod、ServiceAccount，以及 API 请求的源 IP 地址。下面几条有代表性的告警展示了这些上下文能提供什么。
+
+PrivilegeEscalation:Kubernetes/PrivilegedContainer 标记以 root 级权限启动的特权容器。单看这一点并不可疑，CNI 插件、CSI 驱动和监控代理都会合法地以特权运行，所以这条告警的价值在于它携带的上下文。除了 pod 名和命名空间，它还会给出创建该 pod 的 ServiceAccount，其 Action 部分会暴露背后的 API 调用和源 IP 地址，有时是外部地址。一个由应用 ServiceAccount、从意料之外的 IP 地址、在常规基础设施命名空间之外创建的特权 pod，正是区分例行部署与值得深挖线索的关键。
+
+Persistence:Kubernetes/ContainerWithSensitiveMount 标记在内部挂载了敏感宿主机路径的容器。告警会显示容器定义中的挂载，典型情况是把节点根目录 / 绑定到 /mnt 之类的目录，这让控制该 pod 的攻击者能够修改节点并建立持久化。
+
+把 GuardDuty 告警导出为 JSON，是获得完整检测细节（包括控制台不显示的字段）的好办法（原文此处为截图）。
+
+Execution:Runtime/ReverseShell 由 Runtime Monitoring 在容器内运行着带重定向网络连接的 shell 时触发。由于 eBPF 代理提供了进程谱系，这条告警能把 bash 进程追溯到它所在的确切 pod。
+
+UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS（或 .InsideAWS）属于 EC2/IAM 类告警而非 EKS 类，但它在 EKS 入侵中至关重要：它报告节点 IAM 角色的凭证被从外部 IP 地址使用，这是节点身份被盗并在集群外重放的迹象（见下文 CloudTrail 一节）。
+
+几条 GuardDuty 告警回顾（并非完整列表）：
+
+| 告警 | 描述 |
+|---|---|
+| PrivilegeEscalation:Kubernetes/PrivilegedContainer | 创建了一个具备 root 能力的特权 pod |
+| Persistence:Kubernetes/ContainerWithSensitiveMount | pod 挂载了敏感的宿主机路径（节点逃逸） |
+| Execution:Runtime/ReverseShell | 容器内运行了反弹 shell（Runtime Monitoring） |
+| UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS / InsideAWS | 节点角色凭证被从外部 IP 地址使用 |
+
+有两个局限值得注意。GuardDuty 是个黑盒：检测规则不公开，也无法扩展，不过告警类型参考文档列出了完整目录。而 Runtime Monitoring（通过 eBPF 安全代理获得系统调用可见性）是可选的，会部署额外的 pod，并且不支持运行在 Fargate 上的 EKS 集群。没有它，容器内的覆盖就是不完整的，审计日志仍是集群内的主要记录。一条告警永远只是需要到那里去确认的线索，而不是结论。
+
+### CloudTrail
+
+当攻击者获得节点身份（通过 IMDS）或 pod 身份（通过 IRSA 或 Pod Identity）时，由此产生的 AWS API 调用会被 CloudTrail 记录。
+
+排除集群的节点子网和 NAT 网关出口，就能把节点角色的活动单独拎出来：
+
+```
+fields @timestamp, eventName, sourceIPAddress, userAgent
+| filter userIdentity.arn like "<node-role-name>"
+| filter not (sourceIPAddress like /^10\.0\./) and sourceIPAddress != "<nat-gateway-eip>"   # node subnets (10.0.0.0/16) + NAT egress
+| stats count(*) as n by eventName, sourceIPAddress
+| sort n desc
+```
+
+来自集群出口以外 IP 地址、用户代理为 aws-cli 的一连串读取调用（Describe*、List*、Get*），是用被盗令牌进行云资源探测的典型特征。
+
+eks.amazonaws.com 事件源同样记录了管理员针对集群本身的操作。
+
+### kubectl
+
+有了 EKS 管理员账户，kubectl 仍然是捕获实时上下文的高效方式：RBAC 角色和绑定、可疑 pod 的定义（kubectl get pod [pod id] -o yaml）、集群事件以及 ServiceAccount。它是识别危险规则（比如角色上的 escalate 动作）的最快途径。
+
+### 节点级采集
+
+在标准集群上，通过 SSH 或 SSM Session Manager 访问工作节点，可以进行系统级采集：
+
+```
+$ aws ssm start-session --target [node instance-id]
+```
+
+当 SSH 和 SSM 都不可用时，kubectl debug node/[node] 会调度一个把宿主机文件系统挂载到 /host 下的 pod，从而获得节点访问权。这是万不得已的途径而非首选：它会在被检查的节点上新增一个工作负载，在审计日志中留下新的 create pods 记录。在没有侵入性更低的访问方式时，应审慎使用并做好记录。
+
+节点上存放着调度到它上面的各个 pod 的 ServiceAccount 令牌，它们以投射卷形式挂载，是常见的窃取目标：
+
+```
+$ find /var/lib/kubelet/pods -path "*/kubernetes.io~projected/*/token" -type f
+```
+
+在 Kubernetes 层面，kubelet 检查点 API（自 v1.30 起为 Beta，但默认启用）可以在不终止容器的情况下把其状态冻结成离线归档。它依赖于经由 CRI 运行时调用的 CRIU，而 EKS 优化 AMI 目前并不附带 CRIU，所以截至本文撰写时，这一技术在 EKS 上不可用。我们计划在今后的文章中介绍 Kubernetes 上的容器检查点。
+
+## 用例：检测节点级持久化
+
+攻击者一旦到达节点，持久化就是常见目标，它会在上述各来源中留下独特的痕迹。在已知机制中，静态 pod 尤为突出：一个直接放在节点上的清单，kubelet 会读取它并在正常的 API 驱动流程之外运行。
+
+在 EKS 优化 AMI 上，kubelet 默认不监视清单目录：其配置（/etc/kubernetes/kubelet/config.json）中没有 staticPodPath，所以这一技术首先需要把它设为某个目录（例如 /etc/kubernetes/kubelet/manifests），并重新加载/重启服务。这个前提本身就是一个在 pod 事件出现之前就能在节点上观察到的痕迹。
+
+当 kubelet 从 staticPodPath（/etc/kubernetes/kubelet/manifests）加载清单并自行启动容器时，它会在 API 服务器上注册一个镜像 pod，使该 pod 可以通过 kubectl 看到。GuardDuty 会产生相应的 Execution:Kubernetes/AnomalousBehavior.WorkloadDeployed 告警（"以不寻常的方式启动了一个工作负载"）。
+
+顺着这条线索，审计日志可以确认这一机制：该 pod 由 system:node: 身份创建，并带有注解 kubernetes.io/config.source = "file"（而不是 "api"），这是静态 pod 被直接放到节点磁盘上的确凿证据。
+
+```
+fields @timestamp, user.username, objectRef.name,
+       `requestObject.metadata.annotations.kubernetes.io/config.source` as config_source
+| filter verb = "create" and objectRef.resource = "pods"
+| filter user.username like "system:node:"
+| sort @timestamp desc
+```
+
+## 调查方法
+
+### 准备
+
+调查结果的大部分在事件发生前就已决定，因为 EKS 默认几乎不产生任何相关遥测。
+
+带有合理留存期的控制面审计日志，生成集群内的时间线。Container Insights 及类似方案补充工作负载和宿主机日志。GuardDuty EKS Protection（配合提供容器内可见性的 Runtime Monitoring）提供托管检测。最后，CloudTrail 记录管理员以及节点和 pod 身份在 AWS 层面的活动。
+
+加固可以缩小入侵的影响：
+
+- 在节点和 pod 的 IAM 角色上设置权限边界，限制被盗身份所能触及的范围；
+- 在不需要特权的命名空间上施加受限的 Pod Security Admission 策略，阻断常见的节点逃逸原语；
+- 最小权限的 ServiceAccount，限制被攻陷令牌所赋予的权限。
+
+### 遏制
+
+一旦发现入侵，遏制通常会妨碍证据保全。kubectl delete 是要避免的本能反应：删除或重启 pod 会丢弃进程状态、可写（上层）层以及分析所依赖的投射令牌，而且控制器可能会立即把该工作负载重新调度到别处。
+
+更好的做法是在网络层面隔离，使用 NetworkPolicy 和安全组，同时保持存活探针和就绪探针正常通过，使 pod 既不被杀掉也不被迁移。但如果某个 AWS 身份已被窃取，真正切断攻击者访问的是吊销或轮换节点角色凭证和泄露的 ServiceAccount 令牌：仅靠网络隔离做不到，因为被盗令牌可以在任何地方重放。
+
+Kubernetes 原生的遏制技术值得单独讨论，将在本系列后面的专门文章中介绍。
+
+### 采集
+
+采集是一场与 pod 生命周期的赛跑：运行中 pod 的内存、进程状态和可写层在它重启的那一刻就会消失，连同其所在节点上持有的投射 ServiceAccount 令牌一起；而集中存储的 CloudWatch 日志是持久的，可以稍后获取。
+
+因此，运行中的 pod 和那些节点本地令牌要最先采集。然后用管理员 kubectl 会话捕获日志未必明确呈现的上下文：RBAC 定义、pod 规格、挂载的卷。
+
+### 分析
+
+调查由贯穿三个层面的两个支点驱动：执行动作的身份和源 IP 地址。
+
+- GuardDuty 告警或上报的异常通常是切入点，被视为线索而非结论。它会突出一个身份（user.username、ServiceAccount 或 IAM 角色 ARN）和一个源 IP 地址，分析就沿着这两个值推进。
+- 在集群内部，审计日志重建该身份做了什么：侦察（SelfSubjectRulesReview）、RBAC 变更（角色上的 escalate）、pod 创建等。应用和宿主机日志补充运行时和操作系统视角：初始访问背后的漏洞利用请求（ingress 或反向代理日志通常保留真实客户端 IP），节点上的交互式登录或 sudo。容器内的命令执行仍是覆盖盲区，只有运行时监控或第三方代理才能填补。
+- 最后的问题是，入侵是停留在集群内，还是越界进入了 AWS 层面。从外部 IP 地址重放的节点角色凭证会以 InstanceCredentialExfiltration 告警形式出现，把调查引向 CloudTrail，在那里通过排除集群出口来单独拎出该身份的 API 调用；被盗的 pod 身份也以同样方式追查，只是它不像节点角色那样有专门的 GuardDuty 告警。
+
+用共同的源 IP 地址、身份和时间戳把三个层面连接起来，就能得到一条统一的时间线，正是它把孤立的事件变成一条攻击链。
+
+## 结论
+
+EKS 调查几乎完全取决于事先具备的遥测。只要部署了控制面审计日志、Container Insights、GuardDuty 和 CloudTrail，借助 CloudWatch Logs Insights 以及对 Kubernetes 与云事件的关联，就足以重建一条从控制面一直到节点 AWS 身份的攻击链。GuardDuty 提供了方便的切入点，但审计日志和有章法的采集才是分析中的决定性因素。
+
+观察到的技术可以对照微软维护的 Kubernetes 威胁矩阵进行映射，该矩阵在很大程度上适用于 EKS。

@@ -357,6 +357,27 @@
   "title_zh": "几乎所有东西都需要默认的硬性预算上限"
  },
  {
+  "id": "cur-5ef119cef1ce",
+  "kind": "curated",
+  "type": "article",
+  "source": "Nielsen Norman Group",
+  "title": "The New Big Ball of Mud: Why Agentic AI Systems Turn Fragile",
+  "link": "https://www.nngroup.com/articles/big-ball-of-mud-ai/",
+  "date": "2026-10-03",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5ef119cef1ce.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5ef119cef1ce.transcript.txt"
+   }
+  ],
+  "title_zh": "新的「大泥球」：为什么 Agent 化的 AI 系统会变得脆弱"
+ },
+ {
   "id": "cur-f35f1062ecd8",
   "kind": "curated",
   "type": "article",
@@ -416,6 +437,27 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105046803674792166.m4a"
  },
  {
+  "id": "cur-fd478e0e0292",
+  "kind": "curated",
+  "type": "article",
+  "source": "Quarkslab",
+  "title": "From AI Agents to RCE: Building a Vulnerability Research Workflow",
+  "link": "http://blog.quarkslab.com/from-ai-agents-to-rce-building-a-vulnerability-research-workflow.html",
+  "date": "2026-09-29",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-fd478e0e0292.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-fd478e0e0292.transcript.txt"
+   }
+  ],
+  "title_zh": "从 AI Agent 到 RCE：搭建一套漏洞研究工作流"
+ },
+ {
   "id": "cur-aadfd31a222b",
   "kind": "curated",
   "type": "podcast",
@@ -436,6 +478,27 @@
   ],
   "title_zh": "与 Ben Schwarz 聊 Web 性能",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aadfd31a222b.m4a"
+ },
+ {
+  "id": "cur-558841854585",
+  "kind": "curated",
+  "type": "article",
+  "source": "Simon Willison",
+  "title": "2026 in LLMs (So Far)",
+  "link": "https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far/",
+  "date": "2026-09-28",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-558841854585.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-558841854585.transcript.txt"
+   }
+  ],
+  "title_zh": "2026 年的大模型（截至目前）"
  },
  {
   "id": "xZ5TEaleUdg",
@@ -479,6 +542,48 @@
   "title_zh": "多发 CSS，反而让网站更快"
  },
  {
+  "id": "cur-be094b8d7806",
+  "kind": "curated",
+  "type": "article",
+  "source": "The Beautiful Mess (John Cutler)",
+  "title": "AI, the Loss of Positive Friction, and What to Do About It",
+  "link": "https://cutlefish.substack.com/p/tbm-441-ai-the-loss-of-positive-friction",
+  "date": "2026-09-25",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-be094b8d7806.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-be094b8d7806.transcript.txt"
+   }
+  ],
+  "title_zh": "AI 与「正向摩擦」的消失，以及怎么应对"
+ },
+ {
+  "id": "cur-1eebafc5c762",
+  "kind": "curated",
+  "type": "article",
+  "source": "Itamar Gilad",
+  "title": "Why Good Product Ideas Don’t Survive",
+  "link": "https://itamargilad.com/good-ideas/",
+  "date": "2026-09-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1eebafc5c762.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1eebafc5c762.transcript.txt"
+   }
+  ],
+  "title_zh": "为什么好的产品点子活不下来"
+ },
+ {
   "id": "QcdpeFbuy8o",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -516,6 +621,27 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/dNWkwrqAkcM.m4a",
   "title_zh": "AI 新时代如何打造能卖货的品牌：营销三定律"
+ },
+ {
+  "id": "cur-b322932542f0",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lorin Hochstein",
+  "title": "Saturation at GitHub: The Saga Continues",
+  "link": "https://surfingcomplexity.blog/2026/09/19/saturation-at-github-the-saga-continues/",
+  "date": "2026-09-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b322932542f0.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b322932542f0.transcript.txt"
+   }
+  ],
+  "title_zh": "GitHub 的饱和故障还在继续"
  },
  {
   "id": "cur-d705870948e8",
@@ -803,6 +929,27 @@
    }
   ],
   "title_zh": "愤怒、焦虑与能动性"
+ },
+ {
+  "id": "cur-6b8dd5ebf8ce",
+  "kind": "curated",
+  "type": "article",
+  "source": "Synacktiv",
+  "title": "AWS EKS Forensics: Data Sources and Investigation Tooling",
+  "link": "https://www.synacktiv.com/en/publications/aws-eks-forensics-data-sources-and-investigation-tooling.html",
+  "date": "2026-08-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-6b8dd5ebf8ce.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-6b8dd5ebf8ce.transcript.txt"
+   }
+  ],
+  "title_zh": "AWS EKS 取证：数据来源与调查工具"
  },
  {
   "id": "cur-376a3bbfb6c1",
@@ -1621,6 +1768,27 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kK1TOpI948o.m4a"
  },
  {
+  "id": "cur-3a582dd37eed",
+  "kind": "curated",
+  "type": "article",
+  "source": "A Smart Bear (Jason Cohen)",
+  "title": "How to Hire People Who Are Better Than You",
+  "link": "https://longform.asmartbear.com/hire-better-than-you/",
+  "date": "2026-04-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3a582dd37eed.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3a582dd37eed.transcript.txt"
+   }
+  ],
+  "title_zh": "如何招到比你更强的人"
+ },
+ {
   "id": "cur-cad5bdded1ef",
   "kind": "curated",
   "type": "article",
@@ -2011,6 +2179,27 @@
   "title_zh": "2025 年 LLM 现状：进展、问题与预测"
  },
  {
+  "id": "cur-474cb50db531",
+  "kind": "curated",
+  "type": "article",
+  "source": "Joyee Cheung",
+  "title": "require(esm) in Node.js: Implementer’s Tales",
+  "link": "https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-implementers-tales/",
+  "date": "2025-12-30",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-474cb50db531.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-474cb50db531.transcript.txt"
+   }
+  ],
+  "title_zh": "Node.js 里的 require(esm)：实现者的故事"
+ },
+ {
   "id": "hS9BOev_u5U",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -2090,6 +2279,27 @@
    }
   ],
   "title_zh": "朱啸虎：现实主义、AI 盛宴与泡沫，以及偏离共识的十五度"
+ },
+ {
+  "id": "cur-f7c50df03425",
+  "kind": "curated",
+  "type": "article",
+  "source": "Martin Kleppmann",
+  "title": "Prediction: AI Will Make Formal Verification Go Mainstream",
+  "link": "http://martin.kleppmann.com/2025/12/08/ai-formal-verification.html",
+  "date": "2025-12-08",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f7c50df03425.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f7c50df03425.transcript.txt"
+   }
+  ],
+  "title_zh": "预言：AI 会让形式化验证走进主流"
  },
  {
   "id": "cur-cce64b2db70f",
