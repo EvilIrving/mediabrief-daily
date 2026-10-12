@@ -127,7 +127,7 @@ $('#list').addEventListener('click',e=>{const g=e.target.closest('.grp');if(!g)r
 renderBar();renderList();
 function show(n,push){if(n<0||n>=ITEMS.length)return;const i=ITEMS[n];
  if(cur>=0&&els[cur])els[cur].classList.remove('on');cur=n;tab=0;if(els[n]){els[n].classList.add('on');els[n].scrollIntoView({block:'nearest'})}
- read.add(i.id);if(els[n])els[n].classList.add('read');localStorage.setItem(RK,JSON.stringify([...read]));localStorage.setItem(LK,i.id);
+ read.add(i.id);if(els[n]){els[n].classList.add('read');const nb=els[n].querySelector('b.new');nb&&nb.remove()}localStorage.setItem(RK,JSON.stringify([...read]));localStorage.setItem(LK,i.id);
  if(push!==false)history.replaceState(null,'',hashStr());
  document.body.classList.add('reading');render();$('#main').scrollTop=0}
 function render(){const i=ITEMS[cur],t=i.txt||[];
