@@ -20,7 +20,7 @@ a{color:var(--act)}
 #fbar button.lnk{border:0;background:none;color:var(--dim);margin-left:auto;padding:0}
 #fbar button:focus{outline:none}#fbar button:focus-visible{outline:1px dashed var(--ac)}
 #f-src,#f-q{font:inherit;font-size:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);height:24px;padding:0 5px;border-radius:0;outline:none;min-width:0}
-#f-src{flex:1 1 45%;max-width:55%}#f-q{flex:1 1 40%}#f-src:focus,#f-q:focus{border-color:var(--ac)}
+#f-src{flex:1 1 40%;max-width:48%}#f-q{flex:1 1 30%}#f-src:focus,#f-q:focus{border-color:var(--ac)}
 .grp{padding:8px 14px 3px;font-size:12px;font-weight:600;color:var(--mu);cursor:pointer;user-select:none;border-top:1px solid var(--bd)}
 .grp i{font-style:normal;font-weight:400;color:var(--dim);font-size:11px}.grp .car{display:inline-block;width:12px;color:var(--dim)}
 .grp:hover{background:var(--sf2)}
@@ -60,9 +60,7 @@ audio{display:block;width:100%;height:36px;margin:12px 0 0}
 </style></head><body>
 <nav id="side"><div id="top"><h1>MediaBrief <small id="cnt"></small></h1>
 <div id="fbar"><button id="ftoggle" type="button">筛选</button><div id="fx">
-<div class="fr"><span class="lb">类型</span><span class="ch" id="f-type"></span></div>
-<div class="fr"><span class="lb">合集</span><span class="ch" id="f-coll"></span><span class="ch"><button id="f-unread" type="button">仅未读</button></span></div>
-<div class="fr"><select id="f-src" aria-label="来源"></select><input id="f-q" type="search" placeholder="搜索标题" autocomplete="off"></div>
+<div class="fr"><select id="f-src" aria-label="来源"></select><input id="f-q" type="search" placeholder="搜索标题" autocomplete="off"><span class="ch"><button id="f-unread" type="button">仅未读</button></span></div>
 <div class="fr"><span class="lb">排序</span><span class="ch" id="f-sort"></span><span class="lb">分组</span><span class="ch" id="f-group"></span><button id="f-reset" type="button" class="lnk">重置</button></div>
 </div></div></div><div id="list"></div></nav>
 <main id="main"><article id="rd"><p class="meta">选择左侧一条开始阅读。</p></article></main>
@@ -79,10 +77,10 @@ const key=i=>encodeURIComponent(i.id);let cur=-1,tab=0;
 const DAY=864e5,NOW=Date.now(),T=s=>Date.parse(s)||0;
 ITEMS.forEach((i,n)=>{i.n_=n;i.added=RAW[n].x;i.type=RAW[n].y||'article'});
 const NEW_DAYS=3,isNew=i=>i.added&&NOW-T(i.added)<NEW_DAYS*DAY&&!read.has(i.id);
-const OPTS={type:[['all','全部'],['article','文章'],['podcast','播客'],['video','视频']],coll:[['all','全部'],['curated','精选'],['summary','视频总结']],
- sort:[['pub','发布时间'],['add','加入时间']],group:[['date','按日期'],['source','按来源']]};
-const DEF={sort:'pub',group:'date',type:'all',coll:'all',unread:0,src:'',q:''};
-let V=Object.assign({},DEF,JSON.parse(localStorage.getItem('mb_view')||'{}'));
+const OPTS={sort:[['pub','发布时间'],['add','加入时间']],group:[['date','按日期'],['source','按来源']]};
+const DEF={sort:'pub',group:'date',unread:0,src:'',q:''};
+const pick=o=>Object.fromEntries(Object.entries(o||{}).filter(([k])=>k in DEF)); // drops old type=/coll= state
+let V=Object.assign({},DEF,pick(JSON.parse(localStorage.getItem('mb_view')||'{}')));
 const collapsed=new Set(JSON.parse(localStorage.getItem('mb_collapsed')||'[]'));
 let VIEW=[],els={};
 function hashStr(){const ps=Object.keys(DEF).filter(k=>V[k]!==DEF[k]).map(k=>k+'='+encodeURIComponent(V[k]));
@@ -91,12 +89,12 @@ function readHash(){const ps=location.hash.slice(1).split('&');let id='';const n
  ps.forEach((p,k)=>{const m=p.indexOf('=');if(m<0){if(k===0)id=decodeURIComponent(p)}else nv[p.slice(0,m)]=decodeURIComponent(p.slice(m+1))});
  return {id,nv}}
 function save(){localStorage.setItem('mb_view',JSON.stringify(V));history.replaceState(null,'',hashStr())}
-function match(i,q,skipSrc){if(V.type!=='all'&&i.type!==V.type)return false;if(V.coll!=='all'&&i.kind!==V.coll)return false;
+function match(i,q,skipSrc){
  if(+V.unread&&read.has(i.id))return false;if(!skipSrc&&V.src&&i.source!==V.src)return false;
  if(q&&!((i.title_zh||'')+'\n'+(i.title||'')+'\n'+(i.source||'')).toLowerCase().includes(q))return false;return true}
 const row=i=>`<a class="it${read.has(i.id)?' read':''}${i.n_===cur?' on':''}" href="#${key(i)}" data-n="${i.n_}"><span class="t"${i.title_zh?` data-alt="${esc(i.title)}"`:''}>${esc(i.title_zh||i.title)}</span><span class="s">${isNew(i)?'<b class="new">新</b>':''}${esc(i.source)}</span></a>`;
 function renderBar(){const q=V.q.trim().toLowerCase();
- for(const k of ['type','coll','sort','group'])$('#f-'+k).innerHTML=OPTS[k].map(([v,l])=>`<button data-k="${k}" data-v="${v}" class="${V[k]===v?'on':''}">${l}</button>`).join('');
+ for(const k of ['sort','group'])$('#f-'+k).innerHTML=OPTS[k].map(([v,l])=>`<button data-k="${k}" data-v="${v}" class="${V[k]===v?'on':''}">${l}</button>`).join('');
  $('#f-unread').classList.toggle('on',!!+V.unread);
  const cnt={};ITEMS.forEach(i=>{if(match(i,q,true))cnt[i.source]=(cnt[i.source]||0)+1});
  const srcs=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b));if(V.src&&!cnt[V.src])srcs.unshift(V.src);
@@ -123,7 +121,7 @@ $('#f-src').addEventListener('change',e=>{V.src=e.target.value;applyView()});
 let qT;$('#f-q').addEventListener('input',e=>{clearTimeout(qT);qT=setTimeout(()=>{V.q=e.target.value;renderList();renderBar();save()},120)});
 $('#list').addEventListener('click',e=>{const g=e.target.closest('.grp');if(!g)return;const s=g.dataset.src;collapsed.has(s)?collapsed.delete(s):collapsed.add(s);
  localStorage.setItem('mb_collapsed',JSON.stringify([...collapsed]));renderList()});
-{const {nv}=readHash();if(Object.keys(nv).length)V=Object.assign({},DEF,nv)}
+{const nv=pick(readHash().nv);if(Object.keys(nv).length)V=Object.assign({},DEF,nv)}
 renderBar();renderList();
 function show(n,push){if(n<0||n>=ITEMS.length)return;const i=ITEMS[n];
  if(cur>=0&&els[cur])els[cur].classList.remove('on');cur=n;tab=0;if(els[n]){els[n].classList.add('on');els[n].scrollIntoView({block:'nearest'})}
