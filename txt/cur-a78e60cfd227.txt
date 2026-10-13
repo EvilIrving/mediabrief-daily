@@ -1,0 +1,5 @@
+https://seangoedecke.com/software-engineers-dont-get-to-be-luddites-about-ai/
+
+软件工程师没资格当 AI 的卢德分子 ｜ Sean Goedecke ｜ 文章 ｜ https://seangoedecke.com/software-engineers-dont-get-to-be-luddites-about-ai/
+
+Sean Goedecke 认为，程序员对 AI 抢饭碗的愤怒可以理解，却站不住脚：软件工程从诞生起就在自动化别人的工作，录像带店、旅行社、唱片店、打字室都因此萎缩，VisiCalc 的作者当年就担心过电子表格让记账员失业。程序员爱以卢德分子自比，其实更像当年造织机的机械师，而这些机械师五十年后也被机器和廉价劳工取代，还被《泰晤士报》讥为和手工织布工一样。他强调，写代码的解谜快感掩盖了本质：软件工程就是用机器替代人力。技术是否总体向善他不下定论，但程序员的每次提交都站在自动化一边。等浪潮冲到自己行业才反对进步，有失体面；不过他也说，这总比干脆否认 AI 能写出可用代码要强。

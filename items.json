@@ -5,7 +5,7 @@
   "source": "YouTube 总结",
   "title": "读了四年动画，到底图什么？",
   "link": "https://youtu.be/_HLLpvjg8EI",
-  "date": "2026-10-12T03:32",
+  "date": "2026-10-13T03:08",
   "txt": [
    {
     "label": "总结",
@@ -25,7 +25,7 @@
   "source": "YouTube 总结",
   "title": "Building Anthropic: A Conversation with Our Co-founders",
   "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-10-11T02:31",
+  "date": "2026-10-13T03:07",
   "txt": [
    {
     "label": "总结",
@@ -39,6 +39,32 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
   "title_zh": "构建 Anthropic：与联合创始人对谈",
   "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "cur-a78e60cfd227",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Software engineers don't get to be Luddites about AI",
+  "link": "https://seangoedecke.com/software-engineers-dont-get-to-be-luddites-about-ai/",
+  "date": "2026-10-12",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-a78e60cfd227.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-a78e60cfd227.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-a78e60cfd227.orig.txt"
+   }
+  ],
+  "title_zh": "软件工程师不会成为人工智能的勒德分子",
+  "added_at": "2026-10-13T14:07+08:00"
  },
  {
   "id": "Mph1H5u3yeA",
