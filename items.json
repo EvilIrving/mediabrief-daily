@@ -22,7 +22,7 @@
     "url": "txt/cur-b312ae48b42b.orig.txt"
    }
   ],
-  "title_zh": "克劳德，别碰我的肿块",
+  "title_zh": "Claude，别碰我的「劳动总量」",
   "added_at": "2026-10-14T10:49+08:00"
  },
  {
@@ -89,7 +89,7 @@
     "url": "txt/cur-1bc445bedaa9.orig.txt"
    }
   ],
-  "title_zh": "Pat Gelsinger ：为什么现在是构建硬件的最佳时机",
+  "title_zh": "Pat Gelsinger：为什么现在是做硬件的最好时机",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1bc445bedaa9.m4a",
   "added_at": "2026-10-14T10:49+08:00"
  },
@@ -116,7 +116,7 @@
     "url": "txt/cur-8c17f1f1ac30.orig.txt"
    }
   ],
-  "title_zh": "重新设计Anthropic的源代码控制",
+  "title_zh": "Anthropic 如何重新设计源码管理",
   "added_at": "2026-10-14T10:49+08:00"
  },
  {
@@ -142,7 +142,7 @@
     "url": "txt/cur-39ece21c8dc3.orig.txt"
    }
   ],
-  "title_zh": "播放SFAPE ：在隔离用户模式下执行代码",
+  "title_zh": "Playing It SFAPE：在隔离用户态（IUM）中执行代码",
   "added_at": "2026-10-14T10:51+08:00"
  },
  {
@@ -168,7 +168,7 @@
     "url": "txt/cur-56f869f0dea0.orig.txt"
    }
   ],
-  "title_zh": "线束是否物有所值？",
+  "title_zh": "Harness 值得这份成本吗？",
   "added_at": "2026-10-14T10:51+08:00"
  },
  {
@@ -220,7 +220,7 @@
     "url": "txt/cur-b407e87d5843.orig.txt"
    }
   ],
-  "title_zh": "加强我们对蒸馏攻击的防御",
+  "title_zh": "加强对蒸馏攻击的防御",
   "added_at": "2026-10-14T10:49+08:00"
  },
  {
