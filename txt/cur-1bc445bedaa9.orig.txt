@@ -1,0 +1,89 @@
+https://thechipletter.substack.com/p/pat-gelsinger-why-this-is-the-best
+
+If anyone represents a link between the history of semiconductors and its future, it's Pat Gelsinger. Architect of the landmark Intel 80486 CPU — launched in 1989(!) — he became CTO of Intel and then returned as Intel CEO in 2021 only to leave the firm again at the end of 2024. He didn't disappear from the tech scene, though, and he's now a General Partner at the Venture Capital firm Playground Global.
+
+With decades of experience working in senior positions at the leading edge of chip design he has a unique perspective on both the history, present and future of semiconductors.
+
+Which is why I wanted to share his recent appearance on the a16z podcast. I found it absolutely riveting. After a warm-up covering his early days at Intel he shares his views on a wide range of current 'hot topics'.
+
+It's absolutely worth watching (or listening to — Spotify etc links below) — but if you'd like to dip into individual sections then there are links to each section after the video.
+
+00:00 - Intro
+
+01:00 - From tech school to Intel at 18
+
+On interviewing at Intel:
+
+PG: And I was number 12 that he interviewed that day.
+
+And if you've interviewed 12 people in a row, you can't tell male from female by the end of it, right?
+
+I'm number 12.
+
+[The interview report] says, smart, aggressive, arrogant. He'll fit right in.
+
+So I got invited to come to Intel and it just became really glorious.
+
+Starting as a technician, moved into the design team at the end of the 286, engineer number four on the 386, architect and design manager for the 486.
+
+All of that while doing my bachelor's, my master's and PhD work.
+
+So it was like the best career that you could possibly have.
+
+You're learning by day and you're putting it to practice at night.
+
+05:44 - The 486 and the birth of modern EDA
+
+PG: Yeah, it was a pretty magic period as well because it was before what you would think of as the EDA industry.
+
+Oh, wow, yes, that's right.
+
+And at the end of the, a little bit of the 386, but the 486 was really the first chip to implement what you would think of as modern EDA techniques.
+
+We did a high-level design a description, an RTL description, but there was no Verilog.
+
+So we invented HDL, right? The Intel hardware description language. So I wrote my own language.
+
+Well, you had to build a compiler for that language?
+
+So we created a compiler for the language.
+
+There was no automatic place and route. So we had to invent that.
+
+07:23 - How AI changes chip design
+
+09:18 - Why silicon still takes nine months
+
+14:49 - Will 100 AI chips converge to a few?
+
+On the future of the '100 new AI chip designs':
+
+So obviously, 100 companies want to consolidate, right?
+
+And I completely agree with your argument that at the end of the day, the large consumers [OpenAI, Anthropic, Hyperscalers etc] will pick winners to some degree?
+
+Today, I think to be a first-tier chip startup to some degree, whether you're that or not, is defined by how much traction you have with the really big guys.
+
+That said, and there's also an argument to say, like, look, in any kind of transition period, you probably have a bit more of an explosion of different approaches. There's no time that'll shake out.
+
+Now, all that said, I think there's an argument you can make that basically says, look, historically, we standardized on one or two architectures because different instruction sets were hard, you had to build multiple compilers.
+
+Basically, the software complexity dictated that you can only have a certain small number of hardware platforms.
+
+That part seems to be changing with AI a little bit.
+
+Today, you know, writing an optimized kernel for, I mean, I think Jalapeño was a great example, but they basically said, look, humans can't really program this thing anymore, but an agent swarm overnight can do it.
+
+22:08 - Why HBM is a hideous memory
+
+I think memory innovation for the first time in 30 years is nigh upon us.
+
+25:15 - How tall can chips get?
+
+I'm not a crazy 16, 32 stack kind of guy.
+
+I think there's going to be three, four, five stacks that just end up sort of being the sweet spot.
+
+42:49 - Energy capacity equals economic capacity
+
+48:42 - A VMware for agents

@@ -1,0 +1,5 @@
+https://thechipletter.substack.com/p/pat-gelsinger-why-this-is-the-best
+
+Pat Gelsinger：为什么现在是做硬件最好的时候 ｜ The Chip Letter ｜ 文章 ｜ [原文链接](https://thechipletter.substack.com/p/pat-gelsinger-why-this-is-the-best)
+
+Chip Letter 摘录了前 Intel CEO Pat Gelsinger 在 a16z 播客中的要点。他从 18 岁进 Intel、做 486 架构讲起：那时没有 Verilog 和自动布局布线，团队自研了 HDL 与工具链。谈当下时，他认为百款 AI 芯片终会收敛、大客户会定赢家，但 AI agent 已能替人写优化 kernel，硬件平台不必再被软件复杂度锁死在一两种架构。他还吐槽 HBM、看好内存创新，堆叠偏好三到五层，并抛出「能源容量≈经济容量」、给 agent 做「VMware」等设想。
