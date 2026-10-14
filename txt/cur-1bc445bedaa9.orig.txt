@@ -1,89 +1,197 @@
 https://thechipletter.substack.com/p/pat-gelsinger-why-this-is-the-best
 
-If anyone represents a link between the history of semiconductors and its future, it's Pat Gelsinger. Architect of the landmark Intel 80486 CPU — launched in 1989(!) — he became CTO of Intel and then returned as Intel CEO in 2021 only to leave the firm again at the end of 2024. He didn't disappear from the tech scene, though, and he's now a General Partner at the Venture Capital firm Playground Global.
+[Cold open]
 
-With decades of experience working in senior positions at the leading edge of chip design he has a unique perspective on both the history, present and future of semiconductors.
+Pat Gelsinger: In an AI digital age, energy capacity equals economic capacity. Why build a new data center and buy a million GPUs if I can't power them? You're going to see more and more defaults happening on many of those data center projects, because the energy won't be there. Whenever you have the technology to make something easy, that means the bottleneck moves somewhere else. Nothing's a chip anymore; it's a rack. It took me three months to design it, but it's nine months until I can actually start to use it. Exactly how many major new memories have we had over the last 30 years? Memory innovation for the first time in 30 years is nigh upon us. I declared the death of copper about 25 years ago; eventually I'll be right. For all of us hardware guys, this is like a renaissance.
 
-Which is why I wanted to share his recent appearance on the a16z podcast. I found it absolutely riveting. After a warm-up covering his early days at Intel he shares his views on a wide range of current 'hot topics'.
+Guido Appenzeller: There are a hundred AI inference accelerator chips, and I'm sure I don't even know them all. Why are you guys funding so many of those anyway? Historically there have not been a hundred competing processor vendors in any industry, ever. Is this a temporary thing? Will it converge back to a few?
 
-It's absolutely worth watching (or listening to — Spotify etc links below) — but if you'd like to dip into individual sections then there are links to each section after the video.
+Pat Gelsinger: I see it as: AI is making it faster to design chips, but actually building them, powering them and connecting them is getting harder.
 
-00:00 - Intro
+[Narrator]: In this episode, a16z's Raghu Raghuram and Guido Appenzeller sit down with Pat Gelsinger, general partner at Playground Global and former CEO of Intel and VMware, to discuss the next bottlenecks in AI infrastructure. Pat takes us back to his early days designing Intel's processors, when engineers were inventing the tools they needed to build the chips themselves. He explains why AI could bring a similar shift today, even as manufacturing timelines, memory bandwidth and power become harder constraints. They also debate whether the explosion of specialized AI chips will last, why Pat believes memory innovation is finally approaching a breakthrough, and how optical networking could change the architecture of AI clusters. Drawing on their shared history at VMware, they close with a question: what would it look like to rebuild virtualization for a world where AI agents, rather than humans, are the primary user?
 
-01:00 - From tech school to Intel at 18
+[Interview]
 
-On interviewing at Intel:
+Raghu Raghuram: I'm here with our esteemed guest, dear friend and my former boss, Mr. Pat Gelsinger. Welcome, Pat. Pat is currently a general partner at Playground Global, but you're very, very well known in the industry for being the CEO of Intel, of course for leading VMware, and many other things. So welcome.
 
-PG: And I was number 12 that he interviewed that day.
+Pat Gelsinger: Hey, thank you, Raghu. Great to be with you and Guido, and to me this feels a little bit like old home, right? We've superimposed a year of change, but you both look the same.
 
-And if you've interviewed 12 people in a row, you can't tell male from female by the end of it, right?
+Raghu Raghuram: I feel energetic, so let's dive in.
 
-I'm number 12.
+Pat Gelsinger: There has never been a day you stopped being energetic, so no news there.
 
-[The interview report] says, smart, aggressive, arrogant. He'll fit right in.
+Raghu Raghuram: Let's actually start from your early career. Recently Andreessen Horowitz created an a16z academy, which was to find talented people between 16 and 22 and put them into a modern educational setting, so they'd be well prepared either to do things on their own or to join the companies of today. You had a similar experience: you went to a trade school and then jumped to Intel at what, 18 or 19?
 
-So I got invited to come to Intel and it just became really glorious.
+Pat Gelsinger: Yeah, it was really a sort of magical period. I'm 16 years old, I accidentally win a scholarship, I go to tech school, skip my last year and a half of high school, and Intel comes recruiting when I'm 18. I had never been on an airplane, I had already fallen in love with computers at tech school, and the interviewer — Ron Smith was his name — writes on his pad... I was number 12 that he interviewed that day, and if you've interviewed 12 people in a row, you can't tell male from female by the end of it, right? I'm number 12, and he writes: "Smart, aggressive, arrogant. He'll fit right in." So I got invited to come to Intel, and it just became really glorious. Starting as a technician, moving into the design team at the end of the 286, engineer number four on the 386, architect and design manager for the 486 — all of that while doing my bachelor's, my master's and my PhD work. It was the best career you could possibly have: you're learning by day and putting it into practice at night.
 
-Starting as a technician, moved into the design team at the end of the 286, engineer number four on the 386, architect and design manager for the 486.
+Raghu Raghuram: That was a completely new era of chips, so I bet there was a big gap between what you learned and what you built, because you were breaking new ground.
 
-All of that while doing my bachelor's, my master's and PhD work.
+Pat Gelsinger: Yeah, in a lot of ways. It really was a pretty incredible time in the industry. I remember in one of my classes at Stanford the professor postulated a new carry-lookahead adder design. I said, well, I'm working on the 386 carry-lookahead adder, so let me go try it. I come back two days later and tell the professor it doesn't work, and I start an argument with my professor at Stanford. The next two class periods were just me and the professor arguing over why his design didn't work. He had a book being published with that design in it; it was very annoying for him. That was also the time we started built-in self-test. Ed McCluskey at Stanford was my professor, and he was sort of the father of that, and we had wonderful arguments about why most of his ideas were bad — they weren't practical for real chips. But I was putting built-in self-test to work on the 386. John Hennessy was my thesis advisor, and obviously he did okay — it helped his career; he became president of Stanford and he's done okay since then.
 
-So it was like the best career that you could possibly have.
+Raghu Raghuram: I had the same experience when I was teaching at Stanford. You come in with something you think is the truth, and then a student who works in industry says, "Well, actually, not quite." So the next lecture you come back with, "Okay, I looked this up, you're right." That's part of the interaction, and I think that's part of what makes Silicon Valley so unique.
 
-You're learning by day and you're putting it to practice at night.
+Pat Gelsinger: Yeah, right. You have so many companies and so much entrepreneurship; it's in the water here — starting things up, new ideas, challenging the professors. You can't be a professor at a place like Stanford and not expect to get challenged, and enjoy it.
 
-05:44 - The 486 and the birth of modern EDA
+Raghu Raghuram: There's good foot traffic between industry and the ivory tower. The 486 was a big accomplishment, if you will. Obviously lots of people worked on it, and you broke some new ground in chip design there and increased what functions the chip was supposed to do, and so on.
 
-PG: Yeah, it was a pretty magic period as well because it was before what you would think of as the EDA industry.
+Pat Gelsinger: Yeah, it was a pretty magic period as well, because it was before what you would think of as the EDA industry.
 
-Oh, wow, yes, that's right.
+Raghu Raghuram: Oh wow, yes.
 
-And at the end of the, a little bit of the 386, but the 486 was really the first chip to implement what you would think of as modern EDA techniques.
+Pat Gelsinger: A little bit at the end of the 386, but the 486 was really the first chip to implement what you would think of as modern EDA techniques. We did a high-level RTL description, but there was no Verilog. So we invented iHDL, the Intel hardware description language. I wrote my own language — well, you had to build a compiler for that language, so we created a compiler. There was no automatic place-and-route, so we had to invent that. We worked with Alberto Sangiovanni-Vincentelli at Berkeley and some of his students on the first placement, the first routing, the first automated timing management. So to a great degree, not only was the 486 this compatible pipelined microprocessor, but we ushered in many of the foundations of what became the modern EDA industry. It was a pretty magical period for the industry.
 
-We did a high-level design a description, an RTL description, but there was no Verilog.
+Raghu Raghuram: If we look at today, will people look back at Blackwell and say this was the last generation done before AI took over the design process? Are we in a similar transition right now?
 
-So we invented HDL, right? The Intel hardware description language. So I wrote my own language.
+Pat Gelsinger: I think there are certainly aspects of that. When you look at things like [Kalaino — an AI-native chip design effort] today, you'd say that's a first-principles use of AI in the chip design process, where you throw out a lot of the old things. Now, there are pieces of design that are still really hard. A lot of the analog — SerDes is probably the best example — is still not AI-able. You just need lots of silicon data to get those right. So you either get so conservative in your analog design that you're able to, I'll say, "AI it," or you've got to do those the hard way. But many of the logic functions can now really be done with AI tools and techniques in pretty incredible ways. Your transistor budgets are big enough, the design tools are getting smart enough, a few experts guide the tools on how to apply them, and I really think it will be somewhat like the 486 that way. We'll look back and say, yep, that was the beginning of a new era of chip design.
 
-Well, you had to build a compiler for that language?
+Guido Appenzeller: Whenever you have the technology to make something easy, the bottleneck moves somewhere else. Can we guess at this point where the bottleneck will be in the future? There are some things AI seems incredibly good at, like the software layers — writing kernels — and being able to specify objectives at a higher level that then get translated into Verilog. So what's the new frontier? What will be difficult going forward?
 
-So we created a compiler for the language.
+Pat Gelsinger: Well, look at today. Let's say Guido and Pat are off to do a great new chip together. It's the one that's going to leap ahead, because we understand the AI workloads, we understand how to compose the right multiply-accumulate and register structure, we have perfect visibility into the model workloads of tomorrow, all of that. And let's say we turn our AI tools loose, and we're great: within three months we have an awesome design. We've been a little conservative on all the analog components. We still have a couple of really major bottlenecks today. One is that we still have nine months of silicon processing time. I can design the thing in three months, but I can't get it into real silicon at scale for nine months. Okay, that sucks. We really have to see that bottleneck improve if we're going to have this innovation.
 
-There was no automatic place and route. So we had to invent that.
+Raghu Raghuram: Because of validation and verification cycles, or beyond that?
 
-07:23 - How AI changes chip design
+Pat Gelsinger: Well, first, I can't get anything out of a fab in less than three months, and that's if I have supercharged design flows. So how do I compress that? Then I've got to get into advanced packaging — 3D packages are getting complex, so that's another three months. And then I have to put it into a rack-scale solution, because nothing's a chip anymore; it's a rack. So we're at nine months. It took me three months to design it, but it's nine months until I can actually start to use it. How do we compress those aspects? I think we need new forms of lithography to enable that. We need new design flows that don't require $50 million of mask cost before I can get things into prototyping. How do you compress that to a month or two? Because if it takes me a year and a half until I actually get scale and software on it, my understanding of the AI workloads is no longer applicable to the chip that I shipped. We can look at it historically: Graphcore wasn't a bad design, but the world moved on. All of those aspects somewhat obviate the fact that AI has made the design piece easy. All of those manufacturing and scale issues become a huge bottleneck.
 
-09:18 - Why silicon still takes nine months
+Another bottleneck, of course, is memory — memory bandwidth. As I've described it, HBM is a hideous memory. It's just the best one that we have. It's a terrible memory: I get terrible bit density, I'm limited by shoreline bandwidth, there are power issues, thermal issues — DRAM doesn't like to be hot, and you're concentrating everything in one spot. It's terrible. And AI is a memory-bound workload. So I need to compress development into real scale, and I need to fix memory. That's another critical bottleneck for us to attack.
 
-14:49 - Will 100 AI chips converge to a few?
+And power. Power in, thermal — most of the power simulation tools today are bad. You don't have good 3D modeling tools for power dissipation, hotspots, et cetera. With my voltage in, I'm essentially guard-banding almost my full power envelope. I'm losing something like 40% of my power in guard-banding. So I've got to get much better at power modeling, and my power dissipation techniques are bad, so the thermal model has to change too. All of these things are the next big bottlenecks. How do I improve each one of those? If I've done that, we're on to an exciting era. So thank you for those great AI tools, but I've got big challenges even when those are fully deployed.
 
-On the future of the '100 new AI chip designs':
+Guido Appenzeller: We've seen a rebirth in the number of chips and chip architectures, thanks to these workloads. There's like a hundred AI inference accelerator chips, and I'm sure I don't even know them all.
 
-So obviously, 100 companies want to consolidate, right?
+Pat Gelsinger: Yeah, exactly.
 
-And I completely agree with your argument that at the end of the day, the large consumers [OpenAI, Anthropic, Hyperscalers etc] will pick winners to some degree?
+Guido Appenzeller: Why are you guys funding so many of those anyway? You've funded your fair share too. They're all making different design assumptions, either in the components you talked about or in the part of the Pareto curve they're targeting. Do you think there's room for all of these? Or are we in a world where, partly because of the AI tooling Raghu talked about, we now have the ability to build more different kinds of chips? To put it even more provocatively: historically there have not been a hundred competing processor vendors in any industry, ever. Is this a more heterogeneous future, or is this a temporary thing that will converge back to a few?
 
-Today, I think to be a first-tier chip startup to some degree, whether you're that or not, is defined by how much traction you have with the really big guys.
+Pat Gelsinger: I see it as a more temporary thing, and convergence is what I expect. There are probably three reasons. One is this emerging heterogeneity you see in the compute environment, where now I have specialized prefill versus decode, and now people say we need a specialized tier for midfill, not just prefill — early prefill, then midfill, speculative decoding, and so on; we listened to OpenAI talk about that. All of a sudden my compute fleet becomes more and more granular across the workload, and anytime you've seen that in history, it's not sustainable. And now people say, as I go to reasoning models, I want something that looks more like a CPU again. So suddenly that specialized tier didn't become the predominant portion of my compute capacity; I needed more of it over here, with model workflows and so on. So I really don't like at-scale specialization, because I think the workloads are going to continue to evolve and migrate significantly.
 
-That said, and there's also an argument to say, like, look, in any kind of transition period, you probably have a bit more of an explosion of different approaches. There's no time that'll shake out.
+Second, I think today's models are about to go through some evolutionary breakthroughs as well. I think the LLM is reaching its limits. As people look at how to really model 3D — a flattish LLM doesn't work well when you go to molecules and chemicals and imaging — we'll see limits that cause shifts in the algorithmic domain. I also think some of the most interesting workloads will bring HPC-like things back into AI-like things, where all of a sudden 64-bit precision counts again. Imagine my AI model is now identifying the five most interesting domains for a chemical analysis. Those chemical algorithms are going to run at high precision. Which is going to be the dominant piece of the workload: getting to the five algorithms I need to run, or running those five algorithms on different chemical or biological systems? So as we optimize our AI systems, they'll lead us back to some of the things that have been more traditional high-performance computing. All that said, this extreme specialization in compute architecture — I don't like it, because I don't think it's what the workloads will look like two, three, four years from now. That's one reason I don't see all these AI chips, as they get more specialized for portions of the workload, being necessarily right.
 
-Now, all that said, I think there's an argument you can make that basically says, look, historically, we standardized on one or two architectures because different instruction sets were hard, you had to build multiple compilers.
+Second, there are like a hundred of them now. There are multiple optical ones, there are probabilistic ones, and so on, and they're not all going to win, because at the end of the day you have to get scale. Scale requires winning: you have to get capital, you have to get workloads onto it. It defies logic that you'll have a hundred of these things. So I see the field coming back as a result of simple capital and market share — which are the winning teams, winning designs, winning architectures. I see the workloads driving that, I see natural industry consolidation, and I also expect the winners will pick some winners. An OpenAI, an NVIDIA, an Anthropic will say, "I like this one," because it isn't just hardware; it's how the hardware and software co-evolve. I expect they'll say, "Here are the ten I could pick from — I like that one," and it does require an investment in the software and workload evolution to take advantage of those platforms. So for those three reasons, we're going to see a narrowing of the field, and of the complexity as well.
 
-Basically, the software complexity dictated that you can only have a certain small number of hardware platforms.
+Guido Appenzeller: Makes total sense, and I agree for the most part. Let me still try to stir a little controversy here. Obviously many companies will consolidate, and I completely agree that the large consumers will pick winners to some degree. Today, whether you're a first-tier startup is defined by how much traction you have with the really big guys.
 
-That part seems to be changing with AI a little bit.
+Pat Gelsinger: That's it.
 
-Today, you know, writing an optimized kernel for, I mean, I think Jalapeño was a great example, but they basically said, look, humans can't really program this thing anymore, but an agent swarm overnight can do it.
+Guido Appenzeller: And in any transition period you probably get a bit of an explosion of different approaches. All that said, there's an argument that historically we standardized on one or two architectures because different instruction sets were hard — you had to build multiple compilers. The software complexity dictated that you could only have a small number of hardware platforms. That part seems to be changing with AI. Writing an optimized kernel today — one company basically said, look, humans can't really program this thing anymore, but an agent can do it overnight, and that's all we need. If you can build a chip with certain capabilities, it's now much, much easier to build the software layers and stack that fully leverage it. Could a result be that we get a bit more heterogeneity, just because it's easier to program?
 
-22:08 - Why HBM is a hideous memory
+Pat Gelsinger: I do think it changes where the bottleneck lies. The first bottleneck is the one we already talked about: it still takes a year and a half to build these things. And the second is, not only does it take a year and a half to get them into racks at scale — now, to make them useful: okay, could I borrow 50 billion? You're not talking about small capital expenditures; you're talking about very large ones — data centers, power commitments and so on. I've got to build this thing at scale, and that's going to defy a lot of heterogeneity. Clearly the big players — and we saw this with what NVIDIA did with Groq — are going to own some of that heterogeneity. Two years from now you won't be able to tell that Groq is inside NVIDIA; it'll just be another tech in the stack. So you'll see the architectures hide the heterogeneity inside them, which to me is just fine; that's what layering and abstraction have always done. But I think those forces are powerful ones against exposing a lot of the heterogeneity. It'll get abstracted underneath, but at the end of the day it's still hard to build these things at scale.
 
-I think memory innovation for the first time in 30 years is nigh upon us.
+Raghu Raghuram: You talked about HBM being a hideous memory —
 
-25:15 - How tall can chips get?
+Pat Gelsinger: — but by far the best one we have today. Exactly. Like the thing about democracy.
 
-I'm not a crazy 16, 32 stack kind of guy.
+Raghu Raghuram: I can't recall when the last memory innovation was. It might have been Optane, and I think you probably had something to do with it.
 
-I think there's going to be three, four, five stacks that just end up sort of being the sweet spot.
+Pat Gelsinger: That one died.
 
-42:49 - Energy capacity equals economic capacity
+Raghu Raghuram: That one died — you killed it. So do you think memory innovation is around the corner? Obviously we understand the scale problem, because it's even larger there, but setting scale aside, even from a technology point of view?
 
-48:42 - A VMware for agents
+Pat Gelsinger: Let's look at that history. I've probably personally been associated with at least five different new memory architectures — Optane being one of them — that did not see the light of day. I'm probably familiar with close to a hundred in the industry over the last 30 years. And exactly how many major new memories have we had over the last 30 years? Zero. DRAM, SRAM, flash — okay, what else is there? I do think stacking has come along a little bit, barely. It has been disappointing that we haven't created the next physics that enables low-cost, high-performance, resilient, manufacturable memory. And over the last 30 or 40 years, memory was a terrible industry, because you'd make money one year and lose money for the next four. So let's go do R&D in an industry that makes money one out of five years? It's been so terribly difficult because it's been driven by such violent commoditization cycles. That has changed a little bit over the last five years, though.
+
+Raghu Raghuram: Happy days, man. All three big memory vendors are among the top 20 most valuable companies on the planet.
+
+Pat Gelsinger: Yeah, it's a crazy change. Who would have thought? It's easy to predict the past and a little harder to predict the future, but anybody who looks at AI workloads says AI is a memory world. So I think there's now the combination of capital and technology needs that will justify memory innovation. There are two domains I'm excited about. One: I do think the shoreline bandwidth limitation of HBM is a fundamental issue. We have a company, d-Matrix, that's doing this, and I think others will too, whether it's Cerebras with their techniques — somehow you've got to bring memory and compute together, in more ways than one, in fundamentally new structures. Given that the workload now has so much capital being deployed against it in AI, I think we'll actually be able to break through some of those physics challenges. I've just funded a new memory company as well that's still in stealth, and I'm quite excited about the innovations that will occur in new memories. You're going to see new materials for memory. A lot of people are looking at things like ferroelectrics — finding non-capacitive, high-density memories, memories that can be high-performance, high-density and stackable. People are also looking at low-cost flash for that. I'm not particularly enthusiastic about that idea myself; I think the speed and performance of the underlying cell are somewhat problematic with a flash or an MRAM structure. But I do think memory innovations are coming for the first time in 30 years, it's going to be an exciting space, and we'll have a couple of companies there.
+
+Raghu Raghuram: Hopefully we do them together.
+
+Pat Gelsinger: We'll find some things to do here. But memory innovation for the first time in 30 years is nigh upon us.
+
+Raghu Raghuram: It's amazing what a couple of hundred billion dollars of market cap can do. I think the memory industry has increased its market cap by about two and a half trillion dollars over the last four years.
+
+Pat Gelsinger: I think that's about right.
+
+Guido Appenzeller: To expand a little on the stacking part: if you had to predict how quickly chips will get taller — are we going to go to two and sit there for a while, or will we have the 16-layer sandwich, happily mixing logic, the way HBM is going? How do you see it?
+
+Pat Gelsinger: The problem with stacking is that the value of the stack grows as you go to higher dimensionality, which means the yield of each individual layer in the stacking process can't just go up linearly; it has to go up exponentially. Improving manufacturing and defect characteristics in that exponential way when you get to eight- or 16-high stacks gets so, so hard when you run the math. Your manufacturing flows have to be close to perfect.
+
+Guido Appenzeller: Could you see designs that account for defects? We've seen that in two dimensions for a long time.
+
+Pat Gelsinger: Of course — that was the nature of DRAM: you always had bad-block replacement, spare lines and so on. Not minimizing that at all, but even assuming you're doing that, you still need the yields to be so good. If I have a cracked die, I don't care how much resilience you've built in; it's a bad die. So I'm not a crazy 16- or 32-stack kind of guy. I think nice three-, four-, five-high stacks will end up being the sweet spot — the mid-rises — partly due to manufacturing and partly due to complexity, where the yield sweet spots are. But even there, let's say I now have a great compute tile. How big does that tile need to be? Everything's become reticle-limited now. Can I go to more chiplets with better yield characteristics and better thermals? Then you're going to say, I want a memory stack on that. A two-stack memory, a four-stack memory — I don't see it becoming an eight-stack memory. Then power delivery needs to get integrated, and I want that in the Z dimension too, because I want my power rails coming into this as well. And then I need fairly intelligent RDL layers to distribute signals across the platform. So my canonical thing is already about eight layers thick when you add up all those pieces, and I think that's about all you can do, at least as we understand manufacturing today. And of course we expect optics to come in, so you're going to have more III-V material structures getting closer to this complex, because I want my I/O deeply integrated into that construct as well. My silicon-centric pieces need to be complemented by these III-V materials. How do I get optical connectivity built in? How do I get power rails built in? That is an engineering feat and a manufacturing nightmare, but that's where the physics is taking us. So throwing on a 16-high stack seems crazy to me; a two- or four-high memory stack is probably where the sweet spot will be.
+
+Raghu Raghuram: And you didn't talk about thermal dissipation and the new materials needed for that.
+
+Pat Gelsinger: Yeah. First, you just can't have some of the hotspots you have today, so you have to be more intelligent about how you spread the heat. Then: how do I both get power in and dissipate power out of those environments? By the way, if I can get much more efficient power in at the voltages I want, with much better power responsiveness and voltage regulation, then I don't create as many thermal chimneys. But I do have to think about how to cool these things. What role do new materials play? Diamond and other things have been postulated as ways to do better thermal cooling. How do I get better liquid cooling techniques sitting right on the package with good thermal characteristics? We engineers are becoming plumbers.
+
+Raghu Raghuram: Exactly — you have to worry about mechanicals at chip scale. Let me ask about the opposite phenomenon. Some people have said, let's get the memory off the package and go all-optical between the compute and the memory. That gives you more degrees of freedom and more ways of building things. What's your view on that, as the other extreme from stacking?
+
+Pat Gelsinger: I think the more OEO interfaces — optical-to-electrical-to-optical — you demand in your core compute complex, the harder it is. You're always going to have losses. People are working hard on cleverer techniques to decrease both cost and power — how much power am I wasting going through my DACs and conversions — but I'm not a fan of those. It gives you access to large pools of memory, but I burn a lot of power getting there. Remember, the femtojoules per compute operation is now actually pretty amazingly good; the femtojoules per bit of communication is comparatively a thousand times worse. If I'm spending that much to reach large pools, I don't like those approaches myself. I think they somewhat defy the underlying physics of the solution.
+
+Guido Appenzeller: Then there's the other approach: can we integrate compute and memory directly — shift some of the compute into the memory?
+
+Pat Gelsinger: Exactly. I'm not a fan of those either, because of workloads. Now I have to take my workload and push little pieces of compute into the memory so I don't need as much memory bandwidth into my real compute, and that puts constraints on workloads. Again, I could be wrong here, particularly given the design flexibility and intelligence we can now bring to design. But most PIM ideas have been around for 25 or 30 years, and I think 25 or 30 years from now they'll still be hanging around. Give me great memory bandwidth, high density and high performance, close to the real compute engines. I expect that to be a more generalizable solution across many evolving workloads over time.
+
+Guido Appenzeller: So we're still stuck with denser and denser chips — more logic, more power.
+
+Pat Gelsinger: And I'm a huge fan of optics for all I/O functions. I declared the death of copper about 25 years ago. Eventually I'll be right.
+
+Raghu Raghuram: Not yet.
+
+Pat Gelsinger: One day soon I'll be right. To me, all I/O should go to optical — but the core compute–memory complex, no.
+
+Raghu Raghuram: So the first step in going optical is scale-up, even more than scale-out? What's your view on that — what would be the workload driver, if you will?
+
+Pat Gelsinger: I think the workload driver is the one in front of us. In today's scale-up environments we're putting in tons of copper, and essentially copper is becoming a waveguide that keeps getting shorter. All of a sudden, making my copper work at five meters is more expensive than making optics work at 100 meters. The physics is driving us there today.
+
+Raghu Raghuram: If that's the case, Pat, why haven't we moved there already?
+
+Pat Gelsinger: It's a complex supply chain that has never been tested at scale. I think everybody is now looking at some form of NPO, CPO, et cetera, in the 2028–29 timeframe, because I can't scale up to large compute clusters from my scale-up environment without making that move. NVIDIA has clearly indicated that, and I think everybody else in the industry expects that's the conversion point. In reality, nobody should ever have built an NVL72. It's an engineering marvel and a manufacturing nightmare. It took the industry an extra year and a half to digest that beast. It really is amazing that we were able to get it to scale, but it proved that had we had a more mature optical supply chain, we'd be much more advanced today — better scale-up environments, better power, better cost, better energy. We didn't have the maturity of the optical supply chain, and those things are not trivial to resolve. There's a lot of work to happen, but I think 2028–29 is when the capacity arrives.
+
+Raghu Raghuram: The good thing is we have decades of experience with how optics work in networking, and much of that will translate nicely.
+
+Pat Gelsinger: Yeah, it will, but all of a sudden these things have to work at 10-million-GPU scale. Wow. They have to fit in packages, and there's just a lot there. Many forms of optics don't like bad thermals — and guess what, bad thermals are the nature of the game. We have thermal problems, package integration problems, we didn't have enough laser capacity in the industry — a bunch of things. But I don't see anything fundamental there, just a lot of hard work at this point to pull all those pieces together.
+
+Raghu Raghuram: In terms of network architecture, does this also mean we move to circuit-switched networks, just because you can't scale these very fast optical packet networks indefinitely?
+
+Pat Gelsinger: I like how Nick McKeown — another Stanford professor, a good friend of mine, and you know him too, Guido — describes it. We built networks to handle any packet going anywhere with no knowledge of where it might go. When you think about AI, it's almost exactly the opposite: we're doing flows that are large and predictable. That very description looks more like a circuit switch than a packet switch. So with this confluence — moving to optics and having a workload that's far more predictable, manageable and large in flow — I do see that we'll go all the way to bringing optics into the compute complex, and all the way to OCS, some form of optical circuit switching, with more predictable flows. That's the right architecture. And then is that scale-up or scale-out? To some degree it dissolves the boundary. If my scale-up is big enough, I'm just asking: what's the radix of my scale-up environment, and when do I want to hook it up to other really big clusters? To me that ends up being a pretty beautiful answer for the future. But I'm looking at somebody who's way more expert on this than I am.
+
+Guido Appenzeller: No — look, I've always found scale-up versus scale-out to some degree an artificial distinction. You understand where it comes from: we use different protocols, one is the front-end network and one is the back-end network, so practically speaking right now it's a big difference. But take a step back and look at it from a system architecture perspective, and it achieves the same goal with slightly different flavors and protocols, which I think will converge over time, especially for AI training workloads.
+
+Raghu Raghuram: Although for inference —
+
+Pat Gelsinger: Now, I'll go further: does your brain stop learning? Another characteristic of workload evolution is that I think the separation of training and inferencing will become less pronounced going forward, not more. That's a bit of an argument against more and more heterogeneous architectures. With continuous learning, I think there'll be algorithmic domains where continuous learning becomes the nature of the algorithm — where I do want my inference environment updating my model weights, because that gives me more and more refinement — with workloads moving into less formalized training environments with smaller data sets.
+
+Raghu Raghuram: But the number of nodes you need to be useful — there's a smaller diameter for inference than for training today.
+
+Pat Gelsinger: Not totally, but today that's true.
+
+Guido Appenzeller: I still think there might be a role for heterogeneity from a different angle: different types of AI workloads require very different underlying hardware. Some are more compute-limited, some more memory-bandwidth-limited. If I have a small diffusion workload, the optimal card looks very different from the top-of-the-line card for a 50-trillion-weight LLM that needs massive scale. I think there's some room for that.
+
+Pat Gelsinger: There's some room for that, but now I'm talking about putting a million GPUs to work in my data center, and you say, for that particular diffusion workload I should really use something optimized this way, so I'll put in a thousand of those, and for that workload I need two thousand of these... All of a sudden you lose the flexibility of scale. How much does it cost me to manage, upgrade, connect, handle faults — all those things?
+
+Guido Appenzeller: The agents will do all of that; that's no longer a problem.
+
+Pat Gelsinger: Yeah, thank you. Everything gets easy.
+
+Raghu Raghuram: So we've talked about compute, memory and networking. Power is the next one. You touched on it with vertical power delivery on the chip, but there's 800-volt DC, there's power delivery to the data center, there's an entire ecosystem all the way to power generation, and the sociopolitical dimensions of that. Where does innovation come in, and where is it pure execution?
+
+Pat Gelsinger: If we start from first principles: our nation has done a terrible job with energy capacity. We went through 10 to 15 years where we were taking coal offline at the rate we were adding renewables, so the nation was essentially flatlined in overall energy capacity. Not good. Because in an AI digital age, energy capacity equals economic capacity. So essentially my economic capacity as a nation was flat for 15 years, if you buy that thesis, which I think is very provable. Over the last five years we've seen this enormous push to give me more capacity, but even with that we've gone to increasing our national energy capacity maybe 4% per year — from essentially zero to, wow, four percent. That's a bad situation. We just need more energy capacity, number one. Obviously we have some companies in that space; we've talked about nuclear uprating, with Alva. Nuclear baseload is a fabulous thing we want to build more of. Unfortunately, all our renewables have deep dependencies on China, which is very unfortunate for us, and gas turbine lead times are, what, only eight years at this point. So we have a difficult environment to scale up rapidly, but we just need more capacity, and fundamentally energy capacity dampens how fast we can go on AI. Why build a new data center and buy a million GPUs if I can't power them? I think you're going to see more and more defaults on many of those data center projects because the energy won't be there.
+
+Raghu Raghuram: So you think it'll be a significant headwind?
+
+Pat Gelsinger: I think it will be a headwind, and I think you're already starting to see some of the first indicators of that. The comment that just came out, I think, is the first of many you'll see. It's not that we'll slow down as a result, but people will start asking: do I really have the energy to underwrite the capital commitments I'm making — for cement, for data center racks, for GPU purchases? So it's going to be an upper bound. We need more energy capacity, we need more innovation in it, and we need more of those supply chains in the US. Nuclear is one of my favorites: when was the last nuclear reactor that came online in the US? It's 20 years ago. We just stopped a very capable industry. We also need to get much more efficient at delivering power through the networks, and, as you said, moving to 800-volt DC data centers, absolutely — being able to eliminate so many conversion steps that exist for historical and standardization reasons. We've got to fix this. With 800-volt DC, the revenge of Edison is upon us, I like to say. We need better power conversion. We have a couple of companies there; one of those, Vertical, I think will be a killer technology — being able to do 800 to 48, or 800 to 12, or even 800 to 5 in one conversion step, which gives you a lot more energy. Then there are solid-state transformers, switches, et cetera — rebuilding the power delivery network. I think there'll be a lot of innovation; power's cool again. And you'll need all of that in the cooling systems as well — turbines and refrigerants suddenly become exciting new technologies again. So for all of us hardware guys this is like a renaissance.
+
+Raghu Raghuram: It's been 25 years since I had to go back and think about Carnot efficiency. Good stuff. How does that first law of thermodynamics work again?
+
+Pat Gelsinger: Exactly. It's going to be an exciting time that way. But we also need to change the physics, because CMOS hasn't improved — the essential power per flop has been flat for the last five generations of NVIDIA chips. Not okay. That's where some of these things come in: we have a superconducting company, Snowcap, which affords the opportunity to fundamentally change the physics — a thousand times better power-performance. So I do think some of those innovations are upon us in the near future.
+
+Raghu Raghuram: I've been a terrible time manager here for the past hour. There are so many topics to cover, but let's cover at least one more — you're in charge now. So, VMs are back. How do you think about the future of VMware?
+
+Guido Appenzeller: I feel excluded from this conversation — I was going to talk about networking as well, but we don't have time.
+
+Pat Gelsinger: Hey — every innovation has always led to the next abstraction. What's new in our world today? Data structures, algorithms, abstractions — we bring it back to those foundations. I think the virtual machine abstraction, whether done at the infrastructure level or the application level, is still a foundational abstraction model that deserves to always have a place in the compute hierarchy.
+
+Raghu Raghuram: So should one of us go back and run VMware?
+
+Pat Gelsinger: That's what I told... it's hard to go back. And think about it: at VMware we essentially managed every aspect of the computing hierarchy — you managed the workload, the network, the storage, the system — and how do you abstract those? In the AI context, think about these agent swarms. Who's going to manage the agents? Who's going to create the security profiles around all the agents? Who's going to manage the performance of the agents? Essentially every fundamental element of virtualization and management needs to be recreated in this next computing hierarchy, and there are going to be lots of wonderful companies that break through in how those things get done. Do you want to end it on networking?
+
+Guido Appenzeller: Actually, I'd love to stay with VMs for a second. The most interesting thing for me is that we're now building VMs to be usable by agents rather than by humans, and what we've seen in some other companies is that this changes a lot: the form factor, how you market them — you're talking to an agent who makes the pick for you — how much complexity you can have, how quickly they start up. Humans are a lot more patient than agents. So if you had to rebuild VMware today, how would it look different — VMware for agents?
+
+Pat Gelsinger: Does there need to be a VMware for agents and one for humans? To me, yes, in the sense that I need humans setting the policies for the agents. I think it's an important point, because there needs to be — I'll use Dario's constitution — guardrails, the ability to set policies. Then you really say every aspect of a virtual machine as we know and love it today is servicing agents, as opposed to servicing hardware and humans. That becomes your fundamental design constraint on this side: how do I make agents great, how can I make them secure, how can I make them performant, how do I abstract them, how can I migrate them? All of those things will have new embodiments — vMotion for agents, just like every one of these will have a new embodiment for them. But I also need to think about how humans set the policies, describe the constitutions, get the dashboards, et cetera. That's where the interesting thing is: you need to do both, not just one. The fundamental hard design work we did for virtual machines was abstracting the hardware in a performant way for applications or operating systems. Here it's abstracting the hardware and operations for agents. It's a fundamental shift in whom you're serving.
+
+Raghu Raghuram: That was great. Thank you so much, Pat, for coming in, and we'll do it again.
+
+Pat Gelsinger: Two of my favorite people, any time.
+
+Raghu Raghuram: All right, that was awesome. Thank you.
+
+[Outro]: Thanks for listening to this episode of the a16z Podcast. If you liked this episode, follow us on YouTube, Spotify and X at @a16z, and subscribe to our Substack at a16z.substack.com. As a reminder, the content here is for informational purposes only, should not be taken as legal, business, tax or investment advice, or be used to evaluate any investment or security, and is not directed at any investors or potential investors in any a16z fund. a16z and its affiliates may maintain investments in the companies discussed in this podcast. For more details, including a link to our investments, please see a16z.com/disclosures.
