@@ -1,0 +1,336 @@
+https://blog.doyensec.com/2026/10/13/Sfape.html
+
+玩转 SFAPE：在隔离用户态里拿到代码执行
+
+2026 年 10 月 13 日 - Adrian Denkiewicz 发布
+
+人们很容易把 Windows 想成一个简单模型：用户态和内核态。如果一个漏洞让用户态进程控制了内核，游戏就结束了。
+
+很长一段时间确实如此。受保护进程、SMEP、PatchGuard 等缓解措施抬高了门槛，但基于虚拟化的安全（Virtualization-Based Security，VBS）给这个模型又加了一维，把整体设计复杂得多。有些代码并不只是从用户态跨到内核态，而是跨进另一个虚拟信任级别（Virtual Trust Level，VTL）；在那里，普通内核已不再是系统里最受信的组件。从 VTL0 的视角看，一次调用可能就像消失进一块连内核权限都无法窥探其私有内存的区域。
+
+VBS 借助 Windows 虚拟机监控程序把系统拆成多个虚拟信任级别。这种分割与用户态/内核态的区分是正交的。在 x64 上，两个 VTL 都可以包含 ring 3 和 ring 0 代码。在 VTL1 世界里，我们分别谈论隔离用户态（Isolated User Mode，IUM）与安全内核（Secure Kernel，SK）。
+
+Windows 的这一部分已经存在多年，主要用于支撑 Hypervisor-Protected Code Integrity、Credential Guard 这类强力特性。不过直到最近，VTL1 基本上仍是 Microsoft 代码的专属地带。我们不知道有任何第三方 trustlet。从技术上讲，trustlet 不过是又一个带特殊策略、元数据和签名的 PE 文件。难就难在签名——Microsoft 根本不提供给自定义 trustlet 正确签名的途径。
+
+局面在 Microsoft 引入第三方 VBS enclave 支持后发生了变化。这些是由普通 VTL0 进程加载、却在 VTL1 隔离地址空间里运行的自定义库。宿主进程控制何时加载库、调用哪些导出，但不能直接读写 enclave 的私有内存。这些库同样需要特殊签名，不过这次有一条官方路径：通过 Azure Artifact Signing（前称 Trusted Signing）获取。流程仍然很挑剔，也许正因为如此，我们找不到广为人知的第三方 enclave。另一方面，若干 Windows 组件已开始依赖 enclave DLL 做宿主证明、数据密封等。
+
+本文检视 Windows 自带的一款 VBS enclave 中的安全漏洞。我们将展示一个简单原语如何被用于内存破坏攻击，进而解锁多种其他原语，并实质上取得对该 enclave 实例的完全控制。能够复用已有的 VTL1 代码，会成为实验操作系统隐藏部分、探索 IUM、乃至潜在攻击安全内核的有力工具。
+
+VBS Enclave
+
+先进入 VBS enclave 的世界。
+
+VBS enclave 提供一个小型隔离执行单元。它隶属于普通的 VTL0 宿主进程，但其代码在 IUM 中执行，私有内存受保护，VTL0 代码无法直接访问。Microsoft 把它描述为基于软件的可信执行环境。它不需要 Intel SGX 或 NPU，唯一相关的硬件依赖就是 VBS 本身所需的那些。
+
+从应用角度看，enclave 是一个特殊构建的 DLL。宿主用以下简化 API 序列创建、加载、初始化并调用 enclave：
+
+```
+CreateEnclave
+    -> LoadEnclaveImageW
+        -> InitializeEnclave
+            -> CallEnclave(export, one_parameter)
+```
+
+宿主进程创建 enclave 分配，加载一个主镜像（主 enclave DLL）及其获批依赖，初始化 VTL1 线程，并通过 CallEnclave 调用导出函数。
+
+次级镜像提供受限运行时、enclave 内使用的底层操作系统接口，以及一些密码学能力。主要依赖是 vertdll.dll，角色大致类似于 enclave 代码眼里的 ntdll.dll。它包含 VTL1 调用分发器、运行时助手，以及对安全内核服务的包装。其他常见次级镜像包括 ucrtbase_enclave.dll 和 enclave 专用密码库。enclave 的 API 面非常受限：不直接暴露文件系统、网络或跨进程通信 API。enclave 代码必须通过 callout 把这类操作委托给其 VTL0 宿主。这显著缩小了 enclave DLL 上下文的攻击面。
+
+即便 enclave DLL 理论上可以拒绝陌生宿主进程，实践中分析过的多数 enclave 并不会这么做。因此宿主进程可以对 enclave DLL 做各种实验，并向其导出喂入恶意输入。
+
+必须记住：运行在 VTL0 的宿主进程不能直接访问 enclave 内存。它必须把 enclave 当作远程服务，通过导出调用传递请求结构。内存关系是不对称的。除非被 enclave 策略限制，enclave 代码可以自由读写其 VTL0 宿主的内存，就像普通 DLL 一样。通常由宿主提供指针，enclave 在其上工作。这也意味着 enclave 从更不受信的世界接收数据，必须检查每个指针和嵌套缓冲区是否真的指向预期数据。失误会导致 TOCTOU（time-of-check/time-of-use）漏洞：例如，宿主控制的结构可能在校验后被修改；嵌套指针可能指向 VTL1 数据；长度算术可能回绕，等等。
+
+有了这个模型，再看此前关于 VBS enclave 攻防用途的研究。
+
+自带易损 Enclave（Bring Your Own Vulnerable Enclave）
+
+2023 年，Google Chrome 平台安全团队的 Alex Gough 报告了 Edge 的 prefs_enclave_x64.dll 中的 CVE-2023-36880。其 SealSettings 与 UnsealSettings 导出接受指针时，没有检查它们指向 VTL0 还是 enclave 私有内存。把两个操作串起来，就能在 enclave 内获得任意读写原语。这意味着对进程内存中 VTL0 与 VTL1 部分的无限制访问。后来的修复不充分，留下了 TOCTOU 问题，另报为 CVE-2024-21423。
+
+即便最新版 prefs_enclave_x64.dll 已修补这两个漏洞，「互联网上没有什么会真正消失」。多亏 VirusTotal 的文件归档，旧的易损 enclave 也没丢。目前 Windows 并没有像 Microsoft Vulnerable Driver Blocklist 那样专门针对易损 enclave 的封禁列表。证书吊销或代码完整性策略更新可以阻止旧镜像加载，但我们在多台近期系统上仍成功使用了易损构建。
+
+这一特定易损 enclave 镜像被两篇出色的公开攻防研究使用过。
+
+Akamai 的 Ori David 演示了 Mirage：利用易损 enclave 的私有内存存放载荷数据，使之超出 VTL0 端 EDR 内存检查的触及范围。Mirage 项目也是找到该易损 enclave 镜像副本的地方。
+
+在 Outflank 发表的研究中，Matteo Malvica 与 Cedric Van Bockhaven 把 Edge 的读写原语变成了 VTL1 代码复用。他们在两篇系列博文中描述了这项工作：第一部分与第二部分。他们升级了 Outflank C2 implant，实现了一种 sleepmask：暂时从 VTL0 解除提交 implant，在 VTL1 内休眠，恢复后再继续执行。
+
+这表明攻破一个 enclave 所能提供的远不止其私有数据访问。它可能成为隔离用户态内可复用的执行环境，而加载该 enclave 的进程还能从（VTL0 视角下的）有趣「副作用」中获益。
+
+他们的工作确立了若干重要事实：
+
+- 任何进程都可以加载并使用合适的、已签名的主 enclave 镜像；
+- CallEnclave 只接受出现在 vertdll 有效目标表中的目标；
+- 在所检配置中，主、次 enclave 镜像有可预测的相对布局；
+- 有效目标元数据可写；
+- VTL1 的 Arbitrary Code Guard 堵住了为 shellcode 分配全新可执行内存的显式路线；
+- NtContinue 可以恢复受控的 VTL1 寄存器上下文，从而把单参数的 CallEnclave 入口变成更有用的既有代码调用原语。
+
+我们在测试配置中复现了这些结果，并在 prefs_enclave_x64.dll 内确认了代码复用原语。在实验跨 enclave 内存访问时，我们开始查看其他 VBS enclave。
+
+其他 VBS Enclave
+
+Windows 生态里的 VBS enclave 并不多，但名单在增长。
+
+除了 Edge 的 enclave（其实只用来加密静态配置数据），Microsoft 还为以下功能自带 enclave 组件：
+
+- SQL Server 的 Always Encrypted 特性（Aetm-enclave.dll），
+- Windows Search（sfsenclave.dll），
+- Microsoft Defender SmartScreen 的增强钓鱼防护（SFAPE.dll），
+- Windows Recall 功能（snapshot_support.dll、settings_support.dll，以及大得多的 storage_support.dll）。
+
+另一个有趣实例是与 System Guard Runtime Monitor 和证明相关的 sgrmenclave_secure.dll。不过在我们实验室里，仅有有效的 Microsoft Authenticode 签名不足以加载收集到的任一构建；在当时生效的策略下，代码完整性拒绝了它们。
+
+SFAPE
+
+有一个 enclave 很扎眼。增强钓鱼防护既安全敏感，又很容易亲眼看到效果。
+
+如果你曾把 Windows 密码打进记事本（你说这一开始就很蠢？），在正确的 Windows 11 策略开启时，Defender 的增强钓鱼防护应立刻抓住它。操作系统识别出用于登录的密码刚被放进不安全应用，并警告你删掉。
+
+SFAPE.dll 就是 Microsoft Defender SmartScreen 这部分背后的 VBS enclave。该特性监控键入或粘贴的文本，可对钓鱼页面、密码复用，以及记事本或 Microsoft 365 应用这类不安全应用发出警告。密码在登录时被拦截，并以哈希形式表示在 enclave 内，以便后续安全地比较键盘或剪贴板输入，而不暴露原始凭据。
+
+无需特殊硬件就能看到产品工作流：
+
+- 启用增强钓鱼防护和不安全应用警告。
+- 用密码而非 Windows Hello 登录 Windows 11。
+- 打开记事本并输入你的 Windows 密码。
+- Windows 应显示「存储密码不安全」一类警告。
+
+这正是 enclave 被设计来承担的工作负载。即便 VTL0 世界已被攻破，哈希后的凭据也应保持私密，判定两个值是否匹配的代码也应保持完整性。
+
+注意 SFAPE.dll 并不是由普通 Defender 进程加载。其 VTL0 宿主组件是 SFAPM.dll——一个导出 SpLsaModeInitialize、由 lsass.exe 加载的 LSA 包。以 NT AUTHORITY\\SYSTEM 运行时，LSASS 创建 enclave，把 SFAPE.dll 加载为主 VTL1 镜像，并通过 CallEnclave 与之通信：
+
+在当前 Windows 11 系统上，LSA 保护一般默认开启（不过某些策略、兼容性问题和安装历史会影响状态）。LSA 保护阻止普通进程——包括以 SYSTEM 运行的进程——读写或向 LSASS 注入代码，除非它们具有所需保护级别。总之，不应能嗅探 LSA 与 enclave 之间的通信（这与影响 Windows Recall 的有趣 TotalRecall Reloaded 问题形成对照）。
+
+四字节写
+
+本研究全程使用的构建为：
+
+```
+SFAPE.dll      10.0.26100.8875  84,192 bytes
+SHA-256        AEFEDEB6A7F84679C192D3C19F6C08C3E508222574AE5C9E3D0E10FD2DECE4AF
+vertdll.dll    10.0.26100.8972  216,408 bytes
+SHA-256        1B5B909DCB4D9DC73A036DDFB9B97A80DA54925DBA72F2C0CCE36C58EDF5D33A
+host OS        Windows 11 25H2, build 26200.8973
+```
+
+SFAPE 导出十个函数：CharactersInput、ClearCc、ClipboardInput、CloseCcHandle、GetCcAttributes、Initialize、MeasurePerformance、SealUnsealCredentials、SetCcTimeStamps 和 UserCredentials。
+
+根漏洞在导出的 Initialize 函数中。相关反编译的简化版大致如下：
+
+```
+...
+status = (uint32_t *)((uint8_t *)request + 0x30);
+configuration = request->configuration;
+callout       = request->callout;
+context       = request->calloutContext;
+table         = request->callbackTable;
+if (g_initialized) {
+    *status = STATUS_ALREADY_INITIALIZED; // 0xC0000510
+    return status;
+}
+EnclaveGetEnclaveInformation(..., &g_enclaveInfo);
+if (IsInsideEnclave(request, 0x38))
+    return STATUS_CONFLICTING_ADDRESSES;
+...
+```
+
+第一次调用时，函数对请求和许多嵌套回调指针做大量校验。再次调用时，g_initialized 已置位，于是 SFAPE 通过 request + 0x30 写入错误状态并返回。值得注意的是，这一次没有地址校验——地址可以属于 VTL0 或 VTL1。调用方宿主进程控制 request 参数。因此，在合法初始化之后，该函数给出如下原语：
+
+```
+write32(request + 0x30, 0xC0000510)
+```
+
+那么……这真的有影响吗？称之为任意写会严重夸大。目的地受我们控制，但值是固定的，地址必须容忍周围的请求形态，而且只写四个字节。乍看之下，并不清楚还能借此达成什么。
+
+在把它当成无用的 DoS 原语丢掉之前，先看看 SFAPE 如何区分宿主指针与 enclave 指针。
+
+打破范围校验器
+
+范围校验器用来保护其他导出。在操作宿主提供的指针之前，SFAPE.dll 用一个通用分类器判断地址范围是否与 enclave 私有内存重叠：
+
+```
+bool IsInsideEnclave(uint64_t address, uint32_t size)
+{
+    uint64_t end = address + size;
+    if (end < g_enclaveBase ||
+        g_enclaveBase + g_enclaveSize < address)
+        return false;
+    return true;
+}
+```
+
+精确的反编译输出没这么好看，但相关逻辑就是这样。只有计算出的范围落在 enclave 内存之外时，指针才会被接受。
+
+在我们的构建里，g_enclaveBase 存在镜像 RVA 0xE868，其后是 RVA 0xE870 处的 g_enclaveSize。
+
+这给了我们的 write32 原语一个有用目标。记住 g_enclaveBase 是 64 位值，其高 DWORD 位于 RVA 0xE86C。把重复初始化请求放在 RVA 0xE83C，其 +0x30 处的 status 字段正好落在那个高 DWORD 上。于是我们可以确定性地把高 DWORD 覆写为 0xC0000510，并破坏整个指针。之后，普通 VTL1 指针会被比较得好像落在缓存的 enclave 范围之外。我们成功打破了 SFAPE 的 IsInsideEnclave 守卫函数所用的逻辑。
+
+这样做之后，我们解锁了什么有用的东西吗？
+
+升级我们的原语
+
+击败范围校验器后，另一个漏洞变得可达。ClipboardInput 接受指向宿主控制的 UNICODE_STRING 的指针。其包装器校验描述符，并按 MaximumLength 字节检查 Buffer。但工作函数使用 Length，并在清零明文之前再次重读 Buffer 与 Length：
+
+```
+// Wrapper
+ValidateHostRange(text, sizeof(*text));
+ValidateHostRange(text->Buffer, text->MaximumLength);
+// Worker
+HashClipboardText(text->Buffer, text->Length);
+InvokeTelemetryCallout(...); // telemetry callback sync point
+SecureZeroMemory(text->Buffer, text->Length);
+```
+
+描述符在整个调用期间仍留在可写的 VTL0 内存中。遥测回调在哈希之后、最终 SecureZeroMemory 之前提供了确定性同步点。当 enclave 线程阻塞在该回调中时，宿主替换 Buffer 与 Length，再允许工作函数继续。最终原语变成：
+
+```
+memset(ptr, 0, length)
+```
+
+我们还发现，SFAPE 在一个类似红黑树的全局映射中维护凭据上下文对象。指向该映射的指针存在 RVA 0xE060（因此其高 DWORD 在 RVA 0xE064）。我们可以用上述原语清掉这四个字节。这只有在原始映射指针的高 DWORD 非零时才按预期工作。否则清零会让指针不变，我们就无法枢转到另一块内存区域。
+
+```
+original map pointer:       0xHHHHHHHHLLLLLLLL
+after memset(..., 0, 4):    0x00000000LLLLLLLL
+```
+
+低 32 位保持不变，产生低 4 GB 范围内的不同地址。为让枢转生效，我们的宿主进程预留一块镜像 enclave 分配的 VTL0 缓冲区，并填满指向一个小型合成树节点的指针。喷洒每一个对齐的 qword，意味着我们不必知道原始堆指针的低 32 位。
+
+若干导出的 SFAPE 函数接受 32 位凭据上下文句柄，通过这个类似红黑树的映射解析它，然后信任结果节点中的对象指针。节点包含先前由 UserCredentials 返回的真实句柄，但其对象字段位于 VTL0 且仍受我们控制。因此我们是在重定向合法句柄的解析，而不是凭空发明一个句柄。
+
+这打开了另一条路。GetCcAttributes 最终执行两次读，其包装器把结果拷进 VTL0 响应：
+
+```
+request->attribute2A8 = *(uint64_t *)(object + 0x2A8);
+request->attribute2B0 = *(uint64_t *)(object + 0x2B0);
+```
+
+如果选对地址，例如：
+
+```
+object = source - 0x2A8
+```
+
+就能把它变成选定的 16 字节 VTL1 读原语。
+
+类似地，SetCcTimeStamps 提供逆操作，得到受控的 64 位 VTL1 写：
+
+```
+*(uint64_t *)(object + 0x2B0) = request->controlledQword;
+```
+
+两个原语都有约束。对象助手在到达有用字段之前会访问锁簿记。对写目标 ptr，PoC 使用：
+
+```
+object = ptr - 0x2B0
+write32(ptr - 0x29C, 0xC0000510)  // object+0x14: nonzero lock owner
+SetCcTimeStamps(real_handle, controlled_qword)
+```
+
+额外的 write32 调用让助手跳过独占锁获取，新的写原语按预期工作。总之，它们不是干净、通用的 memcpy 替代品，但在我们挑选合适内存位置或预先塑造其内容的前提下可以成功使用。
+
+回顾至此，利用链如下：
+
+```
+repeated Initialize
+        |
+        v
+fixed write32(0xC0000510)
+        |
+        v
+cached enclave-base corruption
+        |
+        v
+corrupted IsInsideEnclave
+        |
+        v
+ClipboardInput TOCTOU -> memset(address, 0, length)
+        |
+        v
+CC-map pivot -> synthetic object
+        |
+        +-------------------+
+        |                   |
+        v                   v
+     read16              write64
+```
+
+有效目标表
+
+有了受控的读写原语，下一步显然是拿到代码执行。
+
+知道一个有用的 VTL1 函数地址还不够。当请求 VTL1 代码时，CallEnclave 进入 vertdll，LdrpIssueEnclaveCall 对照一张称为 VertValidTargetTable（VTT）的倒排已批准目标列表检查所请求地址。不在表中的指针直接被拒绝。这有点像标准的 Control Flow Guard 位图，但这次元数据可写。
+
+对钉死的 vertdll 构建，相关可写全局量为：
+
+```
+vertdll + 0x2CCB0  uint32 target count
+vertdll + 0x2CCB8  uint64 target-table pointer
+```
+
+通过替换该表，我们可以授权任意既有函数并调用它们。VTT 检查本身并不要求表项是导出函数起点，因此也可以使用 ROP gadget。
+
+我们的 PoC 并不覆写原始 VTT，而是在 SFAPE 的 .data 段末尾一块已验证可写区域创建替换表。宿主进程不能直接写那块私有内存，因此每个 qword 都通过 write64 原语写入。然后把表指针和计数重定向到这块新区域。原始指针和计数被保存，以便稍后恢复到干净状态。
+
+到这一步，我们可以调用主 SFAPE 镜像及其获批次级镜像（包括 vertdll）中的既有函数。仍有一个别扭限制：enclave 导出的格式是 void *function(void *context)，所以 CallEnclave 直接只给我们一个参数的控制权。enclave 导出知道如何从所供对象中抽出更多数据，但多数其他函数就是需要更多参数。
+
+使用 NtContinue 可以去掉这一限制。该技术最初在 Outflank 的文章中描述。
+
+捕获一条回家的路
+
+NtContinue 按 Windows CONTEXT 结构描述的内容恢复寄存器。控制 RIP、RSP、RCX、RDX、R8、R9 等 CPU 寄存器，就能用正常的 x64 调用约定调用既有的 VTL1 例程。前四个参数放在寄存器里，额外参数走栈。
+
+任意伪造栈或许够做一次 gadget 序列，但目标返回后，enclave 分发器仍期望其真实帧。猜测或重建会相当难。更干净的办法是直接捕获它。
+
+PoC 先把 RtlCaptureContext 加进新 VTT，并在活动的 VTL1 线程中调用它。捕获的状态包含真实的私有栈指针，以及 LdrpIssueEnclaveCall 内的正常返回点。然后在 SFAPE 的可写 VTL1 填充区构造 x64 CONTEXT 前 0x2A0 字节的私有副本。
+
+对简单调用，重要规则是：
+
+controlled RSP = captured RSP - 8
+
+一旦我们的任意函数执行完毕，它会看到有效的返回地址，并返回到未被动过的活动分发路径。控制安全回到 VTL0（其上下文未被修改），我们可以继续调用其他导出。这还不是 ROP 链，但可以改造成 ROP。与此同时，我们当前的接口实际上更优雅、更好维护。内部助手支持零到十六个参数。
+
+为确认控制得当，我们跑了若干 vertdll 测试。我们调用了 GetCurrentThreadId、GetEnabledXStateFeatures、RtlCompareMemoryUlong 等函数，并验证了真实的参数控制与预期输出。
+
+安全内核辅助的升级
+
+原先的 read16 与 write64 足以搭建 VTT 与续接链，但有一些约束。一旦 NtContinue 调用机制跑通，vertdll 本身提供了干净得多的接口。
+
+位于 RVA 0x4090 与 0x40B0 的两个包装器进入一个非导出的 syscall 桩：
+
+```
+mov r10, rcx
+mov eax, 08000019h
+syscall
+ret
+```
+
+这两个包装器对应：
+
+```
+EnclaveCopyIntoEnclave(vtl1Destination, vtl0Source, length);
+EnclaveCopyOutOfEnclave(vtl0Destination, vtl1Source, length);
+```
+
+安全内核服务 0x08000019 验证 enclave 侧范围属于当前 enclave 分配，且外部范围落在其外。拷入还额外要求 VTL1 目的地可写。
+
+这解除了我们此前拷贝/写原语上的约束。
+
+修复
+
+Microsoft 在其九月补丁星期二更新中处理了所报告的问题。我们对比了受影响的 SFAPE.dll 10.0.26100.8875 与打过补丁的 10.0.26100.9444（包含在 2026 年 9 月 8 日发布的 KB5124008 中）。
+
+在更新后的 SFAPE 组件里，重复初始化路径在写入 STATUS_ALREADY_INITIALIZED 值之前会校验请求范围。这一改动阻断了我们演示链中的初始写，从而阻止依赖它的后续内存破坏步骤。
+
+本可作为攻击替代起点的 ClipboardInput，现在会拒绝空输入与不一致长度，把 MaximumLength 限制在 512 字节，并把输入字节拷进 enclave 内存。我们的静态对比表明，这些改动消除了演示中使用的描述符竞态。
+
+最后，更新后的 VBS 代码完整性策略拒绝所有更旧的 SFAPE.dll 镜像，这反映在更新后的 VbsSiPolicy.p7b 文件中。我们开始这项研究时假定：即便 Microsoft 已发补丁，易损 enclave 仍可能可用。对 SFAPE 而言事实并非如此。不过易损的 Edge enclave 仍未被该策略封禁，尽管漏洞影响大体类似。不清楚这是有意决定还是疏漏。
+
+时间线
+
+| Date | Event |
+|---|---|
+| 2026-08-07 | 向 MSRC 报告 Initialize 固定值写漏洞。 |
+| 2026-08-11 | 告知 MSRC：初始原语已扩展为测试 SFAPE enclave 内的完整 VTL1 代码执行。 |
+| 2026-09-08 | Microsoft 发布 CVE-2026-83498 的修复。 |
+| 2026-09-21 | Microsoft 确认问题，并告知我们这是内部已识别问题的重复（CVE-2026-83498）。 |
+| 2026-09-25 | 公告更新，亦致谢 Doyensec。 |

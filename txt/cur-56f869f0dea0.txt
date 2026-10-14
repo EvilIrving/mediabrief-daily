@@ -1,0 +1,9 @@
+https://martinfowler.com/articles/are-harnesses-worth-the-cost.html
+
+行为 harness 值得付出代价吗？ ｜ Martin Fowler / Naresh Jain ｜ 文章 ｜ [原文链接](https://martinfowler.com/articles/are-harnesses-worth-the-cost.html)
+
+Naresh Jain 在 Martin Fowler 站点发文，对比编码 agent 在有无「行为 harness」时构建同一套产品发现 BFF。任务要协调 HTTP 语义、下游 Order API、Kafka 发布，以及超时变 202、瞬时失败 429、依赖故障 503 等容错细节。Harness 借用 Birgitta Böckeler 的框架：引导（OpenAPI/AsyncAPI、示例、开发 skill）提前纠偏，传感器（契约检查、HTTP 断言、副作用）事后反馈；内环只服务带 harness 的开发，外环用独立的 178 个验收测试评测，答案从不进内环。工具侧用了 Specmatic。
+
+结果打脸了「harness 必省钱」的预期。前沿模型 GPT-6 Sol（低推理力度）无论有无 harness，10 次全过——Claude Sonnet/Opus 4.6、Gemini 3.8 Flash 探索性跑次也能无辅助一枪过——但 harness 让 Sol 的 token 涨约 10.5 倍、耗时近 3 倍、费用约 7 倍。成本型 GPT-6 Luna 无 harness 只 3/10 成功（功能检查仍过约 94.8%），加上后 10/10；虽多烧约 3.9 倍 token，单次估算仍比无 harness 的 Sol 便宜约 33%（0.273 对 0.406 美元）。失败多卡在延迟创建的超时边界、监视链接缺失、Kafka 的 __TypeId__ 头或 null 可选字段、以及精确错误码这类协议接缝。
+
+他把 harness 称作「可执行注意力」：需求可以写得很清楚，却仍在实现中失去影响力；传感器变红时把漏掉的细节拉回焦点。修订后的假设是：变的不是要不要独立传感器，而是何时跑——成本型模型开发全程挂着；前沿模型保留最终门禁即可。他也划清边界：数字不含写维护契约的前期成本，样本只是一份异常详细的从零 Java 服务，引导与传感器的贡献也拆不开，不宜外推。

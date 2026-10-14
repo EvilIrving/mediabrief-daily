@@ -119,6 +119,58 @@
   "added_at": "2026-10-14T10:49+08:00"
  },
  {
+  "id": "cur-39ece21c8dc3",
+  "kind": "curated",
+  "type": "article",
+  "source": "Doyensec",
+  "title": "Playing It SFAPE: Code Execution in Isolated User Mode",
+  "link": "https://blog.doyensec.com/2026/10/13/Sfape.html",
+  "date": "2026-10-13",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-39ece21c8dc3.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-39ece21c8dc3.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-39ece21c8dc3.orig.txt"
+   }
+  ],
+  "title_zh": "播放SFAPE ：在隔离用户模式下执行代码",
+  "added_at": "2026-10-14T10:51+08:00"
+ },
+ {
+  "id": "cur-56f869f0dea0",
+  "kind": "curated",
+  "type": "article",
+  "source": "Martin Fowler",
+  "title": "Are Harnesses Worth the Cost?",
+  "link": "https://martinfowler.com/articles/are-harnesses-worth-the-cost.html",
+  "date": "2026-10-13",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-56f869f0dea0.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-56f869f0dea0.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-56f869f0dea0.orig.txt"
+   }
+  ],
+  "title_zh": "线束是否物有所值？",
+  "added_at": "2026-10-14T10:51+08:00"
+ },
+ {
   "id": "cur-a78e60cfd227",
   "kind": "curated",
   "type": "article",

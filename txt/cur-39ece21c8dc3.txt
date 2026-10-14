@@ -1,0 +1,11 @@
+https://blog.doyensec.com/2026/10/13/Sfape.html
+
+在隔离用户态（IUM）里玩转 SFAPE：代码执行 ｜ Doyensec ｜ 文章 ｜ [原文链接](https://blog.doyensec.com/2026/10/13/Sfape.html)
+
+Adrian Denkiewicz 把 Windows 安全模型从「用户态/内核态」拉到 VBS 的虚拟信任级别：与 ring 正交的 VTL1 里还有隔离用户态（IUM）与安全内核（SK）。第三方 trustlet 几乎签不了名，但第三方 VBS enclave 可通过 Azure Artifact Signing 取得签名；宿主在 VTL0 用 CreateEnclave → LoadEnclaveImageW → InitializeEnclave → CallEnclave 加载并调用，读不了 enclave 私有内存，而 enclave 反而常能读写宿主——指针与嵌套缓冲校验一松就会 TOCTOU。次级依赖 vertdll.dll 类似 enclave 版 ntdll。
+
+文章先复盘 Edge prefs_enclave 的任意读写（CVE-2023-36880，后续 TOCTOU 为 CVE-2024-21423），以及 Akamai Mirage（把载荷藏进 VTL1 躲开 EDR）和 Outflank 的 VTL1 代码复用：可写的 VertValidTargetTable、VTL1 ACG 挡 shellcode、用 NtContinue 把单参 CallEnclave 变成多参调用。焦点转到 Defender SmartScreen 增强钓鱼防护背后的 SFAPE.dll：由 LSASS 经 LSA 包 SFAPM 加载，把登录密码哈希放进 enclave，再安全比对键鼠/剪贴板输入；作者在 Windows 11 25H2 上钉死了具体构建哈希。
+
+利用链从 Initialize 的重复调用写起：第二次不再验地址，却固定写出 STATUS_ALREADY_INITIALIZED（0xC0000510），形成「地址可控、值固定」的 write32。把它对准缓存 g_enclaveBase 的高 DWORD，弄坏 IsInsideEnclave；再借 ClipboardInput 在遥测回调同步点上的描述符竞态得到 memset；清掉凭据上下文红黑树映射指针高半，枢转到宿主喷出的合成节点，用真实句柄重定向对象解析，进而用 GetCcAttributes / SetCcTimeStamps 拼出受锁簿记约束的 read16 与 write64。有了读写后在 SFAPE .data 末尾建替换 VTT、用 RtlCaptureContext + NtContinue 按 x64 约定调用既有 VTL1 代码（含 vertdll），最后还可走安全内核服务 0x08000019 的 EnclaveCopyInto/OutOfEnclave 做干净拷贝。
+
+Microsoft 在 2026 年 9 月补丁星期二（CVE-2026-83498，KB5124008）修了重复初始化路径与 ClipboardInput，并用更新后的 VbsSiPolicy 拉黑旧 SFAPE；作者指出影响类似的易损 Edge enclave 却仍未被策略封禁，不知是有意还是疏漏。
