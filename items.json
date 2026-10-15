@@ -1114,7 +1114,7 @@
   "link": "https://weekly.caixin.com/2026-09-04/102481858.html",
   "date": "2026-09-07",
   "author": "范俏佳",
-  "issue": "",
+  "issue": "2026-09-07 财新周刊2026年第35期",
   "txt": [
    {
     "label": "讲稿",
@@ -4599,6 +4599,24 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-06-low-price",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "困在低价中",
+  "link": "https://weekly.caixin.com/2024-06-15/102206284.html",
+  "date": "2024-06-15",
+  "author": "包云红、关聪（财新周刊）",
+  "issue": "2024-06-17 财新周刊2024年第24期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-06-low-price.txt"
+   }
+  ],
+  "added_at": "2026-10-15T13:31+08:00"
+ },
+ {
   "id": "cur-528295bc610c",
   "kind": "curated",
   "type": "article",
@@ -6800,7 +6818,7 @@
   "link": "https://weekly.caixin.com/2018-06-15/101271952.html",
   "date": "2018-06-18",
   "author": "梁文道",
-  "issue": "",
+  "issue": "2018-06-18 财新周刊2018年第24期",
   "txt": [
    {
     "label": "讲稿",
@@ -6944,7 +6962,7 @@
   "link": "https://weekly.caixin.com/2014-09-05/100725445.html",
   "date": "2014-09-08",
   "author": "孔令钰",
-  "issue": "",
+  "issue": "2014-09-08 财新周刊2014年第35期",
   "txt": [
    {
     "label": "讲稿",
@@ -6962,7 +6980,7 @@
   "link": "https://magazine.caixin.com/2013-09-27/100587045.html",
   "date": "2013-09-30",
   "author": "谢海涛、刘虹桥",
-  "issue": "",
+  "issue": "2013-09-30 财新周刊2013年第38期",
   "txt": [
    {
     "label": "讲稿",
