@@ -26,6 +26,33 @@
   "added_at": "2026-10-15T10:50+08:00"
  },
  {
+  "id": "cur-bc6f7d6d13e5",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Pragmatic Engineer Podcast",
+  "title": "Uber’s AI infra, from the inside",
+  "link": "https://newsletter.pragmaticengineer.com/p/ubers-ai-infra-from-the-inside",
+  "date": "2026-10-15",
+  "audio_url": "https://api.substack.com/feed/podcast/220071064/fe9ce244b78f558c93e83a8d90a2b03e.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-bc6f7d6d13e5.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-bc6f7d6d13e5.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-bc6f7d6d13e5.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc6f7d6d13e5.m4a",
+  "title_zh": "优步的人工智能基础设施，由内而外",
+  "added_at": "2026-10-15T10:54+08:00"
+ },
+ {
   "id": "cur-b312ae48b42b",
   "kind": "curated",
   "type": "article",
