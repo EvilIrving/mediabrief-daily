@@ -1,5 +1,31 @@
 [
  {
+  "id": "cur-5ec807ee0814",
+  "kind": "curated",
+  "type": "article",
+  "source": "AI Snake Oil",
+  "title": "Steering AI Beyond Automation",
+  "link": "https://www.normaltech.ai/p/steering-ai-beyond-automation",
+  "date": "2026-10-15",
+  "audio_url": "https://substack-post-media.s3.amazonaws.com/public/images/324e4464-88f3-4d9e-8593-19b84be7a64d_1200x630.png",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5ec807ee0814.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-5ec807ee0814.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5ec807ee0814.orig.txt"
+   }
+  ],
+  "title_zh": "引导人工智能超越自动化",
+  "added_at": "2026-10-15T10:50+08:00"
+ },
+ {
   "id": "cur-b312ae48b42b",
   "kind": "curated",
   "type": "article",
@@ -24,6 +50,32 @@
   ],
   "title_zh": "Claude，别碰我的「劳动总量」",
   "added_at": "2026-10-14T10:49+08:00"
+ },
+ {
+  "id": "cur-c23b9b9adce2",
+  "kind": "curated",
+  "type": "article",
+  "source": "Works in Progress",
+  "title": "How China became rich",
+  "link": "https://www.worksinprogress.news/p/how-china-became-rich",
+  "date": "2026-10-14",
+  "audio_url": "https://substackcdn.com/image/fetch/$s_!EQ60!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F79d839d5-8309-4fc4-8d48-09fb2a44b018_2560x1707.jpeg",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-c23b9b9adce2.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-c23b9b9adce2.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c23b9b9adce2.orig.txt"
+   }
+  ],
+  "title_zh": "中国如何致富",
+  "added_at": "2026-10-15T10:50+08:00"
  },
  {
   "id": "_HLLpvjg8EI",

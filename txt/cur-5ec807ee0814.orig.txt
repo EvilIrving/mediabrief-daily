@@ -1,0 +1,178 @@
+https://www.normaltech.ai/p/steering-ai-beyond-automation
+
+*By Gabriel Unger and Arvind Narayanan. Unger is an economist at Stanford’s Digital Economy Lab.*
+
+One of the most fundamental questions for the field of AI today is: to what extent is the project of AI purely about automating human labor?
+
+The dominant Silicon Valley program for AI right now, with both industry and academic faces, answers: “almost entirely.” There is an implicit technological determinism: that AI has a deep internal logic that favors automation. To keep pushing in this direction is to move towards economic growth, prosperity, and profit. The vision of AGI is the successful completion of this project: to create AI systems capable enough to autonomously do everything a human can do.
+
+There is an alternative view: that AI is a technology (or class of technologies) that, like any technology, can develop in different directions. Total automation is one direction. But there are others, including directions that focus more on human augmentation, and increasing the collaborative and collective power of teams of humans and AI models working together.
+
+This view — our view — is not that automation is never good. Clearly sometimes it is, and clearly sometimes some subset of people try to oppose it out of the narrowest short-term self interest, at the expense of broader social and economic progress. But we think AI can also augment human workers in many interesting ways, that some of the maximalist attempts to completely automate all human labor are deeply unpromising on both technical and economic grounds, and that right now too much of AI research is devoted to the latter at the expense of the former. The bias toward the automation agenda is partly because of economic incentives, but partly because of some deeper intellectual and cultural aspects of computer science as a field.
+
+The alternative view has deep intellectual roots in the history of computer science, especially the subfield of human-computer interaction. Moreover, there are compelling technical and economic reasons to pursue it now. A small but growing number of businesses are now coming around to it, after witnessing the economic disappointments of attempting to implement the first program. Despite this, it remains a minority position today, poorly understood, and disorganized. Above all, computer science as a field today lacks a clear articulation of a systematic program for the architecture of AI that would further this agenda.
+
+In this essay, we briefly discuss what is at stake here, the history of this debate in CS, the status of this debate today in economics and elsewhere, and the automation agenda in the culture and curricula of CS in the university. Above all, we sketch in Section 1 a few research directions for AI that push in the direction of human-AI collaboration. Designing AI for true collaboration requires solving a very different set of technical problems than today’s models and agents, problems that are often ignored, or not even understood to be problems. The specific directions we sketch are intended to be tentative and experimental. But the point is to explicitly conceive of a project for AI that differs from the dominant Silicon Valley one, and moves beyond criticism to the positive articulation of an alternative direction. Our hope is that this can serve as a seed for a much broader, sustained, experimental, and collective research program.
+
+In Section 2, we discuss the high level motivation for our project, and in Section 3, we give a brief history of some of these ideas. In Section 4, we put this all into the context of the debates today about AI and automation in economics and in policy, and in Section 5, we outline a bottom-up, market-driven approach to steering the direction of AI development and deployment.
+
+## 1. **A Research Agenda for Collaborative Agents**
+
+A serious research program for human-AI collaboration elevates novel technical problems that the automation agenda for AI is more likely to ignore or treat as relatively unimportant. We present four such illustrative directions.
+
+### **Problem #1: Can we produce white-box agents for various domains of human labor?**
+
+The dominant paradigm for AI models and agents is “black box”: the system is evaluated based on the final output it produces. The intermediate steps are generally not revealed to the user, may be mysterious even if revealed because they depart greatly from how people approach the task, and are not treated and optimized as an aspect of task performance. One reason for the black box paradigm is the absence of process traces in model training. If we train a new AI model on a thousand paintings from the Renaissance, but we have no data on any of the many intermediate steps and revisions involved in the creation of any given painting, we can’t expect anything other than a black box model. Maybe it can generate the image of a new painting in a similar style, but it will not be able to actively talk us through the steps involved in creating such a painting.
+
+What we instead call “white box agents” are AI systems that are epistemically more legible to their human users, and explicitly reveal their intermediate processes (sources, assumptions, methods, uncertainties, process artifacts). White box agents could open the door to all kinds of more direct forms of human-AI collaborations: if humans can see the intermediate processes, they can directly interact with them.
+
+The successful development of white box agents will require tackling many technical sub-problems. Chiefly among them: capturing process traces for a much broader range of human labor. The past few years of AI model training and deployment have had a disproportionate focus on software coding. There are many reasons for this, but a big one is that we benefit from the very public availability of a massive number of coding repositories, which include traces of every step of the process of software development. But for so many of the other important professional occupations in the economy today — law, medicine, many sciences — no such magical repositories of publicly available, free, comprehensive and easily codifiable process trace data exist.
+
+Here’s a thought experiment. Imagine a counterfactual world in which open-source software didn’t exist, and coding agents (out of necessity) were trained to directly output compiled software binaries instead of source code, in a black box way. We think this capability would be experienced as dystopian instead of liberating by software engineers and it would have the effect of replacing them instead of amplifying their abilities. The shift we advocate is the equivalent of introducing code repositories and coding agents into this world — and doing so in every domain that currently lacks them.
+
+There is a quiet gold rush to capture process traces for a broader range of occupations to feed into AI models, by both companies entirely dedicated to the purpose (Mercor) and legacy tech companies ruthlessly trying to study their own employees, the better to replace them (Meta). Paradoxically, this is all often done in the service of the automation paradigm: come up with training data to make more black box agents in more domains. But it could also be vital in better enabling the development of a new generation of white box agents.
+
+### **Problem #2: Can we develop agents fast enough for real-time interaction?**
+
+A basic dynamic of active human collaboration is low latency. Imagine two people having a real conversation. If one person has to leave the room to think for 20 minutes every time you ask him a question, you’re no longer having a conversation; at best maybe you’re delegating to him. Models that can work at a speed that more naturally resembles human interaction might better enable forms of deeper human-AI collaboration.
+
+Today, we are forced to pick between chatbots that can answer questions quickly but superficially, and agents that can perform tasks thoroughly but break the flow of conversation. We don’t have to be stuck with this tradeoff.
+
+This sounds like a simple goal, but it implies a comprehensive set of technical challenges, that potentially span everything from model inference to retrieval methods, shells, browsers, tools, and more. How can we build AI systems that achieve latency low enough for collaboration? What parts of the agent stack could be changed, or need to be changed, to achieve this?
+
+Low latency is particularly promising because it could enable workers to stay in a state of flow. Flow is a concept from psychology that describes people’s experience when performing activities such as rock climbing or chess that people are drawn to for intrinsic reasons. It is a state of altered experience in which the performer forgets time and fatigue, and is immersed in the moment. Most programmers are familiar with flow, and it is a big reason they are drawn to programming.
+
+Working in a state of flow requires clear and immediate feedback — that is, low latency. So far, agents have weakened our ability to achieve flow. Many programmers report that the shift from manual programming to supervising coding agents has resulted in a loss of flow, cognitive overload and burnout. But our hypothesis is that it is possible to redesign agents to not only restore flow, but even increase people’s ability to achieve flow.
+
+### **Problem #3: Can humans and agents continually work together, without the constraints of the turn-based paradigm?**
+
+The basic model of human-AI interaction, under the automation paradigm, is delegation: I tell my agent what to do, walk away, then come back later to verify. Many versions of “human in the loop” still come back to this; the human is technically in the loop, but just standing at the starting line and then waiting at the finish line. This is quite different from a model of collaboration, where the human is actively participating in the process, and continually steering the agent as it works.
+
+A primitive version of continual steering exists in mainstream coding agents today, but is limited to giving additional instructions to the agent as it works. It is a slight tweak to the paradigm of the user and the agent alternately taking turns, rather than a departure from it. If the user tried to edit the same file as the agent, it would get confused and all bets are off.
+
+True collaboration poses a novel set of technical challenges. Systems will need to display visible states that change continuously instead of turn-by-turn, have shared workspaces, and accommodate interruption, parallel work, simultaneous editing, and other collaboration patterns. This is especially important in domains where it is difficult to precisely specify the task ex ante, or verification is complicated and perhaps bound up in implementation. Meeting this challenge would require designing architectures of interaction that allow continuous control without melting down under the interruption.
+
+### **Problem #4: How can we evaluate, and optimize for, human-AI collaboration?**
+
+Most AI benchmarks today test how good a model is at completing a task on its own, not on how well a model collaborates with a human. (This is likely part of the reason for the gap between benchmark performance and real-world usefulness).
+
+Evaluating the joint efforts of AI-human teams is hard. This is a relatively simple challenge to articulate, but non-trivial to make progress on. It is more difficult to understand how to best evaluate AI-human collaboration, and it raises a complex set of questions that at first blush might seem uncomfortably subjective or confusing. How much disagreement between the AI model and the human is appropriate? How deferential should the model be, and how much control should the human have? How much space does a productive collaboration have for each party to learn from the other? How do we think about short term vs long term success of a team? What are the most objective ways to evaluate collaborative success, and what are the best signals and proxies to pick out of the data?
+
+Improving collaboration skill might not be amenable to the benchmarking and hill-climbing paradigm that has led to rapid improvements in autonomous task performance. Benchmark tasks are a useful enough proxy for real-world tasks that performance on one is informative about performance on the other. Since collaboration involves a human, static benchmarks won’t work. Simulating the user is a promising approach, but beyond a point, even minor deviations between the behavior of simulated and real users might lead to rewarding the wrong thing in model training.
+
+## **2. What is the problem with the automation agenda?**
+
+Debates about the potential excesses of automation tend to focus on purely distributive concerns. Critics worry that mass automation might create a broad class of workers who are unemployed, poor, or otherwise disempowered. Economists are conventionally skeptical that this would happen at all (modern economic history suggests a normal rhythm of technological progress, some automation, and then job reallocation). It is more common in Silicon Valley to accept the empirical premise of mass unemployment, but view it as a good thing that people won’t “*have* to work”, supported by Universal Basic Income payments or some even more exotic welfare scheme.
+
+One of the many problems with this “automate and compensate” bargain is that it is wildly outside the recognizable political economy of the US today. Since the 1980s, income inequality has increased dramatically, and the American elite did not respond with generous new political programs of welfare expansion. Nor did the politics of the US otherwise produce a broad coalition of voters outside the elite who demanded and won such an expansion. (Many basic cash welfare programs were cut back over this same period). And even if some UBI-like program was politically feasible, it would be profoundly unattractive to normal people outside Silicon Valley. Most Americans want real lives with real work, not welfare checks.
+
+Second, even if we were to accept the automation agenda, it is currently struggling on its own terms. Efforts for industrial AI deployment, under the automation agenda, increasingly promise to deliver highly capable agents that are simultaneously cheap to deploy (not requiring task-specific development or configuration), reliable, and genuinely autonomous. These goals are in direct tension with each other, to the point of imposing a trilemma – (1) completely autonomous, (2) reliable in high-stakes settings, (3) truly general purpose – pick two.
+
+One of the most obvious questions today about the AI industry is whether the economics can make sense: billions of dollars of capex versus unclear ROI for many businesses. Relaxing the constraints of the automation agenda may actually open the door to a more economically sustainable version of AI.
+
+Finally, AI has real potential for economic growth. After a 50-year period of mostly stagnant productivity growth in the US, it is important to make the most of this opportunity. The most radical and interesting uses of AI are likely to be those that let us do things we could not do before. Focusing entirely on simply automating the things we already know how to do is far less transformative and seems unlikely to lead to rapid economic growth. There is a widespread recognition in the industry and among policymakers that a positive vision for AI has yet to be articulated. We think that articulating such a vision will first require moving away from a narrow focus on automation.
+
+## **3. Why the automation agenda dominates**
+
+### **The History of an Idea**
+
+In the early days of modern computing (1940s-1960s), there were three different visions for what computers should become, and what our relationship to computers should be. They overlapped in different points but were distinct. One vision, for what would later become the field of classical AI, aspired to almost anthropomorphic machines that could reason, solve problems, have agency, be general purpose, and speak human language. The term “artificial intelligence” was coined at a 1956 Dartmouth conference (even the name is trying to anthropomorphize!).
+
+A second vision, what would become machine learning, emphasized narrow and deep performance on a very well specified set of tasks; using lots of data to make predictions. There was often an implicit understanding of the human role in choosing the tasks and employing the predictions.
+
+A third vision (that would later become the subfield of HCI) very explicitly aspired to a collaboration of humans and machines. Works like JCR Licklider’s 1960 “Man-Computer Symbiosis” and Engelbart’s 1962 “Augmenting Human Intellect” argued that humans and computers have different abilities, that we should think about designing the best possible teams and organizations for combining them, not just trying to design the best computers in isolation, and that the best computers would be the ones that can work well iteratively and interactively with humans, not the ones that autonomously do as much work as possible.
+
+AI today represents a convergence of classical AI and ML. And HCI remains a vibrant subfield. Inventions like the computer mouse, graphics, and many design features of personal computing that we take for granted came from this community of people who cared most about making machines that could collaborate well with people. But the basic vision of HCI forerunners like Licklider and Engelbart, of human-machine collaboration, seems like a minority position today. The vision of classical AI is the new orthodoxy. Why is it so dominant?
+
+### **The Automation Agenda Today**
+
+The appeal of AI as pure automation has many causes. First, there is the ostensible economic case (even if it doesn’t ultimately hold up). The biggest cost of production, for most firms in most industries, is labor. For much of the 20<sup>th</sup> century in the US, labor received two-thirds of income from production. For executives, it is usually the most obvious thing to try to reduce. Firing workers has the additional attraction of showing up immediately in short-run profit and loss. Besides, the exact cost savings are easy to estimate. In contrast, ambitious investments in augmenting productivity might pay off in 10 years, but are hard to estimate in advance and don’t give immediate financial gratification.
+
+All of this is in the context of a policy environment that in many ways favors capital over labor (consider for instance the relative tax treatment) and many decades of declining real interest rates. If you are an unimaginative CEO of a Fortune 500 company, you are always intensely interested in alternatives to paying humans to work. If you are an AI start-up founder, pitching to a VC who wants products that this CEO will like, you are acutely conscious of this.
+
+The economics are the obvious part of the story. But there are additional, less visible, more subtle layers, internal to CS.
+
+There are a set of technical reasons that make automation more attractive to researchers. Autonomous models/agents lend themselves to very clean benchmarks. How well did the model do the task? The loss function, the performance measure, the comparisons between models, can all be elegant, much more so than some messy evaluation of how a human-AI team collaboratively performed in some real-world setting.
+
+Finally – most obscure, but quite real – there is the deep background of the intellectual culture of AI, and CS more broadly, today. Autonomous systems are presented to students as a kind of aesthetic ideal. An “end to end” system is a triumph. Requiring human supervision is a defect, and even the way human involvement is generally discussed – e.g. “human in the loop” – often presents the human as a temporary inconvenience. Peter Thiel refers to this in “Zero to One” as “the ideology of computer science”:
+
+“Why do so many people miss the power of complementarity? It starts in school. Software engineers tend to work on projects that replace human efforts because that’s what they’re trained to do. Academics make their reputations through specialized research; their primary goal is to publish papers, and publication means respecting the limits of a particular discipline. For computer scientists, that means reducing human capabilities into specialized tasks that computers can be trained to conquer one by one.” [Ch. 12, p. 148]
+
+In the pedagogy of AI/ML, the standard approach is to teach a student a model pipeline (problem formulation, data, model selection, training, evaluation, post-training, deployment, monitoring) in which the central object under construction is quasi-autonomous and questions about human-machine collaboration are often set to the side. Humans may appear episodically (as data labelers, or helping provide reinforcement feedback), but are not presented as central agents themselves. The agent is the model.
+
+Ten steps before the economics of the Fortune 500 CEO shows up on the scene, the deep culture of CS as a field already shapes our whole approach to building AI.
+
+## **4. The Current Debate Over AI and Automation in Economics and Policy**
+
+The empirics of the labor market impacts of AI is a rapidly evolving topic. But at a deeper level, a common view amongst economists is that technology simply is what it is – we don’t control its direction or development and attempts to do so are some mix of naïve, impossible, embarrassing, and doomed to failure. If AI is a little automation machine that replaces human task performance with computer task performance, then that’s just what it is. Technological progress is a kind of linear movement, in a single direction, and the first job of economic policy is just to not get in the way of this. The idea that technology can genuinely develop in different directions, as a general matter or specifically in the context of AI, remains rather alien.
+
+There are notable exceptions. Acemoglu and Restrepo have a series of papers arguing that there is “excess automation”. Acemoglu and Johnson conclude their book “Power and Progress” with an argument for pro-augmentation AI. Brynjolfsson calls the danger of AI excessively focused on pure human imitation the “Turing Trap”. Autor writes about how the real promise of AI may actually be the democratization of tacit knowledge to a broader set of workers, not their automation. Mullainathan and coauthors are launching a series of research projects around the argument that we should promote the human-AI collaboration view, but “….unfortunately, a different vision animates AI today: replacements for the mind. To us, that is a pretty uninspiring vision of the future. Automation cuts costs but does little to raise the ceiling. Merely replicating human capability also means we are limited by the limits of human capacity... we are committed to building bicycles for the mind — algorithms and AI that enhance human capacity, not replace it.”
+
+Clearly throughout economics, as in CS, there are fellow travelers. But it remains a minority position. The response of many economists to the Acemoglu and Johnson book, particularly on this point, has often been dismissive and condescending.
+
+Part of the disagreement could be explained by confusion about how to go about actually steering AI in a pro-worker direction. The approach skeptics seem to have in mind is a clumsy, Soviet-style top-down set of commands about what the economy should look like, even down to banning many forms of automation outright, like self-driving cars or warehouse robots, in order to save jobs.
+
+This is **not** what we are advocating for. Automation is not a universally bad thing. Many jobs are extremely routine and naturally amenable to automation. There is no glory in a rearguard action to save them; automating them is important social and economic progress. The men in the meat processing factories in Chicago in the 1900s worked 12 hours a day, 6 days a week, for the privilege of low pay, amputated limbs, and death from falling machines. The ones in the coal mines of Virginia perhaps had it worse. Automation has been great in both industries. 40,000 people die in car crashes in the US every year because humans are not very good drivers; we will presumably look back on this stat one day, from our world of self-driving cars, with similar horror.
+
+Autonomous AI agents in knowledge work also have their time and place. There are many tasks where the more distinctively human attributes (tacit knowledge, judgment, sense of context and shifting goals) are relatively unimportant, the activities themselves are routine, output is easy to verify, a little bit of error is relatively costless, or the risk or suffering posed to human workers is high. Some combination of the above might justify complete automation in a given domain.
+
+But the point of a pro-augmentation program for AI is that (1) there is a second much broader set of activities that do not lend themselves well to automation under AI as we have it today, and (2) it would be regrettable if, under a set of technical, economic, and intellectual confusions, the field of AI devoted itself to a misguided and unsuccessful effort to accomplish (1), when it could be more successfully embarking on a program to advance human-AI collaboration, and increase our actual productive powers in the world.
+
+We think policy can, on the margin, nudge us toward a bottom-up world of people experimenting with forms of AI that better empower human beings. We provide some concrete ideas at the end of the next section.
+
+## 5. **How Can We Steer AI toward Augmentation? A Bottom Up, Market-Driven Approach**
+
+Suppose one believes some version of the thesis that the AI industry today is excessively biased towards a narrow vision of AI as automation, in a way that might be broadly suboptimal, not only for many workers, but also for many firms and economic growth more broadly. What should we do about it? The strawman answer is top-down policy. The more serious answer is bottom-up and multi-faceted. We imagine a regime of decentralized technical experimentation, some intellectual and cultural shifts within CS, some carefully targeted policy levers, and firms gradually discovering that the automation agenda may struggle on its own terms.
+
+### **New entrants and products are starting to cater to the unmet demand for collaboration agents**
+
+There aren’t yet true collaboration agents on the market. Thinking Machines, a lab founded by OpenAI’s former CTO Mira Murati, has published an architecture for such agents. In their vision, there is a user-facing model that is ultra-low-latency and multimodal, farming off more complex work to a more capable background model. However, they have not yet shipped a working product. Still, it is reassuring that there is a well-capitalized company that has made a big bet on human-AI collaboration.
+
+Simultaneously, there has been a big push for low latency across all three frontier labs (OpenAI, Anthropic, and Google), especially OpenAI due to its partnership with Cerebras, as well as Cursor and Cognition. We predict that as more workers experience this way of working with AI, there will be more demand for it, creating a flywheel effect.
+
+Another set of companies that might build collaboration agents (though they haven’t yet) are those that specialize in a particular domain or vertical, such as Harvey AI in law or OpenEvidence in medicine. Effective systems of collaboration often need domain specific traces, tacit expert knowledge, domain expertise. The big frontier AI labs may be poorly equipped to do this themselves, compared to industry-specific firms that can figure out how to combine AI capabilities with deep domain specific knowledge. Many of the industries in which this model of organization will work best, such as law and medicine, are heavily regulated. Regulated industries are a natural target for collaborative human-AI models because humans are legally required at many decision points anyway.
+
+### **Beyond collaboration: many paths to complementarity**
+
+Collaboration is only one example of a much broader design space of configurations for human-AI complementarity. Here are a few others, intended to be illustrative rather than exhaustive. For each of these alternative configurations, one can imagine repeating the exercise of Section 1, of breaking it down into discrete technical challenges.
+
+- **Collective Intelligence:** AI can transform and mediate how teams of human workers collaborate *with each other*. This can take a number of different forms: preserving organizational memory, mediating conflict, identifying expertise within a team, synthesizing distributed knowledge, and otherwise helping coordination. So the proximate goal here is not the execution of a particular task; it is raising the productivity of a team of humans in general.
+- **New Tasks and Capabilities:** The use of AI to automate extant human labor is quite different from the use of AI to accomplish new tasks that no humans could do in the first place. There are any number of technological innovations from history that were clearly of this flavor, such as the airplane or the microscope.
+- **Upskilling:** Stepping back from the short term work of task completion, AI can also help upskill human workers in their long term capabilities. AI is particularly effective at internalizing tacit expert knowledge; with intentional and thoughtful design, it then may become effective at making workers more expert in their fields in the long term.
+- **Ambient Agent:** The normal paradigm of AI models/agents, the model is what we might call an invoked model: it shows up when you explicitly call on it and ask it to do things. We might define, by contrast, an “ambient agent”: an AI model that operates across an organization, observing context and offering help even without being explicitly invoked. While this raises a distinct set of challenges (privacy, discretion), it is also a different paradigm of AI-human collaboration with distinct opportunities (more context, more organization knowledge, interesting novel forms of coordination).
+
+### **The Role of HCI and cultural change**
+
+HCI was historically the vanguard, within CS, of taking human-machine collaboration seriously. Today it occupies a more marginalized position within CS. To the extent that it can play an outsized and important role in helping reorient CS away from the automation agenda towards something more productive, two things would need to happen simultaneously.
+
+First, computer science departments, funding organizations, and other agenda setters could try to make a conscious effort to elevate the status of HCI. Second, HCI could evolve to meet the moment. It has historically constrained itself intellectually and methodologically, and this partly explains its marginalization. To simplify a bit, HCI treats human control as axiomatic rather than an instrumental goal, and its unit of analysis is the user, leaving it with little to say on broader questions about firms, organizations, incentives, power, and political economy.
+
+The new movement of Human-Centered AI is partly an attempt at revival and synthesizing HCI with AI, though it is dwarfed in volume and influence by the more mainstream AI field that generally tends to accept the industry’s priorities. In one possible future, however, a better, transformed version of HCI (and HCAI) ascends in status within the university and has meaningful agenda-setting power.
+
+Similarly, AI pedagogy has a history of centering the AI system and forgetting the human. It doesn’t have to be this way. One can imagine changes to syllabi, benchmark design, workshops, and funding priorities.
+
+### **Targeted Policies**
+
+Beyond crude automation bans or top-down technological mandates, more intelligent and tailored government policies can also be one part of a broader success story in reorienting the automation agenda.
+
+On the supply side, these could include research funding priorities and even DARPA-style prizes. On the demand side, US tax policy currently favors automation, and the asymmetry could be mitigated, though this requires care to avoid crude attempts at regulatory classification of AI systems as automation or augmentation. The government could also use its power as a major purchaser of AI. Finally, regulation that requires human oversight of AI must insist on *effective* oversight instead of rubber stamping.
+
+Competition policy could also help. The automation paradigm has a big head start, and policymakers should ensure clients don’t get locked in. Giving workers more of a voice in bargaining over AI deployment is another way to steer toward augmentation without mandating it.
+
+## **Conclusion**
+
+The automation agenda for AI is currently winning the internal battle over the direction of AI. The stakes are very high. One of the biggest peace-time deployments of private capital in history is now being largely devoted to an automation vision of AI that may be both economically untenable on its own terms, and also a waste of all the potential of AI to help us do things we couldn’t already do.
+
+Fortunately, there is a broad set of people — economists, technologists, and others — who are trying to understand and develop another direction for AI, one that places a greater emphasis on human-computer collaboration, in the service of being able to do new things, not just automate the old ones.
+
+A central task for this second direction is to define and pursue a systematic research program for AI in the service of this kind of collaboration. Our hope is that through greater collective awareness and intention, and better pooling and coordination of the many efforts that already exist, a bottom-up, decentralized approach can be successful at steering the direction of AI development and deployment, without requiring top-down commands or directives.
+
+**Suggested Further Reading:**
+
+- For a sample of economists’ writing on this topic, see The Turing Trap and Building Pro-Worker AI.
+- For a brief history of these ideas in AI and HCI, see Section V.B of How AI Fails Us.
+- The paper Human Amplification, Intelligent Agents, and the Aims of AI Research makes arguments similar to ours from a philosophical perspective. Our scope is narrower and centers on AI tools for workers.
+- The paper AI Agents Push Humans Out of the Loop critiques the design of current AI agents.
+- There is a lot that individuals can do to amplify their own agency without waiting for AI systems to be redesigned: Arvind presented some ideas in his ICML talk.
+
+The industry offers many platitudes about its tools being meant to help workers rather than automate them. But the revealed priorities — how AI agents are designed, how they are evaluated, and even what is taught in AI courses — tell a very different story. The automation assumption also underlies the frequent predictions of mass unemployment from industry leaders. OpenAI’s charter is explicit that the mission is AGI, defined as “highly autonomous systems that outperform humans at most economically valuable work”. Companies like Mechanize are also unusually blunt about the supposed inevitability of full automation.
