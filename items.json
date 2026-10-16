@@ -6259,6 +6259,24 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-07-volcano-painting",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "科学｜火山、气候与风景画",
+  "link": "https://weekly.caixin.com/2020-05-30/101560970.html",
+  "date": "2020-05-30",
+  "author": "小庄（科普作家）",
+  "issue": "2020-06-01 财新周刊2020年第21期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-07-volcano-painting.txt"
+   }
+  ],
+  "added_at": "2026-10-17T07:24+08:00"
+ },
+ {
   "id": "cur-a3d03cc6ae0c",
   "kind": "curated",
   "type": "podcast",
