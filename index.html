@@ -133,7 +133,7 @@ function show(n,push){if(n<0||n>=ITEMS.length)return;const i=ITEMS[n];
  document.body.classList.add('reading');render();$('#main').scrollTop=0}
 function render(){const i=ITEMS[cur],t=i.txt||[];
  $('#rd').innerHTML=`<div class="hd"><button id="back">← 返回列表</button><h2 title="${esc(i.title)}"${i.title_zh?` data-alt="${esc(i.title)}" class="sw"`:''}>${esc(i.title_zh||i.title)}</h2>
- <div class="row"><div class="meta mono">${esc((i.date||'').slice(0,10))} · ${esc(i.source)}${i.author?' · '+esc(i.author):''}${i.issue?' · '+esc(i.issue.replace(/^\d{4}-\d{2}-\d{2}\s*/,'')):''}${i.link?` · <a href="${esc(i.link)}" target="_blank" rel="noopener" title="原链接">原链接 ↗</a>`:''}${(i.audio||i.audio_url)?` · <a href="${esc(i.audio||i.audio_url)}" target="_blank" rel="noopener" download>音频 ↗</a>`:''}</div>
+ <div class="row"><div class="meta mono">${esc((i.date||'').slice(0,10))} · ${esc(i.source)}<span id="wc"></span>${i.author?' · '+esc(i.author):''}${i.issue?' · '+esc(i.issue.replace(/^\d{4}-\d{2}-\d{2}\s*/,'')):''}${i.link?` · <a href="${esc(i.link)}" target="_blank" rel="noopener" title="原链接">原链接 ↗</a>`:''}${(i.audio||i.audio_url)?` · <a href="${esc(i.audio||i.audio_url)}" target="_blank" rel="noopener" download>音频 ↗</a>`:''}</div>
  ${t.length>1?`<div class="tabs">${t.map((x,k)=>`<button data-k="${k}" class="${k===tab?'on':''}">${esc(x.label)}</button>`).join('')}</div>`:''}</div></div>
  ${t.length?'<div id="txt">加载中…</div>':''}
  <p class="hint">快捷键：j/k 或 ↓/↑ 切换条目 · t 或 ←/→ 切换 总结/译文/原文</p>`;
@@ -159,7 +159,8 @@ function md(x){const L=x.split('\n'),out=[];let i=0,m;
   out.push('<p>'+b.map(inl).join('<br>')+'</p>')}
  return out}
 let paintTok=0;
-function paint(x){const el=$('#txt');if(!el)return;const tok=++paintTok,bs=md(x);el.textContent='';{const it=ITEMS[cur];if(it&&it.source==='财新'&&it.link)el.insertAdjacentHTML('beforeend',`<p class="cx-src">原文：<a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.link)} ↗</a></p>`)}
+function wcount(x){const c=(x.match(/[\u3400-\u9fff\uf900-\ufaff\u3040-\u30ff\uac00-\ud7af]/g)||[]).length,w=(x.match(/[A-Za-z0-9]+(?:['’.-][A-Za-z0-9]+)*/g)||[]).length;return {c,w,m:Math.max(1,Math.ceil(c/400+w/230))}}
+function paint(x){const el=$('#txt');if(!el)return;{const w=$('#wc');if(w){const r=wcount(x),n=r.c+r.w;w.textContent=` · ${n.toLocaleString('en-US')} 字 · 约 ${r.m} 分钟`}}const tok=++paintTok,bs=md(x);el.textContent='';{const it=ITEMS[cur];if(it&&it.source==='财新'&&it.link)el.insertAdjacentHTML('beforeend',`<p class="cx-src">原文：<a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.link)} ↗</a></p>`)}
  const add=(a,b)=>el.insertAdjacentHTML('beforeend',bs.slice(a,b).join(''));
  add(0,30);let k=30;const more=()=>{if(tok!==paintTok||k>=bs.length)return;add(k,k+80);k+=80;idle(more)};idle(more)}
 function clean(x,i){const L=x.split('\n'),T=(i.title||'').trim();let k=0;
