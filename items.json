@@ -6236,6 +6236,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-16-ambiguous-south",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜暧昧的南方：秘密往来60年",
+  "link": "https://weekly.caixin.com/2021-05-22/101716606.html",
+  "date": "2021-05-24",
+  "author": "刘宗坤",
+  "issue": "财新周刊2021年第20期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-16-ambiguous-south.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-16-ambiguous-south.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T00:42+08:00"
+ },
+ {
   "id": "cur-12fc6359a0fb",
   "kind": "curated",
   "type": "article",
@@ -7294,6 +7316,28 @@
   "title_zh": "Mike Barker 谈 LMAX 架构",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc8809708ee2.m4a",
   "added_at": "2026-10-11T13:00+08:00"
+ },
+ {
+  "id": "cx-17-kunshan-line",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "【封面报道·中篇】活在流水线上的人们",
+  "link": "https://weekly.caixin.com/2016-03-25/100924454.html",
+  "date": "2016-03-28",
+  "author": "谢海涛",
+  "issue": "财新周刊2016年第12期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-17-kunshan-line.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-17-kunshan-line.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T00:42+08:00"
  },
  {
   "id": "cx-13-wu-yaozhong",
