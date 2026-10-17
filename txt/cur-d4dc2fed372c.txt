@@ -1,0 +1,5 @@
+https://seangoedecke.com/ai-is-driving-a-boom-in-modestly-successful-software/
+
+AI 正在催生一大批小有成就的软件 ｜ Sean Goedecke ｜ 文章 ｜ https://seangoedecke.com/ai-is-driving-a-boom-in-modestly-successful-software/
+
+AI 写代码这么方便，新软件去哪了？在 GitHub 工作的 Sean Goedecke 用约二十个公开安装量的平台对比了 2025 年中智能体编程普及前后的数据：项目总数涨了约 10 倍，小有成就的项目约翻一番（比如千次下载的 NVDA 插件、百次安装的 HACS 插件），爆款却没有增加。他专看插件和游戏模组，是因为装机量可查，又能避开"卖铲子"的 AI 工具。大公司产品功能早已饱和、改动牵一发动全身，爆款也许还要时间长成。

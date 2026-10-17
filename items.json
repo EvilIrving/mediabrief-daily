@@ -1,5 +1,124 @@
 [
  {
+  "id": "_HLLpvjg8EI",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "读了四年动画，到底图什么？",
+  "link": "https://youtu.be/_HLLpvjg8EI",
+  "date": "2026-10-17T15:29",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/_HLLpvjg8EI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/_HLLpvjg8EI.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/_HLLpvjg8EI.m4a",
+  "added_at": "2026-10-12T07:53+08:00"
+ },
+ {
+  "id": "om2lIWXLLn4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Building Anthropic: A Conversation with Our Co-founders",
+  "link": "https://youtu.be/om2lIWXLLn4",
+  "date": "2026-10-17T15:28",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/om2lIWXLLn4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/om2lIWXLLn4.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
+  "title_zh": "构建 Anthropic：与联合创始人对谈",
+  "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "cur-3b7cb9e61df4",
+  "kind": "curated",
+  "type": "article",
+  "source": "Redwood Research Blog",
+  "title": "Screwtape: Adversarial Transcript Editing for Monitor Red-Teaming",
+  "link": "https://blog.redwoodresearch.org/p/screwtape-adversarial-transcript",
+  "date": "2026-10-17T00:01+08:00",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3b7cb9e61df4.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-3b7cb9e61df4.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3b7cb9e61df4.orig.txt"
+   }
+  ],
+  "title_zh": "Screwtape ：用于监视器红队伍的对抗性转录编辑",
+  "added_at": "2026-10-17T17:12+08:00"
+ },
+ {
+  "id": "cur-d4dc2fed372c",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "AI is driving a boom in modestly successful software projects",
+  "link": "https://seangoedecke.com/ai-is-driving-a-boom-in-modestly-successful-software/",
+  "date": "2026-10-16T08:00+08:00",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d4dc2fed372c.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-d4dc2fed372c.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d4dc2fed372c.orig.txt"
+   }
+  ],
+  "title_zh": "人工智能正在推动适度成功的软件项目的繁荣",
+  "added_at": "2026-10-17T17:12+08:00"
+ },
+ {
+  "id": "cur-f1073754b8e0",
+  "kind": "curated",
+  "type": "article",
+  "source": "Anthropic Research (via Olshansk/rss-feeds)",
+  "title": "How employment is changing at Anthropic",
+  "link": "https://www.anthropic.com/research/employment-at-anthropic",
+  "date": "2026-10-16T08:00+08:00",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f1073754b8e0.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-f1073754b8e0.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f1073754b8e0.orig.txt"
+   }
+  ],
+  "title_zh": "Anthropic的就业情况正在发生变化",
+  "added_at": "2026-10-17T17:12+08:00"
+ },
+ {
   "id": "cur-5ec807ee0814",
   "kind": "curated",
   "type": "article",
@@ -105,45 +224,30 @@
   "added_at": "2026-10-15T10:50+08:00"
  },
  {
-  "id": "_HLLpvjg8EI",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "读了四年动画，到底图什么？",
-  "link": "https://youtu.be/_HLLpvjg8EI",
-  "date": "2026-10-13T03:08",
+  "id": "cur-c43be8ebb5bb",
+  "kind": "curated",
+  "type": "article",
+  "source": "Jane Street Blog",
+  "title": "Flex Model: an event-driven feature engineering system",
+  "link": "https://blog.janestreet.com/flex-model-an-event-driven-feature-engineering-system/",
+  "date": "2026-10-13T08:00+08:00",
+  "audio_url": null,
   "txt": [
    {
     "label": "总结",
-    "url": "txt/_HLLpvjg8EI.txt"
+    "url": "txt/cur-c43be8ebb5bb.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-c43be8ebb5bb.zh.txt"
    },
    {
     "label": "原文",
-    "url": "txt/_HLLpvjg8EI.orig.txt"
+    "url": "txt/cur-c43be8ebb5bb.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/_HLLpvjg8EI.m4a",
-  "added_at": "2026-10-12T07:53+08:00"
- },
- {
-  "id": "om2lIWXLLn4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Building Anthropic: A Conversation with Our Co-founders",
-  "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-10-13T03:07",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/om2lIWXLLn4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/om2lIWXLLn4.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
-  "title_zh": "构建 Anthropic：与联合创始人对谈",
-  "added_at": "2026-10-11T03:20+08:00"
+  "title_zh": "Flex模型：事件驱动的特征工程系统",
+  "added_at": "2026-10-17T17:12+08:00"
  },
  {
   "id": "cur-1bc445bedaa9",
@@ -321,6 +425,24 @@
   ],
   "title_zh": "为什么我做 AI Agent 从 Python 转向 Docker Agent",
   "added_at": "2026-10-11T05:45+08:00"
+ },
+ {
+  "id": "cx-08-gene-therapy",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "首款中国基因治疗降价140万元始末",
+  "link": "https://weekly.caixin.com/2026-10-10/102491910.html",
+  "date": "2026-10-10",
+  "author": "崔笑天（财新周刊）",
+  "issue": "2026-10-12 财新周刊2026年第39期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-08-gene-therapy.txt"
+   }
+  ],
+  "added_at": "2026-10-17T17:12+08:00"
  },
  {
   "id": "Fhx_qNS2P8g",
@@ -6970,6 +7092,24 @@
   ],
   "title_zh": "乔布斯最具创新性的演讲",
   "added_at": "2026-10-11T05:45+08:00"
+ },
+ {
+  "id": "cx-09-qiuhe",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“能吏”仇和",
+  "link": "https://weekly.caixin.com/2015-04-03/100797343.html",
+  "date": "2015-04-06",
+  "author": "薛健聪、贾华杰",
+  "issue": "2015-04-06 财新周刊2015年第13期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-09-qiuhe.txt"
+   }
+  ],
+  "added_at": "2026-10-17T17:12+08:00"
  },
  {
   "id": "cx-02-haze-ammonia",

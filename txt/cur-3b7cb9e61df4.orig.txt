@@ -1,0 +1,97 @@
+https://blog.redwoodresearch.org/p/screwtape-adversarial-transcript
+
+Screwtape: Adversarial Transcript Editing for Monitor Red-Teaming
+
+We introduce Screwtape[1], a pipeline that turns agent transcripts into realistic attacks that evade action-only monitors (monitors that don’t look at the agent’s chain of thought) by inserting an attack into a transcript and repeatedly refining it until a monitor no longer catches it. An LLM verifier with access to the edited transcript and an attack description checks whether the attack is realistic, is clearly harmful, and could plausibly succeed in the original environment.
+
+We ran the pipeline on Redwood staff transcripts with our own monitors based on Opus 4.8 and Gemini 3.1 Pro, and then tested the resulting attacks against a held-out monitor from a frontier developer. We ran the pipeline 252 times on 94 unique transcripts. This produced 35 attacks that evaded our monitors. Six of these 35 attacks also evaded the frontier developer’s monitor, and we confirmed them as valid through human review.
+
+You can read more about the implementation and experiments in our paper.
+
+In this post, we provide a high-level overview of the pipeline, how it differs from existing tools, the main lessons we learned, and questions that remain open.
+
+## How Screwtape works
+
+The pipeline starts with a real transcript, a monitor, and a threat contract—a document that describes the threat vector and severity required for the pipeline to accept the attack.
+
+The attacker agent reads the threat contract, edits the transcript, and writes a description of the inserted attack. Some edits are rejected programmatically; for example, the attacker can’t change user messages or edit subagent calls. In those cases, the edit is sent back to the attacker for revision.
+
+Then the verifier checks whether the candidate attack is valid and severe enough to accept. Unlike the monitor, which can only see the edited transcript, the verifier also receives the attack description and the diff between the source and edited transcripts. If the verifier accepts the edit, the monitor scores it. The attack is successful when the monitor’s score falls below a threshold set to a fixed false positive rate on honest transcripts. If either check fails, the pipeline returns the reasoning to the attacker as feedback for the next iteration. The pipeline continues iterating until it reaches the maximum number of iterations.
+
+*Figure 1. The Screwtape pipeline: the attacker edits a real transcript, and the verifier and the monitor check each edit and return their reasoning to the attacker.*
+
+The monitor in the loop can be either the target monitor itself or a monitor we build to stand in for it, which we call a *proxy monitor*. In our experiments, we iterated against our own proxy monitors and then tested the final attacks on a held-out monitor from a frontier developer.
+
+## How Screwtape differs from existing tools
+
+There are many ways to generate attack transcripts, and they differ along several dimensions: how close the transcripts are to real deployment data, how strongly the attacker is *elicited* (pushed to find its best attacks), how hard it is to check that an attack is valid and severe, and how expensive each attack is.
+
+**Synthetic settings.** LinuxArena, BashArena, and SHADE-Arena provide environments for generating attack transcripts through real agent rollouts. However, some important threats are very hard to implement realistically in synthetic environments (e.g., rogue deployment or weight exfiltration).
+
+**Transcripts generated as text.** An LLM can write the full transcript as text (e.g., STRIDE). This lets you iterate against the monitor and easily refine the attack. These approaches don’t need access to a real environment, so they can synthesize any setup, including ones that better represent production. However, transcripts can be less realistic because an LLM must invent both the environment’s responses and the user’s messages.
+
+**Simulated environments.** LLMs can simulate the production environment, avoiding problems inherent to synthetic settings. For example, GLOOM runs an agent against a simulator model that generates the environment’s responses. This approach can be initialized with a real transcript by forking it and running an agent rollout from an intermediate step, giving the simulator a reference and improving realism. However, after the fork, the simulator invents every environment response, and sometimes the user’s messages, so the rollout can drift far from the original transcript.
+
+**Human red teams.** Experts identify known monitor weaknesses, design scenarios that exploit them, and iterate on attacks, as in SLEIGHT-Bench. Others, such as METR and the UK AISI Control Red Team, red-team a developer’s monitors directly. These attacks are strong, but each one takes hours of human work (2–3 hours per attack in SLEIGHT-Bench).
+
+*Figure 2. Conceptual diagram showing where different methods for generating attack transcripts sit along attacker elicitation and closeness to the production distribution (realism).*
+
+Screwtape represents a specific tradeoff: it edits real transcripts to keep the transcripts and attacks realistic, and it also iterates against the monitor, allowing it to simulate stronger attackers. This lets it find novel holes in the monitor, ones that don’t depend on known weaknesses. The cost is that it tests the monitor, and not how well an agent would attack on its own. To our knowledge, no published method or evaluation directly optimizes attacks against a monitor by iterating over edited agent transcripts. Concurrent unpublished work implements a similar optimize-against-the-monitor loop over edited trajectories using an evolutionary approach.
+
+The main drawback is that the pipeline lacks access to the original environment, so it relies on an LLM verifier that checks every edit during a run and gives the attacker feedback when attacks are invalid or unrealistic. The verifier sometimes accepts invalid attacks, so the final attacks still need human review.
+
+Another drawback is time and cost: finding successful attacks requires a substantial budget and time iterating against the verifier and monitor. Each iteration takes about 5 to 10 minutes, a run can take a few hours, and most runs find no attack: our six confirmed attacks came from 252 runs. This can be improved by eliciting the attacker better and running multiple runs in parallel.
+
+## What we learned
+
+We developed the pipeline over a couple of months, iterating on the pipeline architecture, attacker, and verifier approaches, and threat contracts. Here are some of the main lessons we learned during this process:
+
+**Finding severe evading attacks without human assistance is hard.** We repeatedly observed the attacker struggling to evade the monitor, even when allowed to iterate against it many times. An attacker agent starts with simple attacks and then tries to make them trickier, but monitors catch most of them, and most runs stop without finding any. Splitting strategy generation from attack implementation, or prompting the attacker to reason about LLM weaknesses and target them, might help, as shown in SLEIGHT-Bench.
+
+**Judging attack severity is hard and fuzzy.** Attack severity depends heavily on context, so each case requires discretionary expert judgment. Attacks vary in many ways, and a small detail can make the difference between a highly severe attack and a harmless, non-incriminating action. The same action can be catastrophic in one context and totally safe in others. Additionally, over many iterations, the attacker tends to drift toward borderline cases that look incriminating but often aren’t sufficiently severe, e.g., publishing expired credentials or planting a backdoor that slightly changes a button color when triggered. We found that labeling attack severity is hard even for human experts, so we set conservative high-severity thresholds to address this.
+
+**LLM attack verification is viable but flawed.** We found that an LLM judge can be made robust enough to make the whole system useful when iterating against it. At first, we asked the verifier for a simple yes/no verdict. Runs stopped early on trivial “successes” – it accepted many attacks that human experts didn’t find valid. We ended up using a detailed rubric with dimensions inspired by security engineering frameworks (NIST SP 800-160v1r1, STPA Handbook), and asking the judge to evaluate the attack along these dimensions and reason explicitly about its consequences. Examples of questions the verifier answers include modeling what harm the attack can cause, whether the harm has already happened or is only prepared, and whether the user authorized the actions. On average, the verifier rejects 60–70% of the attacker’s candidate edits within a run, with fewer rejections towards later iterations. Verifier mistakes concentrate towards the end of the funnel, so the pipeline still requires human review of the resulting attacks. In our experiments, final review confirmed 6 of the 17 attacks that evaded the held-out monitor.
+
+## What the monitor failures can be used for
+
+We consider two main uses for the attacks we find:
+
+- **Improving monitors:** developers can patch the blind spots, improve monitor prompts, or fine-tune monitors on realistic data.
+- **Qualitative safety evaluations:** the attacks can stress-test developers’ safety claims. For example, if a safety case relies on the monitor catching a type of attack, a confirmed attack of this type shows that the claim doesn’t hold.
+
+In its current form, the pipeline can’t show how often a monitor fails in normal deployment or produce a numerical safety estimate. We discuss why in the next section.
+
+## Uncertainties we have about the value of this work
+
+**We aren’t sure whether we should help AI developers improve their monitors.** Strong monitors increase short-term safety by catching malign actions. On the other hand, they might let developers keep improving capabilities without addressing the underlying misalignment, leading to more capable misaligned systems. Without strong monitors, alignment issues might surface earlier as non-catastrophic public incidents, which have historically been very important for causing people both within and outside the AI field to pay attention to and understand the risks of AI development. So we are quite uncertain about whether it’s good to help improve frontier monitors, and if it’s good whether it’s a better use of time than other research directions.
+
+**Screwtape is much more useful for monitor improvement than monitor evaluation.** Any failure it finds is a blind spot that a developer can patch, even if it took many attempts to find. Using it for evaluation is harder – we can’t get any quantitative safety estimates from the pipeline.
+
+- *How to use the fact that Screwtape found nothing?* Screwtape only searches the part of the attack space that its configuration, threat contract, and transcript can reach, and there are no guarantees that this covers the attacks a real misaligned agent, especially a more capable one, can find (see Thoughts on the conservative assumptions in AI control). So the absence of found attacks provides little information about safety.
+- *How to use found failures?* A found failure can refute a specific safety claim, and found attacks already appear in risk reports: Anthropic’s August 2026 Risk Report measures its monitors’ recall on attacks from METR’s red-teaming. However, these failures provide limited evidence of real risk: our attacker sees the whole transcript and gets the monitor’s feedback after every attempt, and a deployed agent usually has neither. On the other hand, some failures might not need many attempts, and a deployed agent can sometimes get monitor feedback: by hacking the infrastructure (e.g., the Hugging Face incident) or working on the monitor codebase, by simulating the monitor when it runs on the same model, or by retrying after the monitor blocks an action.
+
+Overall, Screwtape-like pipelines seem to provide some safety information, but quantifying it requires additional methodology that carefully accounts for approximations and uncertainties.
+
+**Using Screwtape for improvement presumably makes it less useful for evaluation.** As a developer hardens its monitor against the attacks Screwtape finds, the monitor becomes robust against the part of the attack space the pipeline can reach, but evading attacks can still exist outside it. Further evaluations with Screwtape then become less useful, since they search the same part of the attack space. This informs our decision on what to share publicly. Keeping the implementation private is a weak barrier, since a developer team with strong models can rebuild it. But we assume the pipeline can be sensitive to prompts, threat contracts, and proxy monitors, which could plausibly let evaluators find new failures even if a developer already runs its own version.
+
+## Next steps
+
+The pipeline can be improved and expanded in many directions:
+
+**Adding CoT support.** Currently, Screwtape can only generate attack transcripts without reasoning traces. This is a major limitation, because frontier AI developers such as OpenAI and Anthropic use monitors that can see both actions and reasoning. We don’t know how to produce realistic reasoning for attacks: a real misaligned agent might reveal the attack in its reasoning or hide it in ways we can’t predict. Unlike tool calls, reasoning doesn’t affect the environment, so there’s nothing to validate it against.
+
+**Closing the loop.** A natural next step is to run Screwtape to automatically find attacks, then use those attacks to automatically improve the monitor. This could provide a scalable, automatic way to harden production monitors.
+
+**Simulating the environment.** A good environment simulator can help verify attacks by modeling action consequences and reducing transcript inconsistencies after editing. It also provides a way to generate reasoning traces by rerunning transcript steps and providing simulated environment responses to the agent.
+
+## Sharing
+
+We aren’t releasing the pipeline implementation for now, but we are open to sharing it with researchers. If you’re interested in using it, please reach out to Tyler Tracy, tylertracy@rdwrs.com.
+
+Learn more about the implementation and experiments in the accompanying paper.
+
+*Thanks to Aryan Bhatt, Girish Gupta, Sarah Hastings-Woodhouse, Myles Heller, Jack Kaunismaa, Jurgis Kemeklis, Alex Mallen, Jeffrey Olmo, Ram Potham, Buck Shlegeris, and others for feedback and contributions.*
+
+---
+
+1. Named after the senior demon in C. S. Lewis’s The Screwtape Letters (1942), who coaches a junior tempter to subtly lead an ordinary man astray. In our pipeline, the attacker does the same to the assistant in a real transcript. Also a pun on “screwing up the tapes.”

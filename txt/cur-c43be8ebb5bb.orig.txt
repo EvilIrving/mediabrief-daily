@@ -1,0 +1,188 @@
+https://blog.janestreet.com/flex-model-an-event-driven-feature-engineering-system/
+
+Neural networks are a tool we use heavily in many trading strategies. But raw market data can’t be fed to a neural net as-is. It’s an unstructured input that needs normalization and feature extraction first.
+
+Flex Model is a feature engineering framework that turns market events into vectors of numbers. It began its life in our Hong Kong office and has since spread across the firm. In this post, I’ll explain what feature engineering is, some of the design choices we made in developing Flex Model, and what happened when we had to rebuild its core.
+
+## What is feature engineering?
+
+Raw market data is a stream of events: an order being added to the order book, an order being cancelled, a trade being made. A feature is a numerical value derived from that stream, and feature engineering is the work of designing and computing features. A simple example is the mid, the halfway point between the best bid and the best ask. The mid only needs the current state of the book. More complex features often need more than that. For example, to compute the average difference between the trade price and the mid over the last 10 trades, you need both the current book and a buffer of recent trades. That buffer is the feature’s state. We’ll use this feature as our example throughout the post.
+
+Real models can consume hundreds, or even thousands, of these features. Many of them need to be updated on every event. Researchers define the list, and it changes frequently. Each market’s structure is different, so different features are useful, and we don’t want to modify the framework each time we add one.
+
+## How Flex Model started
+
+The system that Flex Model replaced made it to prod around 2012. It was a monolith: it contained hundreds of signal definitions, and generated data for research, and computed live signals, and included trade execution logic. When we started to work on its successor, the main file was already more than 11k LOC, and that grew to more than 17k when it was decommissioned. The file’s two biggest functions alone were close to 3k LOC each!
+
+While the old system worked well and was relatively fast, adding new features was painful. Once, for example, we added a simple feature that was just a ratio of two numbers. That change touched nineteen files. The feature had to be declared in about six places, and the same argument had to be threaded through many near-identical per-market call sites. Also, every feature was computed for every market on every evaluation. A feature that one market needed made all of them slower, so people added “only compute this if…” switches for different markets. We wanted something more composable so that researchers could easily reuse existing pieces.
+
+In 2019, we started a project to replace the old system. This work began in our Hong Kong office, in large part because that’s where these problems were most keenly felt. Asia has many markets, each with its own regulator, and new rules and technical changes come into effect frequently. (It’s not unusual for an exchange to switch to an entirely new trading system over the course of a weekend.) Hand-writing features in that environment was just not tenable, so we needed software that generalizes. Software like that is also easy for other teams to pick up, which is how Flex Model spread to other offices.
+
+It took us about 2.5 years to reach the first real-world use. We tried to replace everything in one go, which turned out to be too difficult. In late 2021, we narrowed the scope to one simple strategy in one market, and it went live in early 2022. It took another year to replace the most important instances of the old system.
+
+Jane Street’s offices in Asia happen to be good homes for projects like Flex Model. The Hong Kong office in particular isn’t small anymore, but it can still feel like everyone knows each other, and most of the people you work with are a short walk away. Because engineers here build and run the same kinds of systems as in New York and London, but with fewer people, everyone ends up more of a generalist. That was helpful when developing Flex Model. A small team had all the tools to replace a critical trading system, and to do that work in a tight feedback loop.
+
+## Design goals of Flex Model
+
+The core idea was to split the feature computation from the trade execution code. We wanted features to be small pieces of code that you can combine, each defined in one place only. The system also had to be fast, which mostly meant avoiding allocations on the hot path (more on that later). The dream was that a researcher could write our example feature without touching the core, in code that would look roughly like this:
+
+```
+let mid = mid ~book () in
+let trade_vs_mid = diff trade_price ~minus:mid in
+average_over_last_n_trades ~n:10 trade_vs_mid
+```
+## Why not Incremental?
+
+In the snippet above, the dependencies between values form a graph. When an event arrives, we only want to update the nodes it affects. We already had Incremental, our library for incremental computation, which does exactly that, so why not use it? The short answer is that features often care about the history of events, while Incremental is built around current values.
+
+A good example of a computation that fits Incremental well is computing the value of an ETF. At its heart, it’s a simple sum-product: you multiply each stock’s price by its weight in the basket and sum across all stocks. That computation doesn’t care about anything besides the current prices. (Spreadsheets, build systems and reactive UIs all work in that same history-less way.)
+
+Thanks to that property, Incremental can use two optimizations:
+
+- **Coalescing updates:** if a value changes twice before the graph needs to be
+recomputed, we can safely ignore all but the last value.
+- **Cutoffs:** if a node’s value didn’t change after being recomputed, there’s no need to
+recompute the nodes that depend on it. Nodes are assumed to be pure functions of their
+inputs, so if their inputs didn’t change, their outputs won’t either.
+
+Let’s try a simpler version of our example feature: the average price of the last 10 trades. If we implement it in Incremental in a naive way, with the latest trade price as an input and a buffer of the last 10 prices, we’ll have a bad time:
+
+```
+let last_trade_price : int Incr.t = Incr.Var.watch ...
+let recent_prices_average =
+  let recent_prices = Queue.create () in
+  Incr.map last_trade_price ~f:(fun price ->
+    Queue.enqueue recent_prices price;
+    if Queue.length recent_prices > 10 then Queue.dequeue_and_ignore_exn recent_prices;
+    average recent_prices)
+```
+Say three trades arrive, with prices 100, 100, and 101. Because of the cutoff, the second
+trade would never make it into the buffer, as `last_trade_price` would not change for
+it. Even worse, if the graph is only recomputed after the third trade, coalescing means
+we’d just add 101 to the buffer!
+
+To be clear, this isn’t how Incremental is meant to be used: the function inside
+`recent_prices_average` isn’t pure. The usual fix is to keep the state at the edges of the
+graph. Here, that would mean the market data handler would keep the buffer and the
+Incremental graph would consume an already-computed average. That works for this simple
+version, but our real example feature also needs the mid at the moment of each trade, and
+the mid lives inside the graph. So the handler would have to either recompute the graph
+before every trade, giving up coalescing, or compute the mid a second time. Every new
+feature like this would add more hand-written code outside the graph.
+
+## Keeping history in the graph
+
+Ideally, the history would live inside the graph alongside current values. This is possible to achieve, but at a cost. Ron Minsky wrote about this tradeoff in Breaking down FRP: “history is made tractable by limiting dynamism”. That’s exactly the choice Flex Model makes. It gives up the ability to change the graph while it’s running, which Incremental allows, in return for keeping history there.
+
+Flex Model does this by splitting each feature into an event handler and an eval function. The handler runs when an event arrives, and updates a node’s state. The eval function is run when someone needs the actual value, and it computes it from the inputs and state. For example, a trade of 5 shares at 100 is an event. The current mid, say 101, is a value. Every event matters, but not all of them change values. A book update event can add a new order to the book without changing the best bid price and thus the mid. And two trades at the same price are two distinct events but carry the same value. So while handlers have to see every event to keep the state right, eval functions don’t, because they only run when a value is needed.
+
+Split up in this way, the code for our example feature would look something like this:
+
+```
+module Recent_trade_vs_mid = struct
+  type t =
+    { recent_diffs : float array
+    ; mutable next_idx : int
+    ; mutable sum : float
+    }
+  (* The event handler *)
+  let on_trade t ~trade_price ~mid =
+    let trade_price_mid_diff = trade_price -. mid in
+    (* Simplified: ignores the buffer not being full *)
+    t.sum <- t.sum -. t.recent_diffs.(t.next_idx) +. trade_price_mid_diff;
+    t.recent_diffs.(t.next_idx) <- trade_price_mid_diff;
+    t.next_idx <- (t.next_idx + 1) mod Array.length t.recent_diffs
+  (* The eval function *)
+  let eval t = t.sum /. Float.of_int (Array.length t.recent_diffs)
+end
+```
+Note that stateless features like mid need only an eval function. More complex features,
+like `average_over_last_n_trades` from the earlier snippet, are built from nodes just like
+this one. Nodes compose, so researchers mostly combine existing nodes, and only write
+their own when nothing existing fits.
+
+## The early engine and its problems
+
+The early versions of Flex Model already got a lot of things right. Features were implemented once and then composed. The same feature code ran live and in historical mode, which made training and production results much easier to match.
+
+But the early engine was built with a single strategy’s logic in mind. Because that strategy cared only about order book updates, the engine didn’t handle other kinds of events. So each feature could only react to a book update and report its value.
+
+That strategy needed certain features ready at different times: some were used to decide whether to send an order, some were always computed, and others were only computed once we decided to trade, for example to set its price. Those groups of features were hard-coded in the engine, and so was the sequence they ran in. Groups were added one by one as needs arose, which shows in the function name that we ended up with (lightly edited):
+
+```
+(* The sequence of operations on each order book update:
+   1) Features the trade execution logic depends on:
+      [| Feature_1_on_book_event; Feature_1_evaluate
+       ; Feature_2_on_book_event; Feature_2_evaluate |]
+   2) Features we always evaluate:
+      [| Feature_3_on_book_event; Feature_3_evaluate
+       ; Feature_4_on_book_event; Feature_4_evaluate |]
+   3) Other features:
+      [| Feature_5_on_book_event; Feature_6_on_book_event |]
+   4) The trade execution logic itself
+*)
+run_feature_provider_on_book_event_and_evaluate_execution_dependencies_and_always_evaluate_feature_providers
+  book_event;
+```
+Meanwhile, users wanted more functionality that wasn’t possible because we could only react to order book updates. In particular, we wanted to support timers, messages from other processes, and data sources other than market data. Each one would have required another event handler for each feature, and more hard-coded sequencing in the engine. Flex Model was still fast, but the part that decided what to compute on each event had quietly become the part everyone avoided.
+
+## Rebuilding the engine
+
+The rebuild kept handlers and evals, but changed who decides what runs when. In the early engine, each feature had one event handler that ran on every order book update. Now a feature has one handler for each event it cares about. As before, it also declares which values it reads.
+
+At startup, a new component, the “planner”, turns these feature definitions into a concrete plan—for each event kind, an ordered list of evals and event handlers that need to run. The event kind decides which handlers go into the plan, and the values they read decide the order, since anything a feature reads has to be computed first. The old groups are no longer needed, because the trade logic is now just another feature that declares what it reads. Here is an example of such a plan for our feature:
+
+```
+on an order book update:
+  book                  handle
+on a trade:
+  mid                   eval
+  recent_trade_vs_mid   handle   (push trade price - mid)
+when the model asks for features:
+  recent_trade_vs_mid   eval     (average of the buffer)
+```
+On a book update, we only update our copy of the book. No values are needed yet, and no
+other handlers care. A trade is more interesting. The mid is computed first, as the
+`on_trade` handler needs it, and only then does `on_trade` run. Finally, when a model asks
+for the feature vector, we run `recent_trade_vs_mid`’s eval function. Because the plan
+only contains what’s actually needed, a feature that one market uses doesn’t slow down all
+the others, as it did in the system Flex Model replaced.
+
+We just run the plan’s actions in order, without considering any cutoffs. That was a
+deliberate choice. Cutoffs would save some work in parts of the graph, but every node
+would need an additional `if` statement evaluated at runtime, and those branches couldn’t
+be predicted well by the CPU (since they depend on inherently random-looking market
+data). Skipping cutoffs also makes the engine simpler to reason about.
+
+The planner only matches event names to the handlers, and doesn’t need to know what an event represents. So a team can add a timer, a new feed, or a message from another process in an ordinary library, without touching Flex Model’s core. Only the features that care about the new event need a handler for it. In the early engine, the same change would have touched every feature and the engine itself.
+
+## Improving performance
+
+To avoid garbage collection pauses on the hot path, most of the work happens at startup:
+Flex Model loads the config, the planner builds the plan, and all of the data structures
+and callbacks are created. After that, the event handling path only reads and writes
+preallocated memory. The code uses `[@zero_alloc]` annotations checked by the compiler,
+and tests fail if the hot path allocates.
+
+Most values in Flex Model are floats. Supporting arbitrary value types without allocating
+was hard, so early versions supported nothing else. In our example feature, `t.sum <- ...`
+allocates a new boxed float on every trade in plain OCaml. In the past, keeping floats
+unboxed (which avoids allocation) depended on careful inlining annotations that were easy
+to break. With the advent of OxCaml, our open-source branch of the
+OCaml compiler, this became much simpler. Now, `mutable sum : float#` doesn’t
+allocate. Compiler engineers spent weeks in Hong Kong with the Flex Model team prototyping
+unboxed floats. Tail latency dropped about 25% in one of our test replays after we started
+using them.
+
+The next thing to optimize is plan execution. Right now, the plan runs as an array of closures, so each step is an indirect call. We’re experimenting with OxCaml’s runtime metaprogramming to generate code for the whole plan as one straight-line function, and compile it at startup. That would remove the last layer of interpreter overhead, and is only possible because nothing in the graph changes once it’s running.
+
+## Flex Model today
+
+Flex Model is used in many trading systems. Hundreds of features have been added over the last year, and some teams have written their own event kinds. It’s also used to build other parts of those systems, because an engine that handles every event in order turned out to be useful for more than features, although feature engineering is still its most important job.
+
+We moved the generic parts of Flex Model into the part of our codebase that interns can access, and kept the more sensitive features separate. Since then, interns have contributed to many parts of the framework.
+
+Flex Model started as a way to deal with the wide array of markets in Asia, and it’s a good example of the kind of work growing out of our offices here. Asia is an exciting place to be an engineer at Jane Street, and if this is the kind of problem you’d enjoy, we’d love for you to come build with us.
+
+*Thanks to Chengqi Song and the Flex Model team for building all of this, and for their
+help with this post.*
