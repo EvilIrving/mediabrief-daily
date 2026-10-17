@@ -467,8 +467,12 @@
   "issue": "2026-10-12 财新周刊2026年第39期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-08-gene-therapy.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-08-gene-therapy.zh.txt"
    }
   ],
   "added_at": "2026-10-17T17:12+08:00"
@@ -1168,8 +1172,12 @@
   "issue": "",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-01-de-care.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-01-de-care.zh.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -1276,8 +1284,12 @@
   "issue": "2026-09-07 财新周刊2026年第35期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-03-school.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-03-school.zh.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -4842,8 +4854,12 @@
   "issue": "2024-06-17 财新周刊2024年第24期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-06-low-price.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-06-low-price.zh.txt"
    }
   ],
   "added_at": "2026-10-15T13:31+08:00"
@@ -4912,8 +4928,12 @@
   "issue": "2024-04-29 财新周刊2024年第17期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-14-nonwoven-bag.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-14-nonwoven-bag.zh.txt"
    }
   ],
   "added_at": "2026-10-17T18:40+08:00"
@@ -5009,8 +5029,12 @@
   "issue": "2024-03-08 财新周刊（页面未标期数）",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-12-autism-adult.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-12-autism-adult.zh.txt"
    }
   ],
   "added_at": "2026-10-17T18:36+08:00"
@@ -6538,8 +6562,12 @@
   "issue": "2020-06-01 财新周刊2020年第21期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-07-volcano-painting.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-07-volcano-painting.zh.txt"
    }
   ],
   "added_at": "2026-10-17T07:24+08:00"
@@ -7107,8 +7135,12 @@
   "issue": "2018-06-18 财新周刊2018年第24期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-04-warburg.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-04-warburg.zh.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -7177,8 +7209,12 @@
   "issue": "2017-10-09 财新周刊2017年第39期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-11-xiang-junbo.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-11-xiang-junbo.zh.txt"
    }
   ],
   "added_at": "2026-10-17T18:32+08:00"
@@ -7195,8 +7231,12 @@
   "issue": "2017-08-14 财新周刊2017年第32期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-15-waterma.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-15-waterma.zh.txt"
    }
   ],
   "added_at": "2026-10-17T18:43+08:00"
@@ -7267,8 +7307,12 @@
   "issue": "2015-12-14 财新周刊2015年第48期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-13-wu-yaozhong.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-13-wu-yaozhong.zh.txt"
    }
   ],
   "added_at": "2026-10-17T18:36+08:00"
@@ -7285,8 +7329,12 @@
   "issue": "2015-07-13 财新周刊2015年第27期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-10-taiwan-stock.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-10-taiwan-stock.zh.txt"
    }
   ],
   "added_at": "2026-10-17T17:59+08:00"
@@ -7327,8 +7375,12 @@
   "issue": "2015-04-06 财新周刊2015年第13期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-09-qiuhe.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-09-qiuhe.zh.txt"
    }
   ],
   "added_at": "2026-10-17T17:12+08:00"
@@ -7345,8 +7397,12 @@
   "issue": "2014-09-08 财新周刊2014年第35期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-02-haze-ammonia.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-02-haze-ammonia.zh.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -7363,8 +7419,12 @@
   "issue": "2013-09-30 财新周刊2013年第38期",
   "txt": [
    {
-    "label": "讲稿",
+    "label": "速读",
     "url": "txt/cx-05-huaihe.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-05-huaihe.zh.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
