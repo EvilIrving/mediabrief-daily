@@ -1,5 +1,30 @@
 [
  {
+  "id": "EWvNQjAaOHw",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "How I use LLMs",
+  "link": "https://youtu.be/EWvNQjAaOHw",
+  "date": "2026-10-17T18:55",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/EWvNQjAaOHw.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/EWvNQjAaOHw.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/EWvNQjAaOHw.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/EWvNQjAaOHw.m4a",
+  "title_zh": "我如何使用LLM",
+  "added_at": "2026-10-17T19:01+08:00"
+ },
+ {
   "id": "_HLLpvjg8EI",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -409,8 +434,8 @@
  {
   "id": "Mph1H5u3yeA",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Why I'm Switching from Python to Docker Agent for AI Agents",
+  "source": "Better Stack",
+  "title": "Why I’m Switching from Python to Docker Agent for AI Agents",
   "link": "https://youtu.be/Mph1H5u3yeA",
   "date": "2026-10-10T16:45+08:00",
   "txt": [
@@ -419,11 +444,15 @@
     "url": "txt/Mph1H5u3yeA.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/Mph1H5u3yeA.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/Mph1H5u3yeA.orig.txt"
    }
   ],
-  "title_zh": "为什么我做 AI Agent 从 Python 转向 Docker Agent",
+  "title_zh": "为什么我从 Python 转向用 Docker Agent 构建 AI Agent",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -739,8 +768,8 @@
  {
   "id": "chWNkwHHSYg",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "The Human Cost of Convenience: Ex-Yahoo VP Srinija Srinivasan",
+  "source": "Chloe Shih",
+  "title": "The Human Cost of Convenience: Srinija Srinivasan, Former Yahoo VP",
   "link": "https://youtu.be/chWNkwHHSYg",
   "date": "2026-10-05T23:00+08:00",
   "txt": [
@@ -749,11 +778,15 @@
     "url": "txt/chWNkwHHSYg.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/chWNkwHHSYg.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/chWNkwHHSYg.orig.txt"
    }
   ],
-  "title_zh": "便利的人性代价：前 Yahoo 副总裁 Srinija Srinivasan",
+  "title_zh": "便利的代价：雅虎前副总裁 Srinija Srinivasan",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -1055,8 +1088,8 @@
  {
   "id": "QcdpeFbuy8o",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Peter Deng: The One Thing a Legendary PM Optimized For",
+  "source": "EO",
+  "title": "The One Thing Legendary Product Manager Peter Deng Optimized For | Felicis",
   "link": "https://www.youtube.com/watch?v=QcdpeFbuy8o",
   "date": "2026-09-23T21:30+08:00",
   "txt": [
@@ -1065,11 +1098,15 @@
     "url": "txt/QcdpeFbuy8o.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/QcdpeFbuy8o.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/QcdpeFbuy8o.orig.txt"
    }
   ],
-  "title_zh": "Peter Deng：传奇产品经理只优化一件事",
+  "title_zh": "传奇产品经理 Peter Deng 职业生涯中始终优化的一件事",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -1269,7 +1306,7 @@
   "id": "E7qB_p1D0Xk",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Zeng Ming: The Brutal Truth, Companies That Will Disappear, Why \"Excellent\" ≠ \"Great\"",
+  "title": "Zeng Ming: The Brutal Truth, Companies That Will Disappear, and Why “Excellent” ≠ “Great”",
   "link": "https://www.youtube.com/watch?v=E7qB_p1D0Xk",
   "date": "2026-09-03T08:00+08:00",
   "txt": [
@@ -1282,7 +1319,7 @@
     "url": "txt/E7qB_p1D0Xk.orig.txt"
    }
   ],
-  "title_zh": "曾鸣：残酷的真相、将会消失的公司，为什么\"优秀\"≠\"伟大\"",
+  "title_zh": "曾鸣：残酷的现实、将消失的公司，以及“优秀”不等于“卓越”",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -1656,7 +1693,7 @@
   "id": "zawGTDLtWFY",
   "kind": "summary",
   "source": "张小珺",
-  "title": "NVIDIA VP Ming-Yu Liu: Cosmos 3, World Models, Kung Fu, What Jensen Taught Me",
+  "title": "NVIDIA VP Ming-Yu Liu: Cosmos 3, World Models, Kung Fu, and What Jensen Taught Me",
   "link": "https://www.youtube.com/watch?v=zawGTDLtWFY",
   "date": "2026-08-13T08:00+08:00",
   "txt": [
@@ -1669,8 +1706,32 @@
     "url": "txt/zawGTDLtWFY.orig.txt"
    }
   ],
-  "title_zh": "英伟达副总裁刘洺堉：Cosmos 3、世界模型、功夫，以及黄仁勋教会我的事",
+  "title_zh": "英伟达副总裁刘洺堉：Cosmos 3、世界模型、功夫与黄仁勋教我的事",
   "added_at": "2026-10-11T05:45+08:00"
+ },
+ {
+  "id": "lsoo-can-the-male-still-gaze",
+  "kind": "summary",
+  "source": "Like Stories of Old",
+  "title": "Can the Male Still Gaze?",
+  "link": "https://nebula.tv/videos/lsoo-can-the-male-still-gaze?ref=lsoo",
+  "date": "2026-08-12T23:38+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/lsoo-can-the-male-still-gaze.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/lsoo-can-the-male-still-gaze.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/lsoo-can-the-male-still-gaze.orig.txt"
+   }
+  ],
+  "title_zh": "男性还能凝视吗？",
+  "added_at": "2026-10-17T19:01+08:00"
  },
  {
   "id": "cur-0d3bab75e5d5",
@@ -1795,8 +1856,8 @@
  {
   "id": "sJ4VJWycX9M",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Alexandr Wang: \"This Is a Once-in-a-Civilization Opportunity\"",
+  "source": "Y Combinator",
+  "title": "Alexandr Wang: This Is a Once-in-a-Civilization Opportunity",
   "link": "https://youtu.be/sJ4VJWycX9M",
   "date": "2026-07-30T03:37+08:00",
   "txt": [
@@ -1805,11 +1866,15 @@
     "url": "txt/sJ4VJWycX9M.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/sJ4VJWycX9M.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/sJ4VJWycX9M.orig.txt"
    }
   ],
-  "title_zh": "Alexandr Wang：\"这是文明级别千载难逢的机会\"",
+  "title_zh": "Alexandr Wang：这是文明史上难得一遇的机会",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -1842,7 +1907,7 @@
   "id": "ifniRXf467I",
   "kind": "summary",
   "source": "张小珺",
-  "title": "You Kaichao: vLLM, Open-Source Infra, Model Co-Design & the Journey from Community to Startup",
+  "title": "You Kaichao: vLLM, Open-Source Infrastructure, Model Co-Design, and the Journey from Community to Startup",
   "link": "https://youtu.be/ifniRXf467I",
   "date": "2026-07-29T07:03+08:00",
   "txt": [
@@ -1855,7 +1920,7 @@
     "url": "txt/ifniRXf467I.orig.txt"
    }
   ],
-  "title_zh": "游凯超：vLLM、开源基础设施、模型协同设计，从社区到创业",
+  "title_zh": "游凯超：vLLM、开源基础设施、模型协同设计与从社区到创业",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2141,7 +2206,7 @@
   "id": "a93FT2340c0",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Oral History of SpaceX: Space and AI, the Prelude to Human Civilization's Expansion",
+  "title": "Oral History of SpaceX’s Journey: Space and AI, the Prelude to Human Civilization’s Expansion",
   "link": "https://www.youtube.com/watch?v=a93FT2340c0",
   "date": "2026-06-13T11:06+08:00",
   "txt": [
@@ -2154,14 +2219,14 @@
     "url": "txt/a93FT2340c0.orig.txt"
    }
   ],
-  "title_zh": "SpaceX 口述史：太空与 AI，人类文明扩张的序曲",
+  "title_zh": "SpaceX 口述史：太空、AI 与人类文明扩张的序幕",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
   "id": "4hi93cDfVls",
   "kind": "summary",
   "source": "十字路口",
-  "title": "高手怎么用 AI？停止用 ChatGPT 吧｜Koji 对谈课代表立正（上）",
+  "title": "十字路口｜高手怎么用 AI？——停止用 ChatGPT 吧（上）",
   "link": "https://youtu.be/4hi93cDfVls",
   "date": "2026-06-11T00:00+08:00",
   "txt": [
@@ -2180,7 +2245,7 @@
   "id": "kBsqirnWTpI",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Anker's Steven Yang: Consumer Electronics Death & Birth, the Third Category, Product Philosophy",
+  "title": "Anker CEO Steven Yang: The Death and Birth of Consumer Electronics, the Third Category, and Product Philosophy",
   "link": "https://www.youtube.com/watch?v=kBsqirnWTpI",
   "date": "2026-06-08T08:00+08:00",
   "txt": [
@@ -2193,14 +2258,14 @@
     "url": "txt/kBsqirnWTpI.orig.txt"
    }
   ],
-  "title_zh": "安克阳萌：消费电子的生与死、第三品类与产品哲学",
+  "title_zh": "安克创新阳萌：消费电子的生死、第三类公司与产品哲学",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
   "id": "VAuDJ3yrhDM",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Pavel Durov at Oslo Freedom Forum: \"I've Seen How Governments Suppress Freedom\"",
+  "source": "Oslo Freedom Forum",
+  "title": "“I’ve Seen How Governments Suppress Freedom” | Telegram Founder Pavel Durov at Oslo Freedom Forum",
   "link": "https://youtu.be/VAuDJ3yrhDM",
   "date": "2026-06-02T18:18+08:00",
   "txt": [
@@ -2209,11 +2274,15 @@
     "url": "txt/VAuDJ3yrhDM.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/VAuDJ3yrhDM.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/VAuDJ3yrhDM.orig.txt"
    }
   ],
-  "title_zh": "Telegram 创始人 Pavel Durov 在奥斯陆自由论坛：\"我见过政府如何压制自由\"",
+  "title_zh": "“我见过政府如何压制自由”：Telegram 创始人 Pavel Durov 在奥斯陆自由论坛演讲",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2306,7 +2375,7 @@
  {
   "id": "I-A_yaUXK2E",
   "kind": "summary",
-  "source": "YouTube 总结",
+  "source": "月球大叔",
   "title": "与 SGLang 聊聊 DeepSeek V4",
   "link": "https://www.youtube.com/watch?v=I-A_yaUXK2E",
   "date": "2026-05-01T15:51+08:00",
@@ -2379,7 +2448,7 @@
   "id": "V9eI-t3TApE",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Luo Fuli: OpenClaw, Agent Frameworks, and an AI Paradigm That Has Already Changed",
+  "title": "Luo Fuli: OpenClaw, Agent Frameworks, and the Dramatic Shift in AI Paradigms",
   "link": "https://www.youtube.com/watch?v=V9eI-t3TApE",
   "date": "2026-04-24T11:30+08:00",
   "txt": [
@@ -2392,7 +2461,7 @@
     "url": "txt/V9eI-t3TApE.orig.txt"
    }
   ],
-  "title_zh": "罗福莉：OpenClaw、Agent 框架，AI 范式已经剧变",
+  "title_zh": "罗福莉：OpenClaw、Agent 框架与 AI 范式转变",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2619,7 +2688,7 @@
   "id": "rIwgZWzUKm8",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Saining Xie 7-Hour Interview: World Models, AMI Labs, Yann LeCun, Fei-Fei Li, and 42",
+  "title": "A 7-Hour Marathon Interview with Saining Xie: World Models, AMI Labs, Yann LeCun, Fei-Fei Li, and 42",
   "link": "https://www.youtube.com/watch?v=rIwgZWzUKm8",
   "date": "2026-03-16T11:30+08:00",
   "txt": [
@@ -2632,7 +2701,7 @@
     "url": "txt/rIwgZWzUKm8.orig.txt"
    }
   ],
-  "title_zh": "谢赛宁七小时访谈：世界模型、AMI Labs、Yann LeCun、李飞飞与 42",
+  "title_zh": "谢赛宁访谈：世界模型、AMI Labs、杨立昆、李飞飞与 AI 研究",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2691,7 +2760,7 @@
  {
   "id": "moXqSeVQ1Fk",
   "kind": "summary",
-  "source": "YouTube 总结",
+  "source": "Ruri Ohama",
   "title": "How to Turn ADHD into a Genius-Level Advantage",
   "link": "https://www.youtube.com/watch?v=moXqSeVQ1Fk",
   "date": "2026-02-27T07:01+08:00",
@@ -2701,11 +2770,15 @@
     "url": "txt/moXqSeVQ1Fk.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/moXqSeVQ1Fk.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/moXqSeVQ1Fk.orig.txt"
    }
   ],
-  "title_zh": "如何把 ADHD 变成天才级优势",
+  "title_zh": "如何把 ADHD 转化为天才级优势",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2738,7 +2811,7 @@
   "id": "c-ZVu-Cr1FQ",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Galaxea Founder Gao Jiyang: Catfish Effect, Zeng Guofan, Waymo vs. Momenta, and Why Xu Huazhe Left",
+  "title": "GALAXEA Founder Gao Jiyang: The Catfish Effect, Zeng Guofan, Waymo vs. Momenta, and Why Xu Huazhe Left",
   "link": "https://www.youtube.com/watch?v=c-ZVu-Cr1FQ",
   "date": "2026-02-13T18:01+08:00",
   "txt": [
@@ -2751,7 +2824,7 @@
     "url": "txt/c-ZVu-Cr1FQ.orig.txt"
    }
   ],
-  "title_zh": "星海图创始人高继扬：鲶鱼效应、曾国藩、Waymo 与 Momenta，以及许华哲为何离开",
+  "title_zh": "星海图高继扬：鲶鱼效应、曾国藩、Waymo 与 Momenta，以及许华哲离职",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2838,7 +2911,7 @@
   "id": "gWmyu3x5rXY",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Yin Qi on Chairing StepFun, the Seduction of Intelligence, and a Brutal Long-Horizon Game",
+  "title": "Yin Qi: On Chairing StepFun, the Seduction of Intelligence, and a Brutal Long-Horizon Game",
   "link": "https://www.youtube.com/watch?v=gWmyu3x5rXY",
   "date": "2026-01-27T23:10+08:00",
   "txt": [
@@ -2851,7 +2924,7 @@
     "url": "txt/gWmyu3x5rXY.orig.txt"
    }
   ],
-  "title_zh": "印奇：执掌阶跃星辰、智能的诱惑，与一场残酷的长周期游戏",
+  "title_zh": "印奇：执掌阶跃星辰、智能的诱惑与漫长而残酷的博弈",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -2878,8 +2951,8 @@
  {
   "id": "UqMtkgQe-kI",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Manus' Final Interview Before the Acquisition: The Surreal Odyssey of 2025",
+  "source": "张小珺",
+  "title": "Manus’ Final Interview Before the Acquisition: The Surreal Odyssey of 2025",
   "link": "https://www.youtube.com/watch?v=UqMtkgQe-kI",
   "date": "2025-12-30T22:08+08:00",
   "txt": [
@@ -2892,7 +2965,7 @@
     "url": "txt/UqMtkgQe-kI.orig.txt"
    }
   ],
-  "title_zh": "Manus 被收购前的最后一次访谈：2025 年的魔幻漂流",
+  "title_zh": "Manus 被收购前的最后一次访谈：2025 年这段离奇历程",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -3033,7 +3106,7 @@
     "url": "txt/-sowOoOeQz4.orig.txt"
    }
   ],
-  "title_zh": "朱啸虎：现实主义、AI 盛宴与泡沫，以及偏离共识的十五度",
+  "title_zh": "朱啸虎：现实主义、AI 盛宴与泡沫，以及偏离共识 15 度",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -3118,7 +3191,7 @@
   "id": "HvMANU1yc0U",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Li Xiang: MoE, Liang Wenfeng, VLA, Energy, Memory, Intimacy & Human Intelligence",
+  "title": "Li Auto Founder Li Xiang: MoE, Liang Wenfeng, VLA, Energy, Memory, Intimacy, and Human Intelligence",
   "link": "https://www.youtube.com/watch?v=HvMANU1yc0U",
   "date": "2025-10-31T19:20+08:00",
   "txt": [
@@ -3131,7 +3204,7 @@
     "url": "txt/HvMANU1yc0U.orig.txt"
    }
   ],
-  "title_zh": "理想汽车李想：MoE、梁文锋、VLA、能量、记忆、亲密关系与人类智能",
+  "title_zh": "理想汽车创始人李想：MoE、梁文锋、VLA、能量、记忆、亲密关系与人类智慧",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -3164,7 +3237,7 @@
   "id": "RUfeYhsundg",
   "kind": "summary",
   "source": "张小珺",
-  "title": "开源一段论文探索之旅",
+  "title": "Let’s Dive into Papers Together: An Open Journey into Exploring Research Papers",
   "link": "https://www.youtube.com/watch?v=RUfeYhsundg",
   "date": "2025-10-28T13:42+08:00",
   "txt": [
@@ -3177,6 +3250,7 @@
     "url": "txt/RUfeYhsundg.orig.txt"
    }
   ],
+  "title_zh": "一起读论文：开源一段论文探索之旅",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -3360,8 +3434,8 @@
  {
   "id": "qjPH9njnaVU",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Pavel Durov: Telegram, Freedom, Censorship, Money, Power & Human Nature",
+  "source": "Lex Fridman",
+  "title": "Pavel Durov: Telegram, Freedom, Censorship, Money, Power, and Human Nature | Lex Fridman Podcast #482",
   "link": "https://youtu.be/qjPH9njnaVU",
   "date": "2025-10-01T03:27+08:00",
   "txt": [
@@ -3370,11 +3444,15 @@
     "url": "txt/qjPH9njnaVU.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/qjPH9njnaVU.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/qjPH9njnaVU.orig.txt"
    }
   ],
-  "title_zh": "Pavel Durov：Telegram、自由、审查、金钱、权力与人性",
+  "title_zh": "482. Pavel Durov：Telegram、自由、审查、金钱、权力与人性｜Lex Fridman 播客",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -3513,7 +3591,7 @@
   "id": "91fmhAnECVc",
   "kind": "summary",
   "source": "张小珺",
-  "title": "Kimi Founder Yang Zhilin: K2, Agentic LLMs, Brains in Vats, and the Beginning of Infinity",
+  "title": "Kimi Founder Yang Zhilin: K2, Agentic LLMs, Brains in Vats, and The Beginning of Infinity",
   "link": "https://www.youtube.com/watch?v=91fmhAnECVc",
   "date": "2025-08-30T20:57+08:00",
   "txt": [
@@ -3526,7 +3604,7 @@
     "url": "txt/91fmhAnECVc.orig.txt"
    }
   ],
-  "title_zh": "Kimi 创始人杨植麟：K2、Agentic LLM、缸中之脑与无穷的开始",
+  "title_zh": "Kimi 创始人杨植麟：K2、Agentic LLM、缸中之脑与《无穷的开始》",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -3638,7 +3716,7 @@
   "id": "g_Pf6R95SiI",
   "kind": "summary",
   "source": "张小珺",
-  "title": "余凯口述 30 年史：世界不止刀光剑影，是一部人来人往的江湖故事",
+  "title": "余凯口述30年史（视频）：世界不止刀光剑影，是一部人来人往的江湖故事",
   "link": "https://www.youtube.com/watch?v=g_Pf6R95SiI",
   "date": "2025-07-12T01:52+08:00",
   "txt": [
@@ -3889,13 +3967,17 @@
   "id": "2Qs4MfEzCO0",
   "kind": "summary",
   "source": "张小珺",
-  "title": "对话奔驰全球 CEO 康林松：转型之中的 139 岁奔驰",
+  "title": "【独家对话奔驰全球CEO康林松】转型中的139岁奔驰",
   "link": "https://www.youtube.com/watch?v=2Qs4MfEzCO0",
   "date": "2025-04-26T10:59+08:00",
   "txt": [
    {
     "label": "总结",
     "url": "txt/2Qs4MfEzCO0.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2Qs4MfEzCO0.zh.txt"
    },
    {
     "label": "原文",
@@ -4163,6 +4245,30 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "7xTGNNLPyMI",
+  "kind": "summary",
+  "source": "Andrej Karpathy",
+  "title": "A Deep Dive into LLMs Like ChatGPT",
+  "link": "https://www.youtube.com/watch?v=7xTGNNLPyMI",
+  "date": "2025-02-06T02:23+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/7xTGNNLPyMI.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/7xTGNNLPyMI.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/7xTGNNLPyMI.orig.txt"
+   }
+  ],
+  "title_zh": "深入了解 ChatGPT 这类大语言模型",
+  "added_at": "2026-10-17T19:01+08:00"
+ },
+ {
   "id": "cur-55bc79ce049c",
   "kind": "curated",
   "type": "podcast",
@@ -4235,7 +4341,7 @@
  {
   "id": "2nVmKcITs7k",
   "kind": "summary",
-  "source": "YouTube 总结",
+  "source": "anything goes with emma chamberlain",
   "title": "Social Life, Success, and Sleep",
   "link": "https://youtu.be/2nVmKcITs7k",
   "date": "2025-01-23T13:55+08:00",
@@ -4245,11 +4351,15 @@
     "url": "txt/2nVmKcITs7k.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/2nVmKcITs7k.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/2nVmKcITs7k.orig.txt"
    }
   ],
-  "title_zh": "社交、成功与睡眠",
+  "title_zh": "社交生活、成功与睡眠",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -4308,7 +4418,7 @@
   "id": "4ZWJj0D_FSA",
   "kind": "summary",
   "source": "张小珺",
-  "title": "张小珺对话李想（2024 唯一深度对谈）",
+  "title": "【李想2024唯一对谈（纯享版）】张小珺对话李想",
   "link": "https://www.youtube.com/watch?v=4ZWJj0D_FSA",
   "date": "2024-12-29T20:19+08:00",
   "txt": [
@@ -7184,8 +7294,8 @@
  {
   "id": "YM4If6YHN3s",
   "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Steve Jobs' Most Innovative Speech",
+  "source": "自制总结",
+  "title": "Steve Jobs’ Most Innovative Speech",
   "link": "https://www.youtube.com/watch?v=YM4If6YHN3s",
   "date": "2015-05-07T20:17+08:00",
   "txt": [
@@ -7194,11 +7304,15 @@
     "url": "txt/YM4If6YHN3s.txt"
    },
    {
+    "label": "译文",
+    "url": "txt/YM4If6YHN3s.zh.txt"
+   },
+   {
     "label": "原文",
     "url": "txt/YM4If6YHN3s.orig.txt"
    }
   ],
-  "title_zh": "乔布斯最具创新性的演讲",
+  "title_zh": "史蒂夫·乔布斯最具创新性的演讲",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
