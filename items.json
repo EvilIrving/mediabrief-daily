@@ -6328,6 +6328,28 @@
   "added_at": "2026-10-11T05:30+08:00"
  },
  {
+  "id": "cx-19-xinyang-battery",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "信阳环保系统涉黑窝案",
+  "link": "https://weekly.caixin.com/2021-04-03/101685552.html",
+  "date": "2021-04-05",
+  "author": "周泰来、王梦阳、宋天娇、梁晓健（实习）",
+  "issue": "财新周刊2021年第13期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-19-xinyang-battery.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-19-xinyang-battery.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T03:21+08:00"
+ },
+ {
   "id": "cur-cd810a923d14",
   "kind": "curated",
   "type": "article",
@@ -6378,6 +6400,28 @@
   ],
   "title_zh": "在你用 memo() 之前",
   "added_at": "2026-10-11T05:09+08:00"
+ },
+ {
+  "id": "cx-26-royole",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "柔宇科技虚实探",
+  "link": "https://weekly.caixin.com/2021-02-06/101661229.html",
+  "date": "2021-02-08",
+  "author": "何书静、覃敏、屈慧、翟少辉（见习）",
+  "issue": "财新周刊2021年第6期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-26-royole.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-26-royole.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T03:21+08:00"
  },
  {
   "id": "cur-ffb36d12dab5",
@@ -7032,6 +7076,28 @@
   ],
   "title_zh": "拿满分 Lighthouse 做一个最不无障碍的网站",
   "added_at": "2026-10-11T05:09+08:00"
+ },
+ {
+  "id": "cx-24-pentagon-papers",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "历史后视镜｜如果他们输了，我们大家都输了",
+  "link": "https://weekly.caixin.com/2019-04-19/101406475.html",
+  "date": "2019-04-22",
+  "author": "孔捷生",
+  "issue": "财新周刊2019年第15期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-24-pentagon-papers.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-24-pentagon-papers.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T03:21+08:00"
  },
  {
   "id": "cur-34d6ec20c098",
