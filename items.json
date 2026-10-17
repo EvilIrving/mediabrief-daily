@@ -7068,6 +7068,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-18-harar-rimbaud",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "游思录｜时光列车：在鬣狗之城追寻兰波",
+  "link": "https://weekly.caixin.com/2019-01-05/101366857.html",
+  "date": "2019-01-07",
+  "author": "刘子超",
+  "issue": "财新周刊2019年第01期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-18-harar-rimbaud.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-18-harar-rimbaud.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T00:49+08:00"
+ },
+ {
   "id": "cur-91409bfba7c1",
   "kind": "curated",
   "type": "article",
