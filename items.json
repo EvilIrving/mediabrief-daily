@@ -7074,6 +7074,24 @@
   "added_at": "2026-10-17T18:32+08:00"
  },
  {
+  "id": "cx-15-waterma",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“攒车”联盟沃特玛之谜",
+  "link": "https://weekly.caixin.com/2017-08-12/101129513.html",
+  "date": "2017-08-14",
+  "author": "安丽敏、郑丽纯",
+  "issue": "2017-08-14 财新周刊2017年第32期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-15-waterma.txt"
+   }
+  ],
+  "added_at": "2026-10-17T18:43+08:00"
+ },
+ {
   "id": "cur-66d963ce2471",
   "kind": "curated",
   "type": "podcast",
