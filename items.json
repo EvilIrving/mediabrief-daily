@@ -7074,6 +7074,24 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "cx-10-taiwan-stock",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜回望台湾股疯",
+  "link": "https://weekly.caixin.com/2015-07-10/100828024.html",
+  "date": "2015-07-13",
+  "author": "杨渡",
+  "issue": "2015-07-13 财新周刊2015年第27期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-10-taiwan-stock.txt"
+   }
+  ],
+  "added_at": "2026-10-17T17:59+08:00"
+ },
+ {
   "id": "YM4If6YHN3s",
   "kind": "summary",
   "source": "YouTube 总结",
