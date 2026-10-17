@@ -4870,6 +4870,24 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-12-autism-adult",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜孤独症孩子长大后 组成没有父母的“社区家庭”是否可能？",
+  "link": "https://weekly.caixin.com/2024-03-08/102173222.html",
+  "date": "2024-03-08",
+  "author": "张芮雪、丁刚",
+  "issue": "2024-03-08 财新周刊（页面未标期数）",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-12-autism-adult.txt"
+   }
+  ],
+  "added_at": "2026-10-17T18:36+08:00"
+ },
+ {
   "id": "cur-7af6c18a0984",
   "kind": "curated",
   "type": "podcast",
@@ -7090,6 +7108,24 @@
   "title_zh": "Mike Barker 谈 LMAX 架构",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc8809708ee2.m4a",
   "added_at": "2026-10-11T13:00+08:00"
+ },
+ {
+  "id": "cx-13-wu-yaozhong",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜孤独者的灯火——画家吴耀忠的故事",
+  "link": "https://weekly.caixin.com/2015-12-11/100884658.html",
+  "date": "2015-12-14",
+  "author": "杨渡",
+  "issue": "2015-12-14 财新周刊2015年第48期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-13-wu-yaozhong.txt"
+   }
+  ],
+  "added_at": "2026-10-17T18:36+08:00"
  },
  {
   "id": "cx-10-taiwan-stock",
