@@ -7020,6 +7020,24 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-11-xiang-junbo",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "俘获项俊波",
+  "link": "https://weekly.caixin.com/2017-09-29/101152157.html",
+  "date": "2017-10-09",
+  "author": "杨巧伶、凌华薇、于宁",
+  "issue": "2017-10-09 财新周刊2017年第39期",
+  "txt": [
+   {
+    "label": "讲稿",
+    "url": "txt/cx-11-xiang-junbo.txt"
+   }
+  ],
+  "added_at": "2026-10-17T18:32+08:00"
+ },
+ {
   "id": "cur-66d963ce2471",
   "kind": "curated",
   "type": "podcast",
