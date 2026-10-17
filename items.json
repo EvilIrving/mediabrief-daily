@@ -5,7 +5,7 @@
   "source": "YouTube 总结",
   "title": "How I use LLMs",
   "link": "https://youtu.be/EWvNQjAaOHw",
-  "date": "2026-10-17T18:55",
+  "date": "2026-10-18T00:50",
   "txt": [
    {
     "label": "总结",
@@ -4427,6 +4427,28 @@
   "added_at": "2026-10-11T05:30+08:00"
  },
  {
+  "id": "cx-21-mh370-science",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "科学｜重启马航370搜寻，科学家能做什么？",
+  "link": "https://weekly.caixin.com/2025-01-04/102275446.html",
+  "date": "2025-01-06",
+  "author": "小庄",
+  "issue": "财新周刊2025年第01期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-21-mh370-science.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-21-mh370-science.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T01:02+08:00"
+ },
+ {
   "id": "4ZWJj0D_FSA",
   "kind": "summary",
   "source": "张小珺",
@@ -4670,6 +4692,28 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aab51f0b0545.m4a",
   "added_at": "2026-10-11T13:00+08:00"
+ },
+ {
+  "id": "cx-20-overwork-death",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "不定时工作制的过劳死：病亡视同工伤争议再起",
+  "link": "https://weekly.caixin.com/2024-08-03/102223005.html",
+  "date": "2024-08-05",
+  "author": "覃建行",
+  "issue": "财新周刊2024年第31期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-20-overwork-death.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-20-overwork-death.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-18T01:02+08:00"
  },
  {
   "id": "cur-6dfa58b6019a",
