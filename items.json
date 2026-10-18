@@ -5333,6 +5333,28 @@
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
+  "id": "cx-36-wang-zengqi",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜汪曾祺：一个世纪的饮食记忆",
+  "link": "https://weekly.caixin.com/2023-11-25/102139352.html",
+  "date": "2023-11-27",
+  "author": "杨早",
+  "issue": "财新周刊2023年第46期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-36-wang-zengqi.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-36-wang-zengqi.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T04:42+08:00"
+ },
+ {
   "id": "cur-ab61ff083285",
   "kind": "curated",
   "type": "podcast",
