@@ -7846,6 +7846,28 @@
   "added_at": "2026-10-17T17:59+08:00"
  },
  {
+  "id": "cx-37-zhao-yanei",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "【封面报道】要案回顾｜“赵衙内”的房产帝国",
+  "link": "https://weekly.caixin.com/2015-05-22/100811665.html",
+  "date": "2015-05-25",
+  "author": "谢海涛（王和岩、于达维、王晓庆有贡献）",
+  "issue": "财新周刊2015年第20期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-37-zhao-yanei.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-37-zhao-yanei.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T07:18+08:00"
+ },
+ {
   "id": "YM4If6YHN3s",
   "kind": "summary",
   "source": "自制总结",
