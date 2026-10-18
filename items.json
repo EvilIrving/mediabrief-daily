@@ -7406,6 +7406,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-35-china-tower",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "中国铁塔何处去？",
+  "link": "https://weekly.caixin.com/2018-08-10/101313871.html",
+  "date": "2018-08-13",
+  "author": "覃敏",
+  "issue": "财新周刊2018年第32期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-35-china-tower.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-35-china-tower.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T04:18+08:00"
+ },
+ {
   "id": "cx-29-ren-yanhong",
   "kind": "curated",
   "type": "caixin",
