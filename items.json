@@ -3841,6 +3841,28 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "cx-30-green-wall",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "非洲“绿色长城”：穿越战乱的生态复兴",
+  "link": "https://weekly.caixin.com/2025-06-07/102328079.html",
+  "date": "2025-06-09",
+  "author": "康佳、徐路易",
+  "issue": "财新周刊2025年第22期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-30-green-wall.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-30-green-wall.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T01:48+08:00"
+ },
+ {
   "id": "cur-c4fd1b473658",
   "kind": "curated",
   "type": "article",
