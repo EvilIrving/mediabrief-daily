@@ -6412,6 +6412,28 @@
   "added_at": "2026-10-18T00:42+08:00"
  },
  {
+  "id": "cx-31-eia-engineer",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "财新周刊｜特别报道：“高产环评师”乱象调查",
+  "link": "https://weekly.caixin.com/2021-05-22/101716581.html",
+  "date": "2021-05-24",
+  "author": "黄晏浩",
+  "issue": "财新周刊2021年第20期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-31-eia-engineer.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-31-eia-engineer.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T03:47+08:00"
+ },
+ {
   "id": "cur-12fc6359a0fb",
   "kind": "curated",
   "type": "article",
