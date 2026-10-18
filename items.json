@@ -2550,6 +2550,28 @@
   "added_at": "2026-10-12T11:28+08:00"
  },
  {
+  "id": "cx-33-altruism",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "科学｜一个利他主义的故事：善良可以用公式计算吗",
+  "link": "https://weekly.caixin.com/2026-04-11/102432845.html",
+  "date": "2026-04-13",
+  "author": "小庄",
+  "issue": "财新周刊2026年第14期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-33-altruism.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-33-altruism.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T02:58+08:00"
+ },
+ {
   "id": "cur-cad5bdded1ef",
   "kind": "curated",
   "type": "article",
@@ -7360,6 +7382,28 @@
   ],
   "title_zh": "小而专注的模块",
   "added_at": "2026-10-11T05:09+08:00"
+ },
+ {
+  "id": "cx-29-ren-yanhong",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "法院“留有余地”两判死缓 任艳红投毒案疑云",
+  "link": "https://weekly.caixin.com/2018-08-04/101311618.html",
+  "date": "2018-08-06",
+  "author": "崔先康",
+  "issue": "财新周刊2018年第31期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-29-ren-yanhong.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-29-ren-yanhong.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T02:58+08:00"
  },
  {
   "id": "cur-1c9291c74af3",
