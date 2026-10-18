@@ -1,50 +1,5 @@
 [
  {
-  "id": "EWvNQjAaOHw",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "How I use LLMs",
-  "link": "https://youtu.be/EWvNQjAaOHw",
-  "date": "2026-10-18T15:30",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/EWvNQjAaOHw.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/EWvNQjAaOHw.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/EWvNQjAaOHw.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/EWvNQjAaOHw.m4a",
-  "title_zh": "我如何使用LLM",
-  "added_at": "2026-10-17T19:01+08:00"
- },
- {
-  "id": "_HLLpvjg8EI",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "读了四年动画，到底图什么？",
-  "link": "https://youtu.be/_HLLpvjg8EI",
-  "date": "2026-10-17T15:29",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/_HLLpvjg8EI.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/_HLLpvjg8EI.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/_HLLpvjg8EI.m4a",
-  "added_at": "2026-10-12T07:53+08:00"
- },
- {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -1250,6 +1205,26 @@
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/HlpeP8Z1e5o.m4a",
   "title_zh": "如何活出自己？",
   "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "_HLLpvjg8EI",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "读了四年动画，到底图什么？",
+  "link": "https://youtu.be/_HLLpvjg8EI",
+  "date": "2026-09-07T23:00+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/_HLLpvjg8EI.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/_HLLpvjg8EI.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/_HLLpvjg8EI.m4a",
+  "added_at": "2026-10-12T07:53+08:00"
  },
  {
   "id": "n9xKblqyQ28",
@@ -4345,6 +4320,31 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "EWvNQjAaOHw",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "How I use LLMs",
+  "link": "https://youtu.be/EWvNQjAaOHw",
+  "date": "2025-02-28T06:29+08:00",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/EWvNQjAaOHw.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/EWvNQjAaOHw.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/EWvNQjAaOHw.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/EWvNQjAaOHw.m4a",
+  "title_zh": "我如何使用LLM",
+  "added_at": "2026-10-17T19:01+08:00"
+ },
+ {
   "id": "7xTGNNLPyMI",
   "kind": "summary",
   "source": "Andrej Karpathy",
@@ -4846,6 +4846,28 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6dfa58b6019a.m4a",
   "added_at": "2026-10-11T13:00+08:00"
+ },
+ {
+  "id": "cx-41-pneumoconiosis",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜尘肺病侵入“90后”：被粉尘窒息的青春",
+  "link": "https://weekly.caixin.com/2024-08-02/102222652.html",
+  "date": "2024-08-02",
+  "author": "郑海鹏（撰稿）；郑海鹏、张芮雪（摄影）",
+  "issue": "2024-08-02 财新周刊（页面未标期数）",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-41-pneumoconiosis.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-41-pneumoconiosis.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T07:27+08:00"
  },
  {
   "id": "cur-307d4a6462c1",
