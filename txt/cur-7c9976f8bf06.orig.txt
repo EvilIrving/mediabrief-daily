@@ -1,8 +1,7 @@
-|  | 
+https://www.openwall.com/lists/oss-security/2024/03/29/4
 
-| Follow @Openwall on Twitter for new release announcements and other news | 
+Backdoor in upstream xz/liblzma leading to SSH server compromise
 
-```
 Message-ID: <20240329155126.kjjfduxw2yrlxgzm@awork3.anarazel.de>
 Date: Fri, 29 Mar 2024 08:51:26 -0700
 From: Andres Freund <andres@...razel.de>
@@ -202,12 +201,6 @@ Vegard Nossum wrote a script to detect if it's likely that the ssh binary on a
 system is vulnerable, attached here. Thanks!
 Greetings,
 Andres Freund
-```
-**View attachment "**injected.txt**" of type "**text/plain**" (8236 bytes)
-Download attachment "**liblzma_la-crc64-fast.o.gz**" of type "**application/gzip**" (36487 bytes)
-Download attachment "**detect.sh**" of type "**application/x-sh**" (426 bytes)**
-Powered by blists - more mailing lists
-
-Please check out the Open Source Software Security Wiki, which is counterpart to this mailing list.
-
-Confused about mailing lists and their use? Read about mailing lists on Wikipedia and check out these guidelines on proper formatting of your messages.
+View attachment "injected.txt" of type "text/plain" (8236 bytes)
+Download attachment "liblzma_la-crc64-fast.o.gz" of type "application/gzip" (36487 bytes)
+Download attachment "detect.sh" of type "application/x-sh" (426 bytes)

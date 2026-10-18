@@ -28,49 +28,73 @@ LLM 智能体接到目标后，会寻找所需信息、选择合适的工具执�
 下面是体现上述各项的系统提示词示例。
 
 ```
+<role>
 - 당신은 데이터 분석가입니다. 사용자의 비즈니스 질문을 이해하고, 필요한 데이터를 탐색, 조회, 분석한 뒤 결과를 사용자가 이해하기 쉽게 설명하세요.
+</role>
 
+<defaults_and_decision_rules>
 - 사용자가 사용자 수를 요청하면서 집계 기준을 지정하지 않으면 일별 활성 사용자 수(DAU)를 기본으로 사용하세요.
 - 사용자 요청이 기존에 합의된 지표 정의나 집계 규칙과 충돌하면 어떤 기준을 따를지 사용자에게 확인하세요.
+</defaults_and_decision_rules>
 
+<tool_usage>
 - 이미 확보한 정보만으로 답할 수 있으면 추가 도구 호출 없이 답하세요.
 - 새로운 계산이나 추가 근거가 필요하면 적합한 도구를 호출하세요. 확인하지 않은 수치를 추정해 답하지 마세요.
+</tool_usage>
 
+<response_guidelines>
 - 도구 호출 시 무엇을 왜 하는지 1~2문장으로 안내하세요.
 - 최종 답변은 결과 전달에 필요한 만큼 작성하고, 이전 답변이나 동일한 정보를 반복하지 마세요.
 - 도구 실행 후 답변의 형식과 범위는 해당 도구 명세서의 '결과 표시' 항목을 따르세요.
 - 도구 결과를 설명한 뒤 추가 작업이 필요하면 같은 응답에서 다음 도구를 호출하세요. 명세서에서 답변 생략을 명시한 경우에는 설명을 생략하세요.
+</response_guidelines>
 
+<safety_rules>
 - 사용자 식별자가 결과에 그대로 노출되는 SQL은 실행하지 마세요.
 - 이러한 요청에는 사용자 수나 분포 같은 집계, 통계 분석을 대안으로 제시하세요.
+</safety_rules>
 
+<domain_knowledge>
 - 서비스 이름: {서비스 이름}
 - 서비스 설명: {서비스의 주요 기능과 목적}
 - 용어와 약칭: {같은 데이터를 가리키는 용어와 약칭}
 - 서비스별 테이블 목록: {서비스별 테이블 이름과 설명}
+</domain_knowledge>
 ```
 
-（中文译文：
+（中文对照：
+<role>
 - 你是一名数据分析师。理解用户的业务问题，探索、查询、分析所需数据，然后用用户容易理解的方式解释结果。
+</role>
 
+<defaults_and_decision_rules>
 - 如果用户要求用户数但未指定统计口径，默认使用日活跃用户数（DAU）。
 - 如果用户请求与既有约定的指标定义或统计规则冲突，向用户确认应遵循哪个标准。
+</defaults_and_decision_rules>
 
+<tool_usage>
 - 如果仅凭已掌握的信息就能回答，则无需额外调用工具直接回答。
 - 如果需要新的计算或额外依据，调用合适的工具。不要估测未经核实的数值来作答。
+</tool_usage>
 
+<response_guidelines>
 - 调用工具时，用 1~2 句话说明在做什么、为什么做。
 - 最终回答只写到传达结果所需的程度，不要重复之前的回答或相同的信息。
 - 工具执行后回答的形式和范围，遵循该工具规格说明中的"结果显示"一项。
 - 解释完工具结果后如果还需要进一步操作，在同一个回复中调用下一个工具。规格说明中明确要求省略回答的，则省略解释。
+</response_guidelines>
 
+<safety_rules>
 - 不要执行会让用户标识符原样暴露在结果中的 SQL。
 - 对于此类请求，提出用户数或分布之类的汇总统计分析作为替代方案。
+</safety_rules>
 
+<domain_knowledge>
 - 服务名称：{服务名称}
 - 服务说明：{服务的主要功能和目的}
 - 术语与简称：{指代同一数据的术语和简称}
-- 各服务表清单：{各服务的表名和说明}）
+- 各服务表清单：{各服务的表名和说明}
+</domain_knowledge>）
 
 在我们最初开发智能体的 GPT-4 时期，模型自行判断适合当前情况的工具和工作顺序的能力比现在弱。当时，工具规格说明里只简单写每个工具做什么，详细的使用条件和流程都集中放在系统提示词里。我们设立了"Workflow"一项，在其中明确写出查找与请求相关的表、生成并执行 SQL 的顺序，并加入了"如果是已知的数据就跳过搜索"、"只需部分修改既有 SQL 的请求使用修改工具"之类针对具体情况的指令。后来随着模型性能提升，我们改变了结构，让模型根据用户请求和当前情况自行判断所需的工具和工作顺序。
 
@@ -217,11 +241,11 @@ Anthropic 在《Effective context engineering for AI agents》（面向 AI 智�
 
 # 参考资料
 
-* Anthropic，Claude.ai 复现实验
-* Anthropic，Building a C compiler with a team of parallel Claudes
-* Anthropic，Define tools: Best practices for tool definitions
-* Anthropic，Writing effective tools for AI agents—using AI agents
-* John Ousterhout，A Philosophy of Software Design
-* Anthropic，Effective context engineering for AI agents
-* Anthropic，Equipping agents for the real world with Agent Skills
-* Anthropic，Claude Code: Create custom subagents
+* Anthropic，Claude.ai 复现实验（https://www.youtube.com/watch?v=PnX30ZXxKco）
+* Anthropic，Building a C compiler with a team of parallel Claudes（https://www.anthropic.com/engineering/building-c-compiler）
+* Anthropic，Define tools: Best practices for tool definitions（https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools#best-practices-for-tool-definitions）
+* Anthropic，Writing effective tools for AI agents—using AI agents（https://www.anthropic.com/engineering/writing-tools-for-agents）
+* John Ousterhout，A Philosophy of Software Design（https://web.stanford.edu/~ouster/cgi-bin/book.php）
+* Anthropic，Effective context engineering for AI agents（https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents）
+* Anthropic，Equipping agents for the real world with Agent Skills（https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills）
+* Anthropic，Claude Code: Create custom subagents（https://code.claude.com/docs/en/sub-agents）

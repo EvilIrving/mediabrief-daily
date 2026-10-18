@@ -5,7 +5,7 @@
   "source": "YouTube 总结",
   "title": "How I use LLMs",
   "link": "https://youtu.be/EWvNQjAaOHw",
-  "date": "2026-10-18T00:50",
+  "date": "2026-10-18T15:30",
   "txt": [
    {
     "label": "总结",
@@ -3672,6 +3672,28 @@
   "added_at": "2026-10-11T05:20+08:00"
  },
  {
+  "id": "cx-23-zongqinghou",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "封面报道｜宗庆后留下了什么？",
+  "link": "https://weekly.caixin.com/2025-07-25/102345135.html",
+  "date": "2025-07-28",
+  "author": "冯奕铭、王小青、朱亮韬、包云红",
+  "issue": "财新周刊2025年第29期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-23-zongqinghou.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-23-zongqinghou.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T00:39+08:00"
+ },
+ {
   "id": "cur-f860d82c521a",
   "kind": "curated",
   "type": "podcast",
@@ -5458,6 +5480,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-27-thorny-childhood",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜穿过布满荆棘的童年",
+  "link": "https://weekly.caixin.com/2023-08-12/102092463.html",
+  "date": "2023-08-14",
+  "author": "隗延章",
+  "issue": "财新周刊2023年第32期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-27-thorny-childhood.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-27-thorny-childhood.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T00:39+08:00"
+ },
+ {
   "id": "BV1y14y1Q7Cd",
   "kind": "summary",
   "source": "货币法则研习社",
@@ -6683,6 +6727,28 @@
   "added_at": "2026-10-17T07:24+08:00"
  },
  {
+  "id": "cx-25-yunnan-aluminum",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "云南“铝计划”博弈电力格局",
+  "link": "https://weekly.caixin.com/2020-04-11/101541334.html",
+  "date": "2020-04-13",
+  "author": "罗国平、王婧",
+  "issue": "财新周刊2020年第14期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-25-yunnan-aluminum.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-25-yunnan-aluminum.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T00:39+08:00"
+ },
+ {
   "id": "cur-a3d03cc6ae0c",
   "kind": "curated",
   "type": "podcast",
@@ -7394,6 +7460,28 @@
    }
   ],
   "added_at": "2026-10-17T18:43+08:00"
+ },
+ {
+  "id": "cx-22-erhai",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "封面报道｜抢救洱海",
+  "link": "https://weekly.caixin.com/2017-05-05/101086670.html",
+  "date": "2017-05-08",
+  "author": "周辰、吴美微（实习）",
+  "issue": "财新周刊2017年第18期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-22-erhai.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-22-erhai.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T00:39+08:00"
  },
  {
   "id": "cur-66d963ce2471",

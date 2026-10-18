@@ -2,4 +2,4 @@ https://www.openwall.com/lists/oss-security/2024/03/29/4
 
 上游 xz/liblzma 后门可导致 SSH 服务器被攻破（Backdoor in upstream xz/liblzma leading to SSH server compromise） ｜ Andres Freund（oss-security） ｜ 文章 ｜ https://www.openwall.com/lists/oss-security/2024/03/29/4
 
-Andres Freund 在 oss-security 邮件列表披露 xz 后门（CVE-2024-3094）。他因 Debian sid 上 ssh 登录异常耗 CPU 而追查，发现 5.6.0 和 5.6.1 的发行 tarball 被植入混淆脚本，利用伪装成测试数据的文件，在 x86-64 Linux 的发行版打包构建中把恶意代码编进 liblzma。由于 Debian 等给 sshd 打了 systemd 补丁，这个库会被载入 sshd。后门劫持 RSA_public_decrypt，可能允许预认证阶段的未授权访问。他认为上游维护者很可能直接参与，因此直接通报发行版，并敦促尽快升级。后门只在 tarball 中而不在 git 源码里，构建和运行条件都很挑剔，还会规避调试环境，以减少被偶然发现的机会。他自称不是安全研究员，分析主要来自日常的性能排查工具。
+Andres Freund 在 oss-security 邮件列表披露 xz 后门（CVE-2024-3094）。他因 Debian sid 上 ssh 登录异常耗 CPU 而追查，发现 5.6.0 和 5.6.1 中被植入混淆脚本，利用伪装成测试数据的文件，在 x86-64 Linux 的发行版打包构建中把恶意代码编进 liblzma。由于 Debian 等给 sshd 打了 systemd 补丁，这个库会被载入 sshd。后门劫持 RSA_public_decrypt，可能允许预认证阶段的未授权访问。他认为上游维护者很可能直接参与，因此直接通报发行版，并敦促尽快升级。上游 xz 仓库和 tarball 都被植入了后门：伪装成测试数据的载荷文件（tests/files/bad-3-corrupt_lzma2.xz、good-large_compressed.lzma）提交在上游仓库里，而把它们注入构建的那部分脚本只在发行 tarball 中。构建和运行条件都很挑剔，还会规避调试环境，以减少被偶然发现的机会。他自称不是安全研究员，分析主要来自日常的性能排查工具。
