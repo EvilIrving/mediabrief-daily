@@ -3288,6 +3288,28 @@
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
+  "id": "cx-38-nexperia",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "特别报道｜安世半导体究竟属于谁？跨境并购直面地缘政治冲击",
+  "link": "https://weekly.caixin.com/2025-10-25/102375528.html",
+  "date": "2025-10-27",
+  "author": "覃敏、杜知航、方祖望",
+  "issue": "财新周刊2025年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-38-nexperia.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-38-nexperia.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T05:47+08:00"
+ },
+ {
   "id": "cur-7bf82b8dcead",
   "kind": "curated",
   "type": "article",
