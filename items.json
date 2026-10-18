@@ -4493,6 +4493,28 @@
   "added_at": "2026-10-18T01:02+08:00"
  },
  {
+  "id": "cx-28-illness-aid",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "特别报道：大病救助黑洞",
+  "link": "https://weekly.caixin.com/2025-01-04/102275418.html",
+  "date": "2025-01-06",
+  "author": "蒋模婷、汤涵钰、崔笑天、黄蕙昭（特约）、邢丹荻（实习）",
+  "issue": "财新周刊2025年第01期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-28-illness-aid.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-28-illness-aid.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T02:20+08:00"
+ },
+ {
   "id": "4ZWJj0D_FSA",
   "kind": "summary",
   "source": "张小珺",
