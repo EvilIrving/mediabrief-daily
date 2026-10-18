@@ -7564,6 +7564,28 @@
   "added_at": "2026-10-15T13:16+08:00"
  },
  {
+  "id": "cx-34-zheshang-bank",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“能人”张长弓和浙商银行灰色扩张过往｜前事·后事",
+  "link": "https://weekly.caixin.com/2018-04-27/101240494.html",
+  "date": "2018-04-30",
+  "author": "吴红毓然、韩祎",
+  "issue": "财新周刊2018年第17期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-34-zheshang-bank.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-34-zheshang-bank.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T06:14+08:00"
+ },
+ {
   "id": "cur-63bd5d53fbe9",
   "kind": "curated",
   "type": "article",
@@ -7680,6 +7702,28 @@
    }
   ],
   "added_at": "2026-10-19T00:39+08:00"
+ },
+ {
+  "id": "cx-40-stephen-ross",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "逝者｜奠基新古典金融学",
+  "link": "https://weekly.caixin.com/2017-03-17/101067157.html",
+  "date": "2017-03-20",
+  "author": "陈志武",
+  "issue": "财新周刊2017年第11期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-40-stephen-ross.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-40-stephen-ross.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T06:14+08:00"
  },
  {
   "id": "cur-66d963ce2471",
