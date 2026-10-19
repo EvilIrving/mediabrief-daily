@@ -998,6 +998,28 @@
   "added_at": "2026-10-12T11:28+08:00"
  },
  {
+  "id": "cx-48-hospice",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "扩容安宁疗护",
+  "link": "https://weekly.caixin.com/2026-09-26/102488861.html",
+  "date": "2026-09-28",
+  "author": "周信达、罗浥萌（实习）",
+  "issue": "财新周刊2026年第38期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-48-hospice.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-48-hospice.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T12:16+08:00"
+ },
+ {
   "id": "xZ5TEaleUdg",
   "kind": "summary",
   "source": "YouTube 总结",
