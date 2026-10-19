@@ -22,6 +22,28 @@
   "added_at": "2026-10-19T14:48+08:00"
  },
  {
+  "id": "cx-65-ai-companion",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "最新财新周刊｜暂别“陪聊”智能体",
+  "link": "https://weekly.caixin.com/2026-10-17/102494236.html",
+  "date": "2026-10-19",
+  "author": "罗浥萌（实习）、汤涵钰",
+  "issue": "财新周刊2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-65-ai-companion.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-65-ai-companion.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T17:48+08:00"
+ },
+ {
   "id": "cur-de1448be137e",
   "kind": "curated",
   "type": "article",
