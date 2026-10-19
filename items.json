@@ -6100,6 +6100,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-52-perennial-rice",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "多年生稻能否带来农业革命？",
+  "link": "https://weekly.caixin.com/2023-01-28/101992196.html",
+  "date": "2023-01-30",
+  "author": "王克柔",
+  "issue": "财新周刊2023年第4期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-52-perennial-rice.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-52-perennial-rice.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T13:49+08:00"
+ },
+ {
   "id": "cur-bd2a1c61491f",
   "kind": "curated",
   "type": "article",
