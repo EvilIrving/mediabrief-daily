@@ -7888,6 +7888,28 @@
   "added_at": "2026-10-17T18:43+08:00"
  },
  {
+  "id": "cx-51-kang-hongkui",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "学术奇人康宏逵",
+  "link": "https://weekly.caixin.com/2017-08-12/101129504.html",
+  "date": "2017-08-14",
+  "author": "王炯华",
+  "issue": "财新周刊2017年第32期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-51-kang-hongkui.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-51-kang-hongkui.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T12:55+08:00"
+ },
+ {
   "id": "cx-22-erhai",
   "kind": "curated",
   "type": "caixin",
