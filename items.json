@@ -239,6 +239,28 @@
   "added_at": "2026-10-19T19:27+08:00"
  },
  {
+  "id": "cx-67-power-sales",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "售电巨亏谁埋单？",
+  "link": "https://weekly.caixin.com/2026-10-16/102493974.html",
+  "date": "2026-10-16",
+  "author": "范若虹、赵煊",
+  "issue": "《财新周刊》2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-67-power-sales.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-67-power-sales.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-20T00:27+08:00"
+ },
+ {
   "id": "cur-5ec807ee0814",
   "kind": "curated",
   "type": "article",
@@ -8424,6 +8446,28 @@
    }
   ],
   "added_at": "2026-10-18T00:42+08:00"
+ },
+ {
+  "id": "cx-63-angang",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“去产能”之困的安钢样本",
+  "link": "https://weekly.caixin.com/2016-01-29/100905030.html",
+  "date": "2016-02-01",
+  "author": "范若虹",
+  "issue": "《财新周刊》2016年第5期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-63-angang.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-63-angang.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-20T00:27+08:00"
  },
  {
   "id": "cx-13-wu-yaozhong",
