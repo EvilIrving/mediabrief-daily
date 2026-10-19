@@ -8064,6 +8064,28 @@
   "added_at": "2026-10-19T12:55+08:00"
  },
  {
+  "id": "cx-56-pyramid-scheme",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“吃人”的传销",
+  "link": "https://weekly.caixin.com/2017-08-11/101128946.html",
+  "date": "2017-08-14",
+  "author": "苑苏文、陈少远、罗瑞垚、贺信、蔡家欣（实习）、张楠茜（实习）、任芳言（实习）",
+  "issue": "财新周刊2017年第32期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-56-pyramid-scheme.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-56-pyramid-scheme.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T18:18+08:00"
+ },
+ {
   "id": "cx-22-erhai",
   "kind": "curated",
   "type": "caixin",
