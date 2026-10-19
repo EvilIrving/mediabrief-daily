@@ -8384,6 +8384,28 @@
   "added_at": "2026-10-15T13:16+08:00"
  },
  {
+  "id": "cx-54-tuya-fraud",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "图娅的骗局",
+  "link": "https://magazine.caixin.com/2013-08-16/100570509.html",
+  "date": "2013-08-19",
+  "author": "温秀、王和岩",
+  "issue": "财新周刊2013年第32期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-54-tuya-fraud.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-54-tuya-fraud.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T17:14+08:00"
+ },
+ {
   "id": "cur-4e8227e28349",
   "kind": "curated",
   "type": "article",
