@@ -5634,6 +5634,28 @@
   "added_at": "2026-10-19T00:39+08:00"
  },
  {
+  "id": "cx-39-pharma-anticorruption",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "医药反腐风暴｜特稿精选",
+  "link": "https://weekly.caixin.com/2023-08-11/102092050.html",
+  "date": "2023-08-14",
+  "author": "许雯、崔笑天、汤涵钰（见习）、周信达、赵今朝、蒋模婷、滑昂、陈曦",
+  "issue": "财新周刊2023年第32期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-39-pharma-anticorruption.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-39-pharma-anticorruption.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T08:12+08:00"
+ },
+ {
   "id": "BV1y14y1Q7Cd",
   "kind": "summary",
   "source": "货币法则研习社",
