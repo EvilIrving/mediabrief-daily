@@ -195,6 +195,28 @@
   "added_at": "2026-10-17T17:12+08:00"
  },
  {
+  "id": "cx-69-liangshan-potato",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜捡土豆的凉山女工",
+  "link": "https://weekly.caixin.com/2026-10-16/102493973.html",
+  "date": "2026-10-16",
+  "author": "郑海鹏（摄影/撰稿）",
+  "issue": "财新周刊副刊（页面未标期数）",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-69-liangshan-potato.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-69-liangshan-potato.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T19:27+08:00"
+ },
+ {
   "id": "cur-5ec807ee0814",
   "kind": "curated",
   "type": "article",
@@ -8426,6 +8448,28 @@
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
+ },
+ {
+  "id": "cx-58-vaccine",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "【封面报道】疫苗忧患",
+  "link": "https://magazine.caixin.com/2013-12-27/100622535.html",
+  "date": "2013-12-30",
+  "author": "李妍、何春梅、任波、李雪娜、罗洁琪",
+  "issue": "财新周刊2013年第50期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-58-vaccine.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-58-vaccine.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T19:27+08:00"
  },
  {
   "id": "cx-05-huaihe",
