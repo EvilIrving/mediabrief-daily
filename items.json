@@ -44,6 +44,28 @@
   "added_at": "2026-10-19T17:48+08:00"
  },
  {
+  "id": "cx-70-nobel-econ",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "最新财新周刊｜2026年诺贝尔经济学奖：理解组成宏观的微观个体",
+  "link": "https://weekly.caixin.com/2026-10-17/102494228.html",
+  "date": "2026-10-19",
+  "author": "于海荣、王石玉",
+  "issue": "《财新周刊》2026年10月19日第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-70-nobel-econ.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-70-nobel-econ.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T20:23+08:00"
+ },
+ {
   "id": "cur-de1448be137e",
   "kind": "curated",
   "type": "article",
@@ -7774,6 +7796,28 @@
   ],
   "title_zh": "useEffect 完全指南",
   "added_at": "2026-10-11T05:32+08:00"
+ },
+ {
+  "id": "cx-57-gmo-canola",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "内蒙古转基因油菜案调查",
+  "link": "https://weekly.caixin.com/2019-03-02/101386299.html",
+  "date": "2019-03-02",
+  "author": "周泰来，齐小美、张媞媞（实习）",
+  "issue": "《财新周刊》2019年第08期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-57-gmo-canola.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-57-gmo-canola.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T20:23+08:00"
  },
  {
   "id": "cur-e458fea3d0db",
