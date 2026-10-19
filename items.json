@@ -4211,6 +4211,28 @@
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
+  "id": "cx-49-hospital-debt",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "欠债的公立医院",
+  "link": "https://weekly.caixin.com/2025-04-19/102311223.html",
+  "date": "2025-04-21",
+  "author": "许雯",
+  "issue": "财新周刊2025年第15期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-49-hospital-debt.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-49-hospital-debt.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T13:15+08:00"
+ },
+ {
   "id": "cur-f6ee0a5e0fa6",
   "kind": "curated",
   "type": "podcast",
