@@ -6876,6 +6876,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-53-gambling-funds",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "打击万亿赌博资金链",
+  "link": "https://weekly.caixin.com/2020-12-18/101640535.html",
+  "date": "2020-12-21",
+  "author": "张宇哲",
+  "issue": "财新周刊2020年第49期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-53-gambling-funds.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-53-gambling-funds.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T15:20+08:00"
+ },
+ {
   "id": "cur-395878f2316c",
   "kind": "curated",
   "type": "article",
