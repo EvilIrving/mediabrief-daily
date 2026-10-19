@@ -461,6 +461,28 @@
   "added_at": "2026-10-14T10:49+08:00"
  },
  {
+  "id": "cx-66-xihuashan-tungsten",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "专栏｜发现西华山钨矿",
+  "link": "https://weekly.caixin.com/2026-10-10/102491919.html",
+  "date": "2026-10-12",
+  "author": "罗新",
+  "issue": "财新周刊2026年第39期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-66-xihuashan-tungsten.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-66-xihuashan-tungsten.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T16:14+08:00"
+ },
+ {
   "id": "Mph1H5u3yeA",
   "kind": "summary",
   "source": "Better Stack",
@@ -4458,6 +4480,28 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4fa1607ca7c7.m4a",
   "added_at": "2026-10-11T13:00+08:00"
+ },
+ {
+  "id": "cx-55-crane-uhv",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "白鹤与特高压电线之争",
+  "link": "https://weekly.caixin.com/2025-03-01/102293366.html",
+  "date": "2025-03-03",
+  "author": "康佳、马铭泽（实习）",
+  "issue": "财新周刊2025年第08期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-55-crane-uhv.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-55-crane-uhv.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T16:14+08:00"
  },
  {
   "id": "EWvNQjAaOHw",
