@@ -1,5 +1,27 @@
 [
  {
+  "id": "cx-64-anne-carson",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜安妮·卡森：思接千载，独行绝境",
+  "link": "https://weekly.caixin.com/2026-10-17/102494237.html",
+  "date": "2026-10-19",
+  "author": "廖伟棠",
+  "issue": "财新周刊2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-64-anne-carson.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-64-anne-carson.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T14:48+08:00"
+ },
+ {
   "id": "cur-de1448be137e",
   "kind": "curated",
   "type": "article",
