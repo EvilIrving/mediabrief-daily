@@ -6740,6 +6740,28 @@
   "added_at": "2026-10-18T03:21+08:00"
  },
  {
+  "id": "cx-47-internet-labor",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "互联网劳资焦虑",
+  "link": "https://weekly.caixin.com/2021-02-06/101661233.html",
+  "date": "2021-02-08",
+  "author": "原瑞阳、关聪、钱童、屈运栩",
+  "issue": "财新周刊2021年第6期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-47-internet-labor.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-47-internet-labor.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T11:46+08:00"
+ },
+ {
   "id": "cur-ffb36d12dab5",
   "kind": "curated",
   "type": "article",
