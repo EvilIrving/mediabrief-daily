@@ -8100,6 +8100,28 @@
   "added_at": "2026-10-19T06:14+08:00"
  },
  {
+  "id": "cx-62-feibiao",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "围剿非标",
+  "link": "https://weekly.caixin.com/2018-01-20/101200467.html",
+  "date": "2018-01-22",
+  "author": "吴红毓然、杨巧伶、张榆（李明明亦有贡献）",
+  "issue": "《财新周刊》2018年第04期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-62-feibiao.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-62-feibiao.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T22:59+08:00"
+ },
+ {
   "id": "cur-63bd5d53fbe9",
   "kind": "curated",
   "type": "article",
