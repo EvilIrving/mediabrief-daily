@@ -7998,6 +7998,28 @@
   "added_at": "2026-10-19T06:14+08:00"
  },
  {
+  "id": "cx-50-industrial-new-city",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "产业新城神话（造城者·上篇）",
+  "link": "https://weekly.caixin.com/2017-03-17/101067216.html",
+  "date": "2017-03-20",
+  "author": "侯雯、黄荣、于宁、周宇诗（实习）、李雪（实习）",
+  "issue": "财新周刊2017年第11期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-50-industrial-new-city.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-50-industrial-new-city.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T14:19+08:00"
+ },
+ {
   "id": "cur-66d963ce2471",
   "kind": "curated",
   "type": "podcast",
