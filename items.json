@@ -6071,6 +6071,28 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "cx-59-kuangnan",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "矿难何未已",
+  "link": "https://weekly.caixin.com/2023-05-06/102043116.html",
+  "date": "2023-05-08",
+  "author": "冯华妹（覃建行、罗国平对此文亦有贡献）",
+  "issue": "《财新周刊》2023年第18期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-59-kuangnan.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-59-kuangnan.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T21:50+08:00"
+ },
+ {
   "id": "cur-e3fa9e6175a1",
   "kind": "curated",
   "type": "article",
@@ -7434,6 +7456,28 @@
    }
   ],
   "added_at": "2026-10-19T08:44+08:00"
+ },
+ {
+  "id": "cx-60-st-yanhu",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "特别报道｜*ST盐湖：“美梦”变噩梦",
+  "link": "https://weekly.caixin.com/2019-12-28/101498895.html",
+  "date": "2019-12-30",
+  "author": "曾凌轲",
+  "issue": "《财新周刊》2019年第50期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-60-st-yanhu.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-60-st-yanhu.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T21:50+08:00"
  },
  {
   "id": "cur-6e3c127507ae",
