@@ -7893,6 +7893,28 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "cx-45-leeco-car",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "【封面报道•智能车之梦】上篇：狂人造车",
+  "link": "https://weekly.caixin.com/2017-01-20/101047528.html",
+  "date": "2017-01-23",
+  "author": "安丽敏、覃敏、王晓庆、李增新",
+  "issue": "财新周刊2017年第4期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-45-leeco-car.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-45-leeco-car.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T10:13+08:00"
+ },
+ {
   "id": "cur-bc8809708ee2",
   "kind": "curated",
   "type": "podcast",
