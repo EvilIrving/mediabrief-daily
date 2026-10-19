@@ -505,6 +505,28 @@
   "added_at": "2026-10-19T16:14+08:00"
  },
  {
+  "id": "cx-68-nobel-science",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "财新周刊｜2026诺贝尔自然科学奖巡礼",
+  "link": "https://weekly.caixin.com/2026-10-10/102491917.html",
+  "date": "2026-10-12",
+  "author": "徐路易、王克柔",
+  "issue": "财新周刊2026年第39期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-68-nobel-science.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-68-nobel-science.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T19:01+08:00"
+ },
+ {
   "id": "Mph1H5u3yeA",
   "kind": "summary",
   "source": "Better Stack",
