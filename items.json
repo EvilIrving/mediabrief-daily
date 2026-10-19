@@ -6872,6 +6872,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-46-tianjin-cholera",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "专栏｜百年前天津的霍乱之夏",
+  "link": "https://weekly.caixin.com/2020-07-18/101581564.html",
+  "date": "2020-07-20",
+  "author": "雷颐",
+  "issue": "财新周刊2020年第28期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-46-tianjin-cholera.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-46-tianjin-cholera.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T10:46+08:00"
+ },
+ {
   "id": "cur-2e8b186c4b37",
   "kind": "curated",
   "type": "podcast",
@@ -8052,6 +8074,28 @@
   ],
   "title_zh": "史蒂夫·乔布斯最具创新性的演讲",
   "added_at": "2026-10-11T05:45+08:00"
+ },
+ {
+  "id": "cx-44-tv-station",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "一个电视台的窝案及兴衰浮沉",
+  "link": "https://weekly.caixin.com/2015-04-17/100801100.html",
+  "date": "2015-04-20",
+  "author": "欧阳艳琴",
+  "issue": "财新周刊2015年第15期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-44-tv-station.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-44-tv-station.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T10:46+08:00"
  },
  {
   "id": "cx-09-qiuhe",
