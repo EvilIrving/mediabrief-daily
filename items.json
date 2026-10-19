@@ -1,5 +1,57 @@
 [
  {
+  "id": "cur-de1448be137e",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Writing is no longer proof of work",
+  "link": "https://seangoedecke.com/writing-is-no-longer-proof-of-work/",
+  "date": "2026-10-18T08:00+08:00",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-de1448be137e.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-de1448be137e.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-de1448be137e.orig.txt"
+   }
+  ],
+  "title_zh": "写作不再是工作证明",
+  "added_at": "2026-10-19T09:18+08:00"
+ },
+ {
+  "id": "cur-35202454cc36",
+  "kind": "curated",
+  "type": "article",
+  "source": "Will Larson",
+  "title": "Speeding up code review with `small-change`",
+  "link": "https://lethain.com/small-changes/",
+  "date": "2026-10-17T20:00+08:00",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-35202454cc36.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-35202454cc36.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-35202454cc36.orig.txt"
+   }
+  ],
+  "title_zh": "使用“small-change”加快代码审查",
+  "added_at": "2026-10-19T09:18+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -1529,6 +1581,28 @@
   ],
   "title_zh": "AWS EKS 取证：数据来源与调查工具",
   "added_at": "2026-10-12T11:28+08:00"
+ },
+ {
+  "id": "cx-42-sound-group",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "财新周刊｜桑德系合并重整背后",
+  "link": "https://weekly.caixin.com/2026-08-22/102476756.html",
+  "date": "2026-08-24",
+  "author": "萧辉",
+  "issue": "财新周刊2026年第33期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-42-sound-group.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-42-sound-group.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-19T09:18+08:00"
  },
  {
   "id": "cur-376a3bbfb6c1",

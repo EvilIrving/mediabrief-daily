@@ -1,0 +1,105 @@
+https://lethain.com/small-changes/
+
+Imprint’s average engineer is merging 4x more PRs than 2 years ago. Yay. Aggregated behind the average is something even more interesting: we have two teams that are merging 10x their PRs over that period. One engineer is merging 25x the PRs per week of our average engineer two years ago, and a number of others are closing in on that number. That’s pretty neat, and the slope of the line suggests our average in a year is going to look much closer to today’s p90 than today’s p50. Even more importantly, we aren’t just shipping more, our quality has improved: incidents are down 42% half-over-half, and critical incidents are down 78% half-over-half. I think we’ve always known the quality/velocity tradeoff wasn’t a particularly useful construct, but that’s undeniable today.
+
+As we’ve walked this path, we–like everyone else progressing down it–have run into the problem of pull request review. The p50 pull request review took about 33 minutes to complete 2 years ago, but now takes us about 77 minutes. The slope here correlates tightly with the number of pull requests getting merged. Tightly enough that addressing it became one of my priorities for the week.
+
+We solved it! Just kidding, we’ve absolutely not solved it, but I think our current
+approach is an interesting one, which we call the `small-change`.
+
+*The work discussed here was shaped and done by many folks at Imprint including Dan, Joy, Daniel, Lenny, Taylor, Ted, and Annie, among many others.*
+
+## Why review pull requests?
+
+There are four reasons we review pull requests:
+
+1. **Knowledge sharing between author and reviewer** – software engineering is generally learned via
+apprenticeship, and reviews are a primary mechanism of experienced engineers teaching others what
+good software looks like. We believe the current volume means that this knowledge sharing
+will have to move towards operating on clusters of pull requests, rather than individual pull requests
+2. **Preventing errors** – review has always been an expensive time to catch errors,
+and we believe that effective CICD along with harness verification techniques like poteto’s
+pstack are more effective mechanisms
+for preventing errors than review
+3. **Preventing malicious behavior** – my experience is that even careful code review will generally
+miss *competent* malicious behavior, although fortunately most malicious behavior is incompetent.
+We believe both sorts of behavior are best identified using a combination of fixed rules (modifying
+these specific objects/classes/files requires review), anti-abuse mechanisms that we’ve refined in
+our LLM-based member support experiences, auditing, and audit log inspection
+4. **Compliance obligations in our documented controls** – these can be changed, but today they require that
+an independent human reviews changes in a subset of our repositories
+
+In the modern development paradigm, we think there is a better solution for each of these problems. But, we also want to make these changes very cautiously.
+
+## Small steps with `small-change`
+
+We believe we move fast by finding narrow, contained ways to validate new practices,
+so to iterate our way into an effective solution, we’ve developed the concept of a
+`small-change`. Here’s how it works:
+
+1. When a pull request is marked ready, CICD determines whether it is eligible to be a `small-change`.
+This is represented as a passing Github check. There is *also* a label for visibility,
+but it is the check itself, managed by the build and not human modifiable, that determines eligibility.
+(The label is used for initial filtering, but the check is still independently verified.)
+2. Something is a `small-change` if it meets all of these criteria:
+  1. It is less than 1,000 lines of code
+  2. There are no p1 or p2 findings from our `ai-code-review` automated review bot
+  3. The author has “experience” in the service or application, defined as 10+ prior merged pull requests into that service or application’s directories. For changes working across multiple services or applications, the author must have experience in all of them to qualify
+  4. Impacts fewer than `N` distinct services or applications. `N` is 1 on our frontend monorepo,
+and `N` is 3 in our backend monorepo, where typical changes will modify both a gRPC service and a common HTTP gateway
+  5. Shared libraries and utilities files are not eligible for `small-change`
+  6. Each repository has a `.small_change` file which allows per-path customization while we continue to tune the behaviors.
+For example, a service dealing with money movement can be excluded
+3. Our Slack automation tags every reference to a pull request with reacji labeling the state of that pull request,
+for example if it has failing tests, if it has been approved but tests are still running, or if it is ready to merge.
+We added a `small-change` reacji that indicates which of those pull requests meet the `small-change` criteria
+4. In our internal skills repository, we created two skills that have been distributed across harnesses:
+  1. `review-small-change` which takes a list of repositories and reviews all open, non-draft, small-changes,
+including providing approval if they meet the review’s criteria (all checks pass including `small-change` check,
+and not touching on sensitive topics such as payments and security).
+Importantly, this skill has only two options: approve or ignore. It *never* comments on the PR to avoid
+the proliferation of “meat proxy review”
+which has become a bottleneck-pretending-to-be-a-solution on some teams
+  2. `review-pr-cluster` which reviews batches of pull requests to identify common themes that came up, and suggest opportunities
+for discussion and adding verifications
+5. We set the social expectation that any error caused by a `small-change` is a failure in our system,
+and has to be solved at the system level: improvements to `ai-code-review`, to our verification mechanisms,
+to our CICD, to our harness, etc.
+
+This took about two days of infrequent attention to implement and rollout, although I imagine we will be tuning the knobs here for a long time. Maybe forever.
+
+## Meat proxy review
+
+I mentioned this in `4.1` above, but meat proxy review has become
+an interesting bottleneck for many teams. It’s a particularly difficult bottleneck because it initially *looks like* a solution,
+but it makes things worse. The pattern is roughly:
+
+1. Team is overwhelmed with reviews
+2. Team decides to review pull requests with their local harness
+3. Pull requests get a large number of comments, some of which make sense, and some of which don’t. It’s unclear which is which without study, and you don’t know which comments reflect the reviewer’s point of view. So you end up having to do substantial work to disprove comments that the reviewer may not even agree with
+4. Those teams then start using harnesses to respond to the harness-generated comments, making the entire review process an illusion that doesn’t facilitate learning, and most importantly could be done without the involvement of the other team members
+
+In every case that meat proxy review is performed, the team would get better outcomes by investing into the centralized review mechanism, the harness’ loop for addressing the centralized review’s feedback, and simply stamping approval.
+
+## `fleet`: centrally orchestrated harness
+
+I’ll briefly mention our other approach to reducing code review
+volume, which anchors on our centrally-orchestrated harness, `fleet`.
+(Which is similar to Stripe’s Minions
+although not following the one-shot approach in particular).
+We rely on `fleet`
+to implement and verify software in a highly controlled harness running in the cloud, with independent
+evaluation mechanisms to identify the correct number of independent reviewers for
+any given change. That number can be as low as one (e.g. `fleet` writes, one human reviews)
+for changes evaluated as safe.
+
+## Results / next steps / reception
+
+I’ll be honest, it’s too early to give a useful result here.
+From early results, about 10% of changes qualify as a `small-change`.
+Those are now eligible for very fast approval, and generally get it unless
+they trip a flag, generally due to touching a security or money adjacent topic.
+
+While 10% is a small percentage, the core concept here is working, and ultimately will succeed or fail based on our ability to expand that percentage over the next few months in tandem with expanding our verification mechanisms to be increasingly comprehensive. This is ultimately going to fail or succeed depending on our ability to improve our verifications, which does require more difficult sorts of techniques to accomplish in low scale-complexity, high domain-complexity software than in the high scale-complexity, low domain-complexity products where many techniques like incremental rollouts are exceptionally effective. (Don’t get me wrong, they still work, they just provide less coverage when most users have different configuration and behavior.)
+
+Folks have not been uniformly excited about this, it’s a substantial change from how we’ve learned to be good engineers, and it’s uncomfortable to reevaluate whether a long-held best practice has become merely dogma. The most energizing part of the current cycle is that we get to reevaluate these practices we grew up on every week; the most painful part of the current cycle is that we’re likely to fall behind if we ever stop reevaluating them.

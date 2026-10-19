@@ -1,0 +1,13 @@
+https://lethain.com/small-changes/
+
+用 small-change 加快代码评审（Speeding up code review with `small-change`） ｜ Will Larson ｜ 文章 ｜ https://lethain.com/small-changes/
+
+Imprint 工程师平均合并的 PR 数是两年前的 4 倍，一位工程师每周合并量达两年前平均的 25 倍；事故半年环比降 42%，严重事故降 78%。但 p50 评审时间从约 33 分钟升到约 77 分钟。
+
+评审有四个目的：知识分享（今后要按批次 PR 进行）、防错（他们认为 CICD 加 harness 验证更有效）、防恶意行为（更适合靠固定规则、反滥用机制和审计）、合规要求部分代码库须独立人工评审。
+
+small-change 由 CICD 用人工不可改的 Github 检查判定：少于 1,000 行；ai-code-review 无 p1/p2 问题；作者在所涉每个服务已有 10 个以上合并 PR；影响服务少于 N 个（前端 1，后端 3）；共享库除外；可用 .small_change 文件按路径排除，如资金服务。技能 review-small-change 对检查全过、不涉及支付和安全的 PR 只批准或忽略，从不评论；review-pr-cluster 成批归纳主题。出错一律算系统问题，在系统层面修。
+
+作者反对“肉身代理评审”（meat proxy review）：用本地 harness 给 PR 堆评论，再用 harness 回复，评审沦为假象，不如投入集中评审后直接批准。另一做法是类似 Stripe Minions 的云端 harness fleet，安全的变更可只需一名评审者。
+
+早期约 10% 的变更符合条件，通常很快获批，除非触及安全或资金话题。成败取决于能否扩大比例、完善验证。作者说，每周重审旧做法令人振奋，一旦停下则很可能落后。
