@@ -1,0 +1,13 @@
+https://surfingcomplexity.blog/2026/10/18/anthropic-and-the-changing-nature-of-work/
+
+Anthropic 与工作性质的变化（Anthropic and the changing nature of work） ｜ Lorin Hochstein ｜ 文章 ｜ https://surfingcomplexity.blog/2026/10/18/anthropic-and-the-changing-nature-of-work/
+
+Lorin Hochstein 用认知系统工程（CSE）的核心观点——自动化不减少人的工作，而是改变工作的性质——来读 Anthropic 白皮书《How employment is changing at Anthropic》。
+
+注意力是瓶颈：智能体等人输入的时间比干活还多。图 6 估算读完一周智能体输出所需时间：市场与传播 12 小时，法务、政策与信任 26 小时，财务与会计 43 小时（一个 40 小时工作周的 108%），工程与研究 424 小时，而一周只有 168 小时。一位工程师说智能体把“果汁盒没打开”说得和“手指流血”一样急。作者引 Klein、Woods 等人的《十大挑战》论文：智能体缺少对人的目标和状态的模型，不是好的团队成员。
+
+工作转向元工作即管理，比如分拣其他智能体请求的智能体、给智能体做绩效评估、让一个智能体循环评审另一个。图 7“成为一群 Claude 的管理者”中，元工作开销最高的是基础设施组，29%。
+
+初级工程师招得更少，但原因不是领域知识，招聘经理要的是判断力和自主性；听起来他们认为智能体能替代初级做明确任务，却还不能替代资深的判断和自主。作者认为这令人沮丧：不招初级，最终就没有资深。
+
+其他趋势：面对面会议增多，作者推测是战略讨论需要；工程师与产品经理之比为 17:1；讨论被要求放在公开 Slack 频道，让智能体能看到。

@@ -132,6 +132,110 @@
   "added_at": "2026-10-20T10:35+08:00"
  },
  {
+  "id": "cur-5ca3db45c9de",
+  "kind": "curated",
+  "type": "article",
+  "source": "The Diff",
+  "title": "Doing Business in the Dark Forest",
+  "link": "https://www.thediff.co/archive/doing-business-in-the-dark-forest/",
+  "date": "2026-10-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5ca3db45c9de.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-5ca3db45c9de.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5ca3db45c9de.orig.txt"
+   }
+  ],
+  "title_zh": "在黑暗森林里做生意",
+  "added_at": "2026-10-21T07:21+08:00"
+ },
+ {
+  "id": "cur-60faf0be0c5f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Lorin Hochstein",
+  "title": "Anthropic and the changing nature of work",
+  "link": "https://surfingcomplexity.blog/2026/10/18/anthropic-and-the-changing-nature-of-work/",
+  "date": "2026-10-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-60faf0be0c5f.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-60faf0be0c5f.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-60faf0be0c5f.orig.txt"
+   }
+  ],
+  "title_zh": "Anthropic 与工作性质的变化",
+  "added_at": "2026-10-21T07:21+08:00"
+ },
+ {
+  "id": "cur-8ce80ca76753",
+  "kind": "curated",
+  "type": "article",
+  "source": "Stratechery",
+  "title": "Do You Trust Apple?",
+  "link": "https://stratechery.com/2026/do-you-trust-apple/",
+  "date": "2026-10-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-8ce80ca76753.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-8ce80ca76753.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-8ce80ca76753.orig.txt"
+   }
+  ],
+  "title_zh": "你还信任苹果吗？",
+  "added_at": "2026-10-21T07:21+08:00"
+ },
+ {
+  "id": "cur-eb4364f1a75e",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "What requirements don't you have?",
+  "link": "https://seangoedecke.com/what-requirements-dont-you-have/",
+  "date": "2026-10-19",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-eb4364f1a75e.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-eb4364f1a75e.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-eb4364f1a75e.orig.txt"
+   }
+  ],
+  "title_zh": "你其实不需要哪些需求？",
+  "added_at": "2026-10-21T07:21+08:00"
+ },
+ {
   "id": "cur-de1448be137e",
   "kind": "curated",
   "type": "article",
