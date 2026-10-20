@@ -66,6 +66,50 @@
   "added_at": "2026-10-19T20:23+08:00"
  },
  {
+  "id": "cx-71-nobel-lit-criteria",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜不断更新评选标准的文学诺奖",
+  "link": "https://weekly.caixin.com/2026-10-17/102494238.html",
+  "date": "2026-10-19",
+  "author": "谢尔·埃斯普马克（撰文）；万之（翻译）",
+  "issue": "财新周刊2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-71-nobel-lit-criteria.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-71-nobel-lit-criteria.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-20T10:30+08:00"
+ },
+ {
+  "id": "cx-74-outdoor-chaos",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "户外运动乱象待破局",
+  "link": "https://weekly.caixin.com/2026-10-17/102494226.html",
+  "date": "2026-10-19",
+  "author": "孙良滋",
+  "issue": "财新周刊2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-74-outdoor-chaos.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-74-outdoor-chaos.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-20T10:30+08:00"
+ },
+ {
   "id": "cur-de1448be137e",
   "kind": "curated",
   "type": "article",
@@ -8467,6 +8511,7 @@
     "url": "txt/cx-63-angang.zh.txt"
    }
   ],
+  "title_zh": "「去产能」之困的安钢样本",
   "added_at": "2026-10-20T00:27+08:00"
  },
  {
