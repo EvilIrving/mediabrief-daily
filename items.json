@@ -110,6 +110,28 @@
   "added_at": "2026-10-20T10:30+08:00"
  },
  {
+  "id": "cx-72-land-renewal",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "工商业土地进入续期时刻",
+  "link": "https://weekly.caixin.com/2026-10-17/102494234.html",
+  "date": "2026-10-19",
+  "author": "王婧",
+  "issue": "财新周刊2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-72-land-renewal.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-72-land-renewal.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-20T10:35+08:00"
+ },
+ {
   "id": "cur-de1448be137e",
   "kind": "curated",
   "type": "article",
@@ -782,6 +804,28 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108229753572343993.m4a",
   "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "cx-73-akeqi-youth",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜从东莞流水线到新疆阿合奇",
+  "link": "https://weekly.caixin.com/2026-10-09/102491726.html",
+  "date": "2026-10-09",
+  "author": "占有兵（特约）",
+  "issue": "财新周刊2026年第39期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-73-akeqi-youth.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-73-akeqi-youth.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-20T10:35+08:00"
  },
  {
   "id": "2108218392188518533",
