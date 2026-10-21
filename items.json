@@ -43,7 +43,7 @@
     "url": "txt/cur-3b5ce86c8c40.orig.txt"
    }
   ],
-  "title_zh": "战斗无人机-具有基于音频的多人游戏的RTS氛围编码",
+  "title_zh": "Battle Drones：vibe coding 出一款用声音联机的 RTS",
   "added_at": "2026-10-22T07:21+08:00"
  },
  {
@@ -69,7 +69,7 @@
     "url": "txt/cur-9d4074d827c6.orig.txt"
    }
   ],
-  "title_zh": "外行人支持技术领域，而不是艺术",
+  "title_zh": "普通人支持技术领域，是为了技术而非艺术",
   "added_at": "2026-10-22T07:21+08:00"
  },
  {
@@ -95,7 +95,7 @@
     "url": "txt/cur-b839ee00b563.orig.txt"
    }
   ],
-  "title_zh": "审核Anthropic风险报告中的“高风险环境中的错位”部分",
+  "title_zh": "METR 审阅 Anthropic 风险报告「高风险场景下的错位」章节",
   "added_at": "2026-10-22T07:21+08:00"
  },
  {
@@ -121,7 +121,7 @@
     "url": "txt/cur-f76880ab8f87.orig.txt"
    }
   ],
-  "title_zh": "如何使用决策模型进行EVALS",
+  "title_zh": "用决策模型做 eval：阈值、成本与校准",
   "added_at": "2026-10-22T07:21+08:00"
  },
  {
@@ -6085,7 +6085,7 @@
     "url": "txt/cur-ed5a6585f09a.orig.txt"
    }
   ],
-  "title_zh": "量化语言模型对提示设计中虚假特征的敏感性",
+  "title_zh": "量化语言模型对提示格式等无关特征的敏感度",
   "added_at": "2026-10-22T07:21+08:00"
  },
  {
