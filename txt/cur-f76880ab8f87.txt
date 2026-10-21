@@ -1,0 +1,15 @@
+https://hamel.dev/blog/posts/decision-model-evals/
+
+用决策模型做评估：调阈值、比成本、看校准 ｜ Hamel Husain ｜ 约 10 分钟 ｜ https://hamel.dev/blog/posts/decision-model-evals/
+
+最近涌现了一批“决策模型”——TypeSafe 的 Jev、Perplexity Decider、Liquid d1、Cloudflare Clef、OpenAI Decisions API——主打快速廉价的分类，可作为自动评估中 LLM 评判器的低成本替代。作者提醒，很多人直接用 0.50 的默认阈值而不检验，会白白损失性能。
+
+实验用一个公寓租赁 AI 代理的 100 条轨迹（排除 2 条内部 QA 后实际 98 条，61 条有已知失败），任务是找出预订失败、漏转人工等错误，各模型对每条返回失败概率。测试对象为 Jev 1.13、Perplexity Decider 1.1 27B、Liquid d1 与 d1-ultra、Clef Flash、OpenAI Decisions（GPT-6 Luna），按人工标注比性能、按 token 价格比成本，延迟因受外部因素影响不纳入比较（脚注列了各自平均响应时间，从 Liquid d1-ultra 的 1.56 秒到 Perplexity 的 7.85 秒）。
+
+阈值问题：模型若给所有失败打 0.40、通过打 0.10，阈值 0.30 能完美分类，0.50 却一个都抓不到。选阈值就是在精确率（被标记的里有多少真失败）和召回率（真失败抓到多少）之间权衡，像刑事审判重精确、癌症筛查重召回；本文用 F1 同等对待两者。OpenAI 对两类区分最好。作者强调不能盲目最大化 F1，要先定最低要求，如自动告警需精确率、召回率都 ≥80%；满足者只有 Perplexity、Liquid d1-ultra、OpenAI。调阈值可交给编程代理，文中给出示例提示词：用已存分数和标签，分层五折交叉验证，在训练集上选满足下限的 F1 最优阈值，不达标就报告而不放宽，并与 0.50 对比。候选模型调优收益小于 Liquid d1 和 Clef Flash（后两者仍未达下限）；实际中精确率与召回率很少同等重要，可用 F-beta 调权重。
+
+成本：Perplexity 每 100 次评估 0.82 美分，F1 0.79；OpenAI 3.72 美分，F1 0.87，约贵 4.5 倍。
+
+概率能否当置信度：分数 0.80 应意味着同分段约 80% 真失败。校准图显示 Perplexity、Liquid d1、Clef Flash 经 Platt 缩放后更贴近对角线，例如 Clef Flash 一组预测约 8%、实际 60% 失败；Jev 和 d1-ultra 本就校准良好；OpenAI 用该版 Platt 缩放后反而略差（Brier 0.159→0.164，直接在概率上重拟合则为 0.154，说明对方法敏感）。文中同样给了让代理做校准的提示词。
+
+作者指出本文任务故意宽泛以放大差异，实际建议每种失败模式单独建评判器，预计差距会缩小；他习惯先用性能够用的大模型，再试能否用小模型以更低成本追平，有高质量标签时提示词调优也有用（小实验中 Jev 用失败类型清单让 F1 从 0.78 升到 0.80）。结论：这个数据集上 OpenAI 表现突出但贵，Perplexity 和 d1-ultra 更便宜但较差，模型表现随任务和数据差异很大，要自己测；流程是定最低要求、排除不达标者、先调阈值再比较、有意识选取舍、需要时检验并衡量校准、权衡性能成本延迟，且需反复迭代。GPT-6 Luna 最贵也最好，说明难任务可能值得为 LLM 多付钱；Randy Olson 的比较发现决策模型在分类和路由上能以更低成本匹敌 LLM，需要知识和推理时 LLM 领先。这些都是评估分类器的老方法，作者推荐 Gallatin 与 Albon 的《Machine Learning with Python Cookbook》第 2 版，并说数据科学家和 ML 工程师早已具备这些技能。附录给出了评估提示词原文及 Jev 用的结构化 JSON 版本。

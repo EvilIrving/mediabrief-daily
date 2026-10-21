@@ -1,5 +1,130 @@
 [
  {
+  "id": "om2lIWXLLn4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Building Anthropic: A Conversation with Our Co-founders",
+  "link": "https://youtu.be/om2lIWXLLn4",
+  "date": "2026-10-22T00:40",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/om2lIWXLLn4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/om2lIWXLLn4.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
+  "title_zh": "构建 Anthropic：与联合创始人对谈",
+  "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "cur-3b5ce86c8c40",
+  "kind": "curated",
+  "type": "article",
+  "source": "Simon Willison",
+  "title": "Battle Drones - a vibe coded RTS with audio-based multiplayer",
+  "link": "https://simonwillison.net/2026/Oct/20/battledrones/",
+  "date": "2026-10-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3b5ce86c8c40.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-3b5ce86c8c40.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3b5ce86c8c40.orig.txt"
+   }
+  ],
+  "title_zh": "战斗无人机-具有基于音频的多人游戏的RTS氛围编码",
+  "added_at": "2026-10-22T07:21+08:00"
+ },
+ {
+  "id": "cur-9d4074d827c6",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Laypeople support technical fields for technology, not art",
+  "link": "https://seangoedecke.com/laypeople-support-technical-fields-for-technology-not-art/",
+  "date": "2026-10-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-9d4074d827c6.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-9d4074d827c6.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-9d4074d827c6.orig.txt"
+   }
+  ],
+  "title_zh": "外行人支持技术领域，而不是艺术",
+  "added_at": "2026-10-22T07:21+08:00"
+ },
+ {
+  "id": "cur-b839ee00b563",
+  "kind": "curated",
+  "type": "article",
+  "source": "METR",
+  "title": "Review of the \"Misalignment in high-stakes settings\" section of Anthropic's risk report",
+  "link": "https://metr.org/blog/2026-10-20-misalignment-risk-report-august-2026-review/",
+  "date": "2026-10-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b839ee00b563.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-b839ee00b563.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b839ee00b563.orig.txt"
+   }
+  ],
+  "title_zh": "审核Anthropic风险报告中的“高风险环境中的错位”部分",
+  "added_at": "2026-10-22T07:21+08:00"
+ },
+ {
+  "id": "cur-f76880ab8f87",
+  "kind": "curated",
+  "type": "article",
+  "source": "Hamel Husain",
+  "title": "How To Use Decision Models for Evals",
+  "link": "https://hamel.dev/blog/posts/decision-model-evals/",
+  "date": "2026-10-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f76880ab8f87.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-f76880ab8f87.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f76880ab8f87.orig.txt"
+   }
+  ],
+  "title_zh": "如何使用决策模型进行EVALS",
+  "added_at": "2026-10-22T07:21+08:00"
+ },
+ {
   "id": "cx-64-anne-carson",
   "kind": "curated",
   "type": "caixin",
@@ -286,27 +411,6 @@
   ],
   "title_zh": "使用“small-change”加快代码审查",
   "added_at": "2026-10-19T09:18+08:00"
- },
- {
-  "id": "om2lIWXLLn4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Building Anthropic: A Conversation with Our Co-founders",
-  "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-10-17T15:28",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/om2lIWXLLn4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/om2lIWXLLn4.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
-  "title_zh": "构建 Anthropic：与联合创始人对谈",
-  "added_at": "2026-10-11T03:20+08:00"
  },
  {
   "id": "cur-3b7cb9e61df4",
@@ -5957,6 +6061,32 @@
   ],
   "title_zh": "针对 LLM 的对抗攻击",
   "added_at": "2026-10-11T05:09+08:00"
+ },
+ {
+  "id": "cur-ed5a6585f09a",
+  "kind": "curated",
+  "type": "article",
+  "source": "arXiv",
+  "title": "Quantifying Language Models' Sensitivity to Spurious Features in Prompt Design",
+  "link": "https://arxiv.org/abs/2310.11324",
+  "date": "2023-10-17",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-ed5a6585f09a.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-ed5a6585f09a.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ed5a6585f09a.orig.txt"
+   }
+  ],
+  "title_zh": "量化语言模型对提示设计中虚假特征的敏感性",
+  "added_at": "2026-10-22T07:21+08:00"
  },
  {
   "id": "5RnKD4vekF0",

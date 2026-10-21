@@ -1,0 +1,1967 @@
+# https://arxiv.org/abs/2310.11324
+
+来源：https://arxiv.org/abs/2310.11324
+
+发表于ICLR 2024会议论文集
+
+
+
+
+                                        量化语言模型对提示设计中
+                                        虚假特征的敏感性 或：
+                                        我如何学会开始担忧提示格式
+
+                                          Melanie Sclar1        Yejin Choi1,2        Yulia Tsvetkov1      Alane Suhr3
+                                          1
+                                           保罗·G·艾伦计算机科学与工程学院，华盛顿大学
+                                          2                                                 3
+                                           艾伦人工智能研究所       加州大学伯克利分校
+                                          msclar@cs.washington.edu
+
+                                                                                     摘要
+arXiv:2310.11324v2 [cs.CL] 2024年7月1日
+
+
+
+
+                                                    随着大型语言模型（LLMs）被采用为语言技术的基本组成部分，准确描述其性能至关重要。由于提示设计的选择会强烈影响模型行为，这一设计过程对于有效使用任何现代预训练生成语言模型都至关重要。在这项工作中，我们关注LLM对一类典型的保持语义的设计选择的敏感性：提示格式。我们发现，几个广泛使用的开源LLM在少样本设置中对提示格式的细微变化极为敏感，使用LLaMA-2-13B进行评估时，性能差异高达76个准确率点。即使增加模型规模、少样本示例数量或进行指令微调，这种敏感性仍然存在。
+
+我们的分析表明，使用基于提示（prompting-based）的方法评估大语言模型（LLMs）的工作，将受益于报告在一系列合理提示格式（prompt formats）上的性能范围，而不是当前标准的做法——报告单一格式上的性能。我们还表明，格式性能（format performance）在不同模型之间仅弱相关，这使通过任意选择的固定提示格式比较模型的方法学有效性（methodological validity）受到质疑。为促进系统性分析，我们提出 FormatSpread，这是一种算法，它针对给定任务快速评估一组抽样的合理提示格式，并在不访问模型权重（model weights）¹的情况下报告预期性能区间。此外，我们提出一套分析，用以刻画这种敏感性（sensitivity）的性质，包括探索特定原子扰动（atomic perturbations）的影响以及特定格式的内部表示（internal representation）。
+
+1 引言
+
+随着大语言模型（LLMs）的能力迅速提升，它们对输入提示（prompt）特征的敏感性已被用于通过提示工程（prompt engineering）优化性能（White et al., 2023）。然而，很少有工作刻画这种敏感性，尤其是对看似无害、保持提示含义和意图不变的特征选择。在这项工作中，我们分析广泛使用的开源 LLM 对一类不应影响提示解释的特征的敏感性：格式选择（formatting choices）。我们发现，预训练 LLM 以不可预测的方式对这些选择敏感，在 LLaMA-2-13B 上，等效格式之间的准确率变化高达 76 个百分点，而在 50+ 个任务和若干模型上平均约有 10 个准确率百分点（accuracy points）。我们还表明，这种差异不会因添加少样本示例（few-shot examples）、增大模型规模或进行指令微调（instruction tuning）而消除。
+
+设计提示模板（prompt templates）是有效使用预训练语言模型（pre-trained language model）的关键部分。这一设计过程包括对措辞做出选择、为上下文学习（in-context learning）选择少样本示例，以及对像格式这样看似琐碎的特征做出决定。这一过程，甚至常常连最终得到的模板，都很少在研究论文中报告或讨论，其假设是：这些选择之间的性能差异与数据点或模型之间的差异相比微不足道。然而，一些轶事性证据表明，格式选择实际上对模型行为有显著影响（Aghajanyan, 2023）。在一些情况下，研究人员报告了有限数量的手动生成格式，以表明扩展趋势（scaling trends）仍然成立，尽管 perfor-
+
+1 FORMATSPREAD 的代码可在 https://github.com/msclar/formatspread 找到。
+
+1
+作为会议论文发表于 ICLR 2024
+
+          修改后的分隔符（Modified separator）           原始格式（Original formatting）
+                                                                修改后的字段间距（Modified spacing between fields）
+          Passage:<text>             Passage: <text>
+                                                            Passage: <text> Answer: <text>
+          Answer:<text>              Answer: <text>
+
+                                                                  修改后的分隔符和间距（Modified separator and spacing）
+                                    修改字母大小写（Modified casing）
+            PASSAGE <text>                                     Passage <text> Answer <text>
+             ANSWER <text>         PASSAGE: <text>
+                                   ANSWER: <text>
+
+    任务准确率（Task Accuracy）
+
+    0 0.036             合理格式之间的性能差异范围（Performance Spread Among Plausible Formats）          0.804                 1
+
+图 1：提示格式模板化（prompt format templating）中的细微修改可能导致给定任务的模型性能显著不同。每个 <text> 表示一个不同的可变长度占位符（variable-length placeholder），将被替换为实际数据样本（data samples）。所示示例对应于来自 SuperNaturalInstructions（Wang et al., 2022）的 task280 的 1-shot LLaMA-2-7B 性能。这个受 StereoSet 启发的任务（Nadeem et al., 2021）要求模型在给定短文的情况下，将其分类为四种类型的刻板印象或反刻板印象之一（性别、职业、种族和宗教）。
+
+性能存在显著差异（Schick等，2021）。认为格式不影响模型整体性能的假设可能会在以下情况中变得有问题：当相对于现有方法的改进被归因于训练数据的数量和来源、参数数量或模型架构时，却没有同时考虑提示格式的变化。忽视不同格式间的方差也可能对用户体验产生负面影响，例如，如果用户无意中选择了LLM表现不佳的格式。
+
+我们提出的工具FORMAT SPREAD能够在用户指定的计算预算内，对广泛语义等价的提示格式进行这些方差的系统分析。我们发现，在上下文学习中格式化少样本示例的选择引入了虚假偏差，这可能导致模型性能结论出现显著差异。我们在广泛使用的开源模型中发现的这种对格式选择的敏感性表明，未来的研究将受益于在足够多的合理格式样本上报告性能差异范围，而不是像目前的标准做法那样仅报告所使用的格式及其性能。此外，我们认为这种报告在比较不同模型性能时至关重要，因为我们展示了格式选择的影响在模型之间仅弱相关，因此选择并固定一种格式可能会引入显著的混杂因素。
+
+完全探索提示格式的空间是难以处理的，因为计算成本随所考虑格式的数量线性增长。FORMAT SPREAD使用贝叶斯优化在用户指定的计算预算内高效地探索提示格式空间。FORMAT SPREAD不需要访问模型权重，允许其在API受限的模型上使用：我们发现GPT3.5在320种格式和53个任务上的准确率差异范围高达56个百分点，中位差异范围为6.4个百分点，每个任务平均成本低于10美元。除了促进评估之外，我们还提出了一套分析来进一步表征模型对格式的敏感性。在其他结果中，我们展示了连续提示嵌入的可分离性与任务性能中观察到的差异范围相关。
+
+2 概述
+我们评估 LLM 在提示格式（prompt formats）空间上的性能，这些格式是非对抗性用户（non-adversarial user）在为目标任务设计提示时可能合理选择的，其中格式空间由文法（grammar）定义（§3.1）。我们的文法定义自然地引出了格式之间语义等价（semantic equivalence）的定义。我们根据在目标任务中，相对于原始选择，在等价提示格式空间上的性能范围来量化模型敏感性（model sensitivity）（§4.2）。我们将跨该空间搜索的问题视为一个 bandit 问题（bandit problem），并提出 FORMAT SPREAD（§3），它包含一个文法（§3.1）和一个在给定预定义指标下估计一组语义等价格式上最小和最大性能的过程（§3.2）。FORMAT SPREAD 使用贝叶斯优化（Bayesian optimization）以低额外计算成本识别预期性能范围（§4.5），且无需访问模型权重，这使其可用于 API 受限的 LLM（API-gated LLMs）。此外，我们对这种观察到的敏感性进行了深入分析，包括量化单个特征选择（individual feature choices）对最终性能的贡献（§4.3），以及仅基于模型对任何提示的内部连续表示（internal, continuous representation），通过其与模型性能的相关性来衡量格式的可识别性（identifiability）（§4.4）。
+
+2
+发表于 ICLR 2024 会议论文
+
+3 使用 FORMAT SPREAD 测量敏感性
+3.1 合理提示格式（plausible prompt formats）的文法
+
+我们构建了一个文法，它既定义了合理提示格式的空间，也定义了格式之间的语义等价。该文法为手动构建，而非从数据自动归纳，以确保在定义等价格式集合时具有更高精度。我们的文法通过验证其能够生成与 100 多个 Super-NaturalInstructions 任务（Wang 等人，2022）相关的格式来直接测试。我们的文法由字段（fields）组成，这些字段组合起来创建提示格式。例如，格式 ‘Passage: <text> || Answer: <text>’ 具有基本字段（basic fields）‘Passage: <text>’ 和 ‘Answer: <text>’，分别记为 a1 和 a2。每个基本字段由描述符（descriptor）（例如 ‘Passage’）、分隔符（separator）（例如 ‘: ’）以及用于替换每个数据点的文本占位符（text placeholder）组成。我们使用巴科斯-诺尔表示法（Backus-Naur notation）将基本字段定义为 B1 (d, s, f ) := f (d)s<text>，其中 d 是描述符字符串，s ∈ S1 是分隔符，f ∈ Fcasing 是一个在保持含义的同时改变 d 的函数。
+
+因此，在我们的示例中，a1 = B1(Passage, ’: ’, id) 且 a2 = B1(Answer, ’: ’, id)，其中 id 是恒等函数（identity function）。我们将连接若干字段定义为 B2^(n)(X1, . . . , Xn, c) := X1 cX2 c . . . cXn，其中 c ∈ C 是一个空格。我们示例的提示（prompt）格式可以写作 B2^(2)(a1, a2, ’ || ’)。该语法还支持枚举（enumeration），其定义为连接若干基本字段，每个字段表示不同的列表项。例如，枚举 ‘Option (A): <text>, Option (B): <text>, Option (C): <text>’ 可以写作 B2^(3)(a1, a2, a3, ’ || ’)，其中 ai = B1(ei, ’: ’, id)。在我们的示例中，e1 表示 ‘Option (A)’，并且进而可以写作连接 ei := ds2 fitem(i)，其中 d = ‘Option’，s2 = ’ ’（单个空格），且 fitem(1) = ‘(A)’ 。每个 fitem 使用数字格式（number format）（例如字母或罗马数字，记为 Fitem2）和项包装器（item wrapper）（例如 (A) 或 [A]，记为 Fitem1）来转换项 i。总之，我们将有效提示格式定义为以下语法所接受的那些格式：
+
+B0 () := <text>
+B0′ (d, s) := f (d)s with s ∈ S1 , f ∈ Fcasing
+B1 (d, s, f ) := f (d)s<text> with s ∈ S1 , f ∈ Fcasing
+B2^(n)(X1, . . . , Xn, c) := X1 cX2 c . . . cXn
+with c ∈ C, Xi ∈ {B0 , B0′ , B1 , B2 , B3 } ∀i
+B3^(n)(d, j1, . . . , jn, s1, s2, c, f1, f2) := B2^(n)(B1(e1, s1, f2)), . . . , B1(en, s1, f2), c)
+where ei := f2(d) s2 f1(ji), ji ∈ N0 ∀i,
+s1 ∈ S1 , s2 ∈ S2 , f1 ∈ Fitem , f2 ∈ Fcasing
+
+我们的语法将有效格式定义为 B0、B0′、B1、B2、B3 的有限组合。集合 S1、S2、C、Fcasing、Fitem（分别为两组分隔符、空格、大小写函数和逐项函数）由用户预定义。在本工作中，我们使用人类撰写的提示格式中常见的典型值来实例化所有集合。我们有意仅修改描述符的大小写（通过 Fcasing）以保证语义等价；也可以定义一组函数来改写描述符，例如通过同义词替换。附录 A.2 包含我们用于常量集合的完整值列表，以及从语法生成的提示模板的可视化。
+
+提示格式等价性。若两个提示格式 p1、p2 表示相同的规则应用 Bi、描述符（若有）相同，且子元素（若有）等价，则它们等价。附录 A.1 包含等价性的形式化定义。语法的严格定义使我们能够假设等价格式集合共享等价含义。在测量敏感性（§3.2）时，我们仅探索与任务原始格式等价的格式空间。
+
+上下文限制。我们定义对空格和分隔符组合的限制，以进一步确保自然性。例如，若 B2（X1, . . . , Xn, c）中 c 不含换行符，则每个 Xi 的分隔符及任何子组件的分隔符均不应包含换行符。这
+
+
+                                                                   3
+Published as a conference paper at ICLR 2024
+
+避免像 Input:\n <text> Output:\n <text> 这样的不自然格式 (format)。我们还允许添加条件，强制在 Bi 的不同应用中常量 (constants)（分隔符 (separators)、空格 (spaces) 等）相等。
+在测量对格式扰动 (format perturbations) 的敏感性 (sensitivity) 时，如果两个分隔符或空格在原始格式 (original format) 中相等，则强制它们联合变化，才被视为等价。附录 A.3 包含所有上下文限制 (contextual restrictions)。
+最终提示构造 (Final Prompt Construction)。给定一个被语法 (grammar) 接受的合法格式 p，最终提示通过用空格 c 拼接指令字符串 (instruction string) inst、n 个示例该任务的少样本数据点 (few-shot data points) D1 , . . . , Dn，以及一个待求解的数据点 Dn+1 来构造。所有少样本示例 Di 都使用 p 格式化。因此，最终提示模板为：inst c p(D1 ) c p(D2 ) c . . . c p(Dn ) c p(Dn+1 ). 由于 Dn+1 的输出将由模型生成，因此在模板的最后一个字段中，用空字符串代替答案。提示构造将修改 inst，以匹配 p 中编码的特定选择：具体而言，如果 p 将有效的多项选择选项 (multiple-choice options) 枚举为字符 x1 . . . xn，我们确保 inst 以 x1 . . . xn 指代这些选择。
+
+3.2    测量敏感性 (MEASURING SENSITIVITY)
+
+我们衡量提示格式中合理的选择如何影响生成输出的可量化指标。给定一组合理格式 {p1, . . . , pn}、一个数据集 D 和一个标量指标 m，令性能区间为 [min_i m(p_i, D), max_i m(p_i, D)]。我们将性能差异范围（performance spread），或简称为差异范围，定义为 max_i m(p_i, D) − min_i m(p_i, D)。spread 越高，表明对合理且语义等价的格式空间内方差越敏感。虽然我们的方法对所使用标量指标 m 不敏感，且人们可以考虑多种指标，包括文本长度、正式程度或毒性，但在本工作中，我们将分析重点放在估计的任务准确率 acc 上。由于自动评估较为容易，这里我们在分类任务上进行评估。
+我们的目标是为给定模型和任务计算 spread。一种全面的方法是在整个评估数据集 D 上完整评估每个合理格式 p_i。这会使报告模型性能的成本随 n 线性增加，当 n 很大时在计算上不可行。遵循先前的无梯度提示工程工作 (Zhou et al., 2023; Pryzant et al., 2023)，我们将问题建模为多臂老虎机 (multi-arm bandit)。给定一个任务的 n 个格式（臂）p1, . . . , pn 的随机样本，某个臂 p_i 的隐藏价值是在完整数据集 D 上评估时的实际性能 m(p_i, D)，而拉动该臂的奖励是一个估计值 m(p_i, D̃)，其中 D̃ ⊂ D，|D̃| = B（小批量大小），且 D̃ 中尚无任何元素已用 p_i 评估过。
+我们假设总预算为 E 次数据点评估。我们首先用预算 E/2 搜索性能最高的格式，然后用预算 E/2 搜索性能最低的格式。第一次探索所做的评估可直接用于第二次探索，这为许多格式提供了信息更丰富的先验。我们考虑两种著名的遗憾最小化老虎机算法：汤普森采样 (Thompson sampling)（用于 FORMATSPREAD）和上置信界 (Upper Confidence Bound, UCB)。
+汤普森采样。这种简单且高性能的贝叶斯推断启发式方法根据每个臂为最优的概率随机抽取每个臂 (Chapelle & Li, 2011)。每个 m(p_i, D) 都被建模为随机变量，并且由于使用我们的目标指标时，每个数据点评估都是一次伯努利试验 (Bernoulli trial)，自然将 m(p_i, D) 建模为 Beta 分布。在每一轮中，汤普森采样从每个 m(p_i, D̃) 中抽取，并选择最佳臂 î（算法 1）。然后它根据 D̃ 中观测到的成功次数 r 以及相应的 B − r 次失败来更新 î。
+
+算法1 用于伯努利多臂老虎机的汤普森采样
+      (1)      (1)
+  Si ← 0, Ni ← 0 (成功计数器及臂被抽取的总次数计数器)
+  for t ← 1, . . . E/B do
+      for i ← 1, . . . , K do
+                  (t)               (t)        (t)   (t)
+          从 Beta(αi + Si , βi + (Ni − Si )) 中取 θi
+                               (t)
+      抽取臂 î = arg maxi θi（或在最小化问题中为 arg min）并观察奖励 r
+        (t+1)        (t)      (t+1)     (t)
+      Sî     ← Sî + r, Nî        ← Nî + B
+
+
+汤普森采样允许根据领域知识设置信息先验 (αi , βi )，以加速运行时间。附录A.4详细说明了我们使用的确切先验。据我们所知，我们是第一个考虑将贝叶斯采样方法用于提示优化的。
+
+
+                                                     4
+作为会议论文发表于 ICLR 2024
+
+
+
+
+上置信界（UCB）采样。UCB（Lai 等人，1985）计算每个臂性能的上置信界，该界源自切尔诺夫界。与汤普森采样的关键区别在于 θi 的定义方式。在 UCB 的频率学派方法中，θi 被赋予估计准确率加上上置信界：θi ← Si /Ni + c log(t)/Ni 的平方根。我们遵循 Pryzant 等人（2023）的做法，使用 c = 2，他们发现 c = 2 的 UCB 对于提示优化最为有效。
+朴素采样。每个提示格式在 E/n 个点上进行评估（进行适当的舍入）。
+
+4     用格式差异范围表征提示格式方差
+4.1   实验设置
+
+数据。我们使用Super-NaturalInstructions（Wang等人，2022）中的53个任务子集，这些任务具有多样的人工编写格式和指令，包括19个多项选择题和34个分类任务，涉及{2, 3, 4}个基本字段。附录B.1详细说明了确切的任务选择过程。为了构建最终的提示模板，我们将每个任务的指令和n个格式化的少样本示例用\n\n作为间隔连接起来。虽然少样本示例的选择和排序是影响模型输出特征的提示设计组成部分（Lu等人，2022），但我们的工作重点是提示格式。为了消除这一混杂因素，我们为每个任务和给定的少样本数量n固定了示例的确切选择和排序。每个任务的少样本示例在每个数据集内随机选择，不用于评估。我们以跨设置固定的任意顺序评估任务数据样本。假设数据集大小为1,000，以便在不同任务间进行公平评估。模型。我们评估了LLaMA-2-{7B,13B,70B}（Touvron等人，2023）、Falcon-7B和Falcon-7B-Instruct（Almazrouei等人，2023）、GPT-3.5-Turbo（Schulman等人，2022），所有这些都是自回归语言模型。任务评估指标。我们使用两种流行的准确率计算方法：精确前缀匹配和概率排名。在精确前缀匹配中，我们检查输出的前缀在规范化（大小写、空格、换行）后是否与预期答案匹配。排名准确率计算预期答案是最高排名有效选项（在多项选择和分类任务中）的比率，根据模型的输出分布。除非另有说明，结果使用排名准确率报告。附录B.2展示了精确前缀匹配的额外分析，其差异甚至高于第4.2节所示，并包括格式选择如何影响任务退化（即不回答任何有效选项）。
+
+4.2   提示格式存在较大的性能差异，增加少样本示例或模型规模，以及指令调优均未能消除
+
+对于每个评估任务，我们随机采样 10 个合理的提示格式（prompt formats），并使用 FORMAT SPREAD 计算每个建模和 n-shot 选择（n-shot choice）的性能差异范围（performance spread）（图 3）。我们发现任务间存在显著的性能差异范围，在模型选择和少样本示例数量上，中位散布为 7.5 个准确率点（accuracy points）。20% 的任务在所有 LLaMA-2 设置下始终导致至少 15 个准确率点的差异范围，在所有 Falcon 设置下至少 9 个点。我们观察到若干任务的性能差异范围超过 70 个准确率点。由于该分析仅使用 10 个随机采样的格式，它代表了每个任务真实差异范围的下界。此外，无论模型规模增大（图 2a 和图 11 针对 Llama-2-70B）、指令微调（instruction tuning）（图 2b）还是少样本示例数量（图 2c；图 2a 和 2b 联合绘制了 1-shot 和 5-shot），都存在显著的性能差异范围。附录 B.2 在选定的非分类任务（non-classification tasks）上展示了类似结果，并将差异范围讨论扩展到绘制整个准确率分布以及一个离散度指标（dispersion metric）。
+
+模型之间的比较趋势常常仅因选择不同格式而反转。假设使用提示 p 时，模型 M 比 M′ 至少高出 d 个准确率，我们计算在不同格式 p′ 下，M′ 比 M 至少高出 d 个准确率的频率。图 4 显示这些趋势常常反转：LLaMA-2-13B 和 -70B 以 0.141 的概率反转至少 d = 0.02 的趋势；LLaMA-2-7B 和 Falcon-7B 以 0.140 的概率反转至少 d = 0.02 的趋势。引人注目的是，通常两个实验（首先使用 p，然后使用 p′）在 1000 个样本² 上都具有统计显著性（p 值 < 0.05）：对于两个模型比较，分别为 76% 和 47%。
+
+² 我们使用单侧 McNemar 检验（McNemar tests），也称为配对 χ2 检验（paired χ2 tests），因为我们在同一组样本上评估模型。我们检验在 p 下 M 优于 M′ 的显著性，以及在 p′ 下 M 劣于 M′ 的显著性。
+
+5
+发表于 ICLR 2024 会议论文集
+
+0.8 r=0.83                                                                 0.3 r=0.43                                                                                     r=0.82
+
+falcon-7b-inst 差异范围
+Llama-2-13b 差异范围
+                         p=3.37 × 10 28                                                             p=3.18 × 10 6                                                                              p=1.59 × 10 65
+                                                                                                                                                                                       0.6
+
+
+
+
+                                                                                                                                                                      n样本=5 差异范围
+                     0.6
+                                                                                                0.2
+                     0.4                                                                                                                                                               0.4
+                                                                                                0.1
+                     0.2                                                                                                                                                               0.2
+
+                     0.0                                                                        0.0                                                                                    0.0
+                       0.0      0.2          0.4      0.6                                         0.00 0.05 0.10 0.15 0.20 0.25                                                          0.0        0.2         0.4    0.6      0.8
+                                 Llama-2-7b 差异范围                                                                falcon-7b 差异范围                                                                        n样本=1 差异范围
+                           (a) Llama-2-7B 对 13B                                   (b) Falcon-7B 对 7B-Instruct                                                     (c) 1样本 对 5样本（相同任务、模型）
+   图2：在不同模型或n样本设置下评估相同任务时的分布比较。
+
+          Llama-2-7b                                                                                                                                                                         {M, M 0} = {Llama-2-7b, Llama-2-13b}
+
+给定 acc(pM) acc(pM ) > d
+             nshot=1                                                                                                                                   0.4
+
+
+
+
+                                                                                                                            acc(p0M) acc(p0M ) < d
+          Llama-2-7b                                                                                                                                                                         {M, M 0} = {Llama-2-7b, Llama-2-70b}
+             nshot=5
+
+
+
+
+                                                                                                                                              0
+                                                                                                                                                                                             {M, M 0} = {Llama-2-13b, Llama-2-70b}
+
+
+
+
+                                                                                                                                概率（Probability that）
+        Llama-2-13b                                                                                                                                    0.3                                   {M, M 0} = {Llama-2-7b, falcon-7b}
+
+0
+nshot=1
+Llama-2-13b
+nshot=5
+Llama-2-70b
+nshot=1
+Llama-2-70b
+nshot=5
+falcon-7b
+nshot=1
+falcon-7b
+nshot=5
+falcon-7b-inst
+nshot=1
+falcon-7b-inst
+nshot=5
+0.0    0.1    0.2    0.3    0.4    0.5    0.6    0.7    0.8
+跨提示格式（prompt formats）的性能差异范围（performance spread）
+图 3：跨模型和 n-shots 的差异范围（spread）。
+
+{M, M 0} = {falcon-7b, falcon-7b-inst}
+0.2
+0.1
+0.0
+0.01    0.1    1.0
+准确率差异阈值（threshold of accuracy difference）(d)（对数（log））
+图 4：在使用格式（format）p′ 时，模型 M 比 M ′ 差至少 d 的概率（probability）；已知在使用格式 p 时 M 比 M ′ 好至少 d。53 个任务（tasks），1-shot 和 5-shot。
+
+如上所述。我们发现，为模型 M 带来高性能的格式，未必为 M ′ 带来高性能，这意味着格式可能并不是本质上好或坏（附录 B.2）。
+
+4.3 各个特征（individual features）如何影响性能？我们分析特定常量（constants）（即 S1 , S2 , C, Fcasing , Fitem）的选择如何独立影响不同格式下的任务性能（task performance）。
+
+图5展示了在Super-NaturalInstructions中的一个任务上，以S1（描述符和文本占位符之间的分隔符）的选择为条件的500个采样提示的准确率分布。在比较两个特征选择的单独影响时，我们同时衡量在给定所选特征的条件下，提示间准确率分布之间的弱和强不相似性概念。我们说两个常量选择产生弱不同的准确率分布（weakly different accuracy distributions），如果第一四分位数（Q1）和第三四分位数（Q3）之间的值不相交。这等价于箱线图中的箱体不重叠。我们说两个常量选择产生强不同的准确率分布（strongly different accuracy distributions），如果范围 [2.5Q1 − 1.5Q3 , 2.5Q3 + 1.5Q1 ] 不重叠（调整至以数据点结束）。这等价于两个箱线图的须不重叠。在图5中，’ \n\t’ 和 ’: ’（第四和第六）仅弱不同。我们为1-shot Llama-2-7B在31个任务上计算了500个随机格式的准确率，每个格式250个样本。表1显示，S2、Fitem1、Fcasing中的选择不能独立预测性能差异（弱或强）：尽管这些特征可能具有大的性能方差，因此应该用FORMAT SPREAD进行探索，但它们不能用于独立预测准确率变化。其他常量集具有不同程度的差异，其中S1（分隔符）和Fitem2（枚举中的数字格式变化）具有最大的单独影响。所有具有强不相似性的任务显示在附录B.4中。小的提示变化常常产生大的性能差异。表2展示了一组任务，其中更改格式上的单个常量（例如，task322中的大小写）会导致大的准确率差异。图6显示，无论使用哪种评分标准，这些原子更改（atomic changes）中有显著比例与大的准确率变化相关。例如，当使用精确前缀匹配作为评分标准时，24%的原子更改伴随着至少5个点的准确率变化（使用概率排序时为11%）。提示格式准确率的空间是高度非单调的，这使得在该空间上的局部搜索算法效果较差。令 (p1 , p2 , p3 ) 为一个提示格式三元组，使得 pi+1 是通过对 pi 进行原子更改获得的。我们认为，如果提示格式空间是平滑的，我们应该经常看到三元组的准确率在 i 上是严格单调的。我们选择24个任务（13个多项选择，
+
+6
+作为会议论文发表于 ICLR 2024
+
+
+
+
+                                                                 表1：至少两个常量（constants）产生
+           0.55                                                  不同性能的任务（如果它们在箱线图（boxplot）中的箱体不重叠，则为弱不同（weakly different）；
+           0.50
+准确率（Accuracy）
+                                                                 如果包括须线（whiskers）的箱体不重叠，则为强不同（strongly different））。
+           0.45
+                                                                                中位数差距（Median Spread）    弱差异（Weak Diff.）    强差异（Strong Diff.）
+           0.40
+                                                                                （范围 [0, 1]）
+           0.35
+           0.30
+                                                                       C             0.144        29%        1%
+                        ''
+                      '-'
+                      ':'
+                   ' \n\t'
+                       '- '
+                       ': '
+                        ':'
+                      ':: '
+                      '::'
+                     '::: '
+                  '\n '
+                     '\n '
+                    '\n\t'
+                       '\t'
+                                                                      S1             0.132        43%       22%
+                               使用的分隔符（Separator Used）                         S2             0.238         0%        0%
+                                                                     Fitem1          0.176         0%        0%
+图5：任务1283中S1不同常量选择导致的准确率方差（accuracy variance）                      Fitem2          0.173        45%       10%
+示例。                                                 Fcasing         0.188         3%        0%
+
+表2：原子变化对准确率影响的示例，使用概率排名（前缀匹配见表4）。{} 表示文本字段；对于所有任务，p2 的准确率均高于 p1。
+任务编号           提示格式1 (p1)              提示格式2 (p2)                   准确率 p1   准确率 p2        差值
+task280           段落：{}\n 答案：{}             段落 {}\n 答案 {}                   0.043      0.826      0.783
+task317           段落::{} 答案::{}             段落::    {} 答案::   {}            0.076      0.638      0.562
+task190           句子[I]- {}句子[II]- {}    句子[A]- {}句子[B]- {}           0.360      0.614      0.254
+                  -- 答案\t{}                      -- 答案\t{}
+task904           输入::   {} \n 输出::     {}    输入::{} \n 输出::{}                  0.418      0.616      0.198
+task320           目标 - {} \n{} \n答案 - {}     目标 - {}; \n{}; \n答案 - {}         0.361      0.476      0.115
+task322           评论：{} 答案：{}             评论：    {} 答案：    {}             0.614      0.714      0.100
+task279           段落 :   {}.   答案 :    {}   段落 : {}.    答案 : {}             0.372      0.441      0.069
+
+
+11个非选择题），每个任务300个样本（p1 , p2 , p3）三元组，并计算每个pi 在250个样本上的准确率（使用精确前缀匹配）。对于选择题和非选择题任务，分别有32.4%和33.6%的三元组是单调的。鉴于三元组内的随机打乱会导致33.3%的时间是单调的，这表明像模拟退火这样的局部搜索机制可能不会有效，因为它们需要一个局部平滑的搜索空间。
+
+4.4          提示格式是提示嵌入的可识别变换
+
+提示格式选择表示对输入的确定性变换，即使其对最终性能的影响难以预测。我们将提示嵌入（prompt embeddings）表示为处理整个输入提示时获得的最后一层隐藏层（紧接在生成第一个 token 之前）。我们证明，格式选择在该嵌入上产生高度可识别的变换，这表明格式可以被视为输出概率分布的变换。对于每个任务，以及 {1, 5}-shot 两种设置，我们针对 1000 个评估样本，从 LLaMA-2-7B 收集对应于 10 个随机采样的有效格式的提示嵌入。我们训练一个 XGBoost（Chen & Guestrin, 2016）分类器，该分类器将从提示嵌入的前 n 个主成分映射到提示格式。³ 我们发现，尽管原始提示嵌入的大小为 4,096⁴，但仅使用前 100 个主成分就可以使分类器在所有 31 个分析任务上的格式识别准确率 ≥0.98。图 7 展示了在给定固定数量主成分时格式分类的准确率。⁵ 我们发现，仅给定前两个主成分时，分类器准确率与其所代表的提示中性能差异范围呈中度相关（0.424，p = 8.04 · 10−6；5-shot 设置为 0.555；使用精确前缀匹配）。
+
+4.5 提示格式空间的快速探索：格式差异范围
+在第 4.2 节，我们证明，即使仅从看似合理的格式空间中采样 10 个格式，我们仍在许多任务上观察到显著的性能差异。然而，这只是一个下界
+3 我们用来自 10 个格式中每个格式的 800 个向量（8000 个向量）进行训练，并在剩余的 200 个向量上评估。
+4 等价于 LLaMA-2-7B 的隐藏表示的维度。
+5 附录中的图 21 可视化了十个提示格式的前两个主成分的示例。
+
+7
+发表于 ICLR 2024 会议论文集
+
+                                                          评分标准                                                 1.00 # 主成分
+
+
+
+
+                                                                                                  分析任务的
+一个……的概率
+
+
+
+
+                                                                                                  累积比例
+                             0.75                                                                                                主成分
+
+产生差异 d 的原子变更
+                                                          概率排序 (Probability Ranking)                                               0.75         2
+                             0.50                         精确前缀匹配 (Exact Prefix Matching)                                                         5
+                                                                                                                            0.50        10
+                             0.25                                                                                           0.25        20
+                                                                                                                                        50
+                             0.00                                                                                           0.00
+                                       0.01               0.1                 1.0                                                        0.4         0.6         0.8         1.0
+                                      绝对准确率差异 (Absolute Accuracy Diff.) (d)（对数刻度 (log scale)）                                                           格式分类准确率 (Format Classification Accuracy) (a)
+
+图 6：原子变更 (atomic change)（例如更改空格、分隔符）对两个评分标准在准确率上产生给定影响的概率。53 个任务，每个任务采样 30 个原子变更。                                                         图 7：使用提示 (prompt) 最后解码层 (decoding layer) 的前几个主成分 (principal components)，分类准确率至多为 a 的任务的累计比例。
+                           0.7
+                                                                差异范围增加 (Spread Increase)（d）                                       0.16                                 汤普森采样 (Thompson Sampling)
+                           0.6                                  将采样格式数从 k1 增加到 k2 时                                                                     UCB 采样 (UCB Sampling)
+                                                                                                    0.14                                 朴素采样 (Naive Sampling)
+
+
+
+
+                                                                                               与真实差异范围的距离
+                           0.5                                        k1=10 到 k2=20
+ 差异范围增加
+ 为 d 的概率
+
+
+
+
+                                                                                                                         0.12
+
+k1=20 至 k2=40
+                           0.4                                        k1=40 至 k2=80                                     0.10
+                                                                      k1=80 至 k2=160
+                           0.3                                        k1=160 至 k2=240                                   0.08
+                                                                      k1=240 至 k2=320
+                           0.2                                        k1=320 至 k2=400                                   0.06
+                           0.1                                                                                           0.04
+                                                                                                                         0.02
+                           0.0
+                                    0.01                          0.1                                                              10000   20000     30000       40000     50000
+                                           绝对差异范围增加量 (d)（对数）                                                        允许的最大评估次数
+
+图 8：当样本量从 k1 增加到 k2 格式时，                                                         图 9：真实样本差异范围与每种算法找到的差异范围之间的差异，
+观察到差异范围增加至少为 d 的概率。31 个任务，每个 100 次试验。                                              相对于 E（评估预算）。320 种格式，
+                                                                                               B = 20，显示 31 个任务上 5 次试验的平均值。
+
+在增加格式数量时，任务可能表现出的扩散程度的界限：例如，当采样格式从10增加到20时，约17%的任务预计其扩散度至少增加5个准确度点。图8通过评估每个格式500个样本（共250个样本）并计算预期增益，量化了增加格式数量时扩散度的预期增长。图9比较了Thompson采样、UCB和朴素采样在预算E下估计扩散度的效率（第3.2节）。为确保报告的准确性，我们使用所有数据计算并展示了每种方法所选表现最佳和最差格式的真实扩散度。在51,200次评估的预算下，Thompson采样得到的扩散度与真实扩散度相差在1个准确度点以内，而朴素采样找到的扩散度在4个点以内，UCB在11个点以内。最后，我们使用FORMATSPREAD来测量几个推理成本高昂的模型的敏感性。在40,000次评估和320种提示格式的预算下，我们发现使用4位量化（Dettmers等，2022）运行的1-shot LLaMA-2-70B产生的中位扩散度为0.171（均值=0.221，标准差=0.200，使用跨53个任务的概率排名；25%的任务扩散度为0.292或更高，最大扩散度为0.876），而GPT-3.5产生的中位扩散度为0.064（均值=0.110，标准差=0.115，由于无法访问完整的logits，在53个任务上使用精确前缀匹配；25%的任务扩散度为0.148或更高，最大扩散度为0.562），表明即使是在更大的模型上，对格式的敏感性仍然存在。5-shot LLaMA-2-70B仍然显示出较高的扩散度，25%的任务扩散度为0.310，最大值为0.841。扩散度可视化见图25，最佳和最差格式列表见表6。
+
+5 相关工作
+在给定任务上自动寻找最佳表现提示而不改变模型参数的任务最近受到了关注，这是因为LLM的性能在不断提升的同时又有些不可预测。先前的工作通常集中在使用基于梯度的方法发现最优提示，这些方法虽然有效，但往往导致不流畅或不自然的提示（Shin
+
+                                                                                           8
+作为会议论文发表于ICLR 2024
+
+等人，2020），这可以通过基于Langevin动力学（Langevin dynamics）的方法（Shi et al., 2022）来缓解。
+另一种方法是学习、优化并将提示和任务的连续表示作为模型的输入插入（Qin & Eisner, 2021; Lester et al., 2021; Ding et al., 2022; Ilharco et al., 2023）。
+这些方法还需要访问LLM的参数，因此无法应用于API背后的模型。相比之下，FORMAT SPREAD不假设可以访问任何模型内部。先前的无梯度工作专注于针对人工编写提示的基于编辑的枚举（Prasad et al., 2023）、强化学习（Deng et al., 2022）以及通过使用LLM本身（Zhou et al., 2023; Gao et al., 2021）。这些工作旨在实现有竞争力的任务性能，即使提示或指令的含义被修改。据我们所知，我们是第一个专门关注提示格式差异（prompt formatting variance）的，这是语义等价（semantic equivalence）的一个典型例子。
+越狱（Jailbreaking）指的是故意操纵提示以引出不适当或敏感的回答，或以其他方式揭示原本故意未揭示的提示部分的行为。虽然目标与我们的工作不同，但越狱工作（Wei et al., 2023; Zou et al., 2023）共享了寻找性能最低的提示这一底层技术问题。我们的方法不同，因为Wei等人（2023）评估人工生成的攻击以指导对抗性提示设计，而Zou等人（2023）在多个模型上同时使用基于梯度的搜索方法。
+一些现有工作已经探索了某些提示设计选择对模型性能的影响，例如提示的语言（Gonen et al., 2022）、少样本示例的顺序（Lu et al., 2022）及其模式（Madaan et al., 2023）。其他工作专注于提供连续提示表示的文本解释（Khashabi et al., 2022）。除了自回归LLM（autoregressive LLMs）之外，现有工作还关注掩码语言模型（masked language models）中的性能差异（Elazar et al., 2021; Jiang et al., 2020）。我们的工作遵循了其他领域的努力，这些领域探索了虚假特征对研究评估的影响，例如在深度强化学习（Islam et al., 2017; Henderson et al., 2018）和统计机器翻译（Clark et al., 2011）中。
+
+6 讨论
+我们介绍了FORMAT SPREAD，一种估计跨提示格式选择的性能差异的算法。6 我们使用FORMAT SPREAD来评估几个广泛使用的开源LLM在少样本学习设置中分类任务的性能差异范围。
+
+我们发现，无论选择何种模型，即使增加模型规模、少样本（few-shots）数量，或使用指令微调（instruction tuning），性能差异范围（spread）都很大。F ORMAT S PREAD 旨在在用户指定的计算预算下，高效地搜索合理的提示格式（prompt formats）空间。例如，对于一个有 2,500 个测试样本和 320 种合理格式的任务，在仅探索整个搜索空间 5% 的计算预算下，我们能够在真实性能差异的 2 个准确率百分点（accuracy points）内估计性能差异。我们还刻画了提示格式的空间，发现它很大程度上是非单调的，并且很少有原子特征（atomic features）能够单独作为性能的预测因子，尽管格式嵌入（format embeddings）的可分离性与观察到的性能差异范围高度相关。这些发现为我们的搜索过程设计提供了依据，其中局部搜索方法并不有利。我们的发现表明，由任意提示格式选择引起的性能差异范围可能会影响关于模型性能的结论，尤其是在基准任务上比较模型时。因此，我们建议，使用基于提示的方法评估大语言模型（LLMs）的工作，如果报告在合理格式范围内的性能范围，将会受益。然而，我们想强调，对于许多用例，单格式评估可能仍然足够。例如，对于在 LLMs 之上构建系统的研究人员或从业者，选择一个在这个更大系统中足够好用的单一提示格式是一种有效的方法论选择。然而，我们鼓励未来的研究在将其系统与开箱即用的模型（out-of-the-box models）进行比较时计算 F ORMAT S PREAD，以确保公平的基线表示。此外，F ORMAT S PREAD 可用于识别模型或系统的性能下限。例如，当将模型用于具有社会影响的任务时，例如图 1 中的刻板印象分类（stereotype classification），报告非对抗性用户（non-adversarial user）可能遇到的准确率范围非常重要。同样，在声称模型具有通用能力（例如心智理论（theory of mind））时，考虑对虚假特征（spurious features）的鲁棒性至关重要；并且在例如探索模型偏差时报告这一点也是有益的。我们将开发正则化过程（regularization procedures）（无论是在训练期间还是使用已训练模型）以使模型对多样的格式选择具有鲁棒性，留给未来的研究。6
+        我们在附录 C 中详细描述了我们的方法的局限性。
+
+
+                                                        9
+作为会议论文发表于 ICLR 2024
+
+7 致谢
+我们感谢 Jillian Fisher、Sachin Kumar、Angela Zhou 以及 Berkeley NLP 小组（Berkeley NLP group）的有益讨论。这项工作是在 A.S. 担任 AI2 青年研究员（Young Investigator）期间进行的。本材料基于部分由 DARPA CMO 根据合同号 HR001120C0124 资助的工作，由 DARPA MCS 项目通过 NIWC Pacific（N66001-19-2-4031）资助，由 NSF DMS-2134012、IIS-2125201、IIS-2203097 资助，由 NSF CAREER 资助号 IIS2142739 以及一项 Alfred P. Sloan 基金会奖学金（Alfred P. Sloan Foundation Fellowship）资助。本材料中表达的任何意见、发现和结论或建议均为作者的观点，并不一定陈述或反映美国政府或其任何机构的观点。
+
+参考文献
+Armen Aghajanyan。推文：Susan 和我发现，通过将多选题格式化为 (A) 而不是 A，MMLU 在 40 多分时的性能跃升了 6-10 分（针对内部模型）。所有 LLM 的评估都被破坏了。评估一项任务需要对描述该任务的所有提示（prompt）进行边缘化，而不是对其中一个进行点估计。2023 年 6 月。URL https://twitter.com/ArmenAgha/status/1669084129261162497。
+Ebtesam Almazrouei、Hamza Alobeidli、Abdulaziz Alshamsi、Alessandro Cappelli、Ruxandra Cojocaru、Merouane Debbah、Etienne Goffinet、Daniel Heslow、Julien Launay、Quentin Malartic、Badreddine Noune、Baptiste Pannier 和 Guilherme Penedo。Falcon-40B：一个具有最先进性能的开放大型语言模型（large language model）。2023。
+Olivier Chapelle 和 Lihong Li。汤普森采样（Thompson sampling）的实证评估（empirical evaluation）。《神经信息处理系统进展》（Advances in Neural Information Processing Systems），24，2011。
+Tianqi Chen 和 Carlos Guestrin。XGBoost：一个可扩展的树提升系统（tree boosting system）。见第22届 ACM SIGKDD 知识发现与数据挖掘国际会议（International Conference on Knowledge Discovery and Data Mining）论文集，KDD ’16，第785–794页，美国纽约州纽约市，2016。ACM。ISBN 978-1-4503-4232-2。doi: 10.1145/2939672.2939785。URL http://doi.acm.org/10.1145/2939672.2939785。
+Jonathan H Clark、Chris Dyer、Alon Lavie 和 Noah A Smith。统计机器翻译（statistical machine translation）的更好假设检验（hypothesis testing）：控制优化器不稳定性（optimizer instability）。见第49届计算语言学协会（Association for Computational Linguistics）年会：人类语言技术（Human Language Technologies）论文集，第176–181页，2011。
+Mingkai Deng、Jianyu Wang、Cheng-Ping Hsieh、Yihan Wang、Han Guo、Tianmin Shu、Meng Song、Eric Xing 和 Zhiting Hu。RLPrompt：用强化学习（reinforcement learning）优化离散文本提示（discrete text prompts）。见2022年自然语言处理经验方法会议（Conference on Empirical Methods in Natural Language Processing）论文集，第3369–3391页，阿拉伯联合酋长国阿布扎比，2022年12月。计算语言学协会（Association for Computational Linguistics）。doi: 10.18653/v1/2022.emnlp-main.222。URL https://aclanthology.org/2022.emnlp-main.222。
+Tim Dettmers、Mike Lewis、Younes Belkada 和 Luke Zettlemoyer。
+
+GPT3.int8()：面向大规模Transformer的8位矩阵乘法。载于Alice H. Oh、Alekh Agarwal、Danielle Belgrave和Kyunghyun Cho（编），《神经信息处理系统进展》，2022年。URL https://openreview.net/forum?id=dXiGWqBoxaD。Ning Ding、Shengding Hu、Weilin Zhao、Yulin Chen、Zhiyuan Liu、Haitao Zheng和Maosong Sun。Openprompt：一个用于提示学习的开源框架。载于《第60届计算语言学协会年会：系统演示论文集》，第105–113页，2022年。Yanai Elazar、Nora Kassner、Shauli Ravfogel、Abhilasha Ravichander、Eduard Hovy、Hinrich Schütze和Yoav Goldberg。测量并改进预训练语言模型的一致性。《计算语言学协会汇刊》，9：1012–1031，2021年。Tianyu Gao、Adam Fisch和Danqi Chen。使预训练语言模型成为更好的少样本学习器。第3816–3830页，2021年8月。doi：10.18653/v1/2021.acl-long.295。URL https://aclanthology.org/2021.acl-long.295。
+
+
+                                                 10
+作为会议论文发表于ICLR 2024
+
+
+
+
+Hila Gonen、Srini Iyer、Terra Blevins、Noah A Smith和Luke Zettlemoyer。通过困惑度估计揭开语言模型中提示的神秘面纱。arXiv预印本arXiv:2212.04037，2022年。Peter Henderson、Riashat Islam、Philip Bachman、Joelle Pineau、Doina Precup和David Meger。重要的深度强化学习。载于《AAAI人工智能会议论文集》，第32卷，2018年。Or Honovich、Uri Shaham、Samuel R. Bowman和Omer Levy。指令归纳：从少量示例到自然语言任务描述。第1935–1952页，2023年7月。doi：10.18653/v1/2023.acl-long.108。URL https://aclanthology.org/2023.acl-long.108。Gabriel Ilharco、Marco Tulio Ribeiro、Mitchell Wortsman、Suchin Gururangan、Ludwig Schmidt、Hannaneh Hajishirzi和Ali Farhadi。使用任务算术编辑模型。载于《国际学习表征会议》，2023年。Riashat Islam、Peter Henderson、Maziar Gomrokchi和Doina Precup。连续控制基准深度强化学习任务的可复现性。arXiv预印本arXiv:1708.04133，2017年。Zhengbao Jiang、Frank F Xu、Jun Araki和Graham Neubig。我们如何知道语言模型知道什么？《计算语言学协会汇刊》，8：423–438，2020年。Daniel Khashabi、Xinxi Lyu、Sewon Min、Lianhui Qin、Kyle Richardson、Sean Welleck、Hannaneh Hajishirzi、Tushar Khot、Ashish Sabharwal、Sameer Singh和Yejin Choi。提示的任性：连续提示离散化解释的奇特案例。
+
+In Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pp. 3631–3643, Seattle, United States, July 2022. Association for Computational Linguistics. doi: 10.18653/v1/2022.naacl-main.266. URL https://aclanthology.org/2022.naacl-main.266. Tze Leung Lai, Herbert Robbins, et al. Asymptotically efficient adaptive allocation rules. Advances in applied mathematics, 6(1):4–22, 1985. Brian Lester, Rami Al-Rfou, and Noah Constant. The power of scale for parameter-efficient prompt tuning. In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, pp. 3045–3059, 2021. Chin-Yew Lin. Rouge: A package for automatic evaluation of summaries. In Text summarization branches out, pp. 74–81, 2004. Yao Lu, Max Bartolo, Alastair Moore, Sebastian Riedel, and Pontus Stenetorp. Fantastically ordered prompts and where to find them: Overcoming few-shot prompt order sensitivity. pp. 8086–8098, May 2022. doi: 10.18653/v1/2022.acl-long.556. URL https://aclanthology. org/2022.acl-long.556. Aman Madaan, Katherine Hermann, and Amir Yazdanbakhsh. What makes chain-of-thought prompting effective? a counterfactual study. In Findings of the Association for Computational Linguistics: EMNLP 2023, pp. 1448–1535, 2023. Moin Nadeem, Anna Bethke, and Siva Reddy. Stereoset: Measuring stereotypical bias in pretrained language models. In Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers), pp. 5356–5371, 2021. Archiki Prasad, Peter Hase, Xiang Zhou, and Mohit Bansal. GrIPS: Gradient-free, edit-based instruction search for prompting large language models. pp. 3845–3864, May 2023. doi: 10.18653/v1/2023.eacl-main.277. URL https://aclanthology.org/2023.eacl-main.277. Reid Pryzant, Dan Iter, Jerry Li, Yin Tat Lee, Chenguang Zhu, and Michael Zeng. Automatic prompt optimization with” gradient descent” and beam search. arXiv preprint arXiv:2305.03495, 2023. Guanghui Qin and Jason Eisner. Learning how to ask: Querying lms with mixtures of soft prompts. In Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL-HLT), 2021.
+
+
+                                                11
+Published as a conference paper at ICLR 2024
+
+
+
+
+Timo Schick, Sahana Udupa, and Hinrich Schütze. Self-diagnosis and self-debiasing: A proposal for reducing corpus-based bias in nlp. Transactions of the Association for Computational Linguistics, 9:1408–1424, 2021.
+
+John Schulman、Barret Zoph、Christina Kim、Jacob Hilton、Jacob Menick、Jiayi Weng、Juan Felipe Ceron Uribe、Liam Fedus、Luke Metz、Michael Pokorny 等。ChatGPT：优化对话语言模型。OpenAI 博客（OpenAI blog），2022。
+
+Weijia Shi、Xiaochuang Han、Hila Gonen、Ari Holtzman、Yulia Tsvetkov 和 Luke Zettlemoyer。迈向人类可读的提示微调（prompt tuning）：库布里克的《闪灵》（Kubrick’s The Shining）是一部好电影，也是一个好提示吗？arXiv 预印本（arXiv preprint）arXiv:2212.10539，2022。
+
+Taylor Shin、Yasaman Razeghi、Robert L. Logan IV、Eric Wallace 和 Sameer Singh。Auto-Prompt：用自动生成的提示从语言模型中引出知识。第 4222–4235 页，2020 年 11 月。doi: 10.18653/v1/2020.emnlp-main.346。URL https://aclanthology.org/2020.emnlp-main.346。
+
+Hugo Touvron、Louis Martin、Kevin Stone、Peter Albert、Amjad Almahairi、Yasmine Babaei、Nikolay Bashlykov、Soumya Batra、Prajjwal Bhargava、Shruti Bhosale 等。Llama 2：开放基础模型和微调聊天模型。arXiv 预印本 arXiv:2307.09288，2023。
+
+Yizhong Wang、Swaroop Mishra、Pegah Alipoormolabashi、Yeganeh Kordi、Amirreza Mirzaei、Atharva Naik、Arjun Ashok、Arut Selvan Dhanasekaran、Anjana Arunkumar、David Stap、Eshaan Pathak、Giannis Karamanolakis、Haizhi Lai、Ishan Purohit、Ishani Mondal、Jacob Anderson、Kirby Kuznia、Krima Doshi、Kuntal Kumar Pal、Maitreya Patel、Mehrad Moradshahi、Mihir Parmar、Mirali Purohit、Neeraj Varshney、Phani Rohitha Kaza、Pulkit Verma、Ravsehaj Singh Puri、Rushang Karia、Savan Doshi、Shailaja Keyur Sampat、Siddhartha Mishra、Sujan Reddy A、Sumanta Patro、Tanay Dixit 和 Xudong Shen。Super-NaturalInstructions：通过在 1600+ 个 NLP 任务上的声明式指令进行泛化。第 5085–5109 页，2022 年 12 月。doi: 10.18653/v1/2022.emnlp-main. 340。URL https://aclanthology.org/2022.emnlp-main.340。
+
+Alexander Wei、Nika Haghtalab 和 Jacob Steinhardt。Jailbroken：LLM 安全训练如何失败？arXiv 预印本 arXiv:2307.02483，2023。
+
+Jules White、Quchen Fu、Sam Hays、Michael Sandborn、Carlos Olea、Henry Gilbert、Ashraf Elnashar、Jesse Spencer-Smith 和 Douglas C Schmidt。增强 ChatGPT 提示工程（prompt engineering）的提示模式（prompt pattern）目录。arXiv 预印本 arXiv:2302.11382，2023。
+
+Tianyi Zhang、Varsha Kishore、Felix Wu、Kilian Q Weinberger 和 Yoav Artzi。BERTScore：用 BERT 评估文本生成。载于国际学习表征会议（International Conference on Learning Representations），2019。
+
+Yongchao Zhou、Andrei Ioan Muresanu、Ziwen Han、Keiran Paster、Silviu Pitis、Harris Chan 和 Jimmy Ba。大型语言模型（large language models）是人类水平的提示工程师。载于第十一届国际学习表征会议（The Eleventh International Conference on Learning Representations），2023。URL https://openreview.net/forum?id=92gvk82DE-。
+
+Andy Zou、Zifan Wang、J Zico Kolter 和 Matt Fredrikson。
+
+针对对齐语言模型的通用且可迁移的对抗攻击。arXiv 预印本 arXiv:2307.15043, 2023.
+
+12
+发表于 ICLR 2024 会议论文
+
+A 语法定义与实例化细节
+
+A.1 等价关系定义
+
+确切地说，p1 ∼ p2 当且仅当以下至少一项成立：p1 = p2 = B0；或 pi = B0′ (n)(di, si)，其中 d1 = d2；或 pi = B1(di, si, fi)，其中 d1 = d2；或 pi = B2(n)(X1,i, . . . , Xn,i, ci)，其中 Xj,1 ∼ Xj,2 ∀1 ≤ j ≤ n；或 pi = B3(di, j1,i, . . . , jn,i, s1, s2, c, f)，其中 d1 = d2 且 jk,1 = jk,2 ∀1 ≤ k ≤ n。生成的格式可能在其字符串表示上等价，但根据该等价关系并不等价。
+
+A.1.1 提示格式的解析与完整格式生成的可视化
+
+    B2(3)                                           空格
+
+
+        <text> \n OPTIONS: \n CHOICE (A) <text> ; CHOICE (B) <text> \n ANSWER: <text>
+            B0          B′0                                  B3                                            B1
+
+                                              B1                       B1
+        B′0 OPTIONS:          B3 CHOICE (A) <text> ; CHOICE (B) <text>                       B1 ANSWER: <text>
+
+
+
+                                                                                项格式化 ℱitem
+            大小写 ℱcasing    分隔符   1
+                                                   文本与选项 2 之间的分隔符
+                                                                                                                空格
+    ￼
+                                                   （包括枚举和包装器）
+𝒮
+𝒞
+𝒞
+
+
+
+
+图 10：一个复杂提示格式的可视化，展示其解析以及哪些常量或函数影响该格式的每个部分。
+
+图 10（Figure 10）展示了如何使用我们定义的语法解析复杂格式的可视化。一个完整提示（prompt）由一条指令（instruction）、n 个少样本示例（few-shots）和一个待解决的数据点组成。例如，如果指令是 Given a sentence and two words that appear in it, answer which one of the two (A or B) appeared first in the sentence.，则完整提示可能如下所示。注意，我们始终使用 \n\n 作为指令和少样本示例之间的间隔字符。下面的示例展示了一个 1-shot 提示。它仅用于说明，并不对应所考虑的任何任务。
+
+        Given a sentence and two words that appear in it, answer which one of
+        the two (A or B) appeared first in the sentence.
+
+        The quick brown fox jumps
+        OPTIONS:
+        CHOICE (A): fox ; CHOICE (B): brown
+        ANSWER: B
+
+        Over the lazy dog
+        OPTIONS:
+        CHOICE (A): lazy ; CHOICE (B): dog
+        ANSWER:
+
+FORMAT SPREAD 会强制一个多项选择变量（multiple choice variable）的所有实例化共同改变，以保持一致，这包括指令中的文本。因此，当把选项项从 A 和 B 改为 I 和 II 时，提示将如下生成。
+
+                                                             13
+Published as a conference paper at ICLR 2024
+
+  Given a sentence and two words that appear in it, answer which one of
+  the two (I or II) appeared first in the sentence.
+
+  The quick brown fox jumps
+  OPTIONS:
+  CHOICE (I): fox ; CHOICE (II): brown
+  ANSWER: II
+
+  Over the lazy dog
+  OPTIONS:
+  CHOICE (I): lazy ; CHOICE (II): dog
+  ANSWER:
+
+A.2 每个集合 S1、S2、C、FCASING、FITEM 的允许值
+
+      S1 = {′′ ,′ ′ ,′ \n′ ,′ \n′ ,′ − − ′ ,′    ′ ′
+                                                  , ; \n′ ,′ || ′ ,′ < sep > ′ ,′ − − ′ ,′ , ′ ,′ \n ′ ,′ , ′ ,′ \n ′ ,′ . ′ ,′ , ′ }
+              ′′ ′ ′ ′    ′       ′
+      S2 = { ,       ,        , ‘\t } （无空格、单空格、双空格、制表符）
+      C = { , ::: , :: ′ ,′ : ′ ,′ \n\t′ ,′ \n ′ ,′ : ′ ,′ − ′ ,′ ′ ,′ \n ′ ,′ \n\t′ ,′ :′ ,′ ::′ ,′ − ′ ,′ \t′ }
+              ′′ ′       ′ ′
+
+Fcasing = {f(x) = x, f(x) = x.title(), f(x) = x.upper(), f(x) = x.lower()}
+Fitem = {x 7→ f (g(x)) | 使得 f ∈ Fitem1 ∧ g ∈ Fitem2 }
+Fitem1 = {x 7→ (x), x 7→ x., x 7→ x), x 7→ x ), x 7→ [x], x 7→< x >}
+Fitem2 = {x → x + 1, x →′ A′ + x, x →′ a′ + x,
+                    x → 0x215F + x + 1, x → ROMAN[x].lower(), x → ROMAN[x].upper()}
+
+枚举从（即“1, 2, 3”而不是“0, 1, 2”）开始索引。ROMAN[x] 表示用常规 ASCII 字符书写的罗马数字。‘0x215F’+x 表示罗马数字的 Unicode 字符序列。表示一个用于清晰展示的空格字符。
+
+A.3 对提示格式空格与分隔符组合的限制
+
+我们定义若干限制以确保格式自然性。用户还可以通过在值之间定义自己的规则和限制来自定义 FORMAT SPREAD。我们的规则如下：
+
+• 如果 B2^(n)(X1, . . . , Xn, c) 中 c 不包含换行符，则每个 Xi 的分隔符以及任何子组件的分隔符都不应包含换行符。
+• 与上述规则类似，如果 B3^(n)(d, j1, . . . , jn, s1, s2, c, f1, f2) 中某个分隔符包含换行符（即 s1 包含换行符和/或 s2 包含换行符），则空白 c 也必须包含换行符。
+• 对于 B1 (d, s, f) := f (d)s< text >，s 必须不是空字符串（即描述符与文本之间必须有一些分隔）。
+• 仅当 B2 中前 n − 1 个组件是带有空 <text> 的 B1 字段时，才允许 c 是空字符串空白。类似地，上面提到的换行限制仅当 <text> 非空时才适用。这在提示格式中很少发生，但存在诸如 Question: <text> Options: A. <text> B. <text> 这样的格式，其中 Options: 没有对应字段。
+
+A.4 Thompson 采样先验（Thompson Sampling Priors）
+
+对于第一次探索（即，寻找表现最佳的提示格式（prompt format）），我们为所有臂（arm）pi 设置了一个信息先验（informative prior）Beta(α, β) := Beta max β·x / (1−x) , 1.1 , 5，其中 x 是原始格式的准确率。我们的目标是设置一个信息先验，使该先验分布的期望值为原始格式准确率 x，因为先验地（a priori），这是我们拥有的关于性能的唯一信息。
+
+14
+作为会议论文发表于 ICLR 2024
+
+这将参数限制如下：
+
+    E[Beta(α, β)] = α / (α+β) = x
+    α = α·x + β·x
+    α = β·x / (1−x)
+
+由于 β 将调节先验的置信程度，并且我们希望避免模型过度自信（overconfident），我们固定 β = 5。因为我们希望得到一个具有类高斯（Gaussian-like）概率密度函数（PDF）的信息先验 Beta(α, β)，我们强制 α > 1 且 β > 1。在极端情况下，强制 α > 1 可能会改变期望值。因此，第一次探索的先验正好是 Beta(α, β)，其中 α = max β·x / (1−x) , 1.1 且 β = 5，对于所有臂 pi。
+
+对于第二次探索（即，寻找表现最差的提示格式），模型可以访问第一次探索的计数器 Si(E/B) 和 Ni(E/B)。因此，我们将第二次探索的先验设置为 Beta(α + Si(E/B), β + Ni(E/B) − Si(E/B))。
+
+B 附加实验的信息与图表
+B.1 任务选择
+
+我们采用了一系列启发式方法来筛选Super-NaturalInstructions任务，以形成我们的53项评估任务集。数据集需至少包含1000个样本才会被考虑。此外，我们移除了指示过长的任务（超过3000字符）以及输入长度超过2000字符的数据集，因为这会使得大规模推理变得不可行。鉴于我们专注于分类任务，我们还过滤掉了有效输出包含超过20种不同字符串的数据集。
+
+我们同样排除了那些我们先验发现使用LLaMA-2-7B 1-shot准确率为0%的任务。有些Super-NaturalInstructions任务源自同一原始数据集，但提出不同的问题。我们确保从同一原始数据集中纳入的任务不超过4个。
+
+最后，我们特别寻找具有社会影响力的任务。这些任务是我们唯一在数据集未提供格式时自行加入格式的Super-NaturalInstructions任务。选定的53项任务如下：task050, task065, task069, task070, task114, task133, task155, task158, task161, task162, task163, task190, task213, task214, task220, task279, task280, task286, task296, task297, task316, task317, task319, task320, task322, task323, task325, task326, task327, task328, task335, task337, task385, task580, task607, task608, task609, task904, task905, task1186, task1283, task1284, task1297, task1347, task1387, task1419, task1420, task1421, task1423, task1502, task1612, task1678, task1724。
+
+                                                  0.8 r=0.80
+                                               Llama-2-70b扩散度
+
+
+
+
+                                                        p=1.07 × 10^23
+                                                    0.6
+                                                    0.4
+                                                    0.2
+                                                    0.0
+                                                      0.0      0.2          0.4     0.6
+                                                                Llama-2-7b扩散度
+
+图11：Llama-2-7B与Llama-2-70B扩散度对比。Llama-2-70B使用4位量化计算（Dettmers等人，2022）。
+
+                                                                      15
+作为ICLR 2024会议论文发表
+
+
+
+
+B.2           第4.2节附加结果
+
+表3：提示格式对(p1, p2)的比例，表明若使用模型M1时p1劣于p2，则对于M2也保持相同趋势。
+
+模型1                      模型2                      性能相对
+                                                               (M1 )                        (M2 )                       排序保持率
+                                                           Llama-2-7b                Llama-2-13b                                                  57.46%
+                                                           Llama-2-7b                Falcon-7b                                                  55.91%
+                                                            Falcon-7b               Falcon-7b-Inst                                                61.11%
+
+
+                              0.4                        {M, M 0} = {Llama-2-7b, Llama-2-13b}                                             0.4                      {M, M 0} = {Llama-2-7b, Llama-2-13b}
+ 给定 acc(p0M) acc(pM) > d
+
+
+
+
+                                                                                                             给定 acc(p0M) acc(pM) > d
+                                                         {M, M 0} = {Llama-2-7b, Llama-2-70b}                                                                      {M, M 0} = {Llama-2-7b, falcon-7b}
+   acc(p0M ) acc(pM ) < d
+
+
+
+
+                                                                                                               acc(p0M ) acc(pM ) < d
+                              0.3                        {M, M 0} = {Llama-2-13b, Llama-2-70b}                                            0.3                      {M, M 0} = {falcon-7b, falcon-7b-inst}
+       概率
+
+
+
+
+                                                                                                                   概率
+                                                         {M, M 0} = {Llama-2-7b, falcon-7b}
+              0
+
+
+
+
+                                                                                                                          0
+                              0.2                        {M, M 0} = {falcon-7b, falcon-7b-inst}                                           0.2
+              0
+
+
+
+
+                                                                                                                          0
+                              0.1                                                                                                         0.1
+
+0.0 0.0
+0.01 0.1 1.0 0.01 0.1 1.0
+准确度差异阈值 (d)（对数） 准确度差异阈值 (d)（对数）
+
+(a) 选项排序指标。 (b) 精确前缀匹配指标。
+
+图 12：在使用模型 M 时提示 p 优于提示 p′ 的情况下，使用模型 M′ 时提示 p 比 p′ 差至少 d 个点的概率。
+
+格式本身并无绝对好坏。表 3 显示，如果格式 p1 在模型 M 下的表现低于格式 p2，那么这一趋势在另一个模型 M′ 下仍然成立的概率小于 0.62（随机概率为 0.5）。这种微弱的相对顺序保持性表明，提示格式在某个模型中的表现可能无法外推到另一个模型，换言之，不存在本质上好或坏的格式。这一发现得到图 12 的进一步支持，该图显示某个格式优于或劣于另一个格式的结论在不同模型之间往往不一致。使用精确前缀匹配准确度的实验。这里我们展示使用精确前缀匹配来计算准确度的结果。前缀匹配失败通常与退化相关，即模型没有回答任何有效选项的情况，这促使我们使用排序准确度。退化使模型（特别是较小的模型）更不可能开箱即用地达到高准确度。如图 6 所示，前缀匹配与执行原子更改时出现较大变化有关。此外，精确前缀匹配可能导致较低的性能，因为生成受到的约束较少（见图 16）。表 4 展示了使用精确前缀匹配指标时产生大准确度变化的原子更改示例。图 13c 显示，无论模型规模增加、架构变化还是少样本示例数量变化，在使用精确前缀匹配作为准确度指标时，性能差异范围依然存在。与第 4.2 节中概率排序的结果一致，图 15 显示，在使用精确前缀匹配作为指标时，仅通过更改提示就在两个模型之间逆转性能趋势的概率仍然很高。
+
+值得注意的是，性能差异范围显著大于概率排名设置中的情况（见图14），中位性能差异范围根据所使用的模型不同，范围在12到28个准确率点之间。这进一步说明了在使用此准确率指标对模型进行基准测试时，运行F ORMAT S PREAD 的必要性。扩散度的增加可能部分归因于退化现象，我们将在下文中详细说明。退化现象。有时，当模型无法通过精确前缀匹配生成正确答案时，它也无法生成有效的响应，即发生退化。我们现在使用53个SuperNaturalInstructions分类和多选任务来量化这一现象。给定一个模型、一个任务和一种格式，设中心质量为模型输出与任何有效选项匹配（无论正确与否）的示例比例。表5显示，准确率与中心质量之间的相关性根据模型的不同而处于中等或较高水平。这表明，很多时候当模型未能返回有效答案时，它实际上没有返回任何有效答案。
+
+
+                                                                                                        16
+发布于ICLR 2024会议论文集
+
+
+
+
+                     0.6 r=0.79                                                                            r=0.32                                                                                         r=0.36
+
+
+
+
+                                                                               falcon-7b-inst 扩散度
+Llama-2-13b 扩散度
+                         p=3.68 × 10 23                                                                0.6 p=1.12 × 10 3                                                                              0.6 p=7.83 × 10 8
+
+
+
+
+                                                                                                                                                                                     nshot=5 扩散度
+                     0.4
+                                                                                                       0.4                                                                                            0.4
+                     0.2                                                                               0.2                                                                                            0.2
+
+0.0                                                                               0.0                                                                                            0.0
+                       0.0     0.1      0.2         0.3    0.4    0.5                                    0.0       0.1    0.2    0.3            0.4                0.5      0.6                         0.0         0.2         0.4        0.6
+                                     Llama-2-7b 差异范围（spread）                                                                    falcon-7b 差异范围                                                                               nshot=1 差异范围
+
+                           (a) Llama-2-7B 与 13B                                                 (b) Falcon-7B 与 7B-Instruct                                                      (c) 1-shot 与 5-shot（同一任务、模型）
+
+图 13：在不同模型或 n-shot 下评估同一任务时的离散度比较，
+使用精确前缀匹配（exact prefix matching）作为准确率指标（accuracy metric）。
+
+
+          Llama-2-7b                                                                                                                                                                                        {M, M 0} = {Llama-2-7b, Llama-2-13b}
+
+
+
+
+                                                                                                                                     给定 acc(pM) acc(pM ) > d
+                                                                                                                                       acc(p0M) acc(p0M ) < d
+             nshot=1                                                                                                                                              0.3                                       {M, M 0} = {Llama-2-7b, falcon-7b}
+
+
+
+
+                                                                                                                                                         0
+          Llama-2-7b                                                                                                                                                                                        {M, M 0} = {falcon-7b, falcon-7b-inst}
+
+
+
+
+                                                                                                                                           概率（Probability that）
+             nshot=5
+
+0
+        Llama-2-13b                                                                                                                                               0.2
+             nshot=1
+        Llama-2-13b
+             nshot=5                                                                                                                                              0.1
+            falcon-7b
+             nshot=1
+            falcon-7b                                                                                                                                             0.0
+             nshot=5                                                                                                                                                     0.01                         0.1                                            1.0
+       falcon-7b-inst                                                                                                                                                             Accuracy difference threshold (d) (log)
+             nshot=1
+       falcon-7b-inst
+             nshot=5
+                                 0.0      0.1        0.2    0.3    0.4         0.5                           0.6    0.7           图 15：模型 M 的性能比 M′ 差至少 d 的概率，当使用格式
+                                       跨提示格式的性能差异范围                                                   p′ 时，假设 M 在使用格式 p 时比 M′ 好至少 d。53 个任务，1-shot 和 5-shot。
+图 14：跨模型和 n-shot 的分布。                                                                                                  精确前缀匹配指标。
+精确前缀匹配指标。
+
+Llama-2-7b	Llama-2-7b
+nshot=1	nshot=1
+Llama-2-7b	Llama-2-7b
+nshot=5	nshot=5
+Llama-2-13b	Llama-2-13b
+nshot=1	nshot=1
+Llama-2-13b	Llama-2-13b
+nshot=5	nshot=5
+falcon-7b	falcon-7b
+nshot=1	nshot=1
+falcon-7b	falcon-7b
+nshot=5	nshot=5
+falcon-7b-inst	falcon-7b-inst
+nshot=1	nshot=1
+falcon-7b-inst	falcon-7b-inst
+nshot=5	nshot=5
+0.0	0.2	0.4	0.6	0.8	0.0	0.2	0.4	0.6	0.8
+
+准确率（Accuracy）（概率排序，Probability Ranking）    准确率（精确前缀匹配，Exact Prefix Matching）
+
+(a) 选定的 53 个 Super Natural-Instructions 任务的准确率箱线图（boxplot），选项排序指标（option ranking metric）。    (b) 选定的 53 个 Super Natural-Instructions 任务的准确率箱线图（boxplot），精确前缀匹配指标（exact prefix matching metric）。
+
+图 16：所使用的准确率指标（accuracy metric）会强烈影响最终性能。图中展示了 53 个 Super Natural-Instructions 任务。排序准确率（ranking accuracy）总体上带来更高的准确率。
+
+一点也不。这对 Falcon 模型尤其如此，我们观察到准确率与中心质量（centered mass）之间几乎完全相关。总之，所选择的提示格式通常不仅影响准确率，还影响模型实际能够执行任务的频率。这尤其会影响那些没有替代指标的任务。进一步的研究可能专门针对导致退化的特征。
+指令归纳（Instruction Induction）任务的实验。迄今为止，所有实验都仅关注分类任务。我们现在将关注需要生成（短）文本且无法被框定为分类任务的任务。我们从指令归纳（Honovich 等人，2023）中选择了 10 个任务，这些任务需要生成唯一有效的字符串才能被视为正确响应。示例包括识别单词的第二个字母、数字相加或回答给定单词的同义词。指令归纳任务也显示出广泛的难度范围，导致多样化的设置，以
+
+17
+
+作为会议论文发表于 ICLR 2024
+
+表 4：使用前缀匹配（prefix matching）时原子变化（atomic changes）对准确率（accuracy）影响的示例（概率排序（probability ranking）见表 2）。{} 表示一个文本字段；对于所有任务，p2 的准确率均高于 p1。
+
+任务 ID（Task Id）    提示格式 1（Prompt Format 1）(p1)    提示格式 2（Prompt Format 2）(p2)    p1 准确率（Acc p1）    p2 准确率（Acc p2）    差值（Diff.）
+
+
+task213 标题： {} 句子<A>： 标题::{} 句子<A>::{} 0.113 0.475 0.362
+ {} || 句子<B>： {} || 句子<B>::{} ||
+ || 句子<C>： {} || 句子<C>::{} ||
+ 句子<D>： {} 选项： \n 句子<D>::{} 选项::\n
+ <i>::: {} \n <ii>::: {} <i>::: {} \n <ii>::: {}
+ 答案： {}’ 答案::{}’
+task296 句子 I )： {} \n句子 II 句子 I )： {} \n句子 II 0.201 0.522 0.321
+ )： {} \n句子 III )： {} )： {} \n句子 III )： {}
+ \n句子 IV )： {} \n句子 \n句子 IV )： {} \n句子
+ V )： {} \n句子 VI )： {} V )： {} \n句子 VI )： {}
+ \n句子 VII )： {} \n句子 \n句子 VII )： {} \n句子
+ VIII )： {} \n句子 IX )： {} VIII )： {} \n句子 IX )： {}
+ \n句子 X )： {} , I.： {} , \n句子 X )： {} , 1.： {}
+ II.： {} , 答案： {}’ , 2.
+
+
+: {} , Answer: {}’
+task905 Tweet::: {}; \nLabel::: {}; Tweet::{}; \nLabel::{}; 0.252 0.559 0.307
+ \nAnswer::: {}’ \nAnswer::{}’
+task317 Passage:: {} \nAnswer:: {}’ Passage::{} \nAnswer::{}’ 0.245 0.546 0.301
+task280 passage {}\n answer {}’ passage:{}\n answer:{}’ 0.332 0.612 0.28
+task050 SENTENCE - {} \nQUESTION - {} SENTENCE\n\t{} \nQUESTION\n\t{} 0.244 0.504 0.26
+ \nANSWER - {}’ \nANSWER\n\t{}’
+task070 Beginning - {}\nMiddle [I]{} Beginning - {}\nMiddle I){} 0.143 0.3 0.157
+ , Middle [II]{}\nEnding - , Middle II){}\nEnding -
+ {}\nAnswer - {}’ {}\nAnswer - {}’
+
+
+
+表 5：使用精确前缀匹配的准确率与中心质量（centered mass，即退化的相反）之间的相关性。53 个任务，每个 10 种格式，在 1000 个样本上评估。
+
+
+准确率（accuracy）之间的相关性（correlation）
+ 模型（Model） n-shot p 值（p-value）
+ & 和中心化质量（centered mass）
+ Llama-2-7b 1 0.702 5.1E-77
+ Llama-2-7b 5 0.762 4.9E-98
+ Llama-2-13b 1 0.639 5.8E-61
+ Llama-2-13b 5 0.662 9.2E-67
+ falcon-7b 1 0.936 7.1E-233
+ falcon-7b 5 0.933 8.4E-228
+ falcon-7b-instruct 1 0.962 3.6E-289
+ falcon-7b-instruct 5 0.958 5.5E-277
+
+
+进行了分析（见图 18b）。鉴于该集合不包含人类生成的格式，
+我们应用了一个简单的‘Input: {}\n Output: {}’格式。1-shot 和 5-shot 设置的结果
+显示，跨模型和 n-shot 选择，性能差异范围仍然很大（见图 17）。
+任务包括：反义词（antonyms）、diff、第一个词字母（first word letter）、较大的动物（larger animal）、
+字母列表（letters list）、数字转文字（num to verbal）、第二个词字母（second word letter）、单数转复数（singular to plural）、
+求和（sum）、同义词（synonyms）。
+
+ 0.8 r=0.93 1.0 r=0.41 1.0 r=0.42
+ falcon-7b-inst 性能差异范围
+Llama-2-13b 性能差异范围
+
+
+p=3.34 × 10 9 0.8 p=7.40 × 10
+ 2 p=6.62 × 10 3
+ 0.8
+ nshot=5 差异范围
+
+
+
+
+ 0.6
+ 0.6 0.6
+ 0.4
+ 0.4 0.4
+ 0.2 0.2 0.2
+ 0.0 0.0 0.0
+ 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.0 0.2 0.4 0.6 0.8 1.0 0.0 0.2 0.4 0.6 0.8 1.0
+ Llama-2-7b 差异范围 falcon-7b 差异范围 nshot=1 差异范围
+
+ (a) Llama-2-7B 与 13B 对比 (b) Falcon-7B 与 7B-Instruct 对比 (c) 1-shot 与 5-shot 对比（相同任务、模型）
+
+图 17：在 Instruction Induction 任务中，不同模型或不同 n-shot 设置下评估同一任务的性能差异范围比较。精确前缀匹配（Exact prefix matching）用作准确率指标。
+
+
+
+ 18
+
+作为会议论文发表于 ICLR 2024
+
+
+Llama-2-7b Llama-2-7b
+ nshot=1 nshot=1
+ Llama-2-7b Llama-2-7b
+ nshot=5 nshot=5
+ Llama-2-13b Llama-2-13b
+ nshot=1 nshot=1
+ Llama-2-13b Llama-2-13b
+ nshot=5 nshot=5
+ falcon-7b falcon-7b
+ nshot=1 nshot=1
+ falcon-7b falcon-7b
+ nshot=5 nshot=5
+ falcon-7b-inst falcon-7b-inst
+ nshot=1 nshot=1
+ falcon-7b-inst falcon-7b-inst
+ nshot=5 nshot=5
+ 0.0 0.2 0.4 0.6 0.8 1.0 0.0 0.2 0.4 0.6 0.8 1.0
+ 提示格式间的性能分布 准确率（精确前缀匹配，Exact Prefix Matching）
+
+ (a) 跨模型和 n-shot 的分布。(b) 按模型划分的准确率方差。
+
+ 图18：指令归纳（Instruction Induction）任务跨模型的分布和准确率。精确前缀匹配
+ 被用作准确率指标。
+
+
+在开放式文本生成任务中连续指标的实验。在整篇论文中，我们聚焦于那些具有单一有效输出的任务，无论是分类任务还是短文本生成任务。这一决定是有意为之，因为它确保了指标的变化真实反映了模型性能的变化。我们已经证明，在考虑选项排名或精确前缀匹配作为准确度指标时，性能差异范围仍然很大。鉴于大型语言模型（LLMs）常用于更开放的生成场景，我们现在将探讨在考虑句子长度生成任务（例如，给定故事的四个开头句子，生成故事的下一个句子；生成一个以给定句子为答案的问题）时，不同提示格式下的性能差异。为了分析自动生成的内容，我们使用了两个广泛采用的指标：ROUGE-L（Lin, 2004）和BERTScore（Zhang et al., 2019）。前者是基于n-gram的指标，后者是基于模型的指标，两者都是[0, 1]区间内的指标，值越高表示越好。
+
+图 19 显示，无论考虑何种指标和 n-shot 数量，LLaMA-2-7B 的方差始终保持较高水平，其中 LLaMA-2-7B 5-shot 有 25% 的任务 ROUGE-L 极差达到 0.098 或更高，BERTScore 极差达到 0.09 或更高。我们观察到，中位性能差异范围有时小于准确率任务中的性能差异范围。这可能是因为尽管 ROUGE、BERTScore 和准确率都是 [0, 1] 指标，但典型指标值可能不同，这反过来可能影响最终的性能差异范围（绝对差值）。我们将每种格式可能引入的风格或内容差异的量化留待未来工作。最后，值得注意的是，文本生成指标已知噪声较大，因此并非所有指标下降都必然对应于真实的性能损失，这与单有效输出任务中准确率的情况不同。我们使用了 17 个 SuperNatural Instructions 任务：task037、task038、
+
+ Llama-2-7b
+ nshot=1 ROUGE-L
+ Llama-2-7b
+ nshot=5 ROUGE-L
+ Llama-2-7b
+ nshot=1 BERTScore
+ Llama-2-7b
+ nshot=5 BERTScore
+ 0.1 0.2 0.3
+ 10 种提示格式下的性能差异范围
+
+
+图19：LLaMA-2-7B 跨 n-shots 的差异范围（Spread），考虑 ROUGE-L 和 BERTScore 指标。考虑了 17 个句子级开放生成任务（open-generation tasks），全部提取自 SuperNatural Instructions。每个任务考虑 10 种提示格式（prompt formats）。
+
+task040, task067, task071, task072, task105, task216, task223,
+task240, task348, task389, task443, task845, task1326, task1401,
+task1613. 我们从那些至少有 1000 个样本的任务中选择了这 17 个开放式文本生成任务（open-ended text generation tasks），这些任务在原始任务中包含一些格式（例如 ‘Passage:’ <text>）。我们只考虑指令长度在 1,000 个字符以下且输入不超过 5,000 个字符的任务。
+
+ 19
+
+作为会议论文发表于 ICLR 2024
+
+我们将生成限制为50个标记（tokens）。为了更忠实地解析模型输出，并且鉴于我们预期的生成中都不包含换行符（newline），我们只考虑模型生成到第一个换行符之前的内容（排除给定生成中的前导空格和换行符）。这一考虑很重要，因为模型常常在生成所请求的答案之后，立即从头开始生成一个新的数据样本。
+在差异范围之外表征模型的准确率分布（accuracy distribution）。差异范围（Spread）在告知性能分布中单个点方面提供了信息量的定量跃升，因为它测量的是分布范围（最大值减最小值）。然而，可能具有相同范围的分布，在获得分布中每个值的概率上可能产生很大差异。图20绘制了30个任务的准确率分布，按标准差（standard deviation）降序排列。
+标准差高的任务反映出在进行格式选择时获得不同值的可能性更高；图20显示，标准差分布的中位数（median standard distribution）为 σ ≈ 0.04，在我们的语境中可以认为这很高。
+
+task280 task1297 task190 task327 task319
+ 0.50
+ = 0.31 = 0.14 = 0.10 = 0.09 = 0.08
+ 格式占比（Fraction of formats）
+
+
+0.25
+ 0.00
+ task328 task904 task1612 task296 task1284
+ 0.50
+ = 0.07 = 0.07 = 0.07 = 0.06 = 0.05
+ 0.25
+ 0.00
+ 0.0 0.5 1.0 0.0 0.5 1.0 0.0 0.5 1.0 0.0 0.5 1.0 0.0 0.5 1.0
+ 性能差异范围（Performance Spread）
+ task325 task323 task213 task158 task220
+ 1.0 = 0.05 = 0.05 = 0.05 = 0.04 = 0.04
+ 格式比例 (Fraction of formats)
+
+
+
+
+ 0.5
+ 0.0
+ task1380 task1283 task580 task1431 task309
+ 1.0 = 0.04 = 0.04 = 0.04 = 0.04 = 0.04
+ 0.5
+ 0.0
+ 0.0 0.4 0.8 0.0 0.4 0.8 0.0 0.4 0.8 0.0 0.4 0.8 0.0 0.4 0.8
+ 性能差异范围（Performance Spread）
+ task903 task1186 task069 task905 task337
+ 1.0 = 0.04 = 0.03 = 0.03 = 0.03 = 0.03
+ 格式比例 (Fraction of formats)
+
+
+0.5
+ 0.0
+ task729 task065 task1678 task1419 task1387
+ 1.0 = 0.02 = 0.02 = 0.02 = 0.02 = 0.02
+ 0.5
+ 0.0
+ 0.1 0.4 0.7 0.1 0.4 0.7 0.1 0.4 0.7 0.1 0.4 0.7 0.1 0.4 0.7
+ 性能差异范围（Performance Spread）
+图 20：在 30 个任务上跨越 500 种格式的准确率分布（accuracy distribution），每个任务在 250 个样本上评估，按标准差（standard deviation）降序排列。LLaMA-2-7B 1-shot，选项排序指标（option ranking metric）。关于除提示格式化（prompt formatting）之外影响性能差异范围（spread）的因素。我们认为，除格式化之外的许多因素可能影响性能方差（performance variance），但未能找到能可靠预测性能差异范围的特征。我们发现，任务中提示的平均长度与其性能差异范围的相关性可忽略不计：对于精确前缀匹配指标（exact prefix matching metric），r = 0.228 (p = 1.4 × 10−7 )；对于选项排序指标，r = −0.022 (p = 0.615)，此时联合考虑所有模型和 n-shots。类似地，提示长度的标准差与性能差异范围的相关性可忽略不计：对于精确前缀匹配，r = 0.125 (p = 0.004)；对于选项排序指标，r = −0.099 (p = 0.024)。
+
+在单独考虑每个模型时，只有采用精确前缀匹配 (exact prefix matching) 的 LLaMA-2-7B 显示出相关性 |r| > 0.5，其中平均提示长度 (average prompt length) 的相关性为 r = 0.559，p = 6.86 × 10−10。所有其他设置的 |r| < 0.36。
+
+20
+
+作为会议论文发表于 ICLR 2024
+
+B.3 PCA 示例
+
+第 4.4 节系统性地分析了，仅使用给定 softmax 前激活层 (pre-softmax activation layer)（即提示嵌入 (prompt embeddings)）的 top-n 个主成分 (top-n principal components)，我们能否预测生成该层的提示格式 (prompt format)。图 21 展示了两个不同任务的前两个主成分，其中所有 10 种被考虑的格式仅凭提示嵌入的前两个主成分即可轻松识别。
+
+ 100
+ 80
+ 80
+ 60
+主成分 2
+
+
+60
+ 40
+ 40
+ 20
+ 20
+ 0
+ 0
+ 20
+ 20
+ 40
+ 40
+ 50 0 50 50 25 0 25 50 75
+ 主成分1 主成分1
+
+图21：提示的最后解码器层的前两个主成分图，作为输出概率分布的表示。展示了两个不同的任务，每个提示格式以不同颜色显示。
+
+B.4 显著特征
+
+如第4.3节所讨论，有时常数的选择可能导致明显不同的准确率范围。图22、23和24展示了在任意给定任务上发现的所有强烈不同的常数选择，涵盖了53个Super Natural-Instructions任务，以及本研究中考虑的两个准确率指标。可以看出，常数的选择并不能单独一致地预测性能。
+
+
+
+
+ 21
+
+作为ICLR 2024会议论文发表
+
+
+
+
+ 任务task1387（两个输入字段） 任务task325（一个输入字段）
+ 准确率 0.4 0.6
+
+
+准确率 (Accuracy)
+ 0.4
+ 0.2
+ 0.2
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+ 已使用分隔符 1（Separator 1） 已使用分隔符 1
+
+
+任务 task327（单输入字段（One Input Field）） 任务 task328（单输入字段（One Input Field））
+ 0.6
+ 0.6
+ 准确率（Accuracy）
+
+
+
+ 准确率
+ 0.4
+ 0.4
+ 0.2
+ 0.2
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+ 分隔符 1 已使用 分隔符 1 已使用
+
+ 任务 task337（单个输入字段） 任务 task904（单个输入字段，无人工编写格式）
+
+
+0.4 0.4
+ 准确率 (Accuracy)
+
+
+
+
+ 准确率
+
+
+ 0.2 0.2
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+ 分隔符 (Separator) 1 已使用 分隔符 1 已使用
+
+ 任务 (Task) task905（两个输入字段 (Two Input Fields)） 任务 task190（多项选择 (Multiple Choice)）
+
+
+0.3
+ 准确率 (Accuracy)
+
+
+
+ 准确率
+
+
+
+ 0.4
+ 0.2
+ 0.2 0.1
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+'-'
+':'
+' \n\t'
+'- '
+': '
+':'
+':: '
+'::'
+'::: '
+'\n '
+'\n '
+'\n\t'
+'\t'
+分隔符 1 已使用 分隔符 1 已使用
+
+
+Task task1297（多项选择） Task task213（多项选择）
+ 0.6
+ 0.4 0.4
+ 准确率
+
+
+
+
+ 准确率
+
+
+
+
+ 0.2 0.2
+ 0.0 0.0
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+
+ 已使用分隔符（Separator）1 已使用分隔符 1
+
+ 任务（Task）task220（多项选择（Multiple Choice））
+ 0.6
+ 准确率（Accuracy）
+
+
+0.4
+ 0.2
+ 0.0
+ "chr(ord('A') + x)"
+
+
+
+
+ "chr(ord('a') + x)"
+
+
+
+
+ 'ROMAN[x]'
+
+
+
+
+ 'ROMAN[x].upper()'
+
+
+
+
+ 'x + 1'
+ 'chr(0x215F + x + 1)'
+
+
+
+
+ item2 使用
+
+
+
+图 22：Llama-7B 1-shot 下按特征值计算的方差。在 31 个任务上评估，每个任务 500 种格式，
+且仅显示值之间存在显著差异的图。精确前缀匹配
+准确率指标。
+
+
+
+
+ 22
+
+发表于 ICLR 2024 会议论文
+
+
+
+
+ 任务 task1283（两个输入字段） 任务 task1387（两个输入字段）
+ 准确率 0.350
+
+
+
+
+ 准确率
+ 0.5 0.325
+ 0.300
+ 0.4
+ 0.275
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+'-'
+':'
+' \n\t'
+'- '
+': '
+':'
+':: '
+'::'
+'::: '
+'\n '
+'\n '
+'\n\t'
+'\t'
+分隔符 (Separator) 1 已使用 分隔符 1 已使用
+
+任务 task158（两个输入字段 (Two Input Fields)） 任务 task280（一个输入字段）
+0.75
+0.4
+准确率 (Accuracy)
+
+
+准确率（Accuracy）
+ 0.50
+ 0.2 0.25
+ 0.00
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+
+
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+ 分隔符（Separator） 1 已使用 分隔符 1 已使用
+
+
+任务 task319（两个输入字段 (Input Fields) + 多项选择 (Multiple Choice)） 任务 task325（一个输入字段）
+ 0.7
+ 0.6
+ 准确率 (Accuracy)
+
+
+
+ 准确率
+
+ 0.5 0.6
+ 0.4 0.5
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+ 分隔符（Separator）1 已使用 分隔符 1 已使用
+
+ 任务 task337（一个输入字段（One Input Field）） 任务 task904（一个输入字段，无人工撰写格式（no Human-Written Format））
+ 0.7
+ 0.6
+ 准确率（Accuracy）
+
+
+
+ 准确率
+
+
+0.6
+ 0.5 0.5
+ 0.4
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+
+
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+ 分隔符（Separator） 1 已使用 分隔符 1 已使用
+
+
+任务 task069（多项选择，Multiple Choice） 任务 task1612（多项选择，Multiple Choice）
+ 0.6 0.5
+ 准确率（Accuracy）
+
+
+
+
+ 准确率
+
+
+
+
+ 0.4
+ 0.5
+ 0.3
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+
+
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+
+使用的分隔符 1 使用的分隔符 1
+
+ 任务 task190（多项选择，Multiple Choice）
+
+ 0.6
+ 准确率
+
+ 0.5
+ 0.4
+ ''
+ '-'
+ ':'
+ ' \n\t'
+ '- '
+ ': '
+ ':'
+ ':: '
+ '::'
+ '::: '
+ '\n '
+ '\n '
+ '\n\t'
+ '\t'
+
+ 使用的分隔符 1
+
+图23：Llama-7B 单样本（1-shot）下按特征值计算的方差。评估了31个任务，每个任务有500种格式，并且仅显示具有强显著差异的图。选项排序准确率评估指标。此处仅显示 S1 箱线图，所有其他图见图24。
+
+ 23
+
+作为会议论文发表于 ICLR 2024
+
+ 任务 task328（单输入字段，One Input Field） 任务 task1431（多项选择）
+ 0.7
+
+ 准确率
+ 0.3
+
+
+准确率 (Accuracy)
+ 0.6
+ 0.2
+ 0.5
+
+
+
+
+ "chr(ord('A') + x)"
+
+
+
+
+ "chr(ord('a') + x)"
+
+
+
+
+ 'ROMAN[x]'
+
+
+
+
+ 'ROMAN[x].upper()'
+
+
+
+
+ 'x + 1'
+ 'chr(0x215F + x + 1)'
+ ''
+ ''
+ ', '
+ ','
+ ' -- '
+ ' <sep> '
+ ' \n '
+ ' \n'
+ ' || '
+ ', '
+ '. '
+ '; \n'
+ '\n '
+ '\n'
+ 已用空间 (Space Used) item2 已用
+
+
+任务 task213（多项选择，Multiple Choice）
+ 0.7
+
+
+
+
+ 准确率（Accuracy）
+ 0.6
+
+ 0.5
+
+
+
+
+ "chr(ord('A') + x)"
+
+
+
+
+ "chr(ord('a') + x)"
+
+
+
+
+ 'ROMAN[x]'
+
+
+
+
+ 'ROMAN[x].upper()'
+
+
+
+
+ 'x + 1'
+ 'chr(0x215F + x + 1)'
+ item2 已使用
+
+
+
+图 24：Llama-7B 1-shot 下按特征值（feature value）的方差（Variance）。评估了 31 个任务，每个任务 500 种格式，
+仅显示差异非常显著的图。选项排序（Option ranking）准确率评估
+指标。更多图见图 23。
+
+
+B.5 汤普森采样（Thompson Sampling）结果
+
+
+
+ Llama-2-70b
+ nshot=1
+ Llama-2-70b
+ nshot=5
+ GPT3.5
+ nshot=1
+ GPT3.5
+ nshot=5
+ 0.0 0.2 0.4 0.6 0.8
+ 跨提示格式（prompt formats）的性能差异（Performance spread）
+
+图 25：使用汤普森采样（Thompson Sampling）在 320 种格式中发现的差异范围（Spreads），预算为 40000 次评估。
+LLaMA-2-70b 使用选项排序（option ranking）进行评估，GPT3.5 使用前缀匹配（prefix matching）进行评估，鉴于我们
+无法访问所有 logits。
+
+
+任务 模型 最佳格式 最差格式 最佳 最差
+ 准确率 准确率
+task050 Llama-70B sentence {} || question {} || Sentence\t{}\n Question\t{}\n 0.62 0.58
+ answer {} Answer\t{}
+task065* Llama-70B Sentence<1>:: {} Sentence I)\t{} \n Sentence 0.88 0.50
+ Sentence<3>:: {} III)\t{} \n Sentence IV)\t{} \n
+ Sentence<4>:: {} Sentence V)\t{} Option\t(I)::{},
+ Sentence<5>:: {} \nOption A.: Option\t(II)::{} Answer {}
+ {} Option B.: {} \nAnswer\n {}
+task069 Llama-70B BEGINNING::: {} MIDDLE A): {} BEGINNING\n {}\n MIDDLE <I>:: 0.85 0.58
+ , MIDDLE B): {} ENDING::: {} {} MIDDLE <II>:: {}\n
+ ANSWER::: {} ENDING\n {}\n ANSWER\n {}
+task070
+
+
+Llama-70B 开始::: {}; 开始 {} || 中间 1.: {} 0.80 0.27
+ \n中间\t1)\t{}; || 中间 2.: {} || 结尾 {}
+ \n中间\t2)\t{}; \n结尾::: || 答案 {}
+ {}; \n答案::: {}
+task114 Llama-70B 句子: {} <sep>答案: {} 句子: {}\n答案: {} 0.54 0.51
+task1186 Llama-70B 系统参考 (SYSTEM REFERENCE) : {}. 原始系统参考 (System Reference): {}\n原始 0.56 0.51
+ 参考 (REFERENCE) : {}. 答案 (ANSWER) : {} 参考: {}\n答案: {}
+
+
+
+
+ 24
+
+作为会议论文发表于 ICLR 2024
+
+
+任务1283 Llama-70B 系统参考 (system reference): {} \n原始 系统参考\t{}\n 原始 0.62 0.50 参考 (reference): {} \n答案 (answer): {} 参考\t{}\n 答案\t{} 任务1284 Llama-70B 系统参考\t{} || 原始 系统参考 {} , 原始 0.74 0.43 参考\t{} || 答案\t{} 参考 {} , 答案 {} 任务1297 Llama-70B 事实 (Fact)\tI.\t{} , 事实\tII.\t{} 事实 a )- {}\n事实 b )- {} 0.88 0.40 <sep>问题 (Question): {}; \n1 ) - \n问题: {} || i) : {}ii) {}; \n2 ) - {}; \n3 ) - {}; : {}iii) : {}iv) : {}v) : \n4 ) - {}; \n5 ) - {}; \n6 ) {}vi) : {}vii) : {}viii) : - {}; \n7 ) - {}; \n8 ) - {} {} \n答案: {} <sep>答案: {} 任务133 Llama-70B 句子 (Sentence):{} \n理由 (Reason):{} 句子:: {}\n 理由:: {}\n 0.71 0.59 \n问题:{} \n答案:{} 问题:: {}\n 答案:: {} 任务1347 Llama-70B 句子 A): {} , 句子 B): 句子 i){} 句子 ii){}; 0.42 0.31 {} 答案::: {} \n答案\n {} 任务1387 Llama-70B 前提 (Premise)::{} \n假设 (Hypothesis)::{} 前提 {}\n 假设 {}\n 0.52 0.41 \n答案::{} 答案 {} 任务1419 Llama-70B 问题 (problem)- {} \n选项 (options)- \n 问题: {} || 选项: 0.24 0.23 <1>:: {}, <2>:: {}, <3>:: <A>{} <sep><B>{} {}, <4>:: {}, <5>:: {} <sep><C>{} <sep><D>{} \n答案- {} <sep><E>{} || 答案: {} 任务1420 Llama-70B 问题\t{}\n选项\t i):{} -- 问题- {}\n选项- \n[a]{}\n 0.26 0.22
+
+ii):{} -- iii):{} -- iv):{} -- [b]{}\n [c]{}\n [d]{}\n v):{}\n答案（Answer）\t{} [e]{}\n答案（ANSWER）- {} task1421 Llama-70B 问题（PROBLEM）:{}, 选项（OPTIONS）: \na ){} -- 问题（Problem）::: {} 选项（Options）::: \nI 0.28 0.21 b ){} -- c ){} -- d ){} -- e )::{} \nII )::{} \nIII )::{} ){}, 答案:{} \nIV )::{} \nV )::{} 答案::: {} task1423 Llama-70B 问题（problem）: {} -- 选项（options）: 1):: 问题:: {}. 选项:: I.- 0.25 0.20
+ {}. 2):: {}. 3):: {}.
+
+
+4):: {}\n II.- {}\n III.- {}\n IV.-
+ {}. 5):: {} -- 答案：{} {}\n V.- {}. 答案:: {}
+任务1502 Llama-70B 输入:{} 输出:{} 输入 {} 输出 {} 0.59 0.45
+任务155 Llama-70B 句子 - {}, 答案 - {} 句子:: {} \n答案:: {} 0.36 0.29
+任务158 Llama-70B 句子: {} || 答案: {} 句子::{} -- 答案::{} 0.55 0.49
+任务161 Llama-70B 句子\t{}\n 答案\t{} 句子\n {} \n答案\n {} 0.45 0.43
+任务1612* Llama-70B 句子I ) - {}句子II ) - 句子 (a):{}。 句子 0.64 0.35
+ {} \n 答案::{} (b):{}\n答案 {}
+任务162 Llama-70B 句子\n {}; \n答案\n {} 句子 \n\t{}; \n答案 0.45 0.40
+ \n\t{}
+任务163 Llama-70B 句子:{}, 答案:{} 句子\n {}\n答案\n {} 0.47 0.35
+任务1678 Llama-70B 问题: {} , 选项: \n[a] {}。 问题 \n\t{} \n 选项 \n\t 0.21 0.21
+ [b] {}。 [c] {}。 [d] {}。
+
+[e] [1] {}[2] {}[3] {}[4] {}[5] {}
+ {} , 答案（ANSWER）: {} \n 答案 \n\t{}
+task1724 Llama-70B 输入（input）: {} -- 输出（output）: {} 输入::{} , 输出::{} 0.48 0.48
+task190 Llama-70B 句子（Sentence） a ) - {} -- 句子 b 句子 1.{}\n句子 2.{}\n 0.66 0.35
+ ) - {}\n 答案\n\t{} 答案 {}
+task213* Llama-70B 标题（TITLE）::: {} \n 句子 I)::: 标题\t{}, 句子 (i)\t{} -- 0.99 0.50
+ {} , 句子 II)::: {} , 句子 (ii)\t{} -- 句子
+ 句子 III)::: {} , 句子 (iii)\t{} -- 句子 (iv)\t{},
+ IV)::: {} \n 选项（CHOICES）::: \ni){} 选项\t \n (I):: {} (II)::
+ \n ii){} \n 答案::: {} {}, 答案\t{}
+task214 Llama-70B 标题: {}\n 句子 I.: {} 标题 {} || 句子 [1] {} 0.92 0.04
+ 句子 II.: {} 句子 句子 [2] {} 句子 [3]
+ III.: {} 句子 IV.: {}\n {} 句子 [4] {} || 选项 \n
+ 选项: \ni.::: {} \nii.::: I.{}; \nII.{} || 答案 {}
+ {}\n 答案: {}
+task220 Llama-70B 句子I): {}. 句子II): 句子 <1>: {} -- 句子 0.99 0.83
+ {}. 句子III): {}.
+
+
+<2>: {} -- 句子（Sentence） <3>:
+ 句子IV): {}. 句子V): {} {} -- 句子 <4>: {} --
+ , 选项（Choices）: \n<a>- {}\n <b>- 句子 <5>: {} , 选项:
+ {} , 答案（Answer）: {} \n I ){} -- II ){} , 答案:
+ {}
+task279 Llama-70B 段落（Passage）:: {} \n 答案:: {} 段落- {} 答案- {} 0.64 0.49
+task280 Llama-70B 段落:: {} , 答案:: {} 段落\t{}\n 答案\t{} 0.84 0.04
+task286 Llama-70B 输入（INPUT）- {} , 输出（OUTPUT）- {} 输入\t{} 输出\t{} 0.69 0.51
+task296* Llama-70B 句子I ):: {}, 句子II 句子 I.: {}; \n句子 0.98 0.53
+ ):: {}, 句子III ):: II.: {}; \n句子 III.: {};
+ {}, 句子IV ):: {}, \n句子 IV.: {}; \n句子
+ 句子V ):: {}, 句子VI V.: {}; \n句子 VI.: {};
+ ):: {}, 句子VII ):: {}, \n句子 VII.: {}; \n句子
+ 句子VIII ):: {}, 句子IX VIII.: {}; \n句子 IX.: {};
+ ):: {}, 句子X ):: {}, \n句子 X.: {} \n <i>::{}
+ A)\t{} , B)\t{}, 答案 : {} || <ii>::{} \n 答案\n {}
+
+
+
+
+ 25
+
+发表于 ICLR 2024 会议论文
+
+
+任务297 Llama-70B 句子 [a]:: {}; \n句子1：{} 句子2：{} 0.51 0.03
+ [b]:: {}; \n句子 [c]:: {}; 句子3：{} 句子4：{}
+ \n句子 [d]:: {}; \n句子5：{} 句子6：{}
+ [e]:: {}; \n句子 [f]:: {}; 句子7：{} 句子8：{}
+ \n句子 [g]:: {}; \n句子9：{} 句子10：{}
+ [h]:: {}; \n句子 [i]:: {}; \n (A) {} (B) {} \n 答案：{}
+ \n句子 [j]:: {}\n (a):: {}
+ (b):: {}\n 答案 {}
+任务316 Llama-70B 段落 - {} \n答案 - {} 段落::{}\n答案::{} 0.51 0.49
+任务317 Llama-70B 段落\n {}\n 答案\n {} 段落\t{}\n 答案\t{} 0.83 0.07
+任务319 Llama-70B 目标\n\t{}; \n{}; 目标：{} {} 答案：{} 0.77 0.58
+ \n答案\n\t{}
+任务320 Llama-70B 目标：{}; \n{}; \n答案：目标\n {} \n {} \n 答案\n 0.77 0.58
+ {} {}
+任务322 Llama-70B 评论：{}\n 答案：{} 评论 {} -- 答案 {} 0.77 0.48
+任务323 Llama-70B 评论 \n\t{}\n答案 \n\t{} 评论 {}.
+
+答案 {} 0.84 0.58
+task325 Llama-70B 评论\t{}; \n答案\t{} 评论: {}, 答案: {} 0.84 0.48
+task326 Llama-70B 评论:: {} 答案:: {} 评论: {}, 答案: {} 0.58 0.51
+task327 Llama-70B 评论 {} <sep>答案 {} 评论 : {} 答案 : {} 0.88 0.69
+task328 Llama-70B 评论:{} -- 答案:{} 评论: {} 答案: {} 0.81 0.52
+task335 Llama-70B 帖子:: {} , 答案:: {} 帖子: {}\n答案: {} 0.52 0.50
+task337 Llama-70B 帖子 {} \n答案 {} 帖子 {} 答案 {} 0.85 0.63
+task385 Llama-70B 上下文 {} -- 问题 {} -- 上下文 \n\t{} \n问题 0.38 0.11
+ 选项 \n1.- {}, 2.- {}, 3.- \n\t{} \n选项 \n\t 1 )::{}. {} -- 答案 {} 2 )::{}.
+
+
+3 )::{} \n答案(answer)
+ \n\t{}
+task580 Llama-70B 上下文(Context)- {}\n 问题(Question)- {}\n 上下文 {}, 问题 {}, 选项(Options) 0.78 0.40
+ 选项- \na) {} -- b) {} -- c) \n I ) - {} \nII ) - {} \nIII )
+ {}\n 答案- {} - {}, 答案 {}
+task607 Llama-70B 输入(INPUT) \n\t{} \n 输出(OUTPUT) \n\t{} 输入(Input) : {}. 输出(Output) : {} 0.68 0.51
+task608 Llama-70B 输入(input): {}.
+
+输出(output): {} 输入(INPUT) \n\t{}\n输出 \n\t{} 0.71 0.48
+task609 Llama-70B 输入 \n\t{} \n 输出 \n\t{} 输入 : {}, 输出 : {} 0.71 0.51
+task904 Llama-70B 输入::: {} , 输出::: {} 输入::{}\n 输出::{} 0.71 0.55
+task905 Llama-70B 推文(Tweet)::{} || 标签(Label)::{} || 推文(TWEET): {} \n 标签(LABEL): {} \n 0.68 0.50
+ 答案(Answer)::{} 答案(ANSWER): {}
+task050 GPT3.5 句子(Sentence)\n\t{} \n 句子: {} , 问题(question): {} , 0.67 0.61
+ 问题(Question)\n\t{} \n 答案(Answer)\n\t{} 答案: {}
+task065 GPT3.5 句子(SENTENCE)i.::: {} 句子 1 ) : {} , 句子 3 0.82 0.33
+ \n句子(SENTENCE)iii.::: {} ) : {} , 句子 4 ) : {} ,
+ \n句子(SENTENCE)iv.::: {} 句子 5 ) : {} <sep>选项(Option)
+ \n句子(SENTENCE)v.::: {} \n选项(OPTION) (i): {} <sep>选项(Option) (ii): {}
+ [1]\t{}选项(OPTION) [2]\t{} <sep>答案(Answer)- {}
+ \n答案(ANSWER)\t{}
+task069 GPT3.5 开头(BEGINNING): {}\n 中间(MIDDLE)\t(I)::: 开头(Beginning) {} || 中间(Middle) [a]- {} 0.83 0.65
+ {} \n 中间(MIDDLE)\t(II)::: {}\n \n 中间(Middle) [b]- {} || 结尾(Ending) {}
+ 结尾(ENDING): {}\n 答案(ANSWER): {} || 答案(Answer) {}
+task070* GPT3.5 开头(Beginning) : {}\n中间(Middle) (I): 开头\t{} <sep>中间 0.70 0.49
+ {} -- 中间 (II): {}\n结尾 : i){} || 中间 ii){}
+ {}\n答案 : {} <sep>结尾\t{}
+ <sep>答案\t{}
+task114 GPT3.5 句子 \n\t{}\n答案 \n\t{} 句子(SENTENCE): {}.
+
+
+答案（ANSWER）: {} 0.67 0.63
+task1186 GPT3.5 系统参考（system reference） : {} , 系统参考（System Reference）: {}\n原始（Original）0.53 0.51
+ 原始参考（original reference） : {} , 参考（Reference）: {}\n答案（Answer）: {}
+ 答案（answer） : {}
+task1283 GPT3.5 系统参考（SYSTEM REFERENCE） : {} , 原始（ORIGINAL）系统参考（System Reference）\n {} \n原始（Original）0.57 0.50
+ 参考（REFERENCE） : {} , 答案（ANSWER） : {} 参考（Reference）\n {} \n答案（Answer）\n {}
+task1284 GPT3.5 系统参考（System Reference） \n\t{}\n 系统参考（system reference）::: {} -- 0.63 0.57
+ 原始参考（Original Reference） \n\t{}\n 原始参考（original reference）::: {} --
+ 答案（Answer） \n\t{} 答案（answer）::: {}
+task1297* GPT3.5 事实（Fact）<1>: {} -- 事实（Fact）<2>: {}; 事实（fact）\ta. : {} || 事实（fact）\tb. : 0.84 0.72
+ \n问题（Question）::{}\nI):: {} II):: {}\n 问题（question） : {} \na. -
+ {} III):: {} IV):: {} V):: {}b. - {}c. - {}d. - {}e. {} VI):: {} VII):: {} VIII):: - {}f. - {}g. - {}h.
+
+- {}
+ {}; 
+答案（Answer）::{} 答案 : {}
+task133 GPT3.5 句子（Sentence）::{} -- 理由（Reason）::{} -- 句子 - {}; 
+理由 - {}; 0.69 0.64
+ 问题（Question）::{} -- 答案::{} 
+问题 - {}; 
+答案 - {}
+task1347* GPT3.5 句子I.（SentenceI.）:: {}
+ 句子II.（SentenceII.）:: 句子（I）{} 句子（II）{} 0.46 0.42
+ {} 答案\t{} 
+答案::{}
+task1387 GPT3.5 前提（Premise）:{} , 假设（Hypothesis）:{} , 前提（PREMISE）:: {}; 
+假设（HYPOTHESIS）:: 0.47 0.44
+ 答案:{} {}; 
+答案（ANSWER）:: {}
+task1419 GPT3.5 题目（Problem） - {} || 选项（Options） - 题目- {}
+选项- 1 ) - {} 0.24 0.20
+ 
+[A]\t{}. [B]\t{}. [C]\t{}. -- 2 ) - {} -- 3 ) - {} -- 4 ) -
+ [D]\t{}. [E]\t{} || 答案 - {} -- 5 ) - {}
+答案- {}
+ {}
+
+
+
+
+ 26
+
+作为会议论文发表于 ICLR 2024
+
+
+task1420* GPT3.5 问题- {} \n 选项- (I) - 问题:: {} -- 选项:: 0.24 0.09 {}(II) - {}(III) - {}(IV) - \n[i]: {}; \n[ii]: {}; {}(V) - {} \n 答案- {} \n[iii]: {}; \n[iv]: {}; \n[v]: {} -- 答案:: {} task1421 GPT3.5 问题 \n\t{}\n 选项 \n\t 问题::{}, 选项:: \n[a]: 0.30 0.01 \nA)::{} -- B)::{} -- C)::{} {} \n[b]: {} \n[c]: {} \n[d]: -- D)::{} -- E)::{}\n 答案 {} \n[e]: {}, 答案::{} \n\t{} task1423 GPT3.5 问题: {}; \n选项: \n a ) 问题:: {} -- 选项:: 0.30 0.10 {} \n b ) {} \n c ) {} \n d ) \n[i]: {}; \n[ii]: {}; {} \n e ) {}; \n答案: {} \n[iii]: {}; \n[iv]: {}; \n[v]: {} -- 答案:: {} task1502 GPT3.5 输入\n {}\n输出\n {} 输入::{} -- 输出::{} 0.54 0.48 task155 GPT3.5 句子::{} -- 答案::{} 句子 {} 答案 {} 0.48 0.40 task158 GPT3.5 句子:{} 答案:{} 句子\t{} , 答案\t{} 0.63 0.60 task161 GPT3.5 句子\t{} 答案\t{} 句子- {}\n答案- {} 0.40 0.31 task1612 GPT3.5 句子 1 ): {} || 句子 2 句子 I ) : {} \n句子 II 0.66 0.54 ): {}, 答案::{} ) : {} , 答案 {} task162 GPT3.5 句子- {} -- 答案- {} 句子\t{}; \n答案\t{} 0.37 0.31 task163 GPT3.5 句子- {}; \n答案- {}
+
+句子: {}
+答案: {} 0.43 0.39 task1678* GPT3.5 问题 - {} 选项 - 
+ (I) 问题::{} 
+ 选项:: 
+[I] 0.24 0.09 {} <sep>(II) {} <sep>(III) {} , [II] {} , [III] {} , [IV] {} <sep>(IV) {} <sep>(V) {} {} , [V] {} 
+ 答案::{} 答案 - {} task1724 GPT3.5 输入::{} || 输出::{} 输入: {} 输出: {} 0.63 0.57 task190 GPT3.5 句子 (I) - {}; 
+句子 句子<1>: 0.29 0.16 (II) - {}; 
+答案 {} {}
+句子<2>: {}, 答案 : {} task213 GPT3.5 标题: {} <sep>句子 <1>:
+
+
+标题:{}, 句子\t[a]:{} 0.98 0.81
+ {} || 句子 <2>: {} || -- 句子\t[b]:{} --
+ 句子 <3>: {} || 句子 句子\t[c]:{} --
+ <4>: {} <sep>选项: 句子\t[d]:{}, 选项:
+ \n<i>- {} <sep><ii>- {} \n[i]:{} [ii]:{}, 答案:{}
+ <sep>答案: {}
+task214* GPT3.5 标题: {} \n句子i): {}, 标题::{} , 句子\ta )::{} , 0.97 0.41
+ 句子ii): {}, 句子iii): 句子\tb )::{} , 句子\tc
+ {}, 句子iv): {} \n选项: )::{} , 句子\td )::{} ,
+ \n<I>- {} , <II>- {} 选项:: [i]. {}[ii].
+
+{}
+ \n回答: {} , 答案::{}
+任务220 GPT3.5 句子 [1]: {} \n 句子 句子\t一.: {} || 0.98 0.79
+ [2]: {} \n 句子 [3]: 句子\t二.: {} ||
+ {} \n 句子 [4]: {} \n 句子\t三.: {} ||
+ 句子 [5]: {} -- 选项: 句子\t四.: {} ||
+ \n <A>::{}\n <B>::{} -- 句子\t五.: {} 选项:
+ 答案: {} \n[一]:{} || [二]:{} 答案: {}
+任务279 GPT3.5 段落 {} , 答案 {} 段落:{}, 答案:{} 0.58 0.56
+任务280 GPT3.5 段落 - {} <sep>答案 - {} 段落 {} -- 答案 {} 0.85 0.80
+任务286 GPT3.5 输入- {}\n 输出- {} 输入:: {} 输出:: {} 0.72 0.69
+任务296 GPT3.5 句子 a ) - {} \n句子 句子\t(I)- {} -- 0.95 0.68
+ b ) - {} \n句子 c ) - {} 句子\t(II)- {} --
+ \n句子 d ) - {} \n句子 句子\t(III)- {} --
+ e ) - {} \n句子 f ) - {} 句子\t(IV)- {} --
+
+
+\n句子 g ) - {} \n句子 句子\t(V)- {} --
+ h ) - {} \n句子 i ) - {} 句子\t(VI)- {} --
+ \n句子 j ) - {} \n<A>- {}, 句子\t(VII)- {} --
+ <B>- {} \n答案::: {} 句子\t(VIII)- {} --
+ 句子\t(IX)- {} --
+ 句子\t(X)- {}, I )::{}, II
+ )::{}, 答案:{}
+task297 GPT3.5 句子 (A): {}; \n句子 句子\t(A) : {}; 0.36 0.06
+ (B): {}; \n句子 (C): {}; \n句子\t(B) : {};
+ \n句子 (D): {}; \n句子 \n句子\t(C) : {};
+ (E): {}; \n句子 (F): {}; \n句子\t(D) : {};
+ \n句子 (G): {}; \n句子 \n句子\t(E) : {};
+ (H): {}; \n句子 (I): {}; \n句子\t(F) : {};
+ \n句子 (J): {}; \n<I>::{} \n句子\t(G) : {};
+ <sep><II>::{}; \n答案 {} \n句子\t(H) : {};
+ \n句子\t(I) : {};
+ \n句子\t(J) : {} -- I) :
+ {} II) : {} -- 答案: {}
+task316 GPT3.5 段落\n\t{} \n答案\n\t{} 段落- {} 答案- {} 0.49 0.48
+task317 GPT3.5 段落: {} 答案: {} 段落 {} 答案 {} 0.75 0.70
+task319 GPT3.5 目标:: {} \n{} \n答案:: 目标: {}\n{}\n答案: {} 0.66 0.62
+ {}
+task320 GPT3.5 目标::: {} \n{} \n答案::: 目标 {} -- {} -- 答案 {} 0.73 0.68
+ {}
+task322 GPT3.5 评论: {} -- 答案: {} 评论::{} 答案::{} 0.84 0.83
+
+
+
+
+ 27
+
+作为会议论文发表于 ICLR 2024
+
+
+task323 GPT3.5 评论 {} <sep>答案 {} 评论 - {}\n答案 - {} 0.73 0.63
+ task325 GPT3.5 评论 {}; \n答案 {} 评论\n {}\n 答案\n {} 0.81 0.74
+ task326 GPT3.5 评论 : {} , 答案 : {} 评论- {} 答案- {} 0.67 0.66
+ task327 GPT3.5 评论:{} \n答案:{} 评论 - {} || 答案 - {} 0.86 0.82
+ task328 GPT3.5 评论 - {}. 答案 - {} 评论 {} <sep>答案 {} 0.77 0.72
+ task335 GPT3.5 帖子\n\t{} \n答案\n\t{} 帖子 - {} -- 答案 - {} 0.37 0.20
+ task337 GPT3.5 帖子::{}; \n答案::{} 帖子 {}, 答案 {} 0.57 0.51
+ task385 GPT3.5 上下文:: {}; \n问题:: {}; 上下文:{}. 问题:{}. 0.46 0.10
+ \n选项:: a)::: {}\n b)::: 选项:\n[i] {}[ii] {}[iii]
+ {}\n c)::: {}; \n答案:: {} {}. 答案:{}
+ task580 GPT3.5 上下文:: {} || 问题:: {} 上下文:: {} -- 问题:: {} 0.74 0.65
+ || 选项:: \n A)- {} B)- {} -- 选项:: \n[I] - {}. [II]
+ C)- {} || 答案:: {} - {}.
+
+[III] - {} -- ANSWER::
+ {}
+ task607 GPT3.5 input {} || output {} INPUT:: {}\nOUTPUT:: {} 0.70 0.68
+ task608 GPT3.5 Input:: {} Output:: {} Input\n {} \nOutput\n {} 0.60 0.52
+ task609 GPT3.5 INPUT\n {} \nOUTPUT\n {} Input {}\nOutput {} 0.70 0.68
+ task904 GPT3.5 INPUT : {}\nOUTPUT : {} Input:: {}, Output:: {} 0.66 0.61
+ task905 GPT3.5 Tweet:{} , Label:{} , Answer:{} TWEET {} || LABEL {} || ANSWER 0.72 0.63
+ {}
+
+
+表 6：在 Llama-70B 和 GPT3.5 上，使用 Thompson Sampling 在 320 种格式上找到的最佳和最差格式，E = 40000，B = 10。标有星号*的任务表示一种格式，其中所使用的罗马数字对应其 Unicode 字符（从 0x215F 开始），可视化为 I、II、III、IV、……。
+
+
+
+
+ 28
+
+作为会议论文发表于 ICLR 2024
+
+
+C 局限性
+
+按照我们语法的定义，所有等价格式对人类读者而言在语义上都是等价的。然而，其中一些格式比另一些更可能被人类使用。空格和分隔符的灵感来源于自然出现的格式，但某些取值更为少见，例如间距<sep>或分隔符::。上下文限制使得可以禁止例如空格和分隔符的不良组合。然而，格式可能存在多种有效解析，且某些解析比其他解析更容易产生不自然的字符组合。例如，设一个数据样本为‘Passage: Lorem ipsum dolor sit amet. Answer: Yes’。取决于我们将句号.视为段落的一部分还是
+ (2)
+格式的一部分，我们可以将其解析为B2 (B1 (Passage, ’: ’, id), B1 (Answer, ’: ’, id), ’ ’)或
+ (2)
+B2 (B1 (Passage, ’: ’, id), B1 (Answer, ’: ’, id), ’. ’)。在本工作中，我们在所有任务中均选择前一种解析方式以确保完整句子。这有时7会导致等价格式产生一种不太常见但语义上显然等价的字符组合结果，
+ (2)
+例如
+
+B2（B1（Passage, ':', id），B1（Answer, ':', id），';'）。最后这种格式在上面的示例中将具有以下字符串形式：'Passage: Lorem ipsum dolor sit amet.; Answer: Yes'。我们观察到在这些情况以及它们之外性能差异范围都很大。如果最终用户希望，上下文关系也可以限制这些情况。此外，我们将评估重点放在输入指令和输入字段长度都相当短的任务上（参见B.1中的任务选择细节）。未来的工作可能会研究输入长度如何影响最终性能。
+
+
+
+
+ 7
+ 少于20%的情况，基于对20个任务中10种格式的人工检查。
+
+
+ 29
+

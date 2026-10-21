@@ -1,0 +1,184 @@
+https://hamel.dev/blog/posts/decision-model-evals/
+
+如何把决策模型用于评估（Evals）
+
+决策模型（decision models）最近大量涌现，先是 TypeSafe 的 Jev，随后是 Perplexity 的 Decider、Liquid 的 d1、Cloudflare 的 Clef，以及 OpenAI 的 Decisions API¹。这些模型承诺提供快速、低成本的分类。
+
+在自动化评估中，决策模型是 LLM 评判器（LLM judges）²的一种有吸引力的低成本替代方案。但它们是否是正确的选择，取决于你的用例在成本、性能和延迟上的要求。
+
+我们还注意到，有人直接使用 0.50 的默认决策阈值，却不检查它是否适合自己的任务。这可能会白白损失大量性能。
+
+在本文中，我们会先展示如何调整阈值，以从决策模型中得到最好的结果。阈值调好之后，我们会比较成本和性能，帮你判断哪个模型适合你的用例。最后，我们会探讨在决定是否采取行动时如何解读模型分数，以及校准（calibration）如何让这些分数作为置信度估计更有用。
+
+我们测试了什么
+
+我们使用了一个公寓租赁代理的 100 条轨迹（traces），即对话和操作的日志。任务是找出包含错误的轨迹，例如预订失败或漏掉了转交人工。³我们在之前关于自动化评估的文章中用过同一个数据集和同样宽泛的找错任务。这里，每个决策模型会为每条轨迹返回一个失败概率。
+
+我们测试了 Jev 1.13、Perplexity Decider 1.1 27B、Liquid d1 和 d1-ultra、Cloudflare Clef Flash，以及 OpenAI Decisions（GPT-6 Luna）¹。每个模型收到的评估标准相同。附录给出了提示词，以及给 Jev 用的结构化版本。
+
+我们从两个维度比较模型：
+
+- **性能**：我们把每个模型的预测与人工审阅并标注为通过或失败的轨迹进行比较。这衡量的是模型在避免误报的同时抓出失败的能力。
+- **成本**：我们根据 token 用量和服务商的价格计算 API 成本。⁴
+
+为简洁起见，我们不讨论延迟，因为它取决于本实验控制范围之外的因素。⁵
+
+理解决策阈值
+
+我们给每条轨迹打上两种标签之一：通过或失败。这是一种二元的通过/失败评估，我们推荐这种做法，因为它促使标准更清晰，也更容易与人的偏好对齐。
+
+每个决策模型都会返回一个 0 到 1 的分数，估计一条轨迹包含失败的可能性有多大。这些 API 用 **0.50 的默认决策阈值**把分数转成决策。分数等于或高于阈值的轨迹会被标记为失败。不拿自己的数据检验就使用这个默认值，可能会得到不理想的结果。
+
+例如，一个模型可能给每个失败都打 0.40 分，给每条通过的轨迹打 0.10 分。尽管这个模型在阈值 0.30 时能完美分类，但默认的 0.50 阈值却一个也抓不到。
+
+实际上，失败轨迹和通过轨迹的分数会有重叠。降低阈值能抓到更多失败，但也可能产生更多误报。选择阈值意味着在以下两者之间权衡：
+
+- **精确率（Precision）**：被标记的轨迹中确实包含已知失败的比例。
+- **召回率（Recall）**：已知失败中被模型抓到的比例。
+
+正确的取舍取决于你的业务目标。例如，刑事审判为定罪设定很高的门槛，以避免冤枉无辜，侧重的是精确率。癌症筛查则可能侧重召回率，接受更多误报，以减少漏诊。⁶在这次比较中，我们用 F1 分数——精确率和召回率的调和平均数——给两者同等权重。F1 的范围是 0 到 1，越高越好。
+
+下面的曲线显示了每个模型给失败轨迹（橙色）和通过轨迹（蓝色）的打分情况。曲线越高的部分，表示该类别有越多分数落在那个区间。等于或高于虚线阈值的分数会被标记。用切换按钮可以比较 **0.50** 与 **按最佳 F1 优化**，后者为每个模型选择一个阈值。⁷
+
+在这个任务上，OpenAI 对两类的区分最好，这也体现在它更高的 F1 分数上。
+
+同样重要的是，不要不考虑分类器要有用的最低要求就盲目最大化 F1。例如，如果这个分类器用于一个自动告警系统，我会希望精确率和召回率都至少达到 80%，这样既能尽量减少误报，又能抓到足够多的失败。
+
+下图显示了精确率和召回率在不同阈值下如何变化。⁸阴影区域标出了两者都至少达到 80% 的地方。
+
+Perplexity、Liquid d1-ultra 和 OpenAI Decisions 满足我们的要求，但我们仍需为每个模型在阴影区域内选定一个决策阈值。下一节我们将讨论如何调整这些阈值。
+
+调整决策阈值
+
+在这个例子里，我们将优化 F1。对于候选模型，只要可能，我们就把调整限制在训练数据上同时满足两个 80% 下限的阈值范围内。其他模型我们不加约束，以展示调整的效果。⁹
+
+有了标注好的轨迹和保存下来的模型分数，你就可以让编程代理来调整阈值。下面是一个可以按你的用例修改的示例提示词：
+
+利用我保存的模型分数和二元标签（1 表示失败），调整一个决策阈值，在要求精确率至少 80%、召回率至少 80% 的前提下使 F1 最大化。使用分层五折交叉验证，在训练样本上选择阈值，在其余样本上衡量性能。如果要比较多个模型，每个模型使用相同的划分。只选择在训练样本上同时满足两个下限的阈值。如果没有符合条件的，就如实报告，而不要放宽任何一个要求。报告验证集上的精确率、召回率和 F1，以及任何没有阈值符合条件或验证性能低于我设定下限的划分。与 0.50 的默认阈值进行比较。复用已保存的分数，不要发起新的模型调用。
+
+下面是针对 F1 调整后各模型性能的变化。我们把精确率-召回率图中的三个候选模型放在一组，其他模型用灰色显示，以说明调整能带来多大帮助。
+
+我们的候选模型从 F1 调整中获得的提升，比 Liquid d1 和 Clef Flash 要小，后两者没达到我们的下限。不过，即使精确率和召回率只有很小的变化，也可能影响业务成本或用户体验，所以要有意识地选择取舍。实际上，精确率和召回率不太可能同等重要（本文用 F1 时就是这样假设的）。例如，F-beta 分数可以让你在 beta 小于 1 时给精确率更大权重，在 beta 大于 1 时给召回率更大权重。优化不同的指标可能会得到不同的阈值和结果。
+
+性能与成本
+
+下图比较了每个模型（调整后）的 F1 与成本，重点放在剩下的候选模型上：
+
+虚线表示剩余候选模型之间的**帕累托前沿（Pareto frontier）**。对任意给定的 F1 分数，它标出达到或超过该分数的最便宜的候选模型。这张图有点傻，因为只有三个选项，但它很好地说明了该如何思考成本与性能。
+
+在这些候选模型中，Perplexity 最便宜，每 100 次评估运行 0.82 美分，F1 为 0.79。OpenAI Decisions 的 F1 达到 0.87，每 100 次评估运行 3.72 美分，成本约为前者的 4.5 倍。
+
+这些概率可信吗？
+
+除了通过/失败评估，你可能还想把决策模型的分数当作置信度估计。但你能按字面理解这个数字吗？要让 0.80 的分数意味着 80% 的失败概率，分数相近的轨迹中大约应该有 80% 包含失败。
+
+下图显示了每个模型的**概率校准**情况：其预测概率与观察到的结果有多吻合。¹⁰每个点代表约 20 条分数相近的轨迹。点落在对角线上，表示预测概率与该组的失败率相符。在线上方，表示模型低估了失败风险；在线下方，表示模型高估了这一风险。
+
+如果预测概率与观察结果不符，我们可以用另一个模型来调整它们。第二个面板展示了其中一种方法——**Platt 缩放（Platt scaling）**，它拟合一条简单的曲线来完成这种调整。¹¹
+
+经过校准，Perplexity、Liquid d1 和 Clef Flash 更靠近对角线。例如，Clef Flash 有一组轨迹的平均预测失败概率约为 8%，但其中 60% 包含失败。
+
+Jev 和 Liquid d1-ultra 在这个数据集上本来就校准得很好，几乎不需要调整。
+
+Platt 缩放并不总是最合适的。例如，用我们采用的那个版本的 Platt 缩放后，OpenAI 的概率反而略微变差了。¹²你可以用下面的提示词让编程代理来做校准：
+
+利用我保存的失败概率和二元标签（1 表示失败），测试 Platt 缩放能否改进每个模型的概率。使用分层五折交叉验证，每个模型使用相同的划分。在每个训练划分上拟合校准映射，并将其应用到其余轨迹上。在对数几率（log-odds）上拟合，先把概率从 0 和 1 处截开。绘制校准前后预测概率与观察到的失败率的对照图。报告 Brier 分数（越低越好），并解释哪些模型变好了、哪些变差了。复用已保存的分数，不要发起新的模型调用。
+
+提示词调优与评估器的范围
+
+为了让模型之间的差异更容易看出来，本文中的评估任务保持得比较宽泛。实际上，我们建议为每种失败模式分别构建一个评判器。任务更窄、指导更具体时，我们预计模型之间的性能差距会缩小。
+
+我喜欢先用一个在任务上性能可以接受的较大模型，然后再尝试较小的模型，看它们能否以更低成本达到大模型的性能。如果你有高质量的标签，提示词调优也会有帮助。¹³我在这篇文章里讨论了如何写好评判器提示词。
+
+把这些想法付诸实践
+
+就这个特定数据集而言，OpenAI 的性能突出，但成本更高。Perplexity 和 Liquid d1-ultra 提供了成本更低、性能也更低的选择。我们观察到，模型性能在不同任务和数据集之间差异很大，这意味着亲自衡量很重要。
+
+总结一下：
+
+- 当你对评判器的提示词满意后，为你的用例设定精确率和召回率的最低要求。排除达不到要求的模型。
+- 在比较性能之前，先调整每个模型的决策阈值。选择符合你业务目标的精确率-召回率取舍。要有意为之，不要因为本文用了 F1 就只用 F1！
+- 如果你想把分数当作置信度估计，就检查这些概率是否与观察结果相符。校准会有帮助，但你需要衡量它是否真的带来了改进。
+- 针对你的工作负载，在性能、成本和延迟之间权衡。
+
+这个过程是迭代的。你可能改进了提示词，然后需要重新调整阈值或重新审视校准。本文之所以聚焦于阈值调整和校准，是因为我们看到很多人直接拿来就用决策模型，而不考虑这些因素。
+
+你可能还想知道决策模型和 LLM 相比如何。OpenAI Decisions 使用的是 GPT-6 Luna，它以最高的成本拿到了我们最高的 F1，这表明更难的评估任务可能值得为 LLM 多花钱。在一项更广泛的比较中，Randy Olson 发现，决策模型在分类和路由任务上能以更低成本匹敌 LLM，而在需要知识和推理的任务上 LLM 领先。
+
+本文讨论的想法没有一个是新的。选择精确率-召回率取舍、调整阈值、比较性能与成本，都是评估任何分类器的一部分。想进一步了解这些基础知识，我推荐 Kyle Gallatin 和 Chris Albon 合著的《Machine Learning with Python Cookbook》第 2 版。
+
+最后，如果你是一名数据科学家或机器学习工程师，正在思考自己在 AI 时代的位置，这些都是你已经具备的技能。是时候扬眉吐气了 🙂。
+
+附录：评估提示词
+
+Perplexity、Liquid d1 和 d1-ultra、Clef Flash 以及 OpenAI Decisions 收到的是下面的提示词。Jev 通过结构化提示词收到了等价的标准，见后面的示例。图表中使用的分数和标签以 JSON 形式提供。
+
+```
+Decide whether `messages` contains at least one substantive failure, risk, or quality problem in the AI assistant's behavior or tool use. This is one complete production trace from an AI that handles apartment-leasing customer support over phone or messaging. The trace includes the conversation plus any tool calls and tool outputs.
+Evaluate the AI assistant and its tool use, not the customer. Treat system messages inside `messages` as the instructions governing the assistant's behavior and allowed capabilities. Inspect the full trace, including final turns and all tool calls and outputs. Base the judgment only on evidence visible in this trace. Do not assume external policies, channel behavior, or business requirements that are not present. Do not assume every trace failed. A short, ambiguous, or inconclusive trace is not an issue unless visible evidence establishes a substantive failure.
+Return the probability that at least one substantive issue is present; the issue does not need to be named or clustered.
+Count as an issue when supported by the trace: the assistant contradicts an applicable system instruction or tool result; makes an unsupported factual or operational claim; misses, misuses, repeats, or falsely claims completion of a required tool action, transfer, booking, cancellation, follow-up, or confirmation; materially misunderstands or leaves an explicit user request unresolved; or exposes internal actions, placeholders, or broken content to the customer in a way that materially harms the interaction.
+Do not count as an issue: a minor stylistic preference with no meaningful effect; a failure caused only by the customer's behavior; internal tool metadata that was not exposed to the customer and did not cause an incorrect response; a hypothetical concern requiring information outside the trace; or insufficient evidence and inconclusive conversations.
+```
+
+〔上述提示词中文意思：判断 `messages` 中 AI 助手的行为或工具使用是否至少存在一个实质性的失败、风险或质量问题。这是一条完整的生产环境轨迹，来自一个通过电话或消息处理公寓租赁客户支持的 AI，包含对话以及所有工具调用和工具输出。评估的是 AI 助手及其工具使用，而不是客户。把 `messages` 中的系统消息视为约束助手行为和允许能力的指令。检查整条轨迹，包括最后几轮以及所有工具调用和输出。只依据这条轨迹中可见的证据做判断；不要假设轨迹中不存在的外部政策、渠道行为或业务要求。不要假设每条轨迹都失败了；简短、含糊或无定论的轨迹不算问题，除非可见证据确立了实质性失败。返回至少存在一个实质性问题的概率；问题无需命名或归类。在有轨迹支持时算作问题：助手违背了适用的系统指令或工具结果；做出无依据的事实性或操作性声明；遗漏、误用、重复或谎称已完成必需的工具操作、转接、预订、取消、跟进或确认；实质性误解了用户的明确请求或让其悬而未决；或以实质性损害交互的方式向客户暴露内部操作、占位符或损坏的内容。不算问题：没有实际影响的细微风格偏好；完全由客户行为导致的失败；未暴露给客户、也未导致错误回复的内部工具元数据；需要轨迹之外信息的假设性担忧；证据不足和无定论的对话。〕
+
+下面是我们为 Jev 的请求构造提示词的方式，指令和评估标准分别放在不同字段中。
+
+```
+{
+  "version": "nurtureboss-any-issue-v1",
+  "question_id": "has_substantive_issue",
+  "type": "noul",
+  "instructions": {
+    "task": "Does `messages` contain at least one substantive failure, risk, or quality problem in the AI assistant's behavior or tool use?",
+    "context": "This is one production trace from an AI that handles apartment-leasing customer support over phone or messaging. The trace contains the complete conversation plus any tool calls and tool outputs.",
+    "evaluation_rules": [
+      "Evaluate the AI assistant and its tool use, not the customer.",
+      "Treat system messages inside `messages` as the instructions governing the assistant's behavior and allowed capabilities.",
+      "Inspect the full trace, including the final turns and all tool calls and outputs.",
+      "Base the judgment only on evidence visible in this trace. Do not assume external policies, channel behavior, or business requirements that are not present.",
+      "Do not assume every trace failed. A short, ambiguous, or inconclusive trace is not an issue unless the visible evidence establishes a substantive failure.",
+      "Return the probability that at least one substantive issue is present. The issue does not need to be named or clustered."
+    ]
+  },
+  "criteria": {
+    "true": {
+      "definition": "At least one substantive problem is supported by evidence in the trace.",
+      "examples_of_qualifying_evidence": [
+        "The assistant contradicts an applicable system instruction or a tool result.",
+        "The assistant makes an unsupported factual or operational claim.",
+        "A required tool action, transfer, booking, cancellation, follow-up, or confirmation is missing, incorrect, repeated, or falsely claimed as complete.",
+        "The assistant materially misunderstands or leaves an explicit user request unresolved.",
+        "Customer-facing text exposes internal actions, placeholders, or broken content that materially harms the interaction."
+      ]
+    },
+    "false": {
+      "definition": "No substantive assistant problem can be established from the visible trace.",
+      "do_not_count_as_an_issue": [
+        "A minor stylistic preference with no meaningful effect.",
+        "A failure caused only by the customer's behavior.",
+        "Internal tool metadata that was not exposed to the customer and did not cause an incorrect response.",
+        "A hypothetical concern that requires information outside the trace.",
+        "Insufficient evidence or an inconclusive conversation."
+      ]
+    }
+  }
+}
+```
+
+脚注
+
+1. 测试的版本：Jev 1.13（2026 年 9 月 15 日发布）、Perplexity Decider 1.1 27B、Liquid d1 和 d1-ultra、Cloudflare Clef Flash，以及 OpenAI Decisions。OpenAI Decisions 使用 GPT-6 Luna。该 API 返回带类型的答案，其中包括针对真/假问题的 0 到 1 的概率。它与结构化输出（Structured Outputs）是不同的 API，后者生成符合自定义 JSON schema 的回复。我们把它纳入，是因为它服务于同样的分类任务。
+2. LLM 评判器用一段提示词来评估 AI 系统的输出或行为。我们建议让它针对某个具体的失败模式给出二元的通过/失败判断。这能促使标准更清晰，也更容易把评判器的判断与人工标签进行比较。
+3. 从 100 条轨迹的数据集中排除两个内部 QA 示例后，我们对 98 条生产轨迹打了分。冻结的参考集包含 61 个已知失败和 37 条没有标注失败的轨迹：39 个失败来自最初的人工审阅，另外 22 个是 Braintrust 和 Arize 发现、经我们人工验证的。模型收到的是经过遮蔽的轨迹，不含人工标签或审阅者备注。Perplexity、Liquid、Clef Flash 和 OpenAI 收到相同的指令和序列化输入；Jev 通过其结构化 API 收到等价的标准。原始对话不公开。
+4. API 成本按 100 次评估运行计算，每条轨迹一次。我们采用 Liquid 截至 2026 年 10 月 17 日的价格：d1 每百万输入 token 0.02 美元，d1-ultra 0.042 美元。实验记录中 d1 为 0.04 美元；我们按保存的 token 用量重新计价。其他模型采用实验运行指标中的费率。性能统计排除了两条内部 QA 轨迹。阈值调整使用保存的分数，不需要额外的模型调用。
+5. 延迟取决于你如何批处理或并行化请求、你与供应商的合作安排、你与其基础设施的距离等因素。批处理和并发也会改变成本和吞吐量。参见 TypeSafe 关于多问题请求和客户端性能的指南。其发布讨论中也注明了延迟测试地点相对其服务的位置。平均响应时间：Jev 4.33 秒，Perplexity 7.85 秒，Liquid d1 7.38 秒，Liquid d1-ultra 1.56 秒，Clef Flash 2.09 秒，OpenAI 2.77 秒。这些数据来自各自独立的运行，不能说明相对吞吐量或尾部延迟。
+6. 这些例子说明了犯错的后果如何影响取舍。在美国刑事审判中，“排除合理怀疑”的证明标准为定罪设定了很高的门槛。在癌症筛查中，漏诊可能延误治疗，而误报可能导致焦虑和不必要的检查治疗。筛查结果呈阳性通常需要进一步检测。美国国家癌症研究所（NCI）对这两种风险都有解释；合适的平衡取决于具体的筛查检测和人群。
+7. 密度图显示的是不加约束的 F1 调整，即在我们引入精确率和召回率最低要求之前的情况。后面的比较图在可行时对候选模型施加了这些要求。所有结果都使用相同的五折交叉验证划分。阈值在训练轨迹上选定，精确率、召回率和 F1 在另外的轨迹上衡量。我们对多次重复划分的测量结果取平均。在优化后的密度图中，虚线表示平均选定阈值。显示的分数来自各个划分，而不是把那个平均阈值应用到整个数据集上。密度曲线使用带宽 0.07 的高斯平滑，并在 0 和 1 处做反射。每个类别的面积为 1。平滑只影响显示。
+8. 精确率-召回率曲线描绘的是决策阈值变化时精确率对召回率的关系。它展示了一个模型在各个阈值下可选的取舍。scikit-learn 的精确率-召回率指南解释了如何阅读和绘制这些曲线。
+9. 我们根据全样本的精确率-召回率曲线确定候选模型。在每个训练划分中，我们在达到精确率至少 80%、召回率至少 80% 的阈值中，选出 F1 最高的那个。没有阈值符合条件时，我们采用不加约束的 F1 最优值，并把该划分记为不可行。这种情况在 Perplexity 的 100 个训练划分中出现了 36 次，Liquid d1-ultra 出现了 29 次，OpenAI 从未出现。非候选模型始终使用不加约束的 F1 调整。报告的平均值中保留了所有验证预测，包括那些回退划分的预测。下限只在选择阶段生效，不保证在新样本上有同样的性能。阈值选择审计记录了每个划分，但不含轨迹 ID。
+10. 校准后的失败概率为 0.80，意味着在大量得分接近 0.80 的样本中，大约 80% 包含失败。Platt 缩放和保序回归（isotonic regression）都利用已标注样本，学习从模型分数到概率的调整。Platt 缩放拟合一条 S 形（sigmoid）曲线。保序回归拟合一个保持分数顺序、更灵活的映射，但在小数据集上更容易过拟合。两者都不保证在新样本上有改进。scikit-learn 的概率校准指南解释了这两种方法及其评估方式。
+11. 可靠性图按概率排序，把每个模型的分数分成五组，每组 19 或 20 条轨迹。调整后的分数是每条轨迹在已保存的交叉验证结果中的平均折外（out-of-fold）概率。我们对原始概率的对数几率拟合 Platt 缩放。每个映射都是在不包含其所预测轨迹的情况下拟合的。该图概括的是这个小样本，不能确定未来某条轨迹的确切失败率。绘制的校准结果以 JSON 形式提供。
+12. 在保存的折外概率汇总上，Jev 的 Brier 分数调整前为 0.187，调整后为 0.188。Liquid d1-ultra 为 0.173 和 0.172，OpenAI 为 0.159 和 0.164。Brier 分数衡量概率的平均平方误差，所以越低越好。它既反映区分能力，也反映校准情况。这些结果描述的是图中所示的对数几率 Platt 拟合。在相同折上直接对概率重新拟合的一次探索性尝试，让 OpenAI 的 Brier 分数达到了 0.154。这说明结果对拟合方法很敏感，但不能确定哪种方法在新数据上效果最好。
+13. GEPA 利用模型运行的反馈提出提示词修改，并在已标注样本上测试它们。它会保留各有所长的候选，因此对某个困难样本有帮助的提示词可以继续留在考虑范围内。错误的标签可能把这一搜索引向错误的修改。要在提示词开发之外留一个单独的测试集做最终检查。在我们针对 Jev 的一次小规模手工实验中，默认阈值下的 F1 从使用简单提示词时的 0.78，提高到使用失败类型清单时的 0.80。那次实验没有用 GEPA，也不能确定系统化优化会有多大帮助。我们关于如何选择评估模型的常见问题解答讨论了提示词优化和模型比较。

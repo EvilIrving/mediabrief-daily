@@ -1,0 +1,264 @@
+https://simonwillison.net/2026/Oct/20/battledrones/
+
+Battle Drones——一款靠氛围编程（vibe coding）做出来、用声音联机的即时战略游戏
+
+2026 年 10 月 20 日
+
+我最新的氛围编程游戏实验是一款《命令与征服》（Command & Conquer）风格的 RTS（即时战略）游戏，叫 Battle Drones（在这里玩）。和我之前的实验不同，这一款*真的好玩*。我有点不好意思承认，我做到这一点的方法是叫 Claude“让它好玩得多（Make it a LOT more fun）”。它还支持附近设备之间的多人联机，用声音来同步游戏状态！下面是我到目前为止做出的东西，以及一路上学到的一些东西。
+
+Battle Drones
+
+我最初的目标是做一款能在手机上玩的 RTS 游戏，《命令与征服》那种风格。我对 1995 年的初代有美好的回忆（《红色警戒》我也喜欢），想找回一点当年的魔力。
+
+经过 12 次大迭代（以及编程代理——主要是 Claude Code——提交的 321 次 commit），我现在有了一款基于浏览器的游戏：手机和桌面都能玩，有多种游戏模式、好几张地图（包括一个随机地图生成器），甚至支持两台处于彼此麦克风收音范围内的设备联机。
+
+下面是 Battle Drones 在桌面浏览器里运行的视频演示：
+
+目前的功能包括：
+
+- 9 种建筑、7 种地面载具、6 种空中载具、3 种步兵单位——全是 3D 模型，可以在这里浏览
+- 战争迷雾
+- 攻击空中和地面载具需要不同的武器
+- **六张地图**，横跨五种生物群系（biome）——温带、沙漠、极地、火山、热带
+- 随机地图生成器
+- **遭遇战模式（Skirmish）**——红方对蓝方，地图旋转对称
+- **背水一战模式（Last Stand）**——一名玩家尽可能多地抵挡一波波敌人
+- 范围效果武器：弹幕（Barrage）、电磁脉冲（EMP）、空投舱（Drop Pod）、天锤（Sky Hammer）
+- 带额外资源的**空投补给箱**
+- 随事件变化的游戏内音乐——开打时会变得更激烈
+- 不同的游戏内 **AI 性格**（均衡 Balanced、速攻 Rush、空中蜂群 Air Swarm、发展 Boom、天军 Skyforce、铁甲 Ironclad）
+- **AI 对 AI** 模式，用来观看这些性格互相对战
+- **歌利亚（Goliath）**——一台会跺地前进的巨型机甲，有激光眼和臂炮，还能建立新基地
+- 增加额外规则或花样的**变异规则（Mutators）**
+- “每日行动（Daily Op）”挑战
+- 军衔和成就（**勋章**）
+- **代理对代理（Agent vs. Agent）**模式，两个 LLM 可以互相对战 Battle Drones
+- 一个**多人模式**，基于两台相邻手机用声音消息通信，是我之前 Chirp Pong 实验的延伸
+
+我是怎么做的
+
+Battle Drones 是重度氛围编程的产物——代码我几乎一行都没审过，而且它用的语言（TypeScript）我自己也几乎没用过。不过我做了相当多的试玩，自从开始这个项目以来，它已经经历了大量迭代。
+
+下面是这个项目到目前为止的大致历史，包括关键提示词和对话记录的链接。
+
+v1：最初的原型
+
+我是在 7 月用 Claude Fable 5 开始的：
+
+`We are going to build a mobile friendly RTS game - command and conquer style - called Battle Drones, in which two armies of drones (both flying and ground-based) battle for territory and resources`
+（我们要做一款适合手机的 RTS 游戏——《命令与征服》风格——叫 Battle Drones，两支无人机军队（飞行的和地面的都有）争夺领土和资源）
+
+`Let's start with a MVP design, ask me some questions`
+（先从 MVP 设计开始，问我一些问题）
+
+这里是共享的对话记录。我给 Claude Code for Web 设了一个包含 OpenAI API 密钥的环境变量，让它用 OpenAI 图像生成 API 来做素材，于是得到了一些基础精灵图（sprites）。
+
+你可以在这里试玩 v1——它长这样：
+
+它看得出是一款 RTS，有建造机制，能选中和指挥单位，还有一个可以对战的基础 AI。
+
+这个第一版勉强算是概念验证，一点也不好玩。
+
+这些早期版本里，Claude 用的是 Phaser 2D 游戏框架。我直到好几次迭代之后才意识到这一点！
+
+v2：完整的精灵图
+
+第二版（在这里试玩 v2）为所有载具加上了精灵图，还加了“AI 对 AI”模式，这样我不用亲自操控就能看游戏自己进行。
+
+事实证明，Claude 在给 OpenAI 的图像模型写提示词生成精灵图方面相当称职。你可以在 public/assets/sprites 文件夹里浏览 v2 的精灵图。
+
+v3：多样的地形
+
+它还是不怎么好玩，画面也很无聊。此时已经是 10 月，我升级到了 Claude Opus 5.5。我对它说：
+
+`Massively improve this game. Make the graphics and gameplay better (keep it mobile friendly). Render new graphics using the latest OpenAI GPT image API (lookup details) with the API key in the environment variable. Add new unit types and balance the gameplay better. Also add new buildings and better, more varied terrain.`
+（大幅改进这款游戏。把画面和玩法做得更好（保持适合手机）。用环境变量里的 API 密钥，调用最新的 OpenAI GPT 图像 API（自己查细节）渲染新画面。增加新的单位类型，把玩法平衡得更好。再加上新建筑和更好、更多样的地形。）
+
+结果是五张新地图，配有各种风格的生成背景图块，可以在这里看到。Opus 还重新生成了精灵图，视觉上好看多了。你可以在这里试玩 v3——它长这样：
+
+这开始有点像一款真正的游戏了！不过玩起来还是不太好玩——我发现自己很快就腻了。
+
+v4：好玩更新
+
+到这时为止，我的 Battle Drones 实验一直在印证我之前的看法：编程代理能做出看起来像游戏的东西，但做不出真正让人欲罢不能的游戏。
+
+有一次吃晚饭时我跟人分享了这个理论，然后心想，应该给这些模型一个像样的机会来证明我错了。我在手机上给 Opus 5.5 发了提示词：
+
+`This game isn't fun enough yet. Make it a LOT more fun.`
+（这款游戏还不够好玩。让它好玩得多。）
+
+这次我用的是 Ultracode 模式，在这种模式下，Claude Code（这里是 Claude Code for Web）会运行“动态工作流”，其文档里是这样描述的：
+
+动态工作流是一个同时编排许多子代理的 JavaScript 脚本。
+
+这启动了*好几个小时*的工作。我晚上开始，直到第二天上午很晚才拿回一个能玩的结果。但结果非常惊艳。
+
+你可以在这里试玩 v4——它长这样：
+
+我让 Claude 自己写了发布说明——以下是要点：
+
+现在每局遭遇战和每日行动开局都有一个选择，给落后的一方翻盘的途径，并把双方军队拉到地图中央。另外还有两种新玩法。
+
+- **开局（Openers）**：在计时开始前选择闪电战（Blitz）、工业（Industry）或空军联队（Air Wing）。
+- **召唤能力（Call-down powers）**：弹幕、电磁脉冲、空投舱和天锤轨道打击。
+- **目标与回收**：上行中继站（Uplink relays）、补给空投，以及值废料（scrap）的残骸。
+- **手感**：战斗打击感（combat juice）、自适应音乐、单位语音和播报员。
+- **指挥**：战斗警报、游戏速度、保存的小队和触屏放置。
+- **新模式**：背水一战生存波次和一个 8 关的行动（Ops）战役。
+- **成长**：英雄、带奖励的战后报告、生涯、7 种变异规则和每日行动。
+
+战斗持续更久，局势起伏更大。在“普通”难度下的 1,200 场 AI 对 AI 测试对局中，25 分钟后仍未分出胜负的对局从 14% 降到了 0.9%。曾落后 800 以上废料的一方最终获胜的比例从 24% 升到了 46%。
+
+Claude 花这么久的部分原因是，它跑了一千多次模拟试玩，并用结果重新平衡了现有单位、加入新单位、引入新功能。
+
+v5：Battle Drones 变成 3D
+
+在 Ultracode 成功完成“让它好玩得多”之后，我决定更有野心一点：
+
+`Port this game to three.js with 3D models for all of the buildings and vehicles and landscapes`
+（把这款游戏移植到 three.js，所有建筑、载具和地形都用 3D 模型）
+
+这又是一次通宵运行。我醒来时看到的是这个 v5 版本：
+
+新的 3D 模型完全由 Claude 用 TypeScript 代码构建。
+
+v6（在这里玩 v6）增加了更多视觉打磨。v7（玩 v7）加入了机器人步兵（突击兵、火箭小队、狙击手）和一种运兵飞机“秃鹰（Condor）”。
+
+v8：群岛
+
+我开始对自己在游戏设计上投入之少感到内疚——过去几个版本，真的就是我在说“让它更好玩”和“加点视觉打磨”。
+
+我注意到 AI 不怎么使用 v7 新加的步兵和运兵飞机——没有很好的战略理由去用它们。
+
+如果有一张新地图，带一个新的游戏机制，积极鼓励玩家把步兵机器人装进秃鹰、派到地图各处，那就挺好。
+
+这催生了我迄今最长的一条提示词：
+
+`Design a new map. Goal is to make different strategic incentives that encourage use of Infantry and Condors and aerial vehicles.`
+（设计一张新地图。目标是制造不同的战略激励，鼓励使用步兵、秃鹰和空中载具。）
+
+`To do this the map will have limited harvester resources but several more uplinks - but uplinks will be on islands that are inaccessible by land vehicles or infantry. These uplinks can also not be claimed using air vehicles. The ONLY way to get them is to fly infantry there in a Condor.`
+（为此，这张地图的采集资源有限，但上行站要多几个——不过上行站会在地面载具和步兵到不了的岛上。这些上行站也不能用空中载具占领。拿下它们的唯一办法是用秃鹰把步兵空运过去。）
+
+`Armies always start with a Condor and a single squad. If an army has no Condor a new one will be provided for free, flying in from the edge closest to their HQ and landing there. That free condor will come with a single free squad on board.`
+（各方开局总有一架秃鹰和一个小队。如果某方没有秃鹰，会免费提供一架新的，从离其总部最近的地图边缘飞进来并在那里降落。这架免费秃鹰上会载着一个免费小队。）
+
+`The two HQs should be entirely separated by water, but still accessible by vehicles thanks to two bridges across the map in different places`
+（两个总部应被水完全隔开，但借助地图上不同位置的两座桥，载具仍能通行）
+
+`I want to encourage a battle over uplinks.`
+（我想鼓励围绕上行站的争夺。）
+
+`The map should be the times the size of other maps - still square`
+（这张地图应该是其他地图的“times”倍大——仍然是正方形）〔原文如此，倍数缺失〕
+
+`First research and then critique this design. Only build after we have agreed on any modifications`
+（先调研，再批判这个设计。等我们就修改达成一致后再动手做）
+
+`You get to design a new biome for this`
+（你可以为此设计一种新的生物群系）
+
+结果就是热带的**群岛（Archipelago）**地图，上面有七个岛屿上行站，玩家只能用秃鹰空运步兵去占领。一旦你在较简单的地图上掌握了基本游戏机制，这绝对是最好玩的一张地图。v9 版让这张地图更有意思了一点——它现在长这样：
+
+v10：歌利亚，以及代理对战
+
+我决定往游戏里加入巨型机器人机甲——想想《环太平洋》（Pacific Rim）里的猎人机甲（Jaegers），或《战锤 40K》（Warhammer 40,000）里的泰坦（Titans）。
+
+下面是我用来和 Claude 头脑风暴的一些提示词：
+
+`Help me brainstorm ideas for adding giant robots to this game - think dreadnoughts or titans from W20K - how could we do this in a way that enhanced gameplay, kept things balanced, added unique twist? Don't overthink this yet`
+（帮我头脑风暴一下怎么往这款游戏里加巨型机器人——想想 W20K 里的无畏机甲或泰坦——怎样做才能增强玩法、保持平衡、加入独特的花样？先别想太深）
+
+`Let's keep brainstorming. I like the idea that it's a mobile base - that can accept harvested scrap and can have buildings built near it (even if it later moves on) and can produce infantry units too. An interaction with condor would be neat but I don't know what that could be.`
+（继续头脑风暴。我喜欢它是个移动基地的想法——可以接收采集来的废料，可以在它附近盖建筑（即使它之后走开了），还能生产步兵单位。和秃鹰有点互动会很好，但我不知道会是什么。）
+
+`Idea: as it gets damage it loses the ability to fire some weapons - by default it has eye laser (like lancers) and arm canons (like titan) and two shoulder mounted mortars, plus machine guns similar to a squad of troops`
+（想法：随着受损，它会失去使用某些武器的能力——默认它有眼部激光（像长矛兵那样）、臂炮（像泰坦那样）和两门肩扛迫击炮，外加类似一个步兵小队的机枪）
+
+`Damage knocks out mortars and then laser - it always has guns. You can't build next to a building that was only put there because of the mech, you need the mech there for off-base building and only within three squares of it`
+（受损先打掉迫击炮，然后是激光——机枪始终都在。你不能挨着一座仅因机甲才建在那里的建筑再盖建筑；要在基地外建造，机甲必须在场，而且只能在它三格范围内）
+
+`[...] Lets do two condors can carry the mech`
+（[……] 就定成两架秃鹰可以吊运机甲吧）
+
+最终结果*真的很酷*。
+
+歌利亚由龙门架（Gantry）建造——这种建筑只有在先建好工厂（Fab）、车库（Bay）、停机坪（Airpad）和科技实验室（Tech Lab）之后才能建。你能看到歌利亚正在建造，然后它从龙门架里走出来，在地图上四处行进。
+
+歌利亚可以“锚定”，也就是把自己扎进地里。在锚定状态下，它可以充当新的总部，在新的区域生产步兵单位和额外建筑。
+
+两架秃鹰飞机可以挂住一台歌利亚，这时它就能被吊着在地图上飞来飞去！
+
+现在，只有摧毁敌人的总部建筑*以及*他们可能建造的所有歌利亚，游戏才会结束。
+
+还有几个和歌利亚有关的变异规则：
+
+- **歌利亚舰队（Goliath Armada）**：双方开局各有四台空中的歌利亚（每台配一对秃鹰），没有其他单位。
+- **机器人之恋（Robot Love）**：加入一条特殊规则——如果敌对双方的歌利亚在战场上彼此靠近，它们会坠入爱河，游戏以平局结束。（这个要感谢 Natalie。）
+
+代理对战
+
+v10 的另一项功能是**代理对战**。在琢磨多人模式怎么做时，我有了个想法：要是不同的 LLM 能在游戏里一决高下呢？
+
+`Fun extra challenge: think about how we might make multiplayer available to coding agents. It would be neat if we could set up a battle between eg GPT-6 Sol and Claude Opus 5.5 where each model has access to a tool which gives them information about the game (presumably non-visual, but only the information they could see through fog of war etc) and lets them control their units etc [...]`
+（一个好玩的额外挑战：想想怎么让编程代理也能玩多人模式。要是能安排一场比如 GPT-6 Sol 对 Claude Opus 5.5 的对战就好了，每个模型都能用一个工具，给它们提供游戏信息（大概是非视觉的，而且只包括它们透过战争迷雾等能看到的信息），并让它们控制自己的单位等等 [……]）
+
+`Consult ~/dev/llm/docs and include notes in that file about how LLM could be used here via a new tools plugin`
+（参考 ~/dev/llm/docs，并在那个文件里写上关于如何通过一个新的工具插件在这里使用 LLM 的说明）
+
+Opus 5.5 着手做这件事，写出了这份 AGENT-BATTLES.md 方案，然后实现并测试了它。这个功能还包括录制和回放这些对战的能力——这里是 Claude Haiku 5.5 对 GPT-6 Luna 的一场回放，这里是同一场对战在一个单独的调试工具里的样子，它会显示底层的提示词响应。
+
+驱动代理对战的提示词可以在这里看到。
+
+README 里还链接了另外几场这样的回放。我希望将来某个时候把它做成一个完整的联赛积分榜。
+
+v11：随机地图
+
+这个版本之所以存在，纯粹是因为有一天我瞄了一眼我的 Claude 用量页面，发现每周额度只用了 75%，而且 45 分钟后就要重置。我决定看看能不能用剩下的 token 再换一个 Battle Drones 功能，于是选了“随机地图”作为目标：
+
+`Design and implement a mechanism for generating a random map using any of the available biomes - it should be the size of the largest map and rivers and bridges and rocks and forest and scrap and crystals are all in play. Make them rotationally symmetric and use a seed to allow them to be selected or reused later. You have 45 minutes to build this! Be creative.`
+（设计并实现一个机制，用任意一种现有生物群系生成随机地图——大小和最大的那张地图一样，河流、桥梁、岩石、森林、废料和晶体都要有。让地图旋转对称，并使用种子，以便之后可以选取或复用。你有 45 分钟来做这个！发挥创意。）
+
+这是对话记录，以及 Claude 生成的一张展示其成果的图片：
+
+v12：通过声音联机
+
+这个功能我*刚刚*才弄好，所以还没太多时间去认真测试。最新的 Battle Drones 现在支持两台放在彼此麦克风收音范围内的设备联机！
+
+这个功能起源于我上周的 Chirp Pong 实验。我让 Claude Code 去看那个能跑的概念验证：
+
+`Clone Simonw/tools from GitHub and look at recent branches for the example pong game that uses web microphone to implement multiplayer between two phones via audio signals`
+（从 GitHub 克隆 Simonw/tools，看看最近的分支里那个示例乒乓游戏，它用网页麦克风、通过音频信号实现两部手机之间的多人联机）
+
+`Build a version of that for battledrones`
+（给 battledrones 做一个那样的版本）
+
+Opus 做了这个 Radio Probe 工具来测量两台设备之间能获得多少带宽，并根据积极的测试结果实现了一整套音频调制解调器（modem）系统。到目前为止，我已经在笔记本电脑、iPhone 和 iPad 之间试过，看起来效果非常好！
+
+为什么要用声音来做？因为我喜欢运行零成本的静态 HTML，而且我不想在某处架一台服务器，然后在任何人还可能想玩这款游戏的时间里，一直负责让它保持运行。
+
+一些想法
+
+我对游戏开发几乎*一无所知*。这让它成了一个很好的机会：在一个我已有的软件工程经验对结果影响较小的领域里试用编程代理。
+
+游戏的风险也极低。最坏的情况不过是我某个傻乎乎的游戏实验出了个 bug。
+
+今天早上（通过 Hacker News）我看到一篇《Steam Next Fest 充斥垃圾内容，Steam 玩家恳求加一个“无 AI”筛选器》（Steam Fans Are Begging for a No-AI Filter as Steam Next Fest Is Filled With Slop）。我自己绝不会想把 Battle Drones 提交到这类活动——它投入的心力仍然太少，够不上被当作一个正经的独立游戏项目来考虑。
+
+……但我现在能看到一条路，让这类氛围编程做出的游戏被认真对待。Battle Drones 好玩、好看，还有创新的功能（据我所知，通过声音联机这件事在 RTS 里是头一回）。
+
+我很想看看一个品味比我好、并且怀着做出真正非凡作品的强烈热情的人，能做出什么来！
+
+这个项目的其他几点观察：
+
+- 静态 HTML 和 JavaScript 是开发游戏的绝佳媒介。WebGL 效果很好，Three.js（以及之前的 Phaser）是出色的开发平台，当前的模型对它们了如指掌。
+- 这还让游戏能以渐进式 Web 应用（PWA）的形式运行——我没要求这个，但 Battle Drones 可以离线运行。我在飞机上也能玩，尽管我从没直接安装过它——我的手机缓存了它。
+- 给 Claude 一个 OpenAI API 密钥，让它用 OpenAI 的模型生成图片，效果非常好。它能查看自己生成的图片，并迭代提示词。
+- Opus 5.5 用 Three.js（还有 Blender，无疑还有其他 3D 应用）做 3D 建模的能力非常惊人。GPT-6 Astra 也是如此。它们完全有能力为 3D 游戏项目构建模型。
+- 对于回放和多人联机这类功能，有一个确定性的模拟引擎很有用。有一次，Claude 不得不把对 `Math.sin()`、`Math.cos()` 之类函数的调用换成自定义版本，因为不同浏览器（比如 Chrome 和 Safari）返回的数值有极其细微的差别，导致回放失去同步。
+- Opus 5.5 会写音乐！这个项目里没有任何音频文件——配乐完全由代码生成，不同地图各不相同，甚至会随着战斗升温而变得更激烈。之前用 Claude 作曲的实验可以看 Scrimshaw Jukebox。
+- 我至今还是没法释怀“让它好玩得多”这条提示词效果有多好。
+- 工具实际上是免费的。我用提示词做出了 Radio Probe、模型浏览器、代理对代理调试工具，而 Claude Code 还给自己做了一堆工具，我自己都还没去看过。
+- 静态 HTML 游戏之间基于声音的多人联机是行得通的！我希望看到更多游戏采用同样的模式——今天我四处查了查，除了 Alon Horesh 的 Siner 和 Georgi Gerganov（也就是 `llama.cpp` 那位）的 ggwave 之外，没找到多少先例。
+- Claude Code 的“Ultracode”烧 token 烧得像没有明天一样，但它也能凭一条提示词解决复杂问题（比如加入基于声音的多人联机）。
+- 用这种方式做软件，我还是没完全摆脱那种*愧疚感*。在一个我几乎没有经验的领域里，我觉得自己并没有赢得做出这么好的东西的资格！到这时，我已经私下给足够多的人看过了，觉得不把它公开出来让大家看、让大家学，似乎说不过去。
