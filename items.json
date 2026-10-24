@@ -1,5 +1,26 @@
 [
  {
+  "id": "om2lIWXLLn4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Building Anthropic: A Conversation with Our Co-founders",
+  "link": "https://youtu.be/om2lIWXLLn4",
+  "date": "2026-10-24T15:26",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/om2lIWXLLn4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/om2lIWXLLn4.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
+  "title_zh": "构建 Anthropic：与联合创始人对谈",
+  "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
   "id": "cx-75-clinical-trial-suit",
   "kind": "curated",
   "type": "caixin",
@@ -22,25 +43,26 @@
   "added_at": "2026-10-24T07:28+08:00"
  },
  {
-  "id": "om2lIWXLLn4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Building Anthropic: A Conversation with Our Co-founders",
-  "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-10-22T00:40",
+  "id": "cx-79-liu-xuefeng",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "吉林刘雪峰杀人案波折不断 检方意见反转认为其有罪",
+  "link": "https://china.caixin.com/2026-10-23/102496511.html",
+  "date": "2026-10-23",
+  "author": "冯华妹",
+  "issue": "财新网",
   "txt": [
    {
-    "label": "总结",
-    "url": "txt/om2lIWXLLn4.txt"
+    "label": "速读",
+    "url": "txt/cx-79-liu-xuefeng.txt"
    },
    {
-    "label": "原文",
-    "url": "txt/om2lIWXLLn4.orig.txt"
+    "label": "详读",
+    "url": "txt/cx-79-liu-xuefeng.zh.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
-  "title_zh": "构建 Anthropic：与联合创始人对谈",
-  "added_at": "2026-10-11T03:20+08:00"
+  "added_at": "2026-10-25T02:27+08:00"
  },
  {
   "id": "cx-76-ai-money-power",
@@ -481,6 +503,50 @@
   ],
   "title_zh": "Screwtape ：用于监视器红队伍的对抗性转录编辑",
   "added_at": "2026-10-17T17:12+08:00"
+ },
+ {
+  "id": "cx-77-brazil-crossroads",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "巴西置身十字路口",
+  "link": "https://weekly.caixin.com/2026-10-17/102494227.html",
+  "date": "2026-10-17",
+  "author": "侯吴婷",
+  "issue": "《财新周刊》2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-77-brazil-crossroads.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-77-brazil-crossroads.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-25T02:27+08:00"
+ },
+ {
+  "id": "cx-80-indonesia-haze",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "印尼跨境烟霾再起",
+  "link": "https://weekly.caixin.com/2026-10-17/102494235.html",
+  "date": "2026-10-17",
+  "author": "文思敏",
+  "issue": "《财新周刊》2026年第40期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-80-indonesia-haze.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-80-indonesia-haze.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-25T02:27+08:00"
  },
  {
   "id": "cur-d4dc2fed372c",
@@ -1078,6 +1144,28 @@
    }
   ],
   "added_at": "2026-10-20T10:35+08:00"
+ },
+ {
+  "id": "cx-78-office-agent",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "封面报道｜抢占办公室",
+  "link": "https://weekly.caixin.com/2026-10-09/102491720.html",
+  "date": "2026-10-09",
+  "author": "关聪、杨子锐、屈运栩",
+  "issue": "《财新周刊》2026年第39期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-78-office-agent.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-78-office-agent.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-25T02:27+08:00"
  },
  {
   "id": "2108218392188518533",
