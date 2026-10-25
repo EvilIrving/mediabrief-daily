@@ -65,6 +65,28 @@
   "added_at": "2026-10-25T02:27+08:00"
  },
  {
+  "id": "cx-81-retire-planner",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜退休生活策划师",
+  "link": "https://weekly.caixin.com/2026-10-23/102496293.html",
+  "date": "2026-10-23",
+  "author": "张芮雪",
+  "issue": "《财新周刊》2026年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-81-retire-planner.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-81-retire-planner.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-26T07:23+08:00"
+ },
+ {
   "id": "cx-76-ai-money-power",
   "kind": "curated",
   "type": "caixin",
