@@ -65,6 +65,29 @@
   "added_at": "2026-10-26T09:28+08:00"
  },
  {
+  "id": "cx-83-changpin",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“长聘”不稳了",
+  "link": "https://weekly.caixin.com/2026-10-24/102496754.html",
+  "date": "2026-10-24",
+  "author": "罗浥萌（实习）、范俏佳、徐路易",
+  "issue": "《财新周刊》2026年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-83-changpin.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-83-changpin.zh.txt"
+   }
+  ],
+  "title_zh": "「长聘」不稳了",
+  "added_at": "2026-10-27T07:27+08:00"
+ },
+ {
   "id": "cx-75-clinical-trial-suit",
   "kind": "curated",
   "type": "caixin",
