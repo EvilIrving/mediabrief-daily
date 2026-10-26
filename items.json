@@ -43,6 +43,28 @@
   "added_at": "2026-10-26T09:19+08:00"
  },
  {
+  "id": "cx-85-africa-sme",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "中小企业闯非洲",
+  "link": "https://weekly.caixin.com/2026-10-24/102496752.html",
+  "date": "2026-10-24",
+  "author": "罗国平",
+  "issue": "《财新周刊》2026年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-85-africa-sme.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-85-africa-sme.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-26T09:28+08:00"
+ },
+ {
   "id": "cx-75-clinical-trial-suit",
   "kind": "curated",
   "type": "caixin",
@@ -107,6 +129,28 @@
    }
   ],
   "added_at": "2026-10-26T07:23+08:00"
+ },
+ {
+  "id": "cx-82-france-turmoil",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "封面报道｜动荡法兰西",
+  "link": "https://weekly.caixin.com/2026-10-23/102496284.html",
+  "date": "2026-10-23",
+  "author": "侯吴婷、冯禹丁",
+  "issue": "《财新周刊》2026年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-82-france-turmoil.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-82-france-turmoil.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-26T09:28+08:00"
  },
  {
   "id": "cx-76-ai-money-power",
