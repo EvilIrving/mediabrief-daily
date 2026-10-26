@@ -21,6 +21,28 @@
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
+  "id": "cx-84-xita",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "阅读｜百变的西塔，未完的历史",
+  "link": "https://weekly.caixin.com/2026-10-24/102496755.html",
+  "date": "2026-10-24",
+  "author": "阿隆",
+  "issue": "《财新周刊》2026年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-84-xita.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-84-xita.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-26T09:19+08:00"
+ },
+ {
   "id": "cx-75-clinical-trial-suit",
   "kind": "curated",
   "type": "caixin",
