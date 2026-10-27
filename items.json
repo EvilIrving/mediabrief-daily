@@ -88,6 +88,28 @@
   "added_at": "2026-10-27T09:10+08:00"
  },
  {
+  "id": "cx-90-lamy-interview",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "专访WTO前总干事拉米：处理欧盟对华贸易症结，需要B计划",
+  "link": "https://international.caixin.com/2026-10-26/102497321.html",
+  "date": "2026-10-26",
+  "author": "李昕",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-90-lamy-interview.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-90-lamy-interview.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-27T09:11+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
