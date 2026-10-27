@@ -176,6 +176,28 @@
   "added_at": "2026-10-27T09:25+08:00"
  },
  {
+  "id": "cx-94-yuhong-debt-home",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "工抵房成“债务接力棒” 东方雨虹一边收房抵债一边以房抵债",
+  "link": "https://companies.caixin.com/2026-10-26/102497504.html",
+  "date": "2026-10-26",
+  "author": "王婧",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-94-yuhong-debt-home.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-94-yuhong-debt-home.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-27T09:30+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
