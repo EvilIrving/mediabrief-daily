@@ -1,5 +1,27 @@
 [
  {
+  "id": "cx-86-ma-earnout",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "求解A股并购对赌后遗症",
+  "link": "https://weekly.caixin.com/2026-10-24/102496750.html",
+  "date": "2026-10-26",
+  "author": "王娟娟",
+  "issue": "《财新周刊》2026年第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-86-ma-earnout.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-86-ma-earnout.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-27T08:57+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
