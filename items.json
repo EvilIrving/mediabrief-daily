@@ -1,5 +1,27 @@
 [
  {
+  "id": "cx-87-foxconn-ecd",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "记者手记｜在富士康，建一所0—3岁儿童早期养育中心",
+  "link": "https://www.caixin.com/2026-10-27/102497625.html",
+  "date": "2026-10-27",
+  "author": "汤涵钰",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-87-foxconn-ecd.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-87-foxconn-ecd.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-27T09:00+08:00"
+ },
+ {
   "id": "cx-86-ma-earnout",
   "kind": "curated",
   "type": "caixin",
