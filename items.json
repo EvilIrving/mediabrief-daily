@@ -66,6 +66,28 @@
   "added_at": "2026-10-27T09:05+08:00"
  },
  {
+  "id": "cx-89-gdp-broader",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "经济增速回升，怎样更广泛增长",
+  "link": "https://weekly.caixin.com/2026-10-24/102496747.html",
+  "date": "2026-10-26",
+  "author": "于海荣",
+  "issue": "《财新周刊》2026年10月26日第41期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-89-gdp-broader.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-89-gdp-broader.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-27T09:10+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
