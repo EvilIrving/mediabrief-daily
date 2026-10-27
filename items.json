@@ -154,6 +154,28 @@
   "added_at": "2026-10-27T09:23+08:00"
  },
  {
+  "id": "cx-93-flex-social",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "分析｜如何激励灵活就业者参加职工社保？",
+  "link": "https://www.caixin.com/2026-10-26/102497291.html",
+  "date": "2026-10-26",
+  "author": "周信达",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-93-flex-social.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-93-flex-social.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-27T09:25+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
