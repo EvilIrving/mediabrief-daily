@@ -22,6 +22,116 @@
   "added_at": "2026-10-27T09:00+08:00"
  },
  {
+  "id": "cx-95-algo-cage",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "算法铁笼与社会奇点",
+  "link": "https://opinion.caixin.com/2026-10-27/102497667.html",
+  "date": "2026-10-27",
+  "author": "郭瑞东",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-95-algo-cage.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-95-algo-cage.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-28T14:42+08:00"
+ },
+ {
+  "id": "cx-96-offshore-trust",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "税务规划的合法性与正当性：以离岸信托为例",
+  "link": "https://opinion.caixin.com/2026-10-27/102497889.html",
+  "date": "2026-10-27",
+  "author": "金锦萍",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-96-offshore-trust.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-96-offshore-trust.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-28T14:42+08:00"
+ },
+ {
+  "id": "cx-97-miao-monetary",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "缪延亮：国际货币秩序重构的成因、影响与选择",
+  "link": "https://opinion.caixin.com/2026-10-27/102497796.html",
+  "date": "2026-10-27",
+  "author": "缪延亮",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-97-miao-monetary.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-97-miao-monetary.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-28T14:42+08:00"
+ },
+ {
+  "id": "cx-98-lu-imbalance",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "全球失衡背后的大国博弈与多边治理",
+  "link": "https://opinion.caixin.com/2026-10-27/102497837.html",
+  "date": "2026-10-27",
+  "author": "卢锋、杨景翔",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-98-lu-imbalance.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-98-lu-imbalance.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-28T14:42+08:00"
+ },
+ {
+  "id": "cx-99-jia-infra-fiscal",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "人口减少背景下的基础设施维护与地方财政压力",
+  "link": "https://opinion.caixin.com/2026-10-27/102497706.html",
+  "date": "2026-10-27",
+  "author": "贾康、孙善群",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-99-jia-infra-fiscal.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-99-jia-infra-fiscal.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-28T14:42+08:00"
+ },
+ {
   "id": "cx-86-ma-earnout",
   "kind": "curated",
   "type": "caixin",
