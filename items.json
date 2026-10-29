@@ -274,6 +274,58 @@
   "added_at": "2026-10-28T14:42+08:00"
  },
  {
+  "id": "cur-758d053f9a0f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Itamar Gilad",
+  "title": "Interview with Eric Ries: AI, Founder Mode, and Why Good Companies Go Bad",
+  "link": "https://itamargilad.com/eric-ries-incorruptible/",
+  "date": "2026-10-27",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-758d053f9a0f.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-758d053f9a0f.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-758d053f9a0f.orig.txt"
+   }
+  ],
+  "title_zh": "采访埃里克·里斯：人工智能、创始人模式，以及为什么好公司会倒闭",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
+  "id": "cur-f987ea7d5689",
+  "kind": "curated",
+  "type": "article",
+  "source": "Redwood Research Blog",
+  "title": "A basic case for accelerating conceptual reasoning capabilities",
+  "link": "https://blog.redwoodresearch.org/p/a-basic-case-for-accelerating-conceptual",
+  "date": "2026-10-27",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f987ea7d5689.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-f987ea7d5689.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f987ea7d5689.orig.txt"
+   }
+  ],
+  "title_zh": "加速概念推理能力的基本案例",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
   "id": "cx-86-ma-earnout",
   "kind": "curated",
   "type": "caixin",
@@ -450,6 +502,136 @@
   "added_at": "2026-10-27T09:30+08:00"
  },
  {
+  "id": "cur-86bde11cd257",
+  "kind": "curated",
+  "type": "article",
+  "source": "Max Woolf",
+  "title": "OpenAI and Anthropic cut their LLM prices by up to 80% within a few months. Why?",
+  "link": "https://minimaxir.com/2026/10/cheap-llms/",
+  "date": "2026-10-26",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-86bde11cd257.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-86bde11cd257.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-86bde11cd257.orig.txt"
+   }
+  ],
+  "title_zh": "OpenAI和Anthropic在几个月内将其LLM价格降低了高达80 ％。为什么？",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
+  "id": "cur-ad0cbc7a41ff",
+  "kind": "curated",
+  "type": "article",
+  "source": "The Diff",
+  "title": "Robots Are Coming for Jobs That Don't Exist Yet",
+  "link": "https://www.thediff.co/archive/robots-are-coming-for-jobs-that-dont-exist-yet/",
+  "date": "2026-10-26",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-ad0cbc7a41ff.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-ad0cbc7a41ff.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ad0cbc7a41ff.orig.txt"
+   }
+  ],
+  "title_zh": "机器人正在寻找尚未存在的工作",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
+  "id": "cur-65f01364ca7f",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Don't anthropomorphize big tech companies",
+  "link": "https://seangoedecke.com/dont-anthropomorphize-big-tech-companies/",
+  "date": "2026-10-25",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-65f01364ca7f.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-65f01364ca7f.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-65f01364ca7f.orig.txt"
+   }
+  ],
+  "title_zh": "不要将大型科技公司拟人化",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
+  "id": "cur-cb0e6541c41d",
+  "kind": "curated",
+  "type": "article",
+  "source": "Interconnects (Nathan Lambert)",
+  "title": "Podcast: Kimi K3.1 Pro, the new cyber reality, and Muse musings",
+  "link": "https://www.interconnects.ai/p/podcast-kimi-k31-pro-the-new-cyber",
+  "date": "2026-10-25",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-cb0e6541c41d.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-cb0e6541c41d.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-cb0e6541c41d.orig.txt"
+   }
+  ],
+  "title_zh": "播客： Kimi K3.1 Pro、新的网络现实和Muse沉思",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
+  "id": "cur-d1a3b4fa5d93",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sebastian Raschka",
+  "title": "Build Your Own Reasoning Model: A Full Video Course",
+  "link": "https://magazine.sebastianraschka.com/p/building-reasoning-models",
+  "date": "2026-10-24T19:14+08:00",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d1a3b4fa5d93.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-d1a3b4fa5d93.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d1a3b4fa5d93.orig.txt"
+   }
+  ],
+  "title_zh": "构建自己的推理模型：完整视频课程",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
   "id": "om2lIWXLLn4",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -538,6 +720,32 @@
   "added_at": "2026-10-27T07:27+08:00"
  },
  {
+  "id": "cur-90bf1782f390",
+  "kind": "curated",
+  "type": "article",
+  "source": "Dan Luu",
+  "title": "We should be more ambitious with the software we build",
+  "link": "https://danluu.com/ambitious/",
+  "date": "2026-10-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-90bf1782f390.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-90bf1782f390.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-90bf1782f390.orig.txt"
+   }
+  ],
+  "title_zh": "我们应该更加雄心勃勃地使用我们构建的软件",
+  "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
   "id": "cx-75-clinical-trial-suit",
   "kind": "curated",
   "type": "caixin",
@@ -624,6 +832,32 @@
    }
   ],
   "added_at": "2026-10-26T09:28+08:00"
+ },
+ {
+  "id": "cur-0b587fb77be4",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Software is slow because of bad design, not slow languages",
+  "link": "https://seangoedecke.com/software-is-slow-because-of-bad-design-not-slow-languages/",
+  "date": "2026-10-23",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-0b587fb77be4.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-0b587fb77be4.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-0b587fb77be4.orig.txt"
+   }
+  ],
+  "title_zh": "软件速度慢是因为糟糕的设计，而不是语言速度慢",
+  "added_at": "2026-10-30T07:26+08:00"
  },
  {
   "id": "cx-76-ai-money-power",
@@ -1309,6 +1543,32 @@
   ],
   "title_zh": "中国如何致富",
   "added_at": "2026-10-15T10:50+08:00"
+ },
+ {
+  "id": "cur-b550fe8d031b",
+  "kind": "curated",
+  "type": "article",
+  "source": "Latacora",
+  "title": "Have your bots talk to my bots. Who's checking IDs?",
+  "link": "https://www.latacora.com/blog/2026/10/14/have-your-bots-talk-to-my-bots/",
+  "date": "2026-10-14",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-b550fe8d031b.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-b550fe8d031b.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-b550fe8d031b.orig.txt"
+   }
+  ],
+  "title_zh": "让你的机器人与我的机器人交谈。谁在检查身份证件？",
+  "added_at": "2026-10-30T07:26+08:00"
  },
  {
   "id": "cur-c43be8ebb5bb",

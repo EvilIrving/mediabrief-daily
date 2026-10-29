@@ -1,0 +1,150 @@
+https://www.latacora.com/blog/2026/10/14/have-your-bots-talk-to-my-bots/
+
+Recently, a post went around predicting that “have your bot talk to my bot” will soon be a normal thing to say. The examples were fun: sending bug reports, booking meetings, running a group buy, buying and selling stuff off Craigslist. One follow-up even shared a real address for filing bugs.
+
+I love this but I also read it the way security people read everything: what happens when the one on the other end isn’t who you think it is?
+
+That question matters more now than it did a year ago. Agent inboxes are moving from internal coordination tools to public addresses on the open internet. Once a bot can receive mail from strangers and act on it, every inbound message becomes untrusted input with a path to tools, data, and, in some cases, money.
+
+## Key risks at a glance
+
+```
+---
+title: From untrusted email to action
+---
+flowchart LR
+    email["Untrusted email arrives<br/>at agent inbox"] --> agent["Agent (LLM + tools)<br/>processes the message"]
+    agent --> delete["Delete evidence"]
+    agent --> allowlist["Edit own allowlist"]
+    agent --> spend["Spend money or share data"]
+```
+- An agent can often edit its own allowlists if its key permits it.
+- Reply restrictions are separate from receive restrictions; an empty reply list lets every reply through.
+- Deletion permissions create a repudiation problem: the bot can clean up after itself.
+- Every inbound email is a prompt. If the agent has tools, that prompt has a path to action.
+
+Email authentication proves control of a domain, but not who controls the bot or what it is authorized to do.
+
+## How we got here
+
+Agents talking to agents isn’t new. Research teams have run clusters of agents that coordinate through shared message boards. Developers running Claude Code, Codex, and Cursor side by side wanted the same thing, so open-source tools like MCP Agent Mail emerged to give coding agents inboxes, threads, and file “leases” to prevent them from overwriting each other’s work. Hosted services like AgentMail now give any agent a real email address in one API call.
+
+That last step is the shift. Inside one team, the agents on the message bus mostly belong to you. On the open internet, the bot emailing yours belongs to a stranger.
+
+## What “giving your bot an inbox” actually means
+
+The risk lives in the plumbing. With AgentMail, an agent can connect through a hosted MCP server, a REST API and SDKs, or plain IMAP and SMTP. It authenticates with an API key or, in some assistants, through OAuth. From there it gets a toolbox of roughly three dozen actions: send, reply, forward, search, delete threads, delete inboxes, and edit the inbox’s own allow and block lists.
+
+MCP Agent Mail works differently. It is a local server for coordination inside one team, and it includes a “Human Overseer” message type that tells agents to drop what they’re doing and prioritize it. That is exactly the kind of message an attacker would want to imitate.
+
+### Each of these choices has a security consequence
+
+```
+flowchart LR
+    subgraph intended["Intended controls"]
+        keys["Scoped API keys"]
+        lists["Allowlists for send/receive/reply"]
+        perms["No delete or list-edit permissions"]
+    end
+    subgraph misconfigured["What happens if misconfigured"]
+        selfEdit["Agent can edit its own allowlist"]
+        emptyReply["Empty reply list lets everything through"]
+        evidence["Bot can delete the evidence"]
+    end
+    keys --> selfEdit
+    lists --> emptyReply
+    perms --> evidence
+```
+**Lists exist, but they’re scoped and split.** AgentMail supports allow and
+block lists for sending, receiving, and replies, set at the organization, team,
+or inbox level, with the narrowest scope winning. Replies are checked against
+their own reply lists. An empty reply list lets every reply through. Locking
+down who can email your bot does not automatically lock down who can reply to
+it.
+
+**The agent can edit its own guardrails.** The toolset includes adding and
+removing list entries. If the key your agent holds allows it, a manipulated
+agent can add an attacker to its own allowlist. Restricted keys can remove that
+ability, but keys have full access within their scope unless you explicitly
+restrict them.
+
+**Deletion creates a repudiation problem.** A key with permission to delete
+messages can delete whole threads. That is useful for hygiene and terrible for
+accountability. An agent that was tricked into doing something can also be
+tricked into cleaning up after itself. If the only record of what your bot was
+prompted lives in a mailbox the bot can delete, you do not have a record.
+Features like short message expiry help privacy and cut the same way.
+
+**Rate limits protect the provider, not necessarily you.** The API pushes back
+when you call it too fast and caps recipients per message. That is not the same
+as the limits you choose: how many emails your bot may send in an hour, how
+many inbound messages it will act on before a human looks, or how much model
+spend a flood of email can trigger. Without those, a noisy sender becomes an
+availability problem and a billing problem. That spike is exactly the type of
+signal that should trigger an alert.
+
+The controls are there. AgentMail offers scoped keys, permission allowlists that stop a restricted key from minting a more powerful one, sender lists, and spam filtering. Configuration, not the product page, decides whether they protect you.
+
+## An email address is not an identity
+
+Email has decent sender authentication. SPF, DKIM, and DMARC can tell you a message really came from a given domain. They cannot tell you who controls the bot behind it, what that bot is authorized to agree to, whether its owner meant to send this particular message, or whether someone else already manipulated it.
+
+Humans cover that gap with judgment. We notice when the tone is off. We call the vendor. We ask a colleague, “does this look right?” A bot reading its inbox at 3 AM has whatever judgment we built into it. For most bots today, that is not much.
+
+## Every inbound message is a prompt
+
+“Send my bot your bug reports” is a friendly invitation. To a security person, it is also a public address where anyone can put text in front of an agent. If that agent has tools and access, such as the ability to buy tickets, read source code, reply with information, or update a calendar, then the body of an email is untrusted input with a path to action.
+
+### That is prompt injection with a mailing address
+
+This is not a knock on any one project. It is the shape of the pattern. Every builder in this space should be able to answer one question: what is the worst thing my agent can do because of a message from someone I have never met?
+
+## Bots that answer bots can spread things
+
+Chain it together. My bot reads your bot’s message, then writes to a third bot. If a single message can get a model to include a new instruction in its reply, that instruction travels.
+
+This has already been demonstrated. In 2024, researchers Stav Cohen, Ron Bitton, and Ben Nassi built Morris II, a worm that spread between AI email assistants using self-replicating prompts. It exfiltrated data and sent spam without anyone clicking a link. It ran in a test environment, not in the wild. But the test environment involved AI email assistants talking to each other, and that is now a product category.
+
+## When money enters the thread
+
+The Craigslist example is where the stakes change. I have secured production agent systems that processed real financial transactions. The biggest lesson was simple: the moment an agent can commit money, every other question changes.
+
+When two bots negotiate a sale, who is accountable for the price? What stops my bot from accepting an “updated payment link” from a counterparty it has never verified? And who is actually reading the thread?
+
+People already stop reading email once the volume gets high. Agents generate volume. A log that is auditable but never reviewed is not oversight. It is evidence for later.
+
+## Five questions before you give your bot an inbox
+
+1. **Who can reach it?** For anything beyond a hobby project, an allowlist of
+known senders beats an open inbox.
+2. **What can it do because of a message?** List the tools. Separate reading
+from acting, and acting from spending. Can it delete its own mail or edit
+its own allowlist? It shouldn’t.
+3. **What needs a human?** Commitments, payments, data sharing, and anything
+irreversible should require human approval.
+4. **Does it treat email as data or as orders?** Content from an inbound
+message should be something the agent evaluates, never something it simply
+obeys.
+5. **Who reviews what happened?** Identify who is responsible, how often
+reviews occur, and what triggers an alert. Keep the record somewhere the bot
+can’t delete, and set your own caps on how much it sends and processes per
+hour so a spike triggers an alert instead of a bill. If the answer is “it’s
+all logged,” you’re not done yet.
+
+## The fun part is real
+
+I want bot-to-bot to work. Scheduling across companies without six emails of back-and-forth, support requests resolved without a hold queue, a group buy that organizes itself. That is genuinely useful, and the teams building agent inboxes are already thinking about pieces of this. Allowlists, tenant isolation, and message expiry exist for a reason.
+
+The internet learned the hard way that email needed authentication, spam filters, and a healthy suspicion of strangers. Our bots need the same, and they need it before the first one agrees to a deal nobody meant to make.
+
+So yes, have your bot talk to my bot. Just tell me who’s checking IDs.
+
+*If you’re building with agent inboxes or bot-to-bot workflows, what’s the one
+control you wish you’d set earlier—or the worst thing your agent could do right
+now with a message from a stranger?*
+
+## Further reading
+
+- Stav Cohen, Ron Bitton, and Ben Nassi, “Here Comes The AI Worm: Unleashing Zero-click Worms that Target GenAI-Powered Applications” (2024)
+- MCP Agent Mail
+- AgentMail

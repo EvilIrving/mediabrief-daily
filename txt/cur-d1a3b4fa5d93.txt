@@ -1,0 +1,7 @@
+https://magazine.sebastianraschka.com/p/building-reasoning-models
+
+从零构建推理模型：完整视频课程 ｜ Sebastian Raschka ｜ - ｜ https://magazine.sebastianraschka.com/p/building-reasoning-models
+
+《从零构建推理模型》配有八段视频，共约 11 小时。课程从预训练模型出发，用 Python 与 PyTorch 亲手实现评估、推理扩展、强化学习与蒸馏。作者把推理模型看作普通 LLM 的升级版：在可验证奖励的强化学习上做后训练，并可选地叠加推理时扩展；它随后作为“引擎”嵌入 agent harness，由外层框架负责上下文管理与工具调用。课程不训练基座，而是加载 Qwen3 0.6B 的预训练权重，把精力放在真正关键的环节。读者需熟悉 Python 与 PyTorch，前作《从零构建大语言模型》推荐但非必需；早期实验可在 CPU 上完成，训练建议用 GPU。
+
+第一讲厘清传统 LLM、推理模型与 agent 的关系，用 uv 配置环境并选择硬件、排查 CUDA 或 Apple Silicon 问题。第二讲加载权重，讲清张量形状、logits 与下一词预测，实现流式贪心解码，并加入 KV 缓存与 torch.compile。第三讲搭建数学答案验证器，抽取最终答案、归一化并判断等价，用它评测 MATH-500，同时为后续 RLVR 提供奖励信号。第四讲实现温度缩放、多项式采样与 top-p 过滤以生成多样答案，再用多数投票的自洽性合并候选，衡量额外算力与准确率的取舍。第五讲用 token 与序列对数概率评分、为自洽性破平，并试验“自我批评—修订”的循环。第六讲实现简化版 GRPO：生成推理轨迹、用验证器打分、计算相对优势与损失，搭起带日志和检查点的训练循环。第七讲补充熵、优势统计、裁剪策略比率、KL 项与格式奖励等指标，并讨论奖励 hacking 与简化 KL 的局限。第八讲介绍蒸馏的不同形式，用 DeepSeek R1 生成 MATH 答案，计算答案 token 的对数概率与交叉熵，完成监督训练后在 MATH-500 上比较结果。更详细的文字讲解、插图与习题见 Manning 和 Amazon 出版的配套书。
