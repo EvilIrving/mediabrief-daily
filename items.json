@@ -1,5 +1,71 @@
 [
  {
+  "id": "cx-101-pension-loan",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“养老贷”再惹议 贷款缴社保划算吗？｜社保算账",
+  "link": "https://www.caixin.com/2026-10-29/102498240.html",
+  "date": "2026-10-29",
+  "author": "汤涵钰",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-101-pension-loan.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-101-pension-loan.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T02:00+08:00"
+ },
+ {
+  "id": "cx-100-gongke-ai",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "对话龚克：AI发展必须与安全统一，不发展才是最大的不安全",
+  "link": "https://science.caixin.com/2026-10-28/102498067.html",
+  "date": "2026-10-28",
+  "author": "徐路易",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-100-gongke-ai.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-100-gongke-ai.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T02:00+08:00"
+ },
+ {
+  "id": "cx-102-us-retire-spend",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "美国人退休后为何不愿动用退休账户储蓄",
+  "link": "https://opinion.caixin.com/2026-10-28/102498196.html",
+  "date": "2026-10-28",
+  "author": "林羿",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-102-us-retire-spend.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-102-us-retire-spend.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T02:00+08:00"
+ },
+ {
   "id": "cx-87-foxconn-ecd",
   "kind": "curated",
   "type": "caixin",
