@@ -66,6 +66,32 @@
   "added_at": "2026-10-30T02:00+08:00"
  },
  {
+  "id": "cur-4516fe722686",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Getting good at AI takes time and practice",
+  "link": "https://seangoedecke.com/getting-good-at-ai-takes-time-and-practice/",
+  "date": "2026-10-28",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-4516fe722686.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-4516fe722686.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-4516fe722686.orig.txt"
+   }
+  ],
+  "title_zh": "擅长人工智能需要时间和练习",
+  "added_at": "2026-10-30T02:08+08:00"
+ },
+ {
   "id": "cx-87-foxconn-ecd",
   "kind": "curated",
   "type": "caixin",
