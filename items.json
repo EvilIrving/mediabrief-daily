@@ -1,5 +1,29 @@
 [
  {
+  "id": "2115062331227226349",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Anthropic 工程师讲 Claude Managed Agents：从 API 到托管智能体",
+  "link": "https://x.com/Grow_withAI/status/2115062331227226349",
+  "date": "2026-10-30T01:57",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2115062331227226349.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2115062331227226349.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2115062331227226349.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2115062331227226349.m4a",
+  "added_at": "2026-10-30T02:12+08:00"
+ },
+ {
   "id": "cx-101-pension-loan",
   "kind": "curated",
   "type": "caixin",
@@ -90,6 +114,32 @@
   ],
   "title_zh": "擅长人工智能需要时间和练习",
   "added_at": "2026-10-30T02:08+08:00"
+ },
+ {
+  "id": "cur-c9ff3900c5bd",
+  "kind": "curated",
+  "type": "article",
+  "source": "Martin Fowler",
+  "title": "Fragments: October 28",
+  "link": "https://martinfowler.com/fragments/2026-10-28.html",
+  "date": "2026-10-28",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-c9ff3900c5bd.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-c9ff3900c5bd.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c9ff3900c5bd.orig.txt"
+   }
+  ],
+  "title_zh": "碎片： 10月28日",
+  "added_at": "2026-10-30T02:12+08:00"
  },
  {
   "id": "cx-87-foxconn-ecd",
