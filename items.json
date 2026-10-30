@@ -11235,6 +11235,32 @@
   "added_at": "2026-10-31T03:34+08:00"
  },
  {
+  "id": "cx-151-deposit-rcc",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "存款保险胶着农信社",
+  "link": "https://magazine.caixin.com/2010-02-07/100116554.html",
+  "date": "2010-02-07",
+  "author": "张宇哲、王晶",
+  "issue": "《财新周刊》2010年第7期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-151-deposit-rcc.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-151-deposit-rcc.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-151-deposit-rcc.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T04:04+08:00"
+ },
+ {
   "id": "cx-127-fin-reg-debate",
   "kind": "curated",
   "type": "caixin",
