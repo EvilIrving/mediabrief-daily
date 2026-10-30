@@ -9791,6 +9791,72 @@
   "added_at": "2026-10-19T10:13+08:00"
  },
  {
+  "id": "cx-107-ev-adventurers",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "冒险家的乐园",
+  "link": "https://weekly.caixin.com/2017-01-20/101047527.html",
+  "date": "2017-01-23",
+  "author": "安丽敏、覃敏、王晓庆、李增新",
+  "issue": "《财新周刊》2017年第4期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-107-ev-adventurers.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-107-ev-adventurers.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:28+08:00"
+ },
+ {
+  "id": "cx-105-npl-feast",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "不良资产盛宴",
+  "link": "https://weekly.caixin.com/2016-12-01/101021584.html",
+  "date": "2016-12-05",
+  "author": "张宇哲（董兢、杨巧伶、吴红毓然亦有贡献）",
+  "issue": "《财新周刊》2016年第47期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-105-npl-feast.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-105-npl-feast.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:28+08:00"
+ },
+ {
+  "id": "cx-106-npl-vulture",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "外资「清洗者」再叩门",
+  "link": "https://weekly.caixin.com/2016-12-02/101021780.html",
+  "date": "2016-12-05",
+  "author": "张宇哲、董兢",
+  "issue": "《财新周刊》2016年第47期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-106-npl-vulture.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-106-npl-vulture.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:28+08:00"
+ },
+ {
   "id": "cur-bc8809708ee2",
   "kind": "curated",
   "type": "podcast",
