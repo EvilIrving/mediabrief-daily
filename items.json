@@ -10569,6 +10569,28 @@
   "added_at": "2026-10-30T23:11+08:00"
  },
  {
+  "id": "cx-127-fin-reg-debate",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "金融监管激辩",
+  "link": "https://magazine.caixin.com/2010-01-31/100112351.html",
+  "date": "2010-02-01",
+  "author": "李增新",
+  "issue": "《财新周刊》2010年第6期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-127-fin-reg-debate.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-127-fin-reg-debate.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-31T00:10+08:00"
+ },
+ {
   "id": "cur-4e8227e28349",
   "kind": "curated",
   "type": "article",
