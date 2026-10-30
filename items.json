@@ -9742,6 +9742,28 @@
   "added_at": "2026-10-19T14:19+08:00"
  },
  {
+  "id": "cx-111-huaxia-land-king",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "地产大王是非（造城者·下篇）",
+  "link": "https://weekly.caixin.com/2017-03-17/101067215.html",
+  "date": "2017-03-20",
+  "author": "侯雯、黄荣、于宁、周宇诗、李雪",
+  "issue": "《财新周刊》2017年第11期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-111-huaxia-land-king.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-111-huaxia-land-king.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:59+08:00"
+ },
+ {
   "id": "cur-66d963ce2471",
   "kind": "curated",
   "type": "podcast",
@@ -10193,6 +10215,28 @@
    }
   ],
   "added_at": "2026-10-19T17:14+08:00"
+ },
+ {
+  "id": "cx-112-bandit-yuan-ying",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "假以革命名义的匪首",
+  "link": "https://magazine.caixin.com/2011-03-11/100235631.html",
+  "date": "2011-03-14",
+  "author": "王克明",
+  "issue": "《财新周刊》2011年第10期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-112-bandit-yuan-ying.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-112-bandit-yuan-ying.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:59+08:00"
  },
  {
   "id": "cx-110-1970s-impressions",
