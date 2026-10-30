@@ -11027,6 +11027,32 @@
   "added_at": "2026-10-30T22:45+08:00"
  },
  {
+  "id": "cx-145-unemployment-survey",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "失业率再调查",
+  "link": "https://magazine.caixin.com/2010-02-28/100121249.html",
+  "date": "2010-02-28",
+  "author": "汪旭、兰方",
+  "issue": "《财新周刊》2010年第9期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-145-unemployment-survey.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-145-unemployment-survey.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-145-unemployment-survey.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:49+08:00"
+ },
+ {
   "id": "cx-115-salinger",
   "kind": "curated",
   "type": "caixin",
