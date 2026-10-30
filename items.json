@@ -10033,6 +10033,28 @@
   "added_at": "2026-10-30T22:28+08:00"
  },
  {
+  "id": "cx-124-silicon-comma",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "都是“逗号”惹的祸 硅谷变硅囧了吗？",
+  "link": "https://international.caixin.com/2016-07-17/100967195.html",
+  "date": "2016-07-17",
+  "author": "李增新",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-124-silicon-comma.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-124-silicon-comma.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:57+08:00"
+ },
+ {
   "id": "cur-bc8809708ee2",
   "kind": "curated",
   "type": "podcast",
