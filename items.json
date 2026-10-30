@@ -11365,6 +11365,32 @@
   "added_at": "2026-10-31T03:55+08:00"
  },
  {
+  "id": "cx-148-keep-repaying",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "继续还债",
+  "link": "https://magazine.caixin.com/2010-01-15/100108466.html",
+  "date": "2010-01-15",
+  "author": "关军",
+  "issue": "财新《中国改革》2010年第1、2期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-148-keep-repaying.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-148-keep-repaying.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-148-keep-repaying.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:56+08:00"
+ },
+ {
   "id": "cx-134-gaidar",
   "kind": "curated",
   "type": "caixin",
