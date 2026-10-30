@@ -9874,6 +9874,28 @@
   "added_at": "2026-10-30T22:59+08:00"
  },
  {
+  "id": "cx-121-industry-newtown",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "产业新城神话（造城者·上篇）",
+  "link": "https://weekly.caixin.com/2017-03-17/101067216.html",
+  "date": "2017-03-20",
+  "author": "侯雯、黄荣、于宁、周宇诗、李雪",
+  "issue": "《财新周刊》2017年第11期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-121-industry-newtown.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-121-industry-newtown.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:45+08:00"
+ },
+ {
   "id": "cur-66d963ce2471",
   "kind": "curated",
   "type": "podcast",
