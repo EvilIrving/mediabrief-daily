@@ -11365,6 +11365,32 @@
   "added_at": "2026-10-31T03:55+08:00"
  },
  {
+  "id": "cx-149-catastrophe-insurance",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "巨灾保险与政府",
+  "link": "https://magazine.caixin.com/2010-01-17/100108879.html",
+  "date": "2010-01-17",
+  "author": "王君",
+  "issue": "《财新周刊》2010年第4期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-149-catastrophe-insurance.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-149-catastrophe-insurance.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-149-catastrophe-insurance.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T04:00+08:00"
+ },
+ {
   "id": "cx-148-keep-repaying",
   "kind": "curated",
   "type": "caixin",
