@@ -11261,6 +11261,32 @@
   "added_at": "2026-10-31T03:25+08:00"
  },
  {
+  "id": "cx-138-yanliyan-debt",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "颜立燕债务链初解",
+  "link": "https://magazine.caixin.com/2010-01-31/100112362.html",
+  "date": "2010-01-31",
+  "author": "陈中小路、沈乎、张丽华",
+  "issue": "《财新周刊》2010年第6期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-138-yanliyan-debt.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-138-yanliyan-debt.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-138-yanliyan-debt.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:40+08:00"
+ },
+ {
   "id": "cx-131-debt-sink",
   "kind": "curated",
   "type": "caixin",
@@ -11363,6 +11389,32 @@
    }
   ],
   "added_at": "2026-10-31T03:37+08:00"
+ },
+ {
+  "id": "cx-140-anti-inflation",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "反通胀不能仅靠货币政策",
+  "link": "https://magazine.caixin.com/2010-01-08/100106587.html",
+  "date": "2010-01-08",
+  "author": "张雪春",
+  "issue": "《财新周刊》2010年第2期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-140-anti-inflation.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-140-anti-inflation.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-140-anti-inflation.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:40+08:00"
  },
  {
   "id": "cur-4e8227e28349",
