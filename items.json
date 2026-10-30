@@ -134,6 +134,10 @@
    {
     "label": "详读",
     "url": "txt/cx-101-pension-loan.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-101-pension-loan.orig.txt"
    }
   ],
   "added_at": "2026-10-30T02:00+08:00"
@@ -156,6 +160,10 @@
    {
     "label": "详读",
     "url": "txt/cx-103-money-empire.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-103-money-empire.orig.txt"
    }
   ],
   "added_at": "2026-10-30T09:03+08:00"
@@ -178,6 +186,10 @@
    {
     "label": "详读",
     "url": "txt/cx-104-wei-surplus-household.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-104-wei-surplus-household.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:13+08:00"
@@ -200,6 +212,10 @@
    {
     "label": "详读",
     "url": "txt/cx-100-gongke-ai.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-100-gongke-ai.orig.txt"
    }
   ],
   "added_at": "2026-10-30T02:00+08:00"
@@ -222,6 +238,10 @@
    {
     "label": "详读",
     "url": "txt/cx-102-us-retire-spend.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-102-us-retire-spend.orig.txt"
    }
   ],
   "added_at": "2026-10-30T02:00+08:00"
@@ -296,6 +316,10 @@
    {
     "label": "详读",
     "url": "txt/cx-87-foxconn-ecd.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-87-foxconn-ecd.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:00+08:00"
@@ -318,6 +342,10 @@
    {
     "label": "详读",
     "url": "txt/cx-95-algo-cage.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-95-algo-cage.orig.txt"
    }
   ],
   "added_at": "2026-10-28T14:42+08:00"
@@ -340,6 +368,10 @@
    {
     "label": "详读",
     "url": "txt/cx-96-offshore-trust.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-96-offshore-trust.orig.txt"
    }
   ],
   "added_at": "2026-10-28T14:42+08:00"
@@ -362,6 +394,10 @@
    {
     "label": "详读",
     "url": "txt/cx-97-miao-monetary.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-97-miao-monetary.orig.txt"
    }
   ],
   "added_at": "2026-10-28T14:42+08:00"
@@ -384,6 +420,10 @@
    {
     "label": "详读",
     "url": "txt/cx-98-lu-imbalance.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-98-lu-imbalance.orig.txt"
    }
   ],
   "added_at": "2026-10-28T14:42+08:00"
@@ -406,6 +446,10 @@
    {
     "label": "详读",
     "url": "txt/cx-99-jia-infra-fiscal.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-99-jia-infra-fiscal.orig.txt"
    }
   ],
   "added_at": "2026-10-28T14:42+08:00"
@@ -480,6 +524,10 @@
    {
     "label": "详读",
     "url": "txt/cx-86-ma-earnout.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-86-ma-earnout.orig.txt"
    }
   ],
   "added_at": "2026-10-27T08:57+08:00"
@@ -502,6 +550,10 @@
    {
     "label": "详读",
     "url": "txt/cx-88-eu-china-trade.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-88-eu-china-trade.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:05+08:00"
@@ -524,6 +576,10 @@
    {
     "label": "详读",
     "url": "txt/cx-89-gdp-broader.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-89-gdp-broader.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:10+08:00"
@@ -546,6 +602,10 @@
    {
     "label": "详读",
     "url": "txt/cx-90-lamy-interview.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-90-lamy-interview.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:11+08:00"
@@ -568,6 +628,10 @@
    {
     "label": "详读",
     "url": "txt/cx-91-talarico.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-91-talarico.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:23+08:00"
@@ -590,6 +654,10 @@
    {
     "label": "详读",
     "url": "txt/cx-92-hk-land.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-92-hk-land.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:23+08:00"
@@ -612,6 +680,10 @@
    {
     "label": "详读",
     "url": "txt/cx-93-flex-social.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-93-flex-social.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:25+08:00"
@@ -634,6 +706,10 @@
    {
     "label": "详读",
     "url": "txt/cx-94-yuhong-debt-home.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-94-yuhong-debt-home.orig.txt"
    }
   ],
   "added_at": "2026-10-27T09:30+08:00"
@@ -787,6 +863,10 @@
    {
     "label": "详读",
     "url": "txt/cx-84-xita.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-84-xita.orig.txt"
    }
   ],
   "added_at": "2026-10-26T09:19+08:00"
@@ -809,6 +889,10 @@
    {
     "label": "详读",
     "url": "txt/cx-85-africa-sme.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-85-africa-sme.orig.txt"
    }
   ],
   "added_at": "2026-10-26T09:28+08:00"
@@ -831,6 +915,10 @@
    {
     "label": "详读",
     "url": "txt/cx-83-changpin.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-83-changpin.orig.txt"
    }
   ],
   "title_zh": "「长聘」不稳了",
@@ -880,6 +968,10 @@
    {
     "label": "详读",
     "url": "txt/cx-75-clinical-trial-suit.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-75-clinical-trial-suit.orig.txt"
    }
   ],
   "added_at": "2026-10-24T07:28+08:00"
@@ -902,6 +994,10 @@
    {
     "label": "详读",
     "url": "txt/cx-79-liu-xuefeng.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-79-liu-xuefeng.orig.txt"
    }
   ],
   "added_at": "2026-10-25T02:27+08:00"
@@ -924,6 +1020,10 @@
    {
     "label": "详读",
     "url": "txt/cx-81-retire-planner.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-81-retire-planner.orig.txt"
    }
   ],
   "added_at": "2026-10-26T07:23+08:00"
@@ -946,6 +1046,10 @@
    {
     "label": "详读",
     "url": "txt/cx-82-france-turmoil.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-82-france-turmoil.orig.txt"
    }
   ],
   "added_at": "2026-10-26T09:28+08:00"
@@ -994,6 +1098,10 @@
    {
     "label": "详读",
     "url": "txt/cx-76-ai-money-power.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-76-ai-money-power.orig.txt"
    }
   ],
   "added_at": "2026-10-24T07:28+08:00"
@@ -1120,6 +1228,10 @@
    {
     "label": "详读",
     "url": "txt/cx-64-anne-carson.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-64-anne-carson.orig.txt"
    }
   ],
   "added_at": "2026-10-19T14:48+08:00"
@@ -1142,6 +1254,10 @@
    {
     "label": "详读",
     "url": "txt/cx-65-ai-companion.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-65-ai-companion.orig.txt"
    }
   ],
   "added_at": "2026-10-19T17:48+08:00"
@@ -1164,6 +1280,10 @@
    {
     "label": "详读",
     "url": "txt/cx-70-nobel-econ.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-70-nobel-econ.orig.txt"
    }
   ],
   "added_at": "2026-10-19T20:23+08:00"
@@ -1186,6 +1306,10 @@
    {
     "label": "详读",
     "url": "txt/cx-71-nobel-lit-criteria.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-71-nobel-lit-criteria.orig.txt"
    }
   ],
   "added_at": "2026-10-20T10:30+08:00"
@@ -1208,6 +1332,10 @@
    {
     "label": "详读",
     "url": "txt/cx-74-outdoor-chaos.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-74-outdoor-chaos.orig.txt"
    }
   ],
   "added_at": "2026-10-20T10:30+08:00"
@@ -1230,6 +1358,10 @@
    {
     "label": "详读",
     "url": "txt/cx-72-land-renewal.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-72-land-renewal.orig.txt"
    }
   ],
   "added_at": "2026-10-20T10:35+08:00"
@@ -1434,6 +1566,10 @@
    {
     "label": "详读",
     "url": "txt/cx-77-brazil-crossroads.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-77-brazil-crossroads.orig.txt"
    }
   ],
   "added_at": "2026-10-25T02:27+08:00"
@@ -1456,6 +1592,10 @@
    {
     "label": "详读",
     "url": "txt/cx-80-indonesia-haze.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-80-indonesia-haze.orig.txt"
    }
   ],
   "added_at": "2026-10-25T02:27+08:00"
@@ -1530,6 +1670,10 @@
    {
     "label": "详读",
     "url": "txt/cx-69-liangshan-potato.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-69-liangshan-potato.orig.txt"
    }
   ],
   "added_at": "2026-10-19T19:27+08:00"
@@ -1552,6 +1696,10 @@
    {
     "label": "详读",
     "url": "txt/cx-67-power-sales.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-67-power-sales.orig.txt"
    }
   ],
   "added_at": "2026-10-20T00:27+08:00"
@@ -1888,6 +2036,10 @@
    {
     "label": "详读",
     "url": "txt/cx-66-xihuashan-tungsten.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-66-xihuashan-tungsten.orig.txt"
    }
   ],
   "added_at": "2026-10-19T16:14+08:00"
@@ -1910,6 +2062,10 @@
    {
     "label": "详读",
     "url": "txt/cx-68-nobel-science.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-68-nobel-science.orig.txt"
    }
   ],
   "added_at": "2026-10-19T19:01+08:00"
@@ -1932,6 +2088,10 @@
    {
     "label": "详读",
     "url": "txt/cx-08-gene-therapy.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-08-gene-therapy.orig.txt"
    }
   ],
   "added_at": "2026-10-17T17:12+08:00"
@@ -2079,6 +2239,10 @@
    {
     "label": "详读",
     "url": "txt/cx-73-akeqi-youth.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-73-akeqi-youth.orig.txt"
    }
   ],
   "added_at": "2026-10-20T10:35+08:00"
@@ -2101,6 +2265,10 @@
    {
     "label": "详读",
     "url": "txt/cx-78-office-agent.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-78-office-agent.orig.txt"
    }
   ],
   "added_at": "2026-10-25T02:27+08:00"
@@ -2535,6 +2703,10 @@
    {
     "label": "详读",
     "url": "txt/cx-48-hospice.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-48-hospice.orig.txt"
    }
   ],
   "added_at": "2026-10-19T12:16+08:00"
@@ -2727,6 +2899,10 @@
    {
     "label": "详读",
     "url": "txt/cx-01-de-care.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-01-de-care.orig.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -2859,6 +3035,10 @@
    {
     "label": "详读",
     "url": "txt/cx-03-school.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-03-school.orig.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -3142,6 +3322,10 @@
    {
     "label": "详读",
     "url": "txt/cx-42-sound-group.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-42-sound-group.orig.txt"
    }
   ],
   "added_at": "2026-10-19T09:18+08:00"
@@ -4158,6 +4342,10 @@
    {
     "label": "详读",
     "url": "txt/cx-33-altruism.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-33-altruism.orig.txt"
    }
   ],
   "added_at": "2026-10-19T02:58+08:00"
@@ -4896,6 +5084,10 @@
    {
     "label": "详读",
     "url": "txt/cx-38-nexperia.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-38-nexperia.orig.txt"
    }
   ],
   "added_at": "2026-10-19T05:47+08:00"
@@ -5324,6 +5516,10 @@
    {
     "label": "详读",
     "url": "txt/cx-23-zongqinghou.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-23-zongqinghou.orig.txt"
    }
   ],
   "added_at": "2026-10-19T00:39+08:00"
@@ -5493,6 +5689,10 @@
    {
     "label": "详读",
     "url": "txt/cx-30-green-wall.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-30-green-wall.orig.txt"
    }
   ],
   "added_at": "2026-10-19T01:48+08:00"
@@ -5748,6 +5948,10 @@
    {
     "label": "详读",
     "url": "txt/cx-49-hospital-debt.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-49-hospital-debt.orig.txt"
    }
   ],
   "added_at": "2026-10-19T13:15+08:00"
@@ -5975,6 +6179,10 @@
    {
     "label": "详读",
     "url": "txt/cx-55-crane-uhv.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-55-crane-uhv.orig.txt"
    }
   ],
   "added_at": "2026-10-19T16:14+08:00"
@@ -6214,6 +6422,10 @@
    {
     "label": "详读",
     "url": "txt/cx-28-illness-aid.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-28-illness-aid.orig.txt"
    }
   ],
   "added_at": "2026-10-19T02:20+08:00"
@@ -6525,6 +6737,10 @@
    {
     "label": "详读",
     "url": "txt/cx-41-pneumoconiosis.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-41-pneumoconiosis.orig.txt"
    }
   ],
   "added_at": "2026-10-19T07:27+08:00"
@@ -6696,6 +6912,10 @@
    {
     "label": "详读",
     "url": "txt/cx-06-low-price.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-06-low-price.orig.txt"
    }
   ],
   "added_at": "2026-10-15T13:31+08:00"
@@ -6770,6 +6990,10 @@
    {
     "label": "详读",
     "url": "txt/cx-14-nonwoven-bag.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-14-nonwoven-bag.orig.txt"
    }
   ],
   "added_at": "2026-10-17T18:40+08:00"
@@ -6871,6 +7095,10 @@
    {
     "label": "详读",
     "url": "txt/cx-12-autism-adult.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-12-autism-adult.orig.txt"
    }
   ],
   "added_at": "2026-10-17T18:36+08:00"
@@ -7054,6 +7282,10 @@
    {
     "label": "详读",
     "url": "txt/cx-36-wang-zengqi.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-36-wang-zengqi.orig.txt"
    }
   ],
   "added_at": "2026-10-19T04:42+08:00"
@@ -7315,6 +7547,10 @@
    {
     "label": "详读",
     "url": "txt/cx-27-thorny-childhood.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-27-thorny-childhood.orig.txt"
    }
   ],
   "added_at": "2026-10-19T00:39+08:00"
@@ -7337,6 +7573,10 @@
    {
     "label": "详读",
     "url": "txt/cx-39-pharma-anticorruption.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-39-pharma-anticorruption.orig.txt"
    }
   ],
   "added_at": "2026-10-19T08:12+08:00"
@@ -7502,6 +7742,10 @@
    {
     "label": "详读",
     "url": "txt/cx-59-kuangnan.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-59-kuangnan.orig.txt"
    }
   ],
   "added_at": "2026-10-19T21:50+08:00"
@@ -7707,6 +7951,10 @@
    {
     "label": "详读",
     "url": "txt/cx-52-perennial-rice.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-52-perennial-rice.orig.txt"
    }
   ],
   "added_at": "2026-10-19T13:49+08:00"
@@ -8017,6 +8265,10 @@
    {
     "label": "详读",
     "url": "txt/cx-32-hegang.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-32-hegang.orig.txt"
    }
   ],
   "added_at": "2026-10-19T05:14+08:00"
@@ -8269,6 +8521,10 @@
    {
     "label": "详读",
     "url": "txt/cx-31-eia-engineer.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-31-eia-engineer.orig.txt"
    }
   ],
   "added_at": "2026-10-19T03:47+08:00"
@@ -8317,6 +8573,10 @@
    {
     "label": "详读",
     "url": "txt/cx-19-xinyang-battery.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-19-xinyang-battery.orig.txt"
    }
   ],
   "added_at": "2026-10-18T03:21+08:00"
@@ -8391,6 +8651,10 @@
    {
     "label": "详读",
     "url": "txt/cx-26-royole.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-26-royole.orig.txt"
    }
   ],
   "added_at": "2026-10-18T03:21+08:00"
@@ -8413,6 +8677,10 @@
    {
     "label": "详读",
     "url": "txt/cx-47-internet-labor.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-47-internet-labor.orig.txt"
    }
   ],
   "added_at": "2026-10-19T11:46+08:00"
@@ -8461,6 +8729,10 @@
    {
     "label": "详读",
     "url": "txt/cx-53-gambling-funds.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-53-gambling-funds.orig.txt"
    }
   ],
   "added_at": "2026-10-19T15:20+08:00"
@@ -8589,6 +8861,10 @@
    {
     "label": "详读",
     "url": "txt/cx-46-tianjin-cholera.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-46-tianjin-cholera.orig.txt"
    }
   ],
   "added_at": "2026-10-19T10:46+08:00"
@@ -8716,6 +8992,10 @@
    {
     "label": "详读",
     "url": "txt/cx-07-volcano-painting.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-07-volcano-painting.orig.txt"
    }
   ],
   "added_at": "2026-10-17T07:24+08:00"
@@ -8738,6 +9018,10 @@
    {
     "label": "详读",
     "url": "txt/cx-25-yunnan-aluminum.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-25-yunnan-aluminum.orig.txt"
    }
   ],
   "added_at": "2026-10-19T00:39+08:00"
@@ -8867,6 +9151,10 @@
    {
     "label": "详读",
     "url": "txt/cx-43-leeuwenhoek.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-43-leeuwenhoek.orig.txt"
    }
   ],
   "added_at": "2026-10-19T08:44+08:00"
@@ -8889,6 +9177,10 @@
    {
     "label": "详读",
     "url": "txt/cx-60-st-yanhu.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-60-st-yanhu.orig.txt"
    }
   ],
   "added_at": "2026-10-19T21:50+08:00"
@@ -9199,6 +9491,10 @@
    {
     "label": "详读",
     "url": "txt/cx-24-pentagon-papers.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-24-pentagon-papers.orig.txt"
    }
   ],
   "added_at": "2026-10-18T03:21+08:00"
@@ -9273,6 +9569,10 @@
    {
     "label": "详读",
     "url": "txt/cx-57-gmo-canola.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-57-gmo-canola.orig.txt"
    }
   ],
   "added_at": "2026-10-19T20:23+08:00"
@@ -9343,6 +9643,10 @@
    {
     "label": "详读",
     "url": "txt/cx-61-env-testing.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-61-env-testing.orig.txt"
    }
   ],
   "added_at": "2026-10-19T22:27+08:00"
@@ -9417,6 +9721,10 @@
    {
     "label": "详读",
     "url": "txt/cx-113-ecommerce-regroup.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-113-ecommerce-regroup.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:06+08:00"
@@ -9439,6 +9747,10 @@
    {
     "label": "详读",
     "url": "txt/cx-125-local-life-war.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-125-local-life-war.orig.txt"
    }
   ],
   "added_at": "2026-10-31T00:07+08:00"
@@ -9461,6 +9773,10 @@
    {
     "label": "详读",
     "url": "txt/cx-35-china-tower.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-35-china-tower.orig.txt"
    }
   ],
   "added_at": "2026-10-19T04:18+08:00"
@@ -9483,6 +9799,10 @@
    {
     "label": "详读",
     "url": "txt/cx-29-ren-yanhong.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-29-ren-yanhong.orig.txt"
    }
   ],
   "added_at": "2026-10-19T02:58+08:00"
@@ -9505,6 +9825,10 @@
    {
     "label": "详读",
     "url": "txt/cx-120-fin-reg-overhaul.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-120-fin-reg-overhaul.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:37+08:00"
@@ -9527,6 +9851,10 @@
    {
     "label": "详读",
     "url": "txt/cx-123-three-swordsmen.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-123-three-swordsmen.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:53+08:00"
@@ -9575,6 +9903,10 @@
    {
     "label": "详读",
     "url": "txt/cx-04-warburg.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-04-warburg.orig.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -9597,6 +9929,10 @@
    {
     "label": "详读",
     "url": "txt/cx-34-zheshang-bank.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-34-zheshang-bank.orig.txt"
    }
   ],
   "added_at": "2026-10-19T06:14+08:00"
@@ -9619,6 +9955,10 @@
    {
     "label": "详读",
     "url": "txt/cx-119-local-deleverage.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-119-local-deleverage.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:37+08:00"
@@ -9641,6 +9981,10 @@
    {
     "label": "详读",
     "url": "txt/cx-62-feibiao.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-62-feibiao.orig.txt"
    }
   ],
   "added_at": "2026-10-19T22:59+08:00"
@@ -9663,6 +10007,10 @@
    {
     "label": "详读",
     "url": "txt/cx-118-qianbao-illegal-fund.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-118-qianbao-illegal-fund.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:32+08:00"
@@ -9737,6 +10085,10 @@
    {
     "label": "详读",
     "url": "txt/cx-11-xiang-junbo.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-11-xiang-junbo.orig.txt"
    }
   ],
   "added_at": "2026-10-17T18:32+08:00"
@@ -9759,6 +10111,10 @@
    {
     "label": "详读",
     "url": "txt/cx-117-insurance-correct.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-117-insurance-correct.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:32+08:00"
@@ -9781,6 +10137,10 @@
    {
     "label": "详读",
     "url": "txt/cx-15-waterma.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-15-waterma.orig.txt"
    }
   ],
   "added_at": "2026-10-17T18:43+08:00"
@@ -9803,6 +10163,10 @@
    {
     "label": "详读",
     "url": "txt/cx-51-kang-hongkui.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-51-kang-hongkui.orig.txt"
    }
   ],
   "added_at": "2026-10-19T12:55+08:00"
@@ -9825,6 +10189,10 @@
    {
     "label": "详读",
     "url": "txt/cx-56-pyramid-scheme.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-56-pyramid-scheme.orig.txt"
    }
   ],
   "added_at": "2026-10-19T18:18+08:00"
@@ -9847,6 +10215,10 @@
    {
     "label": "详读",
     "url": "txt/cx-22-erhai.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-22-erhai.orig.txt"
    }
   ],
   "added_at": "2026-10-19T00:39+08:00"
@@ -9869,6 +10241,10 @@
    {
     "label": "详读",
     "url": "txt/cx-40-stephen-ross.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-40-stephen-ross.orig.txt"
    }
   ],
   "added_at": "2026-10-19T06:14+08:00"
@@ -9891,6 +10267,10 @@
    {
     "label": "详读",
     "url": "txt/cx-50-industrial-new-city.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-50-industrial-new-city.orig.txt"
    }
   ],
   "added_at": "2026-10-19T14:19+08:00"
@@ -9913,6 +10293,10 @@
    {
     "label": "详读",
     "url": "txt/cx-111-huaxia-land-king.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-111-huaxia-land-king.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:59+08:00"
@@ -9935,6 +10319,10 @@
    {
     "label": "详读",
     "url": "txt/cx-121-industry-newtown.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-121-industry-newtown.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:45+08:00"
@@ -9957,6 +10345,10 @@
    {
     "label": "详读",
     "url": "txt/cx-126-foraging-history.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-126-foraging-history.orig.txt"
    }
   ],
   "added_at": "2026-10-31T00:10+08:00"
@@ -10006,6 +10398,10 @@
    {
     "label": "详读",
     "url": "txt/cx-45-leeco-car.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-45-leeco-car.orig.txt"
    }
   ],
   "added_at": "2026-10-19T10:13+08:00"
@@ -10028,6 +10424,10 @@
    {
     "label": "详读",
     "url": "txt/cx-107-ev-adventurers.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-107-ev-adventurers.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:28+08:00"
@@ -10050,6 +10450,10 @@
    {
     "label": "详读",
     "url": "txt/cx-105-npl-feast.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-105-npl-feast.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:28+08:00"
@@ -10072,6 +10476,10 @@
    {
     "label": "详读",
     "url": "txt/cx-106-npl-vulture.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-106-npl-vulture.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:28+08:00"
@@ -10094,6 +10502,10 @@
    {
     "label": "详读",
     "url": "txt/cx-124-silicon-comma.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-124-silicon-comma.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:57+08:00"
@@ -10165,6 +10577,10 @@
    {
     "label": "详读",
     "url": "txt/cx-63-angang.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-63-angang.orig.txt"
    }
   ],
   "title_zh": "「去产能」之困的安钢样本",
@@ -10188,6 +10604,10 @@
    {
     "label": "详读",
     "url": "txt/cx-13-wu-yaozhong.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-13-wu-yaozhong.orig.txt"
    }
   ],
   "added_at": "2026-10-17T18:36+08:00"
@@ -10210,6 +10630,10 @@
    {
     "label": "详读",
     "url": "txt/cx-10-taiwan-stock.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-10-taiwan-stock.orig.txt"
    }
   ],
   "added_at": "2026-10-17T17:59+08:00"
@@ -10232,6 +10656,10 @@
    {
     "label": "详读",
     "url": "txt/cx-37-zhao-yanei.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-37-zhao-yanei.orig.txt"
    }
   ],
   "added_at": "2026-10-19T07:18+08:00"
@@ -10278,6 +10706,10 @@
    {
     "label": "详读",
     "url": "txt/cx-44-tv-station.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-44-tv-station.orig.txt"
    }
   ],
   "added_at": "2026-10-19T10:46+08:00"
@@ -10300,6 +10732,10 @@
    {
     "label": "详读",
     "url": "txt/cx-09-qiuhe.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-09-qiuhe.orig.txt"
    }
   ],
   "added_at": "2026-10-17T17:12+08:00"
@@ -10322,6 +10758,10 @@
    {
     "label": "详读",
     "url": "txt/cx-122-country-living.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-122-country-living.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:47+08:00"
@@ -10344,6 +10784,10 @@
    {
     "label": "详读",
     "url": "txt/cx-02-haze-ammonia.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-02-haze-ammonia.orig.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -10366,6 +10810,10 @@
    {
     "label": "详读",
     "url": "txt/cx-108-zhang-zudao.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-108-zhang-zudao.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:33+08:00"
@@ -10388,6 +10836,10 @@
    {
     "label": "详读",
     "url": "txt/cx-109-barefoot-doctor.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-109-barefoot-doctor.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:41+08:00"
@@ -10410,6 +10862,10 @@
    {
     "label": "详读",
     "url": "txt/cx-58-vaccine.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-58-vaccine.orig.txt"
    }
   ],
   "added_at": "2026-10-19T19:27+08:00"
@@ -10432,6 +10888,10 @@
    {
     "label": "详读",
     "url": "txt/cx-05-huaihe.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-05-huaihe.orig.txt"
    }
   ],
   "added_at": "2026-10-15T13:16+08:00"
@@ -10454,6 +10914,10 @@
    {
     "label": "详读",
     "url": "txt/cx-54-tuya-fraud.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-54-tuya-fraud.orig.txt"
    }
   ],
   "added_at": "2026-10-19T17:14+08:00"
@@ -10476,6 +10940,10 @@
    {
     "label": "详读",
     "url": "txt/cx-116-royal-cabinet.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-116-royal-cabinet.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:15+08:00"
@@ -10498,6 +10966,10 @@
    {
     "label": "详读",
     "url": "txt/cx-114-why-new-army.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-114-why-new-army.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:06+08:00"
@@ -10520,6 +10992,10 @@
    {
     "label": "详读",
     "url": "txt/cx-112-bandit-yuan-ying.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-112-bandit-yuan-ying.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:59+08:00"
@@ -10542,6 +11018,10 @@
    {
     "label": "详读",
     "url": "txt/cx-110-1970s-impressions.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-110-1970s-impressions.orig.txt"
    }
   ],
   "added_at": "2026-10-30T22:45+08:00"
@@ -10564,6 +11044,10 @@
    {
     "label": "详读",
     "url": "txt/cx-115-salinger.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-115-salinger.orig.txt"
    }
   ],
   "added_at": "2026-10-30T23:11+08:00"
@@ -10586,6 +11070,10 @@
    {
     "label": "详读",
     "url": "txt/cx-128-cn-reg-path.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-128-cn-reg-path.orig.txt"
    }
   ],
   "added_at": "2026-10-31T00:12+08:00"
@@ -10608,6 +11096,10 @@
    {
     "label": "详读",
     "url": "txt/cx-127-fin-reg-debate.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-127-fin-reg-debate.orig.txt"
    }
   ],
   "added_at": "2026-10-31T00:10+08:00"
