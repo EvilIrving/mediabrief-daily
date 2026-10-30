@@ -9558,6 +9558,28 @@
   "added_at": "2026-10-19T22:59+08:00"
  },
  {
+  "id": "cx-118-qianbao-illegal-fund",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "披着互联网金融外衣的非法集资",
+  "link": "https://weekly.caixin.com/2018-01-13/101197395.html",
+  "date": "2018-01-15",
+  "author": "吴雨俭",
+  "issue": "《财新周刊》2018年第03期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-118-qianbao-illegal-fund.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-118-qianbao-illegal-fund.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:32+08:00"
+ },
+ {
   "id": "cur-63bd5d53fbe9",
   "kind": "curated",
   "type": "article",
@@ -9630,6 +9652,28 @@
    }
   ],
   "added_at": "2026-10-17T18:32+08:00"
+ },
+ {
+  "id": "cx-117-insurance-correct",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "保险业纠偏",
+  "link": "https://weekly.caixin.com/2017-10-07/101153451.html",
+  "date": "2017-10-09",
+  "author": "杨巧伶、武晓蒙",
+  "issue": "《财新周刊》2017年第39期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-117-insurance-correct.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-117-insurance-correct.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:32+08:00"
  },
  {
   "id": "cx-15-waterma",
