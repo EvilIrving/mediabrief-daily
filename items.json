@@ -9940,6 +9940,28 @@
   "added_at": "2026-10-30T23:45+08:00"
  },
  {
+  "id": "cx-126-foraging-history",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "我家的采集史",
+  "link": "https://weekly.caixin.com/2017-03-17/101067177.html",
+  "date": "2017-03-20",
+  "author": "袁凌",
+  "issue": "《财新周刊》2017年第11期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-126-foraging-history.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-126-foraging-history.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-31T00:10+08:00"
+ },
+ {
   "id": "cur-66d963ce2471",
   "kind": "curated",
   "type": "podcast",
