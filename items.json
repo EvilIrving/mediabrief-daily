@@ -11339,6 +11339,32 @@
   "added_at": "2026-10-31T03:28+08:00"
  },
  {
+  "id": "cx-147-cn-reorg",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "中国式重组几时休？",
+  "link": "https://magazine.caixin.com/2010-01-17/100108880.html",
+  "date": "2010-01-17",
+  "author": "沈乎",
+  "issue": "《财新周刊》2010年第4期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-147-cn-reorg.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-147-cn-reorg.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-147-cn-reorg.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:55+08:00"
+ },
+ {
   "id": "cx-134-gaidar",
   "kind": "curated",
   "type": "caixin",
