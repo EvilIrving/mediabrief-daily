@@ -9400,6 +9400,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cx-113-ecommerce-regroup",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "电商新聚变",
+  "link": "https://weekly.caixin.com/2018-09-21/101328956.html",
+  "date": "2018-09-24",
+  "author": "陈梦凡、屈运栩",
+  "issue": "《财新周刊》2018年第38期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-113-ecommerce-regroup.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-113-ecommerce-regroup.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:06+08:00"
+ },
+ {
   "id": "cx-35-china-tower",
   "kind": "curated",
   "type": "caixin",
@@ -10215,6 +10237,28 @@
    }
   ],
   "added_at": "2026-10-19T17:14+08:00"
+ },
+ {
+  "id": "cx-114-why-new-army",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "为什么是新军？——辛亥革命启示录之一",
+  "link": "https://magazine.caixin.com/2011-06-03/100265890.html",
+  "date": "2011-06-06",
+  "author": "马勇",
+  "issue": "《财新周刊》2011年第22期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-114-why-new-army.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-114-why-new-army.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:06+08:00"
  },
  {
   "id": "cx-112-bandit-yuan-ying",
