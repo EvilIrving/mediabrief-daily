@@ -10569,6 +10569,28 @@
   "added_at": "2026-10-30T23:11+08:00"
  },
  {
+  "id": "cx-128-cn-reg-path",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "中国式监管的困境与出路",
+  "link": "https://magazine.caixin.com/2010-02-19/100117974.html",
+  "date": "2010-02-22",
+  "author": "王涌",
+  "issue": "《财新周刊》2010年第8期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-128-cn-reg-path.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-128-cn-reg-path.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-31T00:12+08:00"
+ },
+ {
   "id": "cx-127-fin-reg-debate",
   "kind": "curated",
   "type": "caixin",
