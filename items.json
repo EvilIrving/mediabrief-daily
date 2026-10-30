@@ -11027,6 +11027,58 @@
   "added_at": "2026-10-30T22:45+08:00"
  },
  {
+  "id": "cx-157-rmb-intl-drive",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "人民币国际化的真实动力",
+  "link": "https://magazine.caixin.com/2010-05-02/100140578.html",
+  "date": "2010-05-02",
+  "author": "叶翔",
+  "issue": "《财新周刊》2010年第18期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-157-rmb-intl-drive.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-157-rmb-intl-drive.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-157-rmb-intl-drive.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T04:17+08:00"
+ },
+ {
+  "id": "cx-155-rmb-offshore",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "人民币离岸市场：良药抑或鸡肋？",
+  "link": "https://magazine.caixin.com/2010-04-05/100131725.html",
+  "date": "2010-04-05",
+  "author": "黄益平",
+  "issue": "《财新周刊》2010年第14期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-155-rmb-offshore.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-155-rmb-offshore.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-155-rmb-offshore.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T04:17+08:00"
+ },
+ {
   "id": "cx-152-local-debt-gloom",
   "kind": "curated",
   "type": "caixin",
