@@ -10107,6 +10107,28 @@
   "added_at": "2026-10-30T22:33+08:00"
  },
  {
+  "id": "cx-109-barefoot-doctor",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "走上行医不归路",
+  "link": "https://weekly.caixin.com/2014-09-05/100725400.html",
+  "date": "2014-09-08",
+  "author": "孙立哲",
+  "issue": "《财新周刊》2014年",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-109-barefoot-doctor.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-109-barefoot-doctor.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:41+08:00"
+ },
+ {
   "id": "cx-58-vaccine",
   "kind": "curated",
   "type": "caixin",
