@@ -5,7 +5,7 @@
   "source": "YouTube 总结",
   "title": "Anthropic 工程师讲 Claude Managed Agents：从 API 到托管智能体",
   "link": "https://x.com/Grow_withAI/status/2115062331227226349",
-  "date": "2026-10-30T01:57",
+  "date": "2026-10-30T18:15",
   "txt": [
    {
     "label": "总结",
@@ -22,6 +22,99 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2115062331227226349.m4a",
   "added_at": "2026-10-30T02:12+08:00"
+ },
+ {
+  "id": "1787843010006278491",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "MIT: REGRESSIONS",
+  "link": "https://x.com/mitregressions/status/1787843010006278491",
+  "date": "2026-10-30T18:15",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/1787843010006278491.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/1787843010006278491.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/1787843010006278491.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/1787843010006278491.m4a",
+  "title_zh": "麻省理工学院：回归",
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "2103620465029943764",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "成瘾是麻醉",
+  "link": "https://x.com/chrislakin/status/2103620465029943764",
+  "date": "2026-10-30T18:15",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2103620465029943764.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2103620465029943764.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2103620465029943764.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "2115954345850400890",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "DeepMind《智能经济学》：能力进步何时带来经济转型",
+  "link": "https://x.com/MTSlive/status/2115954345850400890",
+  "date": "2026-10-30T18:15",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2115954345850400890.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2115954345850400890.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2115954345850400890.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2115954345850400890.m4a",
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "om2lIWXLLn4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Building Anthropic: A Conversation with Our Co-founders",
+  "link": "https://youtu.be/om2lIWXLLn4",
+  "date": "2026-10-30T18:11",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/om2lIWXLLn4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/om2lIWXLLn4.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
+  "title_zh": "构建 Anthropic：与联合创始人对谈",
+  "added_at": "2026-10-11T03:20+08:00"
  },
  {
   "id": "cx-101-pension-loan",
@@ -66,6 +159,28 @@
    }
   ],
   "added_at": "2026-10-30T09:03+08:00"
+ },
+ {
+  "id": "cx-104-wei-surplus-household",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "魏尚进：中国顺差背后的家庭账本",
+  "link": "https://opinion.caixin.com/2026-10-29/102498591.html",
+  "date": "2026-10-29",
+  "author": "魏尚进、马畅",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-104-wei-surplus-household.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-104-wei-surplus-household.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:13+08:00"
  },
  {
   "id": "cx-100-gongke-ai",
@@ -653,27 +768,6 @@
   ],
   "title_zh": "从零构建推理模型：完整视频课程",
   "added_at": "2026-10-30T07:26+08:00"
- },
- {
-  "id": "om2lIWXLLn4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Building Anthropic: A Conversation with Our Co-founders",
-  "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-10-24T15:26",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/om2lIWXLLn4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/om2lIWXLLn4.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
-  "title_zh": "构建 Anthropic：与联合创始人对谈",
-  "added_at": "2026-10-11T03:20+08:00"
  },
  {
   "id": "cx-84-xita",
