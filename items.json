@@ -46,6 +46,28 @@
   "added_at": "2026-10-30T02:00+08:00"
  },
  {
+  "id": "cx-103-money-empire",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "货币与帝国",
+  "link": "https://opinion.caixin.com/2026-10-29/102498389.html",
+  "date": "2026-10-29",
+  "author": "亚当·图兹",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-103-money-empire.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-103-money-empire.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T09:03+08:00"
+ },
+ {
   "id": "cx-100-gongke-ai",
   "kind": "curated",
   "type": "caixin",
@@ -296,7 +318,7 @@
     "url": "txt/cur-758d053f9a0f.orig.txt"
    }
   ],
-  "title_zh": "采访埃里克·里斯：人工智能、创始人模式，以及为什么好公司会倒闭",
+  "title_zh": "访谈 Eric Ries：AI、创始人模式与好公司为何变坏",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -322,7 +344,7 @@
     "url": "txt/cur-f987ea7d5689.orig.txt"
    }
   ],
-  "title_zh": "加速概念推理能力的基本案例",
+  "title_zh": "为什么要优先加速 AI 的概念推理能力",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -524,7 +546,7 @@
     "url": "txt/cur-86bde11cd257.orig.txt"
    }
   ],
-  "title_zh": "OpenAI和Anthropic在几个月内将其LLM价格降低了高达80 ％。为什么？",
+  "title_zh": "OpenAI 与 Anthropic 几个月内把 LLM 价格砍了最高八成，为什么？",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -550,7 +572,7 @@
     "url": "txt/cur-ad0cbc7a41ff.orig.txt"
    }
   ],
-  "title_zh": "机器人正在寻找尚未存在的工作",
+  "title_zh": "机器人正来抢那些尚不存在的工作",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -576,7 +598,7 @@
     "url": "txt/cur-65f01364ca7f.orig.txt"
    }
   ],
-  "title_zh": "不要将大型科技公司拟人化",
+  "title_zh": "别把大型科技公司拟人化",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -602,7 +624,8 @@
     "url": "txt/cur-cb0e6541c41d.orig.txt"
    }
   ],
-  "title_zh": "播客： Kimi K3.1 Pro、新的网络现实和Muse沉思",
+  "title_zh": "Kimi K3.1 Pro、新的网络现实与 Muse 随想",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-cb0e6541c41d.m4a",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -628,7 +651,7 @@
     "url": "txt/cur-d1a3b4fa5d93.orig.txt"
    }
   ],
-  "title_zh": "构建自己的推理模型：完整视频课程",
+  "title_zh": "从零构建推理模型：完整视频课程",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -724,7 +747,7 @@
   "kind": "curated",
   "type": "article",
   "source": "Dan Luu",
-  "title": "We should be more ambitious with the software we build",
+  "title": "“We should be more ambitious with the software we build”",
   "link": "https://danluu.com/ambitious/",
   "date": "2026-10-24",
   "audio_url": null,
@@ -742,7 +765,7 @@
     "url": "txt/cur-90bf1782f390.orig.txt"
    }
   ],
-  "title_zh": "我们应该更加雄心勃勃地使用我们构建的软件",
+  "title_zh": "构建软件时我们应该更有野心",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -856,7 +879,7 @@
     "url": "txt/cur-0b587fb77be4.orig.txt"
    }
   ],
-  "title_zh": "软件速度慢是因为糟糕的设计，而不是语言速度慢",
+  "title_zh": "软件慢是因为设计差，不是语言慢",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -1549,7 +1572,7 @@
   "kind": "curated",
   "type": "article",
   "source": "Latacora",
-  "title": "Have your bots talk to my bots. Who's checking IDs?",
+  "title": "Have your bots talk to my bots. Who’s checking IDs?",
   "link": "https://www.latacora.com/blog/2026/10/14/have-your-bots-talk-to-my-bots/",
   "date": "2026-10-14",
   "audio_url": null,
@@ -1567,7 +1590,7 @@
     "url": "txt/cur-b550fe8d031b.orig.txt"
    }
   ],
-  "title_zh": "让你的机器人与我的机器人交谈。谁在检查身份证件？",
+  "title_zh": "机器人之间互发邮件，谁来核验身份？",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
