@@ -10195,6 +10195,28 @@
   "added_at": "2026-10-19T17:14+08:00"
  },
  {
+  "id": "cx-110-1970s-impressions",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "70年代前期印象",
+  "link": "https://magazine.caixin.com/2011-02-12/100224908.html",
+  "date": "2011-02-14",
+  "author": "老蛰",
+  "issue": "《财新周刊》2011年第6期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-110-1970s-impressions.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-110-1970s-impressions.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:45+08:00"
+ },
+ {
   "id": "cur-4e8227e28349",
   "kind": "curated",
   "type": "article",
