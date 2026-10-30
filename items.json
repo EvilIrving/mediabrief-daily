@@ -11131,6 +11131,32 @@
   "added_at": "2026-10-31T03:34+08:00"
  },
  {
+  "id": "cx-137-insurance-convict",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "保险元老获刑14年",
+  "link": "https://magazine.caixin.com/2010-02-12/100117645.html",
+  "date": "2010-02-12",
+  "author": "罗洁琪",
+  "issue": "《财新周刊》2010年第8期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-137-insurance-convict.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-137-insurance-convict.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-137-insurance-convict.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:37+08:00"
+ },
+ {
   "id": "cx-130-land-fiscal",
   "kind": "curated",
   "type": "caixin",
@@ -11311,6 +11337,32 @@
    }
   ],
   "added_at": "2026-10-31T03:36+08:00"
+ },
+ {
+  "id": "cx-139-deposit-insurance",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "存款保险分步走",
+  "link": "https://magazine.caixin.com/2010-01-08/100106674.html",
+  "date": "2010-01-08",
+  "author": "方会磊",
+  "issue": "《财新周刊》2010年第2期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-139-deposit-insurance.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-139-deposit-insurance.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-139-deposit-insurance.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:37+08:00"
  },
  {
   "id": "cur-4e8227e28349",
