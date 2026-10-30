@@ -9422,6 +9422,28 @@
   "added_at": "2026-10-30T23:06+08:00"
  },
  {
+  "id": "cx-125-local-life-war",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "电商新聚变——本地生活下一战",
+  "link": "https://weekly.caixin.com/2018-09-22/101329263.html",
+  "date": "2018-09-24",
+  "author": "陈梦凡、钱童",
+  "issue": "《财新周刊》2018年第38期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-125-local-life-war.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-125-local-life-war.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-31T00:07+08:00"
+ },
+ {
   "id": "cx-35-china-tower",
   "kind": "curated",
   "type": "caixin",
