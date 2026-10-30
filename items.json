@@ -10085,6 +10085,28 @@
   "added_at": "2026-10-15T13:16+08:00"
  },
  {
+  "id": "cx-108-zhang-zudao",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "低调的纪实摄影大师",
+  "link": "https://weekly.caixin.com/2014-09-05/100725384.html",
+  "date": "2014-09-08",
+  "author": "姜纬",
+  "issue": "《财新周刊》2014年",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-108-zhang-zudao.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-108-zhang-zudao.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:33+08:00"
+ },
+ {
   "id": "cx-58-vaccine",
   "kind": "curated",
   "type": "caixin",
