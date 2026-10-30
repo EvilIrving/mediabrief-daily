@@ -11287,6 +11287,32 @@
   "added_at": "2026-10-31T03:30+08:00"
  },
  {
+  "id": "cx-136-bank-refi",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "银行再融资：2000亿的悬念",
+  "link": "https://magazine.caixin.com/2010-01-10/100106963.html",
+  "date": "2010-01-10",
+  "author": "温秀",
+  "issue": "《财新周刊》2010年第3期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-136-bank-refi.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-136-bank-refi.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-136-bank-refi.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T03:36+08:00"
+ },
+ {
   "id": "cur-4e8227e28349",
   "kind": "curated",
   "type": "article",
