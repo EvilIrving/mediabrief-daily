@@ -11131,6 +11131,32 @@
   "added_at": "2026-10-31T04:08+08:00"
  },
  {
+  "id": "cx-158-krugman-rmb",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "克鲁格曼的人民币谬论",
+  "link": "https://magazine.caixin.com/2010-03-21/100128424.html",
+  "date": "2010-03-21",
+  "author": "黄益平",
+  "issue": "《财新周刊》2010年第12期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-158-krugman-rmb.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-158-krugman-rmb.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-158-krugman-rmb.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T04:23+08:00"
+ },
+ {
   "id": "cx-153-soe-hotel-reorg",
   "kind": "curated",
   "type": "caixin",
