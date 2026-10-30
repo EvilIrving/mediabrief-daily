@@ -9466,6 +9466,28 @@
   "added_at": "2026-10-19T02:58+08:00"
  },
  {
+  "id": "cx-120-fin-reg-overhaul",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "金融监管大局将定",
+  "link": "https://weekly.caixin.com/2018-08-03/101311365.html",
+  "date": "2018-08-06",
+  "author": "吴红毓然、张宇哲",
+  "issue": "《财新周刊》2018年第31期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-120-fin-reg-overhaul.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-120-fin-reg-overhaul.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:37+08:00"
+ },
+ {
   "id": "cur-1c9291c74af3",
   "kind": "curated",
   "type": "article",
@@ -9534,6 +9556,28 @@
    }
   ],
   "added_at": "2026-10-19T06:14+08:00"
+ },
+ {
+  "id": "cx-119-local-deleverage",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "地方启动去杠杆",
+  "link": "https://weekly.caixin.com/2018-03-09/101219173.html",
+  "date": "2018-03-12",
+  "author": "于海荣、王晓霞",
+  "issue": "《财新周刊》2018年第10期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-119-local-deleverage.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-119-local-deleverage.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:37+08:00"
  },
  {
   "id": "cx-62-feibiao",
