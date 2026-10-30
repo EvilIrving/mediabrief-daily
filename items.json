@@ -10239,6 +10239,28 @@
   "added_at": "2026-10-19T17:14+08:00"
  },
  {
+  "id": "cx-116-royal-cabinet",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "皇族内阁错在哪儿？——辛亥革命启示录之二",
+  "link": "https://magazine.caixin.com/2011-07-01/100274947.html",
+  "date": "2011-07-04",
+  "author": "马勇",
+  "issue": "《财新周刊》2011年第26期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-116-royal-cabinet.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-116-royal-cabinet.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:15+08:00"
+ },
+ {
   "id": "cx-114-why-new-army",
   "kind": "curated",
   "type": "caixin",
