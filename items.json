@@ -11443,6 +11443,32 @@
   "added_at": "2026-10-31T03:28+08:00"
  },
  {
+  "id": "cx-154-rmb-pe",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "人民币PE融资竞赛",
+  "link": "https://magazine.caixin.com/2010-01-24/100110567.html",
+  "date": "2010-01-24",
+  "author": "陈慧颖、于宁",
+  "issue": "《财新周刊》2010年第5期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-154-rmb-pe.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-154-rmb-pe.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-154-rmb-pe.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T04:15+08:00"
+ },
+ {
   "id": "cx-147-cn-reorg",
   "kind": "curated",
   "type": "caixin",
