@@ -10217,6 +10217,28 @@
   "added_at": "2026-10-17T17:12+08:00"
  },
  {
+  "id": "cx-122-country-living",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "乡居生活小记",
+  "link": "https://weekly.caixin.com/2014-12-19/100765206.html",
+  "date": "2014-12-22",
+  "author": "霜子",
+  "issue": "《财新周刊》2014年第49期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-122-country-living.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-122-country-living.zh.txt"
+   }
+  ],
+  "added_at": "2026-10-30T23:47+08:00"
+ },
+ {
   "id": "cx-02-haze-ammonia",
   "kind": "curated",
   "type": "caixin",
