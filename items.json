@@ -117,6 +117,32 @@
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
+  "id": "cx-159-xing-min-cross",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "深度｜纠偏“先刑后民”：最高法出手规制“以刑事手段干预民事纠纷”",
+  "link": "https://china.caixin.com/2026-10-30/102498862.html",
+  "date": "2026-10-30",
+  "author": "单玉晓",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-159-xing-min-cross.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-159-xing-min-cross.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-159-xing-min-cross.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-31T08:57+08:00"
+ },
+ {
   "id": "cx-101-pension-loan",
   "kind": "curated",
   "type": "caixin",
