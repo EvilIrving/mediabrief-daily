@@ -169,6 +169,32 @@
   "added_at": "2026-11-01T09:31+08:00"
  },
  {
+  "id": "cx-160-soy-red-state",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "记者手记｜在美国大豆田边，看红州为什么这样红",
+  "link": "https://international.caixin.com/2026-10-30/102498971.html",
+  "date": "2026-10-30",
+  "author": "徐路易",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-160-soy-red-state.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-160-soy-red-state.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-160-soy-red-state.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-01T09:33+08:00"
+ },
+ {
   "id": "cx-101-pension-loan",
   "kind": "curated",
   "type": "caixin",
