@@ -52,6 +52,32 @@
   "added_at": "2026-11-01T09:34+08:00"
  },
  {
+  "id": "cx-163-lula-comeback",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "卢拉逆风翻盘",
+  "link": "https://weekly.caixin.com/2026-10-31/102499318.html",
+  "date": "2026-11-02",
+  "author": "侯吴婷、路尘",
+  "issue": "财新周刊2026年第42期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-163-lula-comeback.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-163-lula-comeback.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-163-lula-comeback.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-01T09:36+08:00"
+ },
+ {
   "id": "2115062331227226349",
   "kind": "summary",
   "source": "YouTube 总结",
