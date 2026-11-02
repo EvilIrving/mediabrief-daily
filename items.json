@@ -78,6 +78,58 @@
   "added_at": "2026-11-01T09:36+08:00"
  },
  {
+  "id": "cx-166-emily-letter",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "致艾米莉：只因此生有你",
+  "link": "https://weekly.caixin.com/2026-10-31/102499346.html",
+  "date": "2026-11-02",
+  "author": "涂芮",
+  "issue": "财新周刊2026年第42期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-166-emily-letter.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-166-emily-letter.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-166-emily-letter.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-02T09:37+08:00"
+ },
+ {
+  "id": "cx-167-anthropic-ipo",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "最赚钱“AI实验室”IPO揭幕",
+  "link": "https://weekly.caixin.com/2026-10-31/102499335.html",
+  "date": "2026-11-02",
+  "author": "杜知航",
+  "issue": "财新周刊2026年第42期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-167-anthropic-ipo.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-167-anthropic-ipo.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-167-anthropic-ipo.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-02T09:37+08:00"
+ },
+ {
   "id": "2115062331227226349",
   "kind": "summary",
   "source": "YouTube 总结",
