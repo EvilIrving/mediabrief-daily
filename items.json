@@ -208,6 +208,32 @@
   "added_at": "2026-11-03T09:09+08:00"
  },
  {
+  "id": "cx-168-huawei-climb",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "华为再攀顶",
+  "link": "https://weekly.caixin.com/2026-10-31/102499337.html",
+  "date": "2026-11-02",
+  "author": "顾昭玮",
+  "issue": "财新周刊2026年第42期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-168-huawei-climb.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-168-huawei-climb.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-168-huawei-climb.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-03T09:14+08:00"
+ },
+ {
   "id": "2115062331227226349",
   "kind": "summary",
   "source": "YouTube 总结",
