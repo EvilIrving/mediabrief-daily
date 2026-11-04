@@ -1,5 +1,57 @@
 [
  {
+  "id": "cx-172-fire-cadre",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "消防学院毕业能否直接提干？改革过渡期引发人事纠纷",
+  "link": "https://china.caixin.com/2026-11-03/102500260.html",
+  "date": "2026-11-03",
+  "author": "冯华妹",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-172-fire-cadre.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-172-fire-cadre.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-172-fire-cadre.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-04T09:21+08:00"
+ },
+ {
+  "id": "cx-173-wang-ruoshui",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "情怀如战士，心性似孩童：王若水百年｜纪念",
+  "link": "https://mini.caixin.com/2026-11-03/102500335.html",
+  "date": "2026-11-03",
+  "author": "祝华新",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-173-wang-ruoshui.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-173-wang-ruoshui.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-173-wang-ruoshui.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-04T09:21+08:00"
+ },
+ {
   "id": "cx-162-paid-jobhunt",
   "kind": "curated",
   "type": "caixin",
