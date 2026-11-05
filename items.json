@@ -52,6 +52,32 @@
   "added_at": "2026-11-04T09:21+08:00"
  },
  {
+  "id": "cx-174-baku-f1",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "我在巴库钻进了F1赛道｜高加索散记",
+  "link": "https://mini.caixin.com/2026-11-03/102500400.html",
+  "date": "2026-11-03",
+  "author": "胡舒立",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-174-baku-f1.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-174-baku-f1.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-174-baku-f1.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-06T01:05+08:00"
+ },
+ {
   "id": "cx-162-paid-jobhunt",
   "kind": "curated",
   "type": "caixin",
