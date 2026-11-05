@@ -78,6 +78,32 @@
   "added_at": "2026-11-06T01:05+08:00"
  },
  {
+  "id": "cur-8e5794b4225e",
+  "kind": "curated",
+  "type": "article",
+  "source": "The Diff",
+  "title": "Understanding Anthropic",
+  "link": "https://www.thediff.co/archive/understanding-anthropic/",
+  "date": "2026-11-03",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-8e5794b4225e.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-8e5794b4225e.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-8e5794b4225e.orig.txt"
+   }
+  ],
+  "title_zh": "了解人性",
+  "added_at": "2026-11-06T07:27+08:00"
+ },
+ {
   "id": "cx-162-paid-jobhunt",
   "kind": "curated",
   "type": "caixin",
@@ -336,6 +362,110 @@
    }
   ],
   "added_at": "2026-11-03T09:16+08:00"
+ },
+ {
+  "id": "cur-eb57070c2464",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Reliably aligning LLMs is impossible in principle",
+  "link": "https://seangoedecke.com/alignment-is-impossible/",
+  "date": "2026-11-02",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-eb57070c2464.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-eb57070c2464.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-eb57070c2464.orig.txt"
+   }
+  ],
+  "title_zh": "原则上不可能可靠地对齐LLM",
+  "added_at": "2026-11-06T07:27+08:00"
+ },
+ {
+  "id": "cur-f5f47b2c89d9",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Fast and slow ways to improve your reputation",
+  "link": "https://seangoedecke.com/how-to-get-assigned-interesting-work/",
+  "date": "2026-11-01",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f5f47b2c89d9.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-f5f47b2c89d9.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f5f47b2c89d9.orig.txt"
+   }
+  ],
+  "title_zh": "提高声誉的快速和缓慢方法",
+  "added_at": "2026-11-06T07:27+08:00"
+ },
+ {
+  "id": "cur-998dd9a8ab58",
+  "kind": "curated",
+  "type": "article",
+  "source": "Nielsen Norman Group",
+  "title": "The Role of UX in Agentic Software Factories",
+  "link": "https://www.nngroup.com/articles/ux-agentic-software-factories/",
+  "date": "2026-10-31",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-998dd9a8ab58.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-998dd9a8ab58.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-998dd9a8ab58.orig.txt"
+   }
+  ],
+  "title_zh": "用户体验在Agentic软件工厂中的作用",
+  "added_at": "2026-11-06T07:27+08:00"
+ },
+ {
+  "id": "cur-f12c9da27005",
+  "kind": "curated",
+  "type": "article",
+  "source": "Nielsen Norman Group",
+  "title": "Experience Design: Dropping the “User” from “User Experience”",
+  "link": "https://www.nngroup.com/articles/ux-vs-experience-design/",
+  "date": "2026-10-31",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f12c9da27005.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-f12c9da27005.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f12c9da27005.orig.txt"
+   }
+  ],
+  "title_zh": "体验设计：从“用户体验”中删除“用户”",
+  "added_at": "2026-11-06T07:27+08:00"
  },
  {
   "id": "2115062331227226349",
