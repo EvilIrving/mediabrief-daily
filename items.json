@@ -1,5 +1,83 @@
 [
  {
+  "id": "cx-175-baibaoguo",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "延安大学音乐副教授白保国离世 绝笔举报教师聘期考核乱象",
+  "link": "https://www.caixin.com/2026-11-05/102501407.html",
+  "date": "2026-11-05",
+  "author": "赵周桥（实习），范俏佳",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-175-baibaoguo.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-175-baibaoguo.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-175-baibaoguo.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-06T22:59+08:00"
+ },
+ {
+  "id": "cx-176-africa-urban",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "史无前例的非洲城市化",
+  "link": "https://opinion.caixin.com/2026-11-05/102501346.html",
+  "date": "2026-11-05",
+  "author": "亚当·图兹",
+  "issue": "财新网/观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-176-africa-urban.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-176-africa-urban.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-176-africa-urban.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-06T22:59+08:00"
+ },
+ {
+  "id": "cx-177-latino-swing",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "分析｜拉丁裔选票大转向何以重挫共和党 特朗普拥趸纷纷松动",
+  "link": "https://international.caixin.com/2026-11-05/102501199.html",
+  "date": "2026-11-05",
+  "author": "曾佳",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-177-latino-swing.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-177-latino-swing.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-177-latino-swing.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-06T22:59+08:00"
+ },
+ {
   "id": "cx-172-fire-cadre",
   "kind": "curated",
   "type": "caixin",
@@ -100,8 +178,34 @@
     "url": "txt/cur-8e5794b4225e.orig.txt"
    }
   ],
-  "title_zh": "了解人性",
+  "title_zh": "理解 Anthropic",
   "added_at": "2026-11-06T07:27+08:00"
+ },
+ {
+  "id": "cx-178-world-risk-ai",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "AI冲击、老龄化、政策约束：世界经济风险长短期（下）",
+  "link": "https://opinion.caixin.com/2026-11-03/102500309.html",
+  "date": "2026-11-03",
+  "author": "钱军辉",
+  "issue": "财新网/观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-178-world-risk-ai.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-178-world-risk-ai.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-178-world-risk-ai.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-06T22:59+08:00"
  },
  {
   "id": "cx-162-paid-jobhunt",
@@ -386,7 +490,7 @@
     "url": "txt/cur-eb57070c2464.orig.txt"
    }
   ],
-  "title_zh": "原则上不可能可靠地对齐LLM",
+  "title_zh": "原则上无法可靠对齐 LLM",
   "added_at": "2026-11-06T07:27+08:00"
  },
  {
@@ -412,7 +516,7 @@
     "url": "txt/cur-f5f47b2c89d9.orig.txt"
    }
   ],
-  "title_zh": "提高声誉的快速和缓慢方法",
+  "title_zh": "提升声誉的快慢两路",
   "added_at": "2026-11-06T07:27+08:00"
  },
  {
@@ -438,7 +542,7 @@
     "url": "txt/cur-998dd9a8ab58.orig.txt"
    }
   ],
-  "title_zh": "用户体验在Agentic软件工厂中的作用",
+  "title_zh": "Agent 软件工厂里 UX 该干什么",
   "added_at": "2026-11-06T07:27+08:00"
  },
  {
@@ -464,7 +568,7 @@
     "url": "txt/cur-f12c9da27005.orig.txt"
    }
   ],
-  "title_zh": "体验设计：从“用户体验”中删除“用户”",
+  "title_zh": "把「用户」从用户体验里拿掉：Experience Design",
   "added_at": "2026-11-06T07:27+08:00"
  },
  {
