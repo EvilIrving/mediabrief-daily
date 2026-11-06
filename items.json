@@ -15,10 +15,6 @@
     "url": "txt/cx-175-baibaoguo.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-175-baibaoguo.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-175-baibaoguo.orig.txt"
    }
@@ -39,10 +35,6 @@
    {
     "label": "速读",
     "url": "txt/cx-176-africa-urban.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-176-africa-urban.zh.txt"
    },
    {
     "label": "原文",
@@ -67,10 +59,6 @@
     "url": "txt/cx-177-latino-swing.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-177-latino-swing.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-177-latino-swing.orig.txt"
    }
@@ -91,10 +79,6 @@
    {
     "label": "速读",
     "url": "txt/cx-172-fire-cadre.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-172-fire-cadre.zh.txt"
    },
    {
     "label": "原文",
@@ -119,10 +103,6 @@
     "url": "txt/cx-173-wang-ruoshui.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-173-wang-ruoshui.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-173-wang-ruoshui.orig.txt"
    }
@@ -143,10 +123,6 @@
    {
     "label": "速读",
     "url": "txt/cx-174-baku-f1.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-174-baku-f1.zh.txt"
    },
    {
     "label": "原文",
@@ -197,10 +173,6 @@
     "url": "txt/cx-178-world-risk-ai.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-178-world-risk-ai.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-178-world-risk-ai.orig.txt"
    }
@@ -221,10 +193,6 @@
    {
     "label": "速读",
     "url": "txt/cx-162-paid-jobhunt.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-162-paid-jobhunt.zh.txt"
    },
    {
     "label": "原文",
@@ -249,10 +217,6 @@
     "url": "txt/cx-164-ai-geo-poison.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-164-ai-geo-poison.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-164-ai-geo-poison.orig.txt"
    }
@@ -273,10 +237,6 @@
    {
     "label": "速读",
     "url": "txt/cx-163-lula-comeback.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-163-lula-comeback.zh.txt"
    },
    {
     "label": "原文",
@@ -301,10 +261,6 @@
     "url": "txt/cx-166-emily-letter.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-166-emily-letter.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-166-emily-letter.orig.txt"
    }
@@ -325,10 +281,6 @@
    {
     "label": "速读",
     "url": "txt/cx-167-anthropic-ipo.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-167-anthropic-ipo.zh.txt"
    },
    {
     "label": "原文",
@@ -353,10 +305,6 @@
     "url": "txt/cx-165-revalue-tech.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-165-revalue-tech.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-165-revalue-tech.orig.txt"
    }
@@ -377,10 +325,6 @@
    {
     "label": "速读",
     "url": "txt/cx-169-wanglang-welfare.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-169-wanglang-welfare.zh.txt"
    },
    {
     "label": "原文",
@@ -405,10 +349,6 @@
     "url": "txt/cx-171-world-risk-energy.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-171-world-risk-energy.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-171-world-risk-energy.orig.txt"
    }
@@ -431,10 +371,6 @@
     "url": "txt/cx-168-huawei-climb.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-168-huawei-climb.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-168-huawei-climb.orig.txt"
    }
@@ -455,10 +391,6 @@
    {
     "label": "速读",
     "url": "txt/cx-170-asia-fin-hub.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-170-asia-fin-hub.zh.txt"
    },
    {
     "label": "原文",
@@ -704,10 +636,6 @@
     "url": "txt/cx-159-xing-min-cross.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-159-xing-min-cross.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-159-xing-min-cross.orig.txt"
    }
@@ -728,10 +656,6 @@
    {
     "label": "速读",
     "url": "txt/cx-161-token-city.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-161-token-city.zh.txt"
    },
    {
     "label": "原文",
@@ -756,10 +680,6 @@
     "url": "txt/cx-160-soy-red-state.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-160-soy-red-state.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-160-soy-red-state.orig.txt"
    }
@@ -780,10 +700,6 @@
    {
     "label": "速读",
     "url": "txt/cx-101-pension-loan.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-101-pension-loan.zh.txt"
    },
    {
     "label": "原文",
@@ -808,10 +724,6 @@
     "url": "txt/cx-103-money-empire.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-103-money-empire.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-103-money-empire.orig.txt"
    }
@@ -832,10 +744,6 @@
    {
     "label": "速读",
     "url": "txt/cx-104-wei-surplus-household.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-104-wei-surplus-household.zh.txt"
    },
    {
     "label": "原文",
@@ -860,10 +768,6 @@
     "url": "txt/cx-100-gongke-ai.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-100-gongke-ai.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-100-gongke-ai.orig.txt"
    }
@@ -884,10 +788,6 @@
    {
     "label": "速读",
     "url": "txt/cx-102-us-retire-spend.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-102-us-retire-spend.zh.txt"
    },
    {
     "label": "原文",
@@ -964,10 +864,6 @@
     "url": "txt/cx-87-foxconn-ecd.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-87-foxconn-ecd.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-87-foxconn-ecd.orig.txt"
    }
@@ -988,10 +884,6 @@
    {
     "label": "速读",
     "url": "txt/cx-95-algo-cage.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-95-algo-cage.zh.txt"
    },
    {
     "label": "原文",
@@ -1016,10 +908,6 @@
     "url": "txt/cx-96-offshore-trust.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-96-offshore-trust.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-96-offshore-trust.orig.txt"
    }
@@ -1040,10 +928,6 @@
    {
     "label": "速读",
     "url": "txt/cx-97-miao-monetary.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-97-miao-monetary.zh.txt"
    },
    {
     "label": "原文",
@@ -1068,10 +952,6 @@
     "url": "txt/cx-98-lu-imbalance.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-98-lu-imbalance.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-98-lu-imbalance.orig.txt"
    }
@@ -1092,10 +972,6 @@
    {
     "label": "速读",
     "url": "txt/cx-99-jia-infra-fiscal.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-99-jia-infra-fiscal.zh.txt"
    },
    {
     "label": "原文",
@@ -1172,10 +1048,6 @@
     "url": "txt/cx-86-ma-earnout.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-86-ma-earnout.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-86-ma-earnout.orig.txt"
    }
@@ -1196,10 +1068,6 @@
    {
     "label": "速读",
     "url": "txt/cx-88-eu-china-trade.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-88-eu-china-trade.zh.txt"
    },
    {
     "label": "原文",
@@ -1224,10 +1092,6 @@
     "url": "txt/cx-89-gdp-broader.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-89-gdp-broader.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-89-gdp-broader.orig.txt"
    }
@@ -1248,10 +1112,6 @@
    {
     "label": "速读",
     "url": "txt/cx-90-lamy-interview.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-90-lamy-interview.zh.txt"
    },
    {
     "label": "原文",
@@ -1276,10 +1136,6 @@
     "url": "txt/cx-91-talarico.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-91-talarico.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-91-talarico.orig.txt"
    }
@@ -1300,10 +1156,6 @@
    {
     "label": "速读",
     "url": "txt/cx-92-hk-land.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-92-hk-land.zh.txt"
    },
    {
     "label": "原文",
@@ -1328,10 +1180,6 @@
     "url": "txt/cx-93-flex-social.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-93-flex-social.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-93-flex-social.orig.txt"
    }
@@ -1352,10 +1200,6 @@
    {
     "label": "速读",
     "url": "txt/cx-94-yuhong-debt-home.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-94-yuhong-debt-home.zh.txt"
    },
    {
     "label": "原文",
@@ -1511,10 +1355,6 @@
     "url": "txt/cx-84-xita.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-84-xita.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-84-xita.orig.txt"
    }
@@ -1537,10 +1377,6 @@
     "url": "txt/cx-85-africa-sme.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-85-africa-sme.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-85-africa-sme.orig.txt"
    }
@@ -1561,10 +1397,6 @@
    {
     "label": "速读",
     "url": "txt/cx-83-changpin.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-83-changpin.zh.txt"
    },
    {
     "label": "原文",
@@ -1616,10 +1448,6 @@
     "url": "txt/cx-75-clinical-trial-suit.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-75-clinical-trial-suit.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-75-clinical-trial-suit.orig.txt"
    }
@@ -1640,10 +1468,6 @@
    {
     "label": "速读",
     "url": "txt/cx-79-liu-xuefeng.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-79-liu-xuefeng.zh.txt"
    },
    {
     "label": "原文",
@@ -1668,10 +1492,6 @@
     "url": "txt/cx-81-retire-planner.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-81-retire-planner.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-81-retire-planner.orig.txt"
    }
@@ -1692,10 +1512,6 @@
    {
     "label": "速读",
     "url": "txt/cx-82-france-turmoil.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-82-france-turmoil.zh.txt"
    },
    {
     "label": "原文",
@@ -1744,10 +1560,6 @@
    {
     "label": "速读",
     "url": "txt/cx-76-ai-money-power.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-76-ai-money-power.zh.txt"
    },
    {
     "label": "原文",
@@ -1876,10 +1688,6 @@
     "url": "txt/cx-64-anne-carson.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-64-anne-carson.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-64-anne-carson.orig.txt"
    }
@@ -1900,10 +1708,6 @@
    {
     "label": "速读",
     "url": "txt/cx-65-ai-companion.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-65-ai-companion.zh.txt"
    },
    {
     "label": "原文",
@@ -1928,10 +1732,6 @@
     "url": "txt/cx-70-nobel-econ.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-70-nobel-econ.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-70-nobel-econ.orig.txt"
    }
@@ -1952,10 +1752,6 @@
    {
     "label": "速读",
     "url": "txt/cx-71-nobel-lit-criteria.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-71-nobel-lit-criteria.zh.txt"
    },
    {
     "label": "原文",
@@ -1980,10 +1776,6 @@
     "url": "txt/cx-74-outdoor-chaos.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-74-outdoor-chaos.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-74-outdoor-chaos.orig.txt"
    }
@@ -2004,10 +1796,6 @@
    {
     "label": "速读",
     "url": "txt/cx-72-land-renewal.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-72-land-renewal.zh.txt"
    },
    {
     "label": "原文",
@@ -2214,10 +2002,6 @@
     "url": "txt/cx-77-brazil-crossroads.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-77-brazil-crossroads.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-77-brazil-crossroads.orig.txt"
    }
@@ -2238,10 +2022,6 @@
    {
     "label": "速读",
     "url": "txt/cx-80-indonesia-haze.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-80-indonesia-haze.zh.txt"
    },
    {
     "label": "原文",
@@ -2318,10 +2098,6 @@
     "url": "txt/cx-69-liangshan-potato.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-69-liangshan-potato.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-69-liangshan-potato.orig.txt"
    }
@@ -2342,10 +2118,6 @@
    {
     "label": "速读",
     "url": "txt/cx-67-power-sales.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-67-power-sales.zh.txt"
    },
    {
     "label": "原文",
@@ -2684,10 +2456,6 @@
     "url": "txt/cx-66-xihuashan-tungsten.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-66-xihuashan-tungsten.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-66-xihuashan-tungsten.orig.txt"
    }
@@ -2710,10 +2478,6 @@
     "url": "txt/cx-68-nobel-science.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-68-nobel-science.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-68-nobel-science.orig.txt"
    }
@@ -2734,10 +2498,6 @@
    {
     "label": "速读",
     "url": "txt/cx-08-gene-therapy.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-08-gene-therapy.zh.txt"
    },
    {
     "label": "原文",
@@ -2887,10 +2647,6 @@
     "url": "txt/cx-73-akeqi-youth.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-73-akeqi-youth.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-73-akeqi-youth.orig.txt"
    }
@@ -2911,10 +2667,6 @@
    {
     "label": "速读",
     "url": "txt/cx-78-office-agent.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-78-office-agent.zh.txt"
    },
    {
     "label": "原文",
@@ -3351,10 +3103,6 @@
     "url": "txt/cx-48-hospice.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-48-hospice.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-48-hospice.orig.txt"
    }
@@ -3547,10 +3295,6 @@
     "url": "txt/cx-01-de-care.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-01-de-care.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-01-de-care.orig.txt"
    }
@@ -3681,10 +3425,6 @@
    {
     "label": "速读",
     "url": "txt/cx-03-school.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-03-school.zh.txt"
    },
    {
     "label": "原文",
@@ -3968,10 +3708,6 @@
    {
     "label": "速读",
     "url": "txt/cx-42-sound-group.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-42-sound-group.zh.txt"
    },
    {
     "label": "原文",
@@ -4990,10 +4726,6 @@
     "url": "txt/cx-33-altruism.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-33-altruism.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-33-altruism.orig.txt"
    }
@@ -5732,10 +5464,6 @@
     "url": "txt/cx-38-nexperia.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-38-nexperia.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-38-nexperia.orig.txt"
    }
@@ -6164,10 +5892,6 @@
     "url": "txt/cx-23-zongqinghou.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-23-zongqinghou.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-23-zongqinghou.orig.txt"
    }
@@ -6335,10 +6059,6 @@
    {
     "label": "速读",
     "url": "txt/cx-30-green-wall.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-30-green-wall.zh.txt"
    },
    {
     "label": "原文",
@@ -6596,10 +6316,6 @@
     "url": "txt/cx-49-hospital-debt.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-49-hospital-debt.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-49-hospital-debt.orig.txt"
    }
@@ -6827,10 +6543,6 @@
     "url": "txt/cx-55-crane-uhv.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-55-crane-uhv.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-55-crane-uhv.orig.txt"
    }
@@ -7046,10 +6758,6 @@
    {
     "label": "速读",
     "url": "txt/cx-21-mh370-science.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-21-mh370-science.zh.txt"
    }
   ],
   "added_at": "2026-10-18T01:02+08:00"
@@ -7068,10 +6776,6 @@
    {
     "label": "速读",
     "url": "txt/cx-28-illness-aid.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-28-illness-aid.zh.txt"
    },
    {
     "label": "原文",
@@ -7339,10 +7043,6 @@
    {
     "label": "速读",
     "url": "txt/cx-20-overwork-death.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-20-overwork-death.zh.txt"
    }
   ],
   "added_at": "2026-10-18T01:02+08:00"
@@ -7383,10 +7083,6 @@
    {
     "label": "速读",
     "url": "txt/cx-41-pneumoconiosis.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-41-pneumoconiosis.zh.txt"
    },
    {
     "label": "原文",
@@ -7560,10 +7256,6 @@
     "url": "txt/cx-06-low-price.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-06-low-price.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-06-low-price.orig.txt"
    }
@@ -7636,10 +7328,6 @@
    {
     "label": "速读",
     "url": "txt/cx-14-nonwoven-bag.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-14-nonwoven-bag.zh.txt"
    },
    {
     "label": "原文",
@@ -7741,10 +7429,6 @@
    {
     "label": "速读",
     "url": "txt/cx-12-autism-adult.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-12-autism-adult.zh.txt"
    },
    {
     "label": "原文",
@@ -7928,10 +7612,6 @@
    {
     "label": "速读",
     "url": "txt/cx-36-wang-zengqi.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-36-wang-zengqi.zh.txt"
    },
    {
     "label": "原文",
@@ -8195,10 +7875,6 @@
     "url": "txt/cx-27-thorny-childhood.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-27-thorny-childhood.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-27-thorny-childhood.orig.txt"
    }
@@ -8219,10 +7895,6 @@
    {
     "label": "速读",
     "url": "txt/cx-39-pharma-anticorruption.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-39-pharma-anticorruption.zh.txt"
    },
    {
     "label": "原文",
@@ -8388,10 +8060,6 @@
    {
     "label": "速读",
     "url": "txt/cx-59-kuangnan.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-59-kuangnan.zh.txt"
    },
    {
     "label": "原文",
@@ -8597,10 +8265,6 @@
    {
     "label": "速读",
     "url": "txt/cx-52-perennial-rice.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-52-perennial-rice.zh.txt"
    },
    {
     "label": "原文",
@@ -8913,10 +8577,6 @@
     "url": "txt/cx-32-hegang.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-32-hegang.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-32-hegang.orig.txt"
    }
@@ -9145,10 +8805,6 @@
    {
     "label": "速读",
     "url": "txt/cx-16-ambiguous-south.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-16-ambiguous-south.zh.txt"
    }
   ],
   "added_at": "2026-10-18T00:42+08:00"
@@ -9167,10 +8823,6 @@
    {
     "label": "速读",
     "url": "txt/cx-31-eia-engineer.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-31-eia-engineer.zh.txt"
    },
    {
     "label": "原文",
@@ -9219,10 +8871,6 @@
    {
     "label": "速读",
     "url": "txt/cx-19-xinyang-battery.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-19-xinyang-battery.zh.txt"
    },
    {
     "label": "原文",
@@ -9299,10 +8947,6 @@
     "url": "txt/cx-26-royole.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-26-royole.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-26-royole.orig.txt"
    }
@@ -9323,10 +8967,6 @@
    {
     "label": "速读",
     "url": "txt/cx-47-internet-labor.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-47-internet-labor.zh.txt"
    },
    {
     "label": "原文",
@@ -9375,10 +9015,6 @@
    {
     "label": "速读",
     "url": "txt/cx-53-gambling-funds.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-53-gambling-funds.zh.txt"
    },
    {
     "label": "原文",
@@ -9509,10 +9145,6 @@
     "url": "txt/cx-46-tianjin-cholera.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-46-tianjin-cholera.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-46-tianjin-cholera.orig.txt"
    }
@@ -9640,10 +9272,6 @@
     "url": "txt/cx-07-volcano-painting.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-07-volcano-painting.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-07-volcano-painting.orig.txt"
    }
@@ -9664,10 +9292,6 @@
    {
     "label": "速读",
     "url": "txt/cx-25-yunnan-aluminum.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-25-yunnan-aluminum.zh.txt"
    },
    {
     "label": "原文",
@@ -9799,10 +9423,6 @@
     "url": "txt/cx-43-leeuwenhoek.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-43-leeuwenhoek.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-43-leeuwenhoek.orig.txt"
    }
@@ -9823,10 +9443,6 @@
    {
     "label": "速读",
     "url": "txt/cx-60-st-yanhu.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-60-st-yanhu.zh.txt"
    },
    {
     "label": "原文",
@@ -10139,10 +9755,6 @@
     "url": "txt/cx-24-pentagon-papers.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-24-pentagon-papers.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-24-pentagon-papers.orig.txt"
    }
@@ -10217,10 +9829,6 @@
     "url": "txt/cx-57-gmo-canola.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-57-gmo-canola.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-57-gmo-canola.orig.txt"
    }
@@ -10267,10 +9875,6 @@
    {
     "label": "速读",
     "url": "txt/cx-18-harar-rimbaud.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-18-harar-rimbaud.zh.txt"
    }
   ],
   "added_at": "2026-10-18T00:49+08:00"
@@ -10289,10 +9893,6 @@
    {
     "label": "速读",
     "url": "txt/cx-61-env-testing.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-61-env-testing.zh.txt"
    },
    {
     "label": "原文",
@@ -10369,10 +9969,6 @@
     "url": "txt/cx-113-ecommerce-regroup.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-113-ecommerce-regroup.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-113-ecommerce-regroup.orig.txt"
    }
@@ -10393,10 +9989,6 @@
    {
     "label": "速读",
     "url": "txt/cx-125-local-life-war.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-125-local-life-war.zh.txt"
    },
    {
     "label": "原文",
@@ -10421,10 +10013,6 @@
     "url": "txt/cx-35-china-tower.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-35-china-tower.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-35-china-tower.orig.txt"
    }
@@ -10445,10 +10033,6 @@
    {
     "label": "速读",
     "url": "txt/cx-29-ren-yanhong.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-29-ren-yanhong.zh.txt"
    },
    {
     "label": "原文",
@@ -10473,10 +10057,6 @@
     "url": "txt/cx-120-fin-reg-overhaul.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-120-fin-reg-overhaul.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-120-fin-reg-overhaul.orig.txt"
    }
@@ -10497,10 +10077,6 @@
    {
     "label": "速读",
     "url": "txt/cx-123-three-swordsmen.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-123-three-swordsmen.zh.txt"
    },
    {
     "label": "原文",
@@ -10551,10 +10127,6 @@
     "url": "txt/cx-04-warburg.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-04-warburg.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-04-warburg.orig.txt"
    }
@@ -10575,10 +10147,6 @@
    {
     "label": "速读",
     "url": "txt/cx-34-zheshang-bank.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-34-zheshang-bank.zh.txt"
    },
    {
     "label": "原文",
@@ -10603,10 +10171,6 @@
     "url": "txt/cx-119-local-deleverage.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-119-local-deleverage.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-119-local-deleverage.orig.txt"
    }
@@ -10629,10 +10193,6 @@
     "url": "txt/cx-62-feibiao.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-62-feibiao.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-62-feibiao.orig.txt"
    }
@@ -10653,10 +10213,6 @@
    {
     "label": "速读",
     "url": "txt/cx-118-qianbao-illegal-fund.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-118-qianbao-illegal-fund.zh.txt"
    },
    {
     "label": "原文",
@@ -10733,10 +10289,6 @@
     "url": "txt/cx-11-xiang-junbo.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-11-xiang-junbo.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-11-xiang-junbo.orig.txt"
    }
@@ -10757,10 +10309,6 @@
    {
     "label": "速读",
     "url": "txt/cx-117-insurance-correct.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-117-insurance-correct.zh.txt"
    },
    {
     "label": "原文",
@@ -10785,10 +10333,6 @@
     "url": "txt/cx-15-waterma.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-15-waterma.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-15-waterma.orig.txt"
    }
@@ -10809,10 +10353,6 @@
    {
     "label": "速读",
     "url": "txt/cx-51-kang-hongkui.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-51-kang-hongkui.zh.txt"
    },
    {
     "label": "原文",
@@ -10837,10 +10377,6 @@
     "url": "txt/cx-56-pyramid-scheme.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-56-pyramid-scheme.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-56-pyramid-scheme.orig.txt"
    }
@@ -10861,10 +10397,6 @@
    {
     "label": "速读",
     "url": "txt/cx-22-erhai.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-22-erhai.zh.txt"
    },
    {
     "label": "原文",
@@ -10889,10 +10421,6 @@
     "url": "txt/cx-40-stephen-ross.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-40-stephen-ross.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-40-stephen-ross.orig.txt"
    }
@@ -10913,10 +10441,6 @@
    {
     "label": "速读",
     "url": "txt/cx-50-industrial-new-city.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-50-industrial-new-city.zh.txt"
    },
    {
     "label": "原文",
@@ -10941,10 +10465,6 @@
     "url": "txt/cx-111-huaxia-land-king.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-111-huaxia-land-king.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-111-huaxia-land-king.orig.txt"
    }
@@ -10967,10 +10487,6 @@
     "url": "txt/cx-121-industry-newtown.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-121-industry-newtown.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-121-industry-newtown.orig.txt"
    }
@@ -10991,10 +10507,6 @@
    {
     "label": "速读",
     "url": "txt/cx-126-foraging-history.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-126-foraging-history.zh.txt"
    },
    {
     "label": "原文",
@@ -11046,10 +10558,6 @@
     "url": "txt/cx-45-leeco-car.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-45-leeco-car.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-45-leeco-car.orig.txt"
    }
@@ -11070,10 +10578,6 @@
    {
     "label": "速读",
     "url": "txt/cx-107-ev-adventurers.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-107-ev-adventurers.zh.txt"
    },
    {
     "label": "原文",
@@ -11098,10 +10602,6 @@
     "url": "txt/cx-105-npl-feast.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-105-npl-feast.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-105-npl-feast.orig.txt"
    }
@@ -11124,10 +10624,6 @@
     "url": "txt/cx-106-npl-vulture.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-106-npl-vulture.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-106-npl-vulture.orig.txt"
    }
@@ -11148,10 +10644,6 @@
    {
     "label": "速读",
     "url": "txt/cx-124-silicon-comma.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-124-silicon-comma.zh.txt"
    },
    {
     "label": "原文",
@@ -11201,10 +10693,6 @@
    {
     "label": "速读",
     "url": "txt/cx-17-kunshan-line.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-17-kunshan-line.zh.txt"
    }
   ],
   "added_at": "2026-10-18T00:42+08:00"
@@ -11223,10 +10711,6 @@
    {
     "label": "速读",
     "url": "txt/cx-63-angang.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-63-angang.zh.txt"
    },
    {
     "label": "原文",
@@ -11252,10 +10736,6 @@
     "url": "txt/cx-13-wu-yaozhong.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-13-wu-yaozhong.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-13-wu-yaozhong.orig.txt"
    }
@@ -11278,10 +10758,6 @@
     "url": "txt/cx-10-taiwan-stock.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-10-taiwan-stock.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-10-taiwan-stock.orig.txt"
    }
@@ -11302,10 +10778,6 @@
    {
     "label": "速读",
     "url": "txt/cx-37-zhao-yanei.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-37-zhao-yanei.zh.txt"
    },
    {
     "label": "原文",
@@ -11354,10 +10826,6 @@
     "url": "txt/cx-44-tv-station.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-44-tv-station.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-44-tv-station.orig.txt"
    }
@@ -11378,10 +10846,6 @@
    {
     "label": "速读",
     "url": "txt/cx-09-qiuhe.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-09-qiuhe.zh.txt"
    },
    {
     "label": "原文",
@@ -11406,10 +10870,6 @@
     "url": "txt/cx-122-country-living.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-122-country-living.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-122-country-living.orig.txt"
    }
@@ -11430,10 +10890,6 @@
    {
     "label": "速读",
     "url": "txt/cx-02-haze-ammonia.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-02-haze-ammonia.zh.txt"
    },
    {
     "label": "原文",
@@ -11458,10 +10914,6 @@
     "url": "txt/cx-108-zhang-zudao.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-108-zhang-zudao.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-108-zhang-zudao.orig.txt"
    }
@@ -11482,10 +10934,6 @@
    {
     "label": "速读",
     "url": "txt/cx-109-barefoot-doctor.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-109-barefoot-doctor.zh.txt"
    },
    {
     "label": "原文",
@@ -11510,10 +10958,6 @@
     "url": "txt/cx-58-vaccine.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-58-vaccine.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-58-vaccine.orig.txt"
    }
@@ -11534,10 +10978,6 @@
    {
     "label": "速读",
     "url": "txt/cx-05-huaihe.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-05-huaihe.zh.txt"
    },
    {
     "label": "原文",
@@ -11562,10 +11002,6 @@
     "url": "txt/cx-54-tuya-fraud.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-54-tuya-fraud.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-54-tuya-fraud.orig.txt"
    }
@@ -11586,10 +11022,6 @@
    {
     "label": "速读",
     "url": "txt/cx-116-royal-cabinet.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-116-royal-cabinet.zh.txt"
    },
    {
     "label": "原文",
@@ -11614,10 +11046,6 @@
     "url": "txt/cx-114-why-new-army.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-114-why-new-army.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-114-why-new-army.orig.txt"
    }
@@ -11638,10 +11066,6 @@
    {
     "label": "速读",
     "url": "txt/cx-112-bandit-yuan-ying.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-112-bandit-yuan-ying.zh.txt"
    },
    {
     "label": "原文",
@@ -11666,10 +11090,6 @@
     "url": "txt/cx-110-1970s-impressions.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-110-1970s-impressions.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-110-1970s-impressions.orig.txt"
    }
@@ -11690,10 +11110,6 @@
    {
     "label": "速读",
     "url": "txt/cx-156-shuanghui-mbo.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-156-shuanghui-mbo.zh.txt"
    },
    {
     "label": "原文",
@@ -11718,10 +11134,6 @@
     "url": "txt/cx-157-rmb-intl-drive.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-157-rmb-intl-drive.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-157-rmb-intl-drive.orig.txt"
    }
@@ -11742,10 +11154,6 @@
    {
     "label": "速读",
     "url": "txt/cx-155-rmb-offshore.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-155-rmb-offshore.zh.txt"
    },
    {
     "label": "原文",
@@ -11770,10 +11178,6 @@
     "url": "txt/cx-152-local-debt-gloom.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-152-local-debt-gloom.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-152-local-debt-gloom.orig.txt"
    }
@@ -11794,10 +11198,6 @@
    {
     "label": "速读",
     "url": "txt/cx-158-krugman-rmb.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-158-krugman-rmb.zh.txt"
    },
    {
     "label": "原文",
@@ -11822,10 +11222,6 @@
     "url": "txt/cx-153-soe-hotel-reorg.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-153-soe-hotel-reorg.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-153-soe-hotel-reorg.orig.txt"
    }
@@ -11846,10 +11242,6 @@
    {
     "label": "速读",
     "url": "txt/cx-145-unemployment-survey.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-145-unemployment-survey.zh.txt"
    },
    {
     "label": "原文",
@@ -11874,10 +11266,6 @@
     "url": "txt/cx-115-salinger.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-115-salinger.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-115-salinger.orig.txt"
    }
@@ -11898,10 +11286,6 @@
    {
     "label": "速读",
     "url": "txt/cx-128-cn-reg-path.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-128-cn-reg-path.zh.txt"
    },
    {
     "label": "原文",
@@ -11926,10 +11310,6 @@
     "url": "txt/cx-132-property-regulate.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-132-property-regulate.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-132-property-regulate.orig.txt"
    }
@@ -11950,10 +11330,6 @@
    {
     "label": "速读",
     "url": "txt/cx-133-sovereign-debt.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-133-sovereign-debt.zh.txt"
    },
    {
     "label": "原文",
@@ -11978,10 +11354,6 @@
     "url": "txt/cx-137-insurance-convict.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-137-insurance-convict.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-137-insurance-convict.orig.txt"
    }
@@ -12002,10 +11374,6 @@
    {
     "label": "速读",
     "url": "txt/cx-130-land-fiscal.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-130-land-fiscal.zh.txt"
    },
    {
     "label": "原文",
@@ -12030,10 +11398,6 @@
     "url": "txt/cx-135-local-debt-stuck.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-135-local-debt-stuck.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-135-local-debt-stuck.orig.txt"
    }
@@ -12054,10 +11418,6 @@
    {
     "label": "速读",
     "url": "txt/cx-151-deposit-rcc.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-151-deposit-rcc.zh.txt"
    },
    {
     "label": "原文",
@@ -12082,10 +11442,6 @@
     "url": "txt/cx-127-fin-reg-debate.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-127-fin-reg-debate.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-127-fin-reg-debate.orig.txt"
    }
@@ -12106,10 +11462,6 @@
    {
     "label": "速读",
     "url": "txt/cx-129-tonggang-reorg.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-129-tonggang-reorg.zh.txt"
    },
    {
     "label": "原文",
@@ -12134,10 +11486,6 @@
     "url": "txt/cx-138-yanliyan-debt.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-138-yanliyan-debt.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-138-yanliyan-debt.orig.txt"
    }
@@ -12158,10 +11506,6 @@
    {
     "label": "速读",
     "url": "txt/cx-150-guarantee-reg.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-150-guarantee-reg.zh.txt"
    },
    {
     "label": "原文",
@@ -12186,10 +11530,6 @@
     "url": "txt/cx-131-debt-sink.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-131-debt-sink.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-131-debt-sink.orig.txt"
    }
@@ -12210,10 +11550,6 @@
    {
     "label": "速读",
     "url": "txt/cx-154-rmb-pe.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-154-rmb-pe.zh.txt"
    },
    {
     "label": "原文",
@@ -12238,10 +11574,6 @@
     "url": "txt/cx-147-cn-reorg.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-147-cn-reorg.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-147-cn-reorg.orig.txt"
    }
@@ -12262,10 +11594,6 @@
    {
     "label": "速读",
     "url": "txt/cx-149-catastrophe-insurance.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-149-catastrophe-insurance.zh.txt"
    },
    {
     "label": "原文",
@@ -12290,10 +11618,6 @@
     "url": "txt/cx-148-keep-repaying.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-148-keep-repaying.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-148-keep-repaying.orig.txt"
    }
@@ -12314,10 +11638,6 @@
    {
     "label": "速读",
     "url": "txt/cx-134-gaidar.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-134-gaidar.zh.txt"
    },
    {
     "label": "原文",
@@ -12342,10 +11662,6 @@
     "url": "txt/cx-136-bank-refi.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-136-bank-refi.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-136-bank-refi.orig.txt"
    }
@@ -12366,10 +11682,6 @@
    {
     "label": "速读",
     "url": "txt/cx-142-capital-inflow.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-142-capital-inflow.zh.txt"
    },
    {
     "label": "原文",
@@ -12394,10 +11706,6 @@
     "url": "txt/cx-143-bank-loan-sale.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-143-bank-loan-sale.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-143-bank-loan-sale.orig.txt"
    }
@@ -12418,10 +11726,6 @@
    {
     "label": "速读",
     "url": "txt/cx-144-credit-control.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-144-credit-control.zh.txt"
    },
    {
     "label": "原文",
@@ -12446,10 +11750,6 @@
     "url": "txt/cx-146-realty-financing.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-146-realty-financing.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-146-realty-financing.orig.txt"
    }
@@ -12470,10 +11770,6 @@
    {
     "label": "速读",
     "url": "txt/cx-139-deposit-insurance.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-139-deposit-insurance.zh.txt"
    },
    {
     "label": "原文",
@@ -12498,10 +11794,6 @@
     "url": "txt/cx-140-anti-inflation.txt"
    },
    {
-    "label": "详读",
-    "url": "txt/cx-140-anti-inflation.zh.txt"
-   },
-   {
     "label": "原文",
     "url": "txt/cx-140-anti-inflation.orig.txt"
    }
@@ -12522,10 +11814,6 @@
    {
     "label": "速读",
     "url": "txt/cx-141-us-finreg.txt"
-   },
-   {
-    "label": "详读",
-    "url": "txt/cx-141-us-finreg.zh.txt"
    },
    {
     "label": "原文",
