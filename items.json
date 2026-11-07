@@ -1,5 +1,200 @@
 [
  {
+  "id": "2115062331227226349",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Anthropic 工程师讲 Claude Managed Agents：从 API 到托管智能体",
+  "link": "https://x.com/Grow_withAI/status/2115062331227226349",
+  "date": "2026-11-07T01:22",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2115062331227226349.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2115062331227226349.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2115062331227226349.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2115062331227226349.m4a",
+  "added_at": "2026-10-30T02:12+08:00"
+ },
+ {
+  "id": "1787843010006278491",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "MIT: REGRESSIONS",
+  "link": "https://x.com/mitregressions/status/1787843010006278491",
+  "date": "2026-11-07T01:22",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/1787843010006278491.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/1787843010006278491.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/1787843010006278491.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/1787843010006278491.m4a",
+  "title_zh": "麻省理工学院：回归",
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "2103620465029943764",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "成瘾是麻醉",
+  "link": "https://x.com/chrislakin/status/2103620465029943764",
+  "date": "2026-11-07T01:22",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2103620465029943764.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2103620465029943764.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2103620465029943764.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "2115954345850400890",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "DeepMind《智能经济学》：能力进步何时带来经济转型",
+  "link": "https://x.com/MTSlive/status/2115954345850400890",
+  "date": "2026-11-07T01:22",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2115954345850400890.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2115954345850400890.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2115954345850400890.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2115954345850400890.m4a",
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "om2lIWXLLn4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Building Anthropic: A Conversation with Our Co-founders",
+  "link": "https://youtu.be/om2lIWXLLn4",
+  "date": "2026-11-07T01:19",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/om2lIWXLLn4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/om2lIWXLLn4.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/om2lIWXLLn4.m4a",
+  "title_zh": "构建 Anthropic：与联合创始人对谈",
+  "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "cx-179-yang-dechang",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "杨德昌的透彻与温柔｜纪念",
+  "link": "https://mini.caixin.com/2026-11-06/102501949.html",
+  "date": "2026-11-06",
+  "author": "梅雪风",
+  "issue": "财新网/文化/影视",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-179-yang-dechang.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-179-yang-dechang.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-179-yang-dechang.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T07:33+08:00"
+ },
+ {
+  "id": "cx-180-us-ria",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "美国投顾业务的发展历程与未来趋势",
+  "link": "https://opinion.caixin.com/2026-11-06/102501714.html",
+  "date": "2026-11-06",
+  "author": "林羿",
+  "issue": "财新网/观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-180-us-ria.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-180-us-ria.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-180-us-ria.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T07:33+08:00"
+ },
+ {
+  "id": "cx-181-ai-hallucination-liability",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "AI胡说八道该由谁担责？｜法度",
+  "link": "https://mini.caixin.com/2026-11-06/102501637.html",
+  "date": "2026-11-06",
+  "author": "蒋金晗",
+  "issue": "财新网/法度",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-181-ai-hallucination-liability.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-181-ai-hallucination-liability.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-181-ai-hallucination-liability.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T07:33+08:00"
+ },
+ {
   "id": "cx-175-baibaoguo",
   "kind": "curated",
   "type": "caixin",
@@ -570,123 +765,6 @@
   ],
   "title_zh": "把「用户」从用户体验里拿掉：Experience Design",
   "added_at": "2026-11-06T07:27+08:00"
- },
- {
-  "id": "2115062331227226349",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Anthropic 工程师讲 Claude Managed Agents：从 API 到托管智能体",
-  "link": "https://x.com/Grow_withAI/status/2115062331227226349",
-  "date": "2026-10-30T18:15",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2115062331227226349.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/2115062331227226349.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2115062331227226349.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2115062331227226349.m4a",
-  "added_at": "2026-10-30T02:12+08:00"
- },
- {
-  "id": "1787843010006278491",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "MIT: REGRESSIONS",
-  "link": "https://x.com/mitregressions/status/1787843010006278491",
-  "date": "2026-10-30T18:15",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/1787843010006278491.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/1787843010006278491.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/1787843010006278491.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/1787843010006278491.m4a",
-  "title_zh": "麻省理工学院：回归",
-  "added_at": "2026-10-30T22:13+08:00"
- },
- {
-  "id": "2103620465029943764",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "成瘾是麻醉",
-  "link": "https://x.com/chrislakin/status/2103620465029943764",
-  "date": "2026-10-30T18:15",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2103620465029943764.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/2103620465029943764.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2103620465029943764.orig.txt"
-   }
-  ],
-  "added_at": "2026-10-30T22:13+08:00"
- },
- {
-  "id": "2115954345850400890",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "DeepMind《智能经济学》：能力进步何时带来经济转型",
-  "link": "https://x.com/MTSlive/status/2115954345850400890",
-  "date": "2026-10-30T18:15",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2115954345850400890.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/2115954345850400890.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2115954345850400890.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2115954345850400890.m4a",
-  "added_at": "2026-10-30T22:13+08:00"
- },
- {
-  "id": "om2lIWXLLn4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Building Anthropic: A Conversation with Our Co-founders",
-  "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-10-30T18:11",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/om2lIWXLLn4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/om2lIWXLLn4.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/om2lIWXLLn4.m4a",
-  "title_zh": "构建 Anthropic：与联合创始人对谈",
-  "added_at": "2026-10-11T03:20+08:00"
  },
  {
   "id": "cx-159-xing-min-cross",
@@ -1466,7 +1544,7 @@
    }
   ],
   "title_zh": "Kimi K3.1 Pro、新的网络现实与 Muse 随想",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-cb0e6541c41d.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-cb0e6541c41d.m4a",
   "added_at": "2026-10-30T07:26+08:00"
  },
  {
@@ -2404,7 +2482,7 @@
    }
   ],
   "title_zh": "优步的人工智能基础设施，由内而外",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc6f7d6d13e5.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-bc6f7d6d13e5.m4a",
   "added_at": "2026-10-15T10:54+08:00"
  },
  {
@@ -2535,7 +2613,7 @@
    }
   ],
   "title_zh": "Pat Gelsinger：为什么现在是做硬件的最好时机",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1bc445bedaa9.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-1bc445bedaa9.m4a",
   "added_at": "2026-10-14T10:49+08:00"
  },
  {
@@ -2787,7 +2865,7 @@
     "url": "txt/Fhx_qNS2P8g.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Fhx_qNS2P8g.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/Fhx_qNS2P8g.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -2807,7 +2885,7 @@
     "url": "txt/lnLWRJ2p_Mg.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/lnLWRJ2p_Mg.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/lnLWRJ2p_Mg.m4a",
   "title_zh": "OpenAI 的 Holly Li 谈 Dots：当下科技圈最火的产品经理",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -2828,7 +2906,7 @@
     "url": "txt/2108280456835727812.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108280456835727812.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2108280456835727812.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -2848,7 +2926,7 @@
     "url": "txt/2108245975882166472.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108245975882166472.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2108245975882166472.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -2868,7 +2946,7 @@
     "url": "txt/2108229753572343993.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108229753572343993.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2108229753572343993.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -2940,7 +3018,7 @@
     "url": "txt/2108218392188518533.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108218392188518533.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2108218392188518533.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -2960,7 +3038,7 @@
     "url": "txt/2108121268004536474.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2108121268004536474.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2108121268004536474.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -3032,7 +3110,7 @@
     "url": "txt/KVD_2SDDCzM.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/KVD_2SDDCzM.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/KVD_2SDDCzM.m4a",
   "title_zh": "Dylan Field：为什么设计是新的代码",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -3233,7 +3311,7 @@
     "url": "txt/2105099231300354100.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105099231300354100.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2105099231300354100.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -3253,7 +3331,7 @@
     "url": "txt/2105046803674792166.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2105046803674792166.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2105046803674792166.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -3306,7 +3384,7 @@
    }
   ],
   "title_zh": "与 Ben Schwarz 聊 Web 性能",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aadfd31a222b.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-aadfd31a222b.m4a",
   "added_at": "2026-10-11T05:50+08:00"
  },
  {
@@ -3378,7 +3456,7 @@
     "url": "txt/xZ5TEaleUdg.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/xZ5TEaleUdg.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/xZ5TEaleUdg.m4a",
   "title_zh": "我们做了 Grok Bot：最好用的 14 个 bot（Peng Zheng 与 Lauren Tan）",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -3501,7 +3579,7 @@
     "url": "txt/dNWkwrqAkcM.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/dNWkwrqAkcM.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/dNWkwrqAkcM.m4a",
   "title_zh": "AI 新时代如何打造能卖货的品牌：营销三定律",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -3576,7 +3654,7 @@
     "url": "txt/cur-d705870948e8.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d705870948e8.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-d705870948e8.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -3622,7 +3700,7 @@
     "url": "txt/HlpeP8Z1e5o.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/HlpeP8Z1e5o.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/HlpeP8Z1e5o.m4a",
   "title_zh": "如何活出自己？",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -3643,7 +3721,7 @@
     "url": "txt/_HLLpvjg8EI.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/_HLLpvjg8EI.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/_HLLpvjg8EI.m4a",
   "added_at": "2026-10-12T07:53+08:00"
  },
  {
@@ -3663,7 +3741,7 @@
     "url": "txt/n9xKblqyQ28.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/n9xKblqyQ28.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/n9xKblqyQ28.m4a",
   "title_zh": "为什么 Harness 比模型更重要",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -3710,7 +3788,7 @@
     "url": "txt/2095867276042154469.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/2095867276042154469.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2095867276042154469.m4a",
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
@@ -3804,7 +3882,7 @@
     "url": "txt/cur-6eadb1839b73.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6eadb1839b73.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-6eadb1839b73.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -3824,7 +3902,7 @@
     "url": "txt/JFFmp-oTHdM.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/JFFmp-oTHdM.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/JFFmp-oTHdM.m4a",
   "title_zh": "贝莱德 Wei Li：AI 有泡沫吗？",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -3852,7 +3930,7 @@
    }
   ],
   "title_zh": "TypeScript 7 及其之后",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5a6e0cf4629c.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-5a6e0cf4629c.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -3872,7 +3950,7 @@
     "url": "txt/Cmoh-yR-usA.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Cmoh-yR-usA.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/Cmoh-yR-usA.m4a",
   "title_zh": "Lauren Tan 谈 xAI Grok Bot",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -4075,7 +4153,7 @@
     "url": "txt/kzcI5F4tGiU.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kzcI5F4tGiU.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/kzcI5F4tGiU.m4a",
   "title_zh": "我如何用 AI 学东西",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -4096,7 +4174,7 @@
     "url": "txt/A63sedG-p5Q.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/A63sedG-p5Q.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/A63sedG-p5Q.m4a",
   "title_zh": "Agent 要取代软件工程了吗？（Lauren Tan 与 Roshan Sadanani）",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -4239,7 +4317,7 @@
     "url": "txt/lwAG7bBg4n8.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/lwAG7bBg4n8.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/lwAG7bBg4n8.m4a",
   "title_zh": "读书学英语：《绿野仙踪》第一部分",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -4260,7 +4338,7 @@
     "url": "txt/mnjjM2e5oAI.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/mnjjM2e5oAI.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/mnjjM2e5oAI.m4a",
   "title_zh": "\"艺术与技术的交汇\"到底是什么鬼",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -4429,7 +4507,7 @@
     "url": "txt/QG1AkRe1oW4.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/QG1AkRe1oW4.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/QG1AkRe1oW4.m4a",
   "title_zh": "中国学生如何进入疯狂的专注状态",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -4509,7 +4587,7 @@
    }
   ],
   "title_zh": "你读代码吗？",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d9c9ed7a60ba.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-d9c9ed7a60ba.m4a",
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
@@ -4614,7 +4692,7 @@
    }
   ],
   "title_zh": "Biome 与 JavaScript 工具链的未来",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-924729b6849e.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-924729b6849e.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -4636,7 +4714,7 @@
     "url": "txt/cur-791b3e241fa4.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-791b3e241fa4.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-791b3e241fa4.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -4762,7 +4840,7 @@
     "url": "txt/cur-cd7321599382.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-cd7321599382.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-cd7321599382.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -4784,7 +4862,7 @@
     "url": "txt/cur-0df73b10c6b6.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0df73b10c6b6.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-0df73b10c6b6.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -4806,7 +4884,7 @@
     "url": "txt/cur-c63697a281da.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c63697a281da.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-c63697a281da.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -4878,7 +4956,7 @@
    }
   ],
   "title_zh": "与 Scott Jehl 聊 Web 懒加载",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f00d750dd07e.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-f00d750dd07e.m4a",
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
@@ -4925,7 +5003,7 @@
    }
   ],
   "title_zh": "Cat Wu 谈 Anthropic 产品团队为何比谁都快",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0a061b050aa5.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-0a061b050aa5.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -4945,7 +5023,7 @@
     "url": "txt/kK1TOpI948o.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/kK1TOpI948o.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/kK1TOpI948o.m4a",
   "added_at": "2026-10-11T22:29+08:00"
  },
  {
@@ -5095,7 +5173,7 @@
     "url": "txt/OmfP9WcGjBE.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/OmfP9WcGjBE.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/OmfP9WcGjBE.m4a",
   "title_zh": "UCLA 电影教授教你成为会讲故事的人",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -5118,7 +5196,7 @@
     "url": "txt/cur-29cd7b5f8d57.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-29cd7b5f8d57.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-29cd7b5f8d57.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -5217,7 +5295,7 @@
    }
   ],
   "title_zh": "Marc Brooker 谈规格驱动的 AI 开发",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-13a6bc139eee.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-13a6bc139eee.m4a",
   "added_at": "2026-10-11T05:52+08:00"
  },
  {
@@ -5314,7 +5392,7 @@
    }
   ],
   "title_zh": "Steve Yegge 谈 Gas Town、Beads 与 Agent 式开发的兴起",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4eb3668befb7.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-4eb3668befb7.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -5367,7 +5445,7 @@
    }
   ],
   "title_zh": "Thibault Sottiaux 与 Ed Bayes 谈 OpenAI 和 Codex",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55f06cf70928.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-55f06cf70928.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -5407,7 +5485,7 @@
     "url": "txt/Ty5ZoD37xus.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/Ty5ZoD37xus.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/Ty5ZoD37xus.m4a",
   "title_zh": "《被讨厌的勇气》：内容总结与真实评价",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -5500,7 +5578,7 @@
     "url": "txt/hS9BOev_u5U.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/hS9BOev_u5U.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/hS9BOev_u5U.m4a",
   "title_zh": "我在 25 岁学到的 25 件事",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -5523,7 +5601,7 @@
     "url": "txt/cur-2b898fcfc59d.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2b898fcfc59d.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-2b898fcfc59d.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -5818,7 +5896,7 @@
    }
   ],
   "title_zh": "Nicole Forsgren 谈 2025 年如何衡量 AI 时代的开发者效率",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3911edc802c7.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-3911edc802c7.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -5897,7 +5975,7 @@
    }
   ],
   "title_zh": "npm 被围攻（以及怎么办）",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c1256801dc58.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-c1256801dc58.m4a",
   "added_at": "2026-10-11T05:50+08:00"
  },
  {
@@ -5917,7 +5995,7 @@
     "url": "txt/BV15oHwzBEYK.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV15oHwzBEYK.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/BV15oHwzBEYK.m4a",
   "added_at": "2026-10-11T22:29+08:00"
  },
  {
@@ -5994,7 +6072,7 @@
    }
   ],
   "title_zh": "Daniel Stenberg 谈为什么把 Rust 从 curl 里移除",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-70a9fe1c79b3.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-70a9fe1c79b3.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -6021,7 +6099,7 @@
    }
   ],
   "title_zh": "RAG 大家都做过了，然后呢？",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-66b3f5f3f7a3.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-66b3f5f3f7a3.m4a",
   "added_at": "2026-10-11T05:30+08:00"
  },
  {
@@ -6198,7 +6276,7 @@
    }
   ],
   "title_zh": "写给新手（和怀疑者）的 AI 编程路线图",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f860d82c521a.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-f860d82c521a.m4a",
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
@@ -6296,7 +6374,7 @@
    }
   ],
   "title_zh": "Jake Archibald 谈原生 HTML Include",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f0762e98ea80.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-f0762e98ea80.m4a",
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
@@ -6318,7 +6396,7 @@
     "url": "txt/cur-c0b286a36bcb.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c0b286a36bcb.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-c0b286a36bcb.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -6449,7 +6527,7 @@
    }
   ],
   "title_zh": "深入 Model Context Protocol（MCP）",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0548e04113fe.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-0548e04113fe.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -6577,7 +6655,7 @@
    }
   ],
   "title_zh": "React Server Components 走到哪一步了？",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3662739770cb.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-3662739770cb.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -6630,7 +6708,7 @@
    }
   ],
   "title_zh": "Varun Mohan 讲 Windsurf：四个月做出百万开发者在用的 AI 代码编辑器",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f6ee0a5e0fa6.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-f6ee0a5e0fa6.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -6808,7 +6886,7 @@
     "url": "txt/cur-4fa1607ca7c7.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-4fa1607ca7c7.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-4fa1607ca7c7.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -6858,7 +6936,7 @@
     "url": "txt/EWvNQjAaOHw.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/EWvNQjAaOHw.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/EWvNQjAaOHw.m4a",
   "title_zh": "我如何使用LLM",
   "added_at": "2026-10-17T19:01+08:00"
  },
@@ -6905,7 +6983,7 @@
     "url": "txt/cur-55bc79ce049c.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-55bc79ce049c.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-55bc79ce049c.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -6953,7 +7031,7 @@
     "url": "txt/cur-0cdfa6c0191d.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0cdfa6c0191d.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-0cdfa6c0191d.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7123,7 +7201,7 @@
    }
   ],
   "title_zh": "更快的网站：新的 Speculation Rules API",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-3ced6251d95e.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-3ced6251d95e.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -7176,7 +7254,7 @@
    }
   ],
   "title_zh": "构建经过测试、可靠的 AI 应用",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-5eb8ac407733.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-5eb8ac407733.m4a",
   "added_at": "2026-10-11T05:20+08:00"
  },
  {
@@ -7274,7 +7352,7 @@
     "url": "txt/BV1dU411U7f5.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1dU411U7f5.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/BV1dU411U7f5.m4a",
   "added_at": "2026-10-11T22:29+08:00"
  },
  {
@@ -7322,7 +7400,7 @@
     "url": "txt/cur-aab51f0b0545.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-aab51f0b0545.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-aab51f0b0545.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7366,7 +7444,7 @@
     "url": "txt/cur-6dfa58b6019a.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6dfa58b6019a.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-6dfa58b6019a.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7414,7 +7492,7 @@
     "url": "txt/cur-307d4a6462c1.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-307d4a6462c1.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-307d4a6462c1.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7467,7 +7545,7 @@
    }
   ],
   "title_zh": "一切从 Postgres 开始",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1198e993d447.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-1198e993d447.m4a",
   "added_at": "2026-10-11T05:50+08:00"
  },
  {
@@ -7489,7 +7567,7 @@
     "url": "txt/cur-f7e8c46dcd44.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-f7e8c46dcd44.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-f7e8c46dcd44.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7671,7 +7749,7 @@
     "url": "txt/cur-d8629a423ebb.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d8629a423ebb.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-d8629a423ebb.m4a",
   "title_zh": "Signals 入门（基于 Solid）",
   "added_at": "2026-10-11T05:09+08:00"
  },
@@ -7777,7 +7855,7 @@
    }
   ],
   "title_zh": "给你的 Core Web Vitals 把把脉",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7af6c18a0984.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7af6c18a0984.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -7804,7 +7882,7 @@
    }
   ],
   "title_zh": "Richard Rumelt 谈好战略与坏战略",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-d5e6bf97efd1.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-d5e6bf97efd1.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7831,7 +7909,7 @@
    }
   ],
   "title_zh": "Will Larson 谈工程师思维",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-b27f388466fb.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-b27f388466fb.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -7884,7 +7962,7 @@
    }
   ],
   "title_zh": "Maxim Fateev 谈用 Temporal 实现持久化执行",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-0435aec0d892.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-0435aec0d892.m4a",
   "added_at": "2026-10-11T05:50+08:00"
  },
  {
@@ -7911,7 +7989,7 @@
    }
   ],
   "title_zh": "从 WebGL 到 WebGPU",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-149072c1ad65.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-149072c1ad65.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -7959,7 +8037,7 @@
     "url": "txt/cur-ab61ff083285.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-ab61ff083285.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-ab61ff083285.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -8057,7 +8135,7 @@
     "url": "txt/5RnKD4vekF0.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/5RnKD4vekF0.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/5RnKD4vekF0.m4a",
   "title_zh": "Wei Li：让自己可被替代，成就他人",
   "added_at": "2026-10-11T03:20+08:00"
  },
@@ -8078,7 +8156,7 @@
     "url": "txt/BV1Cu411P7We.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1Cu411P7We.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/BV1Cu411P7We.m4a",
   "added_at": "2026-10-11T22:29+08:00"
  },
  {
@@ -8150,7 +8228,7 @@
     "url": "txt/BV1bN4y1d7he.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1bN4y1d7he.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/BV1bN4y1d7he.m4a",
   "added_at": "2026-10-11T22:29+08:00"
  },
  {
@@ -8248,7 +8326,7 @@
     "url": "txt/BV1y14y1Q7Cd.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/BV1y14y1Q7Cd.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/BV1y14y1Q7Cd.m4a",
   "added_at": "2026-10-11T22:29+08:00"
  },
  {
@@ -8270,7 +8348,7 @@
     "url": "txt/cur-e53f5f1de63e.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-e53f5f1de63e.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-e53f5f1de63e.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -8349,7 +8427,7 @@
    }
   ],
   "title_zh": "node_modules 为什么这么大？",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-1f142b98463c.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-1f142b98463c.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -8371,7 +8449,7 @@
     "url": "txt/cur-71f3a4102da2.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-71f3a4102da2.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-71f3a4102da2.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -8502,7 +8580,7 @@
    }
   ],
   "title_zh": "Web 开发失落的十年",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-afb42041661b.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-afb42041661b.m4a",
   "added_at": "2026-10-11T05:50+08:00"
  },
  {
@@ -8659,7 +8737,7 @@
    }
   ],
   "title_zh": "JS 框架的兴衰",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-86c3df7f8dc0.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-86c3df7f8dc0.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -8842,7 +8920,7 @@
    }
   ],
   "title_zh": "SPA 是个大错误吗？",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-e2b191b5e4d9.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-e2b191b5e4d9.m4a",
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
@@ -9437,7 +9515,7 @@
    }
   ],
   "title_zh": "用餐巾纸数学估算系统",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-7ad776f566aa.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7ad776f566aa.m4a",
   "added_at": "2026-10-11T05:32+08:00"
  },
  {
@@ -9464,7 +9542,7 @@
    }
   ],
   "title_zh": "WannaCry 勒索病毒",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-b64180a62e01.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-b64180a62e01.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -9543,7 +9621,7 @@
    }
   ],
   "title_zh": "Alex Petrov 谈数据库存储引擎",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-2e8b186c4b37.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-2e8b186c4b37.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -9700,7 +9778,7 @@
    }
   ],
   "title_zh": "10 倍开发者神话",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-a3d03cc6ae0c.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-a3d03cc6ae0c.m4a",
   "added_at": "2026-10-11T05:54+08:00"
  },
  {
@@ -9727,7 +9805,7 @@
    }
   ],
   "title_zh": "Samy 蠕虫",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-92a94e7953b1.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-92a94e7953b1.m4a",
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
@@ -9753,7 +9831,7 @@
     "url": "txt/cur-20bf2a9380b4.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-20bf2a9380b4.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-20bf2a9380b4.m4a",
   "title_zh": "MS08-067 漏洞",
   "added_at": "2026-10-11T05:50+08:00"
  },
@@ -9859,7 +9937,7 @@
    }
   ],
   "title_zh": "影子经纪人",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-6e3c127507ae.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-6e3c127507ae.m4a",
   "added_at": "2026-10-11T05:30+08:00"
  },
  {
@@ -9964,7 +10042,7 @@
    }
   ],
   "title_zh": "可观测性是为了未知的未知",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-c8c1e5d67e9e.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-c8c1e5d67e9e.m4a",
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
@@ -11027,7 +11105,7 @@
    }
   ],
   "title_zh": "John Allspaw 谈系统故障：预防、响应与复盘",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-66d963ce2471.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-66d963ce2471.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
@@ -11184,7 +11262,7 @@
    }
   ],
   "title_zh": "Mike Barker 谈 LMAX 架构",
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-10/cur-bc8809708ee2.m4a",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-bc8809708ee2.m4a",
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
