@@ -724,6 +724,59 @@
   "added_at": "2026-11-06T22:59+08:00"
  },
  {
+  "id": "cur-3b78672d47e1",
+  "kind": "curated",
+  "type": "article",
+  "source": "Anthropic Research (via Olshansk/rss-feeds)",
+  "title": "AI for scientific discovery: How researchers use Claude",
+  "link": "https://www.anthropic.com/research/how-researchers-use-claude",
+  "date": "2026-11-05",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3b78672d47e1.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-3b78672d47e1.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3b78672d47e1.orig.txt"
+   }
+  ],
+  "title_zh": "科学家怎样使用 Claude，AI 又能让研究加速多少",
+  "added_at": "2026-11-09T07:21+08:00"
+ },
+ {
+  "id": "cur-7fb652c9ef37",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Pragmatic Engineer Podcast",
+  "title": "Scaling Slack and GitHub with Maude Lemaire",
+  "link": "https://newsletter.pragmaticengineer.com/p/scaling-slack-and-github-with-maude",
+  "date": "2026-11-05",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-7fb652c9ef37.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-7fb652c9ef37.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-7fb652c9ef37.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7fb652c9ef37.m4a",
+  "title_zh": "扩展 Slack 与 GitHub：瓶颈不只在代码里",
+  "added_at": "2026-11-09T07:21+08:00"
+ },
+ {
   "id": "cx-172-fire-cadre",
   "kind": "curated",
   "type": "caixin",
