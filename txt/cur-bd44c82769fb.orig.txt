@@ -1,0 +1,16 @@
+A constraint can be “enabling” and “limiting” at the same time.
+For example, I’m working with a home contractor who takes his time. It is frustrating because I really need this job done. But there’s a side benefit. On a couple of occasions, being forced to look at the plans for a bit, consider the cost, and walk impatiently around the house thinking about how we live has inspired objectively better decisions about what we want (and need). The job will get done more slowly, but it will (hopefully) be a better fit. I have a suspicion that the contractor knows this. This is a mind trick they use to improve project outcomes.
+One of the challenges in product development right now is that “the bottleneck has moved” is far too simplistic. The limiting constraint may have moved, but now you have ALSO removed an enabling constraint. The bottleneck was both a bottleneck AND an enabling constraint. The thing that was annoying, challenging, glacial, and vibe-crushing was also the thing that forced us to pay attention (even if we hated it).
+The “dumb” project ROI pro forma, while putting way too much emphasis on shaky estimates and far too little emphasis on progressive risk reduction, at least forced us to wait a couple of days or weeks for a better alternative to emerge.
+The pairing session—while a major drag to do remotely, and now “easily” replaceable by pairing with an LLM—was a critical way to extend the hivemind of the team.
+The six rounds of revision of a doc, each person adding their perspective and taking time to get their words right, took a whole afternoon and meant that the team had a couple of days to reflect before pressing send.
+So the question isn’t as simple as “less bad stuff, more good stuff.” It is more “the good stuff is actually good, but we’re also skipping a lot of good stuff because woven into a lot of drudgery and friction were a lot of positive things.”
+Here’s an example from my day-to-day work. It is great to walk out of a customer call with a transcript and watch, an hour later, as a bunch of things get deployed. That’s magic! No tickets. No mind-numbing “definition of done” conversations. No “demo.” None of that.
+But intermingled in all that stuff I’d rather do without was a lot of positive friction.
+“Is this worth it?”
+“Is that actually what they meant?”
+“Is this design workable in the long run?”
+“Wait, are you sure you didn’t mean _________?”
+“Wait, this isn’t working how I thought it would work.”
+All of that friction was an opportunity to make better decisions, even if it felt like it was slowing us down. We have to be very INTENTIONAL about making space for this to happen.
+The trouble is that as people turn inwards into their own little AI-assisted universe, their own “team” of agents, and their own workflows, there is even LESS patience. The immediate gratification of pressing a button and seeing code come out the other end is way too strong. It is too easy to work in single-player mode. And multiplayer mode seems archaic in comparison. Almost quaint. A reminder of all that messy friction.
