@@ -1,5 +1,29 @@
 [
  {
+  "id": "6aea205e97726cd4675c55ff",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "EP.17",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6aea205e97726cd4675c55ff",
+  "date": "2026-11-08T20:34",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/6aea205e97726cd4675c55ff.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/6aea205e97726cd4675c55ff.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/6aea205e97726cd4675c55ff.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/6aea205e97726cd4675c55ff.m4a",
+  "added_at": "2026-11-08T20:39+08:00"
+ },
+ {
   "id": "cur-00178af6438d46bb76e01d5eb0203d24",
   "kind": "curated",
   "type": "article",
