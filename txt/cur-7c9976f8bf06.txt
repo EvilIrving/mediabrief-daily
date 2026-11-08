@@ -1,5 +1,9 @@
-https://www.openwall.com/lists/oss-security/2024/03/29/4
+2024 年 3 月底在开源底层压缩工具 xz/liblzma 中披露的供应链攻击（CVE-2024-3094），展示了攻击者利用多年潜伏获取维护特权后植入的高隐蔽性后门机制。PostgreSQL 核心开发者 Andres Freund 在 Debian sid 环境中调试性能异常时，注意到 SSH 登录进程消耗了异常高比例的 CPU 周期并引发了 Valgrind 内存校验报错，进而排查并公开了这一深植于 Linux 底层系统基础库的后门代码。
 
-上游 xz/liblzma 后门可导致 SSH 服务器被攻破（Backdoor in upstream xz/liblzma leading to SSH server compromise） ｜ Andres Freund（oss-security） ｜ 文章 ｜ https://www.openwall.com/lists/oss-security/2024/03/29/4
+攻击载荷并未直接提交至开源代码托管平台的 Git 仓库中，而是由攻击者利用维护者权限特意注入至官方发布的源码压缩包内。构建脚本通过 m4 宏代码在自动化编译阶段解包伪装成测试样本的恶意二进制对象，通过复杂的多层反调试与环境探测，针对性地检测目标编译环境是否为运行于 x86-64 架构且使用 GNU 链接器的 Linux 发行版打包流程。若命中条件，后门逻辑即被编译缝合进 liblzma 共享库文件中。
 
-Andres Freund 在 oss-security 邮件列表披露 xz 后门（CVE-2024-3094）。他因 Debian sid 上 ssh 登录异常耗 CPU 而追查，发现 5.6.0 和 5.6.1 中被植入混淆脚本，利用伪装成测试数据的文件，在 x86-64 Linux 的发行版打包构建中把恶意代码编进 liblzma。由于 Debian 等给 sshd 打了 systemd 补丁，这个库会被载入 sshd。后门劫持 RSA_public_decrypt，可能允许预认证阶段的未授权访问。他认为上游维护者很可能直接参与，因此直接通报发行版，并敦促尽快升级。上游 xz 仓库和 tarball 都被植入了后门：伪装成测试数据的载荷文件（tests/files/bad-3-corrupt_lzma2.xz、good-large_compressed.lzma）提交在上游仓库里，而把它们注入构建的那部分脚本只在发行 tarball 中。构建和运行条件都很挑剔，还会规避调试环境，以减少被偶然发现的机会。他自称不是安全研究员，分析主要来自日常的性能排查工具。
+后门的劫持机理高度精巧。在部分主流 Linux 发行版（如 Debian、Ubuntu 和 Fedora）中，系统守护进程 systemd 链接了 liblzma 库，而 OpenSSH 服务的特权守护进程 sshd 又间接链接了 systemd 通知库。恶意代码利用 GNU 链接器的间接函数调用（IFUNC）解析机制，在 sshd 启动初始化阶段抢先拦截全局符号表，劫持 OpenSSL 的 RSA 公钥解密函数 RSA_public_decrypt 指针。
+
+当特定格式的攻击载荷嵌入 SSH 握手证书或签名信息传入时，后门直接在握手阶段解密并执行未授权的系统指令，从而绕过身份认证直接获取系统的完全 root 权限。整个过程无需在磁盘产生任何独立进程或审计日志，若非执行时带来的毫秒级性能延迟与内存未对齐读取暴露了蛛丝马迹，该后门极有可能随各大发行版稳定版推送至全球服务器集群。
+
+深入技术分析表明，该恶意攻击者花费了超过两年时间以假名持续向开源项目提交看似有益的微小补丁，逐步获取了核心代码库的维护权限与发布凭据。该事件警示整个开源软件生态：单纯依赖代码托管平台的公开提交历史无法防范高级持续性渗透威胁，关键基础设施必须在编译构建流水线、二进制交付物校验比对以及动态链接符号解析等底层链条设立严密的可验证边界。

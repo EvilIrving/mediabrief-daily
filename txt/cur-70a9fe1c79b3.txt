@@ -1,8 +1,4 @@
-https://se-radio.net/2025/10/se-radio-688-daniel-stenberg-on-removing-rust-from-curl/
-
-SE Radio 688: Daniel Stenberg on Removing Rust from Curl ｜ Software Engineering Radio ｜ 57分钟 ｜ https://se-radio.net/2025/10/se-radio-688-daniel-stenberg-on-removing-rust-from-curl/
-
-本期由 Gavin Henry 主持，嘉宾是 curl 创始人兼首席开发者 Daniel Stenberg，复盘 curl 引入、最终又移除 Rust 写的 HTTP 库 Hyper 的全过程。Stenberg 先介绍 curl：它是命令行工具加 libcurl 库，支持 28 种 URL 协议，嵌在 iOS、Android、游戏机等数十亿台设备里，一部手机上常有五到十份 libcurl，因为系统不对应用开放 API。但他是团队里唯一的全职，大公司几乎都免费使用而不付支持费。他把这归结为经典的经济学规律：只要不是非付不可，企业就宁愿不付，而且每家都以为别人在付。主持人也感慨，这类关键的互联网基础软件背后往往只有一两个人，圈外人很难想象。
+在底层系统网络基础设施的长期演进中，代码的内存安全性必须与跨平台可移植性、构建工具链确定性及 API 契约稳定性进行严密的工程权衡：curl 经过数年实验，最终决定从主干代码库中完全移除基于 Rust 构建的 HTTP 后端 Hyper。curl 创始人兼首席开发者 Daniel Stenberg 深入复盘了在大型 C 语言开源项目中引入 Rust 内存安全组件所遭遇的跨平台支持断层、FFI 抽象阻抗失配与生态维护开销。
 
 引入 Hyper 的动机是内存安全。curl 用 C 写成，历来有不少内存类安全问题；它本就有可插拔后端的架构（TLS、SSH、域名解析等都可以换第三方库），所以由 Let's Encrypt 背后的 ISRG 通过 Prossimo 项目资助，新建一个由 Hyper 驱动的可选 HTTP 后端，逐个组件替换而不是整体重写——两人都认为用 Rust 重写 curl 是疯狂的。之所以选 Hyper，Stenberg 承认并没有经过严密比较：他不熟悉 Rust 生态，基本采纳了 ISRG 的建议，和 Hyper 首席维护者 Sean McArthur 谈过后，认为它在技术栈里的抽象层级合适，自己从零写 Rust 版协议既工作量巨大，他也不是合适人选。为此他还专门在 curl 里创造了“HTTP 后端”这个原本不存在的概念。Stenberg 坦言 HTTP 解析并不是 curl 内存问题最集中的地方，这些年他们更多靠内部辅助函数和编码规则写出更好的 C 来减少错误。
 

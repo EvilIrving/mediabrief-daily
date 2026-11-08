@@ -1,11 +1,7 @@
-https://www.latent.space/p/attention-interface
+智能体系统在 2025 年末迎来的可用性拐点，本质源于基础模型推理能力与外围 Harness 架构演进曲线的历史性交汇，标志着 Agent 工程从外部机械外挂迈入与模型共生训练（Co-Training）乃至专注人类注意力交互的新周期。
 
-The Evolution of the Agent Harness ｜ Latent Space ｜ 文章 ｜ https://www.latent.space/p/attention-interface
+回顾 Harness 1.0 的外挂演进史，系统始终在“Harness 的外部诉求”与“模型的实际交付能力”两组曲线之间艰难求索。2022 年底的 ReAct 提出“思考-行动-观察”推理循环，但本质仅为纸面 Prompt 技巧；2023 年春季以 AutoGPT、BabyAGI 为代表的产品赋予模型过早的全自主权，在模型单步可靠性仅有 90%-95% 的前提下，经由 20 步负向复合放大后全局成功率跌落至 36% 左右；随后行业迅速向 Cursor、Copilot 等人机结对 IDE 形态退守，将控制循环交还人类。转折点发生在 2024 年末 o1 推理模型的出现，能力曲线首次反超外挂 Harness；2025 年初发布的 Claude Code 敏锐捕捉到这一反转，果断剥离重型 IDE 界面，回归命令行并赋予 Bash 执行与文件读写权限，依托权限控制规则（Permission Rules）构建轻量沙箱，从而在模型可靠性达标的历史节点实现了自主 Agent 的商业化爆发。
 
-Latent Space 这篇文章把 2025 年圣诞前后智能体“突然能用了”归因于模型与 harness 一起进步、两条曲线在恰当时刻交叉。Transformer 发明者之一 Lukasz Kaiser 也说那次跳跃很难说清来自哪里。作者的答案是：不全在权重里，而在权重之外让智能体运转的一切，即环境、工具、上下文和护栏。没有 harness，模型只是缸中之脑。
+进入当前的 Harness 2.0 共生训练时代，Harness 不再是纯粹的后置包装。Harness-Bench 实测显示，完全相同的模型在不同 Harness 驱动下，106 项任务的得分呈现 52.4 到 76.2 的剧烈落差（相差 23.8 分）；OpenAI 仅通过保留推理链路（Retained Reasoning）与上下文压缩（Compaction）两项 Harness 升级，就将 GPT-5.6 Sol 在 ARC-AGI-3 上的得分从 13.3% 提升三倍至 38.3%。此时，强化学习（RL）已深入 Harness 环境内部，促成了“训练 -> 模型吸收外围能力至权重 -> 剥离 Harness 脚手架 -> 循环往复”的迭代循环。正如 Anthropic 团队近期能够删除 Claude Code 中 80% 的系统 Prompt，现代 Harness 的演进速度恰恰体现在其能够剥离并精简掉多少既有脚手架。
 
-Harness 1.0 是“外挂时代”，用“harness 要求什么”与“模型能交付什么”的差距衡量。ReAct 只把循环写在提示里；AutoGPT/BabyAGI 过早放手，循环放大错误，每步 95% 可靠、20 步成功率只有约 36%；Cursor/Copilot 把循环交回人手，初版 Devin 成功率约 15%；o1 之后模型能力首次反超；Claude Code 在交叉点上给模型终端、bash 和权限规则，半年 ARR 约 10 亿美元。
-
-Harness 2.0 是“共同训练时代”：同一模型换 harness，Harness-Bench 得分相差 23.8 分；GPT-5.6 Sol 仅加保留推理和压缩，ARC-AGI-3 从 13.3% 升到 38.3%。RL 进入 harness 环境，模型把压缩等能力吸进权重，harness 随之删减，Claude Code 系统提示删了 80%，循环是训练、吸收、剥离、重复。
-
-Harness 3.0 是“注意力时代”：最后剩下权限、身份、信任等以人为中心的能力，harness 翻转成模型面向人类注意力的接口。作者预测一年内各家都会像推出 AGENTS.md 一样推出“注意力策略”，规定何时打断、何时继续、哪些决定要人批准。
+展望 Harness 3.0 的注意力时代，随着多智能体编排、工具选择与长效记忆逐步被模型内部权重吞噬吸收，Harness 的核心职责将发生彻底倒置：它不再作为规训模型的外部枷锁，而是演变为智能体面向人类操作者的注意力接口，专注于身份鉴权（Identity）、细粒度权限边界（Permissions）、系统可解释性与人类信任交互。

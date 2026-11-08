@@ -1,8 +1,4 @@
-https://www.xiaoyuzhoufm.com/episode/6a0358b3e1eb34a939468885?utm_source=rss
-
-EP126 Agent Harness 🏇 ｜ 硬地骇客 ｜ 50分钟 ｜ https://www.xiaoyuzhoufm.com/episode/6a0358b3e1eb34a939468885?utm_source=rss
-
-这期硬地骇客由三位主持人对谈，主题是 agent harness。开场提出的问题是：同一个模型放在聊天框里只能给建议，放进 Claude Code 却能读文件、改代码、跑测试，而放在 Claude Code 和 OpenCode 里表现也不一样，差别来自模型周围的那套工作环境。
+《硬地骇客》第 126 期围绕 Agent Harness 展开技术研讨，从模型外围执行环境、上下文窗口调度、多 Agent 协作约束到工程化实践，系统剖析了 Harness 成为智能体系统核心竞争力的深层逻辑。
 
 关于 harness 是什么，节目里有两种理解。归归认为大模型、agent、harness 是三层：agent 赋予模型角色和人格，harness 提供工具、环境和权限，是一个硬编码、确定性的工程层。他借“挽具”的本义和早已有之的 test harness 来说明：没套 harness 的 agent 什么都敢做，删库事故就该由 harness 拦下。另一位主持人则把 harness 定义为“大模型之外的一切工程实现”，认为 agent 与 harness 的边界本来就模糊。他不赞成“控制反转”的说法，认为工具调用、编译检查和 skills 本质上都在约束模型，外部控制是和模型智能并行的另一条腿，从 prompt 工程一路发展到 context 工程和 harness 工程。
 

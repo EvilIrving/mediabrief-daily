@@ -1,7 +1,15 @@
-https://www.joshwcomeau.com/animation/scroll-driven-animations/
+CSS 原生滚动驱动动画（Scroll-Driven Animations）通过将动画时间线与物理滚动解耦，彻底打破了以往仅能依靠 JavaScript 监听滚动事件或使用 IntersectionObserver 触发动画的架构局限。它直接复用现有的 @keyframes 机制，将关键帧百分比从“时间进度”映射为“滚动几何进度”，使复杂的滚动动效能够完全脱离主线程，由浏览器合成器线程（Compositor Thread）高性能调度。
 
-滚动驱动动画 Scroll-Driven Animations ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/animation/scroll-driven-animations/
+规范的核心抽象是 animation-timeline 属性。在传统 CSS 动画中，@keyframes 内部的 0% 到 100% 对应从 animation-duration 开始到结束的时间流逝；而当引入动画时间线时，这一百分比被赋予了全新的语义，成为外部滚动进度的镜像。该体系主要提供两类时间线原语：view() 与 scroll()。
 
-Josh W. Comeau 介绍 CSS 原生的滚动驱动动画。过去这类效果只能靠 JavaScript，他试用几个月后的评价是"太好用了"，因为它优雅地建立在现有原语之上：关键帧的百分比本就没规定按时间推进，设置 animation-timeline: view() 后，元素穿过视口的进度就成了动画进度，缓动函数照常可用。他称赞 CSS 工作组复用关键帧而不是另起炉灶。
+view() 用于追踪特定元素穿过视口或滚动容器的相对几何进程。最典型的场景是在元素进入屏幕时产生渐显或形变。默认情况下，view() 覆盖从元素顶部刚触及视口底端（0%），直到元素底端完全离开视口顶端（100%）的完整区间。与此同时，常规动画的 timing-function 依然完全生效，开发者可以通过 cubic-bezier 或自定义的 spring 曲线调控滚动过程中的形变速率，实现随手势平滑变速的交互手感。
 
-animation-range 控制区间：cover 覆盖元素进出视口的全程，contain 只算完全可见的阶段，entry 适合进入时淡入，exit 对应离开；还能用起止百分比精确控制，或用逗号同时挂上淡入淡出两个动画。scroll() 追踪整体滚动进度，他觉得主要用途就是阅读进度条。进阶的"关联时间线"用 view-timeline 给一个元素建具名时间线，再让另一个元素订阅它；坑在于名字只对后代可见，需要在共同祖先上用 timeline-scope 声明。文末推广了他的动画课程 Whimsical Animations。
+为了精确截取动画生效的几何片段，规范提供了 animation-range 属性，支持 cover、contain、entry、exit 四个结构性关键字及其组合。cover 代表元素从初次接触视口到完全离开的全程；contain 表示元素完全进入视口直到开始离开的区间；entry 专门限定元素从视口边缘滑入直到完全可见的过程（最契合进场淡入）；exit 则对应元素从接触离开边界到彻底离开的过程（契合离场淡出）。通过指定百分比微调（如 animation-range: entry 20% entry 80%），开发者无需编写额外边界判定即可实现高精度的视差起止控制。当一个元素需要同时绑定进场淡入和离场淡出时，可以通过逗号并联多个关键帧名称与对应的 animation-range，无需嵌套多层 DOM 包装结构。
+
+与局部元素视口追踪相对，scroll() 时间线用于度量滚动容器全局的位移进度，常用于构建阅读进度条或全局背景颜色渐变。scroll() 默认追踪距离最近的拥有滚动能力的祖先容器，从滚动顶部（0%）线性推进至滚动底部（100%）。
+
+当需要跨越 DOM 层级、使一个元素的滚动进度驱动另一个独立元素的动画时，规范引入了具名时间线（Linked Timelines）与作用域声明。在被观察元素上通过 view-timeline-name: --custom-timeline 声明时间线标识，在被驱动元素上通过 animation-timeline: --custom-timeline 订阅该进度。由于自定义标识默认遵循词法作用域、仅在被声明元素的后代树中可见，当两个元素为兄弟节点或处于平行分支时，必须在其最近的共同祖先节点上使用 timeline-scope: --custom-timeline 提升变量作用域，完成跨分支的动画状态绑定。
+
+这一整套声明式语法的核心工程价值在于性能与架构简洁性。以往由 JavaScript 驱动的滚动动画必然承受事件节流、DOM 读取导致的强制同步布局（Layout Thrashing）以及主线程高负荷风险；而滚动驱动动画在 CSS 层声明几何绑定后，浏览器可以在独立的合成层直接根据滚动偏移量计算关键帧插值，即便主线程处于长时间脚本运算阻塞，动画依然能够保持 60fps 以上的丝滑响应。
+
+在现代浏览器支持度与工程渐进增强策略上，Chromium 系列已原生支持完整的 Animation Timeline 规范，Firefox 与 Safari 亦陆续在实验性通道与标准化里程碑中推进落地。由于滚动驱动动画纯粹作用于视图视觉层的呈现节奏，它天生具备优秀的向后兼容性：在尚未支持新特性的运行环境中，元素可以通过常规媒介查询与后备样式保持静态或基于状态的默认可见性，而在现代引擎中则获得无感的高阶动效增强，完全规避了传统重型动效库带来的体积包袱与运行时性能退化。

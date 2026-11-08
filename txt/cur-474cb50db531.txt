@@ -1,11 +1,7 @@
-https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-implementers-tales/
+Node.js 在实现 CommonJS 模块同步加载 ECMAScript 模块的过程中，必须克服多年历史包生态中转译变通方案所带来的兼容性断裂与规范约束。Node.js 核心团队成员 Joyee Cheung 详细披露了在 V8 引擎与模块加载流水线中解决互操作障碍的工程考量与权衡取舍。
 
-require(esm) in Node.js: implementer's tales ｜ Joyee Cheung ｜ 文章 ｜ https://joyeecheung.github.io/blog/2025/12/30/require-esm-in-node-js-implementers-tales/
+首要难题源于生态中广泛存在的伪 ESM 模块。大量 npm 库历史上通过 Babel 或 TypeScript 将 ESM 源码转译为 CommonJS 发布，并注入 __esModule 标记以协助打包器正确展开 default 导出。纯 ESM 规范定义模块命名空间外来对象具有不可变性，并不包含该特殊标记；当 CJS 消费者通过同步载入纯 ESM 模块时，会导致默认导出被重复嵌套包裹，使原有的函数解构赋值返回 undefined。针对此问题，社区曾权衡四种技术路径：复制属性附带 Getter、全局 Proxy 拦截、模拟原型链对象以及内部门面模块。基准评测证实前两者在属性访问时带来超过 50% 的性能损耗；Node.js 最终选择在保留真实不可变命名空间的同时构建内部门面模块，该机制仅在模块显式包含 default 导出时激活，在实现零运行开销的前提下消除了生态断裂。
 
-Node.js 核心贡献者 Joyee Cheung 回顾 require(esm) 落地时实战中冒出的互操作难题。这些难题大多来自生态里多年的变通做法，最后靠几个“逃生口”解决。
+第二个挑战涉及模块导出形态的语义映射。传统 CommonJS 允许直接将类或函数赋值给 module.exports，而 ESM 规范强制将导出视作命名空间集合。经规范讨论，Node.js 引入了特殊的字符串导出名 "module.exports"，允许纯 ESM 作者显式定义载入调用返回的顶级实体。此外，在条件导出中，由于历史上的 "module" 条件已被第三方打包器滥用并混入无法在 Node.js 环境执行的代码，团队新设 "module-sync" 条件标识，为生态平滑过渡提供明确指示。针对内置模块的同步探测需求，系统新增同步接口，避免开发者被迫引入顶层 await。
 
-最大的坑是“伪 ESM”：许多包在 Node.js 上发布的是转译后的 CommonJS，靠 Babel 传下来的 __esModule 标记让使用方的转译代码正确拆出 default 和具名导出。一旦包改成纯 ESM 被 require，命名空间里没有这个标记，旧使用方会拿到套了两层的 default，func 变成 undefined。规范规定命名空间不可变，社区提了副本加 getter、Proxy、Bun 的 Object.create 和内部门面模块四种方案。基准测试显示前两种访问开销超过 50%，最终选了既保留真命名空间又几乎零开销的门面模块，且只在有默认导出时才启用。
-
-第二个问题是 CommonJS 包原本把类直接赋给 module.exports，迁移到 ESM 后 require 只能拿到命名空间。经 Guy Bedford 提议并投票，引入了特殊的字符串导出名 "module.exports"，让包作者自行指定 require 返回什么。另外，为了让包在新版 Node.js 上用 ESM、在旧版上退回 CJS，原想借用打包工具的 "module" 条件，但生态里已有包把它指向跑不了 Node 的代码，只好新增 "module-sync"，作为过渡期的权宜之计。为免除检测内置模块时被迫用顶层 await，又加了同步的 process.getBuiltinModule()。
-
-实现层面，require 与 import 共用缓存，异步链接和同步加载可能竞态；由于那些异步扩展多年没成气候，加载流程干脆改为全同步，竞态也随之消失。跨 ESM/CJS 的循环还可能造成规范禁止的求值重入，目前由抛出 ERR_REQUIRE_CYCLE_MODULE 来拦截，待“延迟模块求值”提案在 V8 实现后或可支持。作者最后感谢社区，称这个曾经停滞的项目是靠众人协作推动起来的。
+在底层运行时调度层面，CommonJS 与 ESM 共享统一的模块映射缓存。针对异步模块图谱链接与同步加载之间的并发竞态，Node.js 彻底重构了底层加载链路，将其收敛为全同步执行管线，消除了异步挂起引发的状态不一致。对于两类模块相互引用引发的循环依赖，由于规范禁止在模块初始化完成前重入求值，系统显式抛出特定异常进行阻断，保证了规范一致性。整体方案既维系了模块系统规范语义的严谨性，又最大程度保障了现有庞大生态的向下兼容，实现了平稳的跨模块体系互操作。

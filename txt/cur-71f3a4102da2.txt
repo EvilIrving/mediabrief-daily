@@ -1,8 +1,4 @@
-https://pythonhunter.org/episodes/ep40
-
-Ep 40. Rust 和 PyO3：让 Python 再次伟大 🦀 ❤️ 🐍 ｜ 捕蛇者说 ｜ 77分钟 ｜ https://pythonhunter.org/episodes/ep40
-
-这期《捕蛇者说》由 laike9m 主持，赖信涛、小白和 Adam 一同参与，嘉宾是 PyO3 和 maturin 的维护者 messense。他曾在玻森数据和蚂蚁集团工作，现在在香港一家对冲基金。节目从 Python 圈里越来越常见的做法谈起：用 Rust 写库的核心，再提供给 Python 调用，换取性能和类型安全。
+《捕蛇者说》第 40 期对话 PyO3 与 maturin 核心维护者 messense，深度剖析利用 Rust 扩展与重塑 Python 基础生态的技术路径，系统探讨跨语言 FFI 机制、ABI 兼容性、GIL 交互与现代化跨平台轮子（Wheels）分发实践。
 
 messense 讲了自己的入门经历。2017 年他在玻森数据遇到一个 C++ 写的 CRFsuite 扩展，它不支持多线程推理，他就用 Rust 重新包装了一层，大幅提升了数据处理速度，从此开始用 Rust 配合 Python。他介绍说，PyO3 是对 CPython C API 的封装。它用过程宏生成代码，让开发者写安全的 Rust，不必满篇 unsafe。它从 rust-cpython fork 而来，创建者 Nikolay Kim 想做一个 Rust 版的 uvloop。rust-cpython 用声明宏，写出来既不像 Rust 也不像 Python，维护者又不活跃，他就改用过程宏另起炉灶。PyO3 有两种用法：一是写 Python 扩展模块，Polars、Pydantic v2、cryptography、orjson 都是例子；二是把 Python 解释器嵌入 Rust 程序，GreptimeDB 就靠这种方式支持 Python UDF。名字取自"生锈的 Python"，类比氧化铁 Fe₂O₃。
 

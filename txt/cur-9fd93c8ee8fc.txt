@@ -1,5 +1,13 @@
-https://www.joshwcomeau.com/css/anchor-positioning/
+Web 界面中将浮动元素（如工具提示、下拉菜单、浮动弹出框）绑定到特定触发目标的交互模式，传统上高度依赖 JavaScript 计算几何坐标并监听滚动与缩放，尤其在面对视口边缘溢出和跨容器裁剪时极易出现计算漂移。CSS 原生锚点定位（Anchor Positioning API）将这种依赖关系提升为浏览器内置的样式原语，使绝对或固定定位元素能够直接声明其依附的目标元素，并在排版引擎层面自主完成几何约束与回退调整。
 
-锚点定位入门（Getting Started with Anchor Positioning） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/anchor-positioning/
+锚点定位的核心模型由两部分构成：作为基准的锚点元素（Anchor）和作为依附者的目标元素（Target）。目标元素必须显式声明为 absolute 或 fixed 定位。传统定位模式下，浮动元素只能以其包含块（containing block）的边界为参考（如 top: 0, left: 0），而新规范允许元素突破包含块直接绑定另一个任意 DOM 节点。实现这种绑定包含两个必要声明：首先在锚点元素上通过 anchor-name 属性定义一个 dashed-ident 格式的具名标识（如 --tooltip-anchor），其语法形式类似于 CSS 自定义属性；然后在目标元素上使用 position-anchor: --tooltip-anchor 建立关联。
 
-Josh W. Comeau 的 CSS 教程，按二八法则介绍浏览器新的锚点定位 API。工具提示、下拉菜单这类"粘"在另一个元素上的界面，过去只能靠繁琐的 JavaScript，难点在于贴近视口边缘时会被裁掉。新 API 中，目标元素用绝对或固定定位，先用 anchor-name 给锚点命名，再用 position-anchor 指向它，并用 position-area 在以锚点为中心的 3×3 网格里选择位置。他认为最有用的是它的动态性：空间不足时目标可以自动缩小，position-try-fallbacks 还能在溢出时翻到后备位置。但翻转后小三角的方向无法得知，第二版用一种新的容器查询解决这个问题，目前只有 Chromium 支持，不过已纳入 Interop 2026；flip-block 关键字则已获所有主流浏览器支持。旧浏览器可以用 polyfill 或 @supports 渐进增强。他坦言目前一些 bug 让 JavaScript 库在很多场景下仍更可靠，但相信一两年内这会成为最佳方式。他提醒目标默认紧贴锚点，需要间距时用 margin。
+在确立锚定关系后，目标元素的空间摆放由 position-area 属性统辖。其心智模型是将目标元素的包含块以锚点为中心网格化划分为 3×3 的九宫格区域。开发者可以通过逻辑关键词直接指定目标落在哪个区域，例如 position-area: top 代表锚点上方区域，position-area: bottom right 代表右下角单元格。如果仅提供单一维度的关键词（如 top），目标元素在垂直方向位于上方，而在水平方向则默认跨越整个垂直轴对应的列区间（等价于 top span-all）。目标元素默认与锚点边缘紧密贴合，该规范没有提供类似 gap 的专属间距属性，开发者需要使用标准 margin（例如 margin-bottom: 8px）在目标与锚点之间建立空间缓冲。
+
+视口边界碰撞与动态回退是锚点定位处理复杂度的关键。当页面滚动导致锚点贴近视口顶端、浮动层在预设区域面临裁剪时，可以通过 position-try-fallbacks 属性声明回退方案。规范内置了对称翻转关键字 flip-block（垂直翻转，如 top 翻转至 bottom）与 flip-inline（水平翻转，如 left 翻转至 right），也允许开发者使用 @position-try 规则自定义备选几何位置序列。当首选位置溢出时，浏览器会自动按序尝试备选规则，渲染首个能完整容纳元素的区域。如果所有回退区域均无法完全容纳，目标元素将尝试收缩自身尺寸以适应剩余可用空间。
+
+动态回退带来的附带工程难题是附属装饰（如指示箭头 caret）的朝向联动。当工具提示从上方翻转到底部时，指向锚点的箭头必须随之改变方向。在 CSS Anchor Positioning Level 2 中，这一问题通过锚定容器查询（Anchored Container Queries）得到解决：给目标元素声明 container-type: anchored 后，子元素可以通过 @container anchored(fallback: bottom) 捕获当前生效的回退分支，进而重置内边距或切换形状。
+
+在兼容性与工程选型上，Chromium 系浏览器已率先完整支持该 API，Firefox 和 WebKit 随后将其纳入标准化实施轨道并列入 Interop 互操作性目标。对于尚未支持的运行环境，可以使用 @oddbird/css-anchor-positioning 进行 polyfill，或者借助 @supports (position-area: top) 进行功能检测与渐进增强，在旧浏览器中降级为视口固定定位。在复杂生产场景中，尽管目前原生规范在特定动态边缘场景下仍有浏览器兼容性细节正在收尾，但相比第三方重型定位脚本，Anchor Positioning 彻底消除了主线程几何轮询与事件抖动，构成了现代 Web 界面排版原语的重要基石。
+
+在样式降级与渐进增强方面，开发者通常需要同时应对两套方案：对于仅支持部分特性的过渡期浏览器，可以优先声明常规定位配合 top/left 偏移作为保底体验；当检测到 @supports (position-area: top) 时，再通过 top: revert 将控制权移交给锚点定位引擎。尽管在更深层次的复合布局中，如嵌套滚动容器与动态形变变换（transform）交织的边缘场景，原生实现仍处于跨引擎细化阶段，但该标准代表了 Web 布局从依赖脚本轮询向纯声明式契约演进的关键范式转型。

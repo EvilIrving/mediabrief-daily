@@ -1,8 +1,4 @@
-https://sv101.fireside.fm/251
-
-E238｜聊聊Harness时代AI-First的组织架构：从信任人到信任AI ｜ 硅谷101 ｜ 65分钟 ｜ https://sv101.fireside.fm/251
-
-本期《硅谷101》由泓君主持，嘉宾是硅谷 AI 公司 Creao 的三位联合创始人：CTO Peter（曾在 Meta Llama 团队和苹果做模型研究，近期在 X 上发表《Why Your "AI-First" Strategy Is Probably Wrong》引发百万级讨论）、CEO 程凯（Kai），以及负责市场拓展的 Clark。话题是 harness engineering 的含义，以及一家 25 人公司如何围绕 AI 重组流程和组织。
+《硅谷101》第 238 期对话硅谷 AI 公司 Creao 核心团队（CTO Peter、CEO Kai、Clark），围绕 Harness Engineering 的技术内涵，深入探讨一家 25 人的科技企业如何围绕 AI 原生能力彻底重构研发流程、工程分工与组织架构。
 
 Peter 先给 harness 下定义：prompt engineering 和 context engineering 只处理与模型本身的交互，范围小，也偏静态；harness 针对的是整个 agent 系统，包括工具调用、sandbox 与 host 的交互和安全、启动时间与延迟等。他强调，Creao 与外界看法的分歧在于，harness 不是给模型套上的固定配套设施，而是一个动态过程：系统要能吸收市场、产品、用户和基础设施的信号，由 AI 主导自我修复和自我迭代，人的任务是把这些信号喂给它。Kai 补充说，过去公司里人人都用 AI 写代码、写 PRD、做图，效率却没有提高，反而因为各人节奏不一，对齐成本猛增。真正的 AI-first 是围绕 AI 的能力重建流程，让 AI 成为生产力的主导，人转为审查结果。只把 AI 当工具，效率最多提高十倍左右。
 

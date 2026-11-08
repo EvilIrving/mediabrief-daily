@@ -1,8 +1,4 @@
-https://se-radio.net/2016/04/se-radio-episode-254-mike-barker-on-the-lmax-architecture/
-
-SE Radio 254: Mike Barker on the LMAX Architecture ｜ Software Engineering Radio ｜ 60分钟 ｜ https://se-radio.net/2016/04/se-radio-episode-254-mike-barker-on-the-lmax-architecture/
-
-本期由 Sven Johann 主持，嘉宾是 LMAX 前软件负责人、LMAX Disruptor 的维护者 Mike Barker，话题是这家外汇交易所如何做到低且可预测的延迟，以及支撑它的工程文化。整期对话从业务讲到 CPU 缓存和内存屏障，再回到测试与团队实践。
+面向微秒级超低延迟金融交易场景，LMAX 架构彻底颠覆了基于关系型数据库、分布式锁与传统多线程并发容器的企业级软件设计范式。LMAX 核心维护者 Mike Barker 深入拆解了“机械同理心”（Mechanical Sympathy）的设计哲学：通过单线程业务逻辑处理器消解所有锁竞争与上下文切换，依托底层无锁环形缓冲区 Disruptor、CPU 缓存行对齐填充与内存屏障顺序语义，结合事件溯源（Event Sourcing）实现每秒数百万笔交易的高吞吐确定性持久化处理。
 
 Barker 先交代背景：LMAX 源自 Betfair 的一个研究项目，目标是做出比当时快百倍的交易所，后来以 Tradefair 之名进入金融领域，最终成为独立运营的外汇交易所。他梳理了指令、订单、执行、成交、执行报告这几个核心概念，并强调最重要的 SLA 是响应时间：回报越短越可预测，客户承担的风险就越小。目标延迟从最初约一毫秒，六七年间降到了约 100 微秒。系统的主要组件是负责撮合的交易所和负责实时保证金风控、收佣金的经纪商，外围有约 40 个服务，对接做市商、FIX 与 REST API、主经纪商和清算所、Salesforce 等。做市商是高盛、摩根大通这类大银行，负责提供双边报价、维持市场流动性；普通专业用户通过经纪商入场，亏损过多时会被强制平仓。服务分三类：边缘的网关、管理数据库 CRUD 的通用服务，以及采用双 Disruptor 加单一业务线程架构的核心服务。
 

@@ -1,8 +1,4 @@
-https://changelog.com/jsparty/320
-
-A Solid primer on Signals ｜ JS Party ｜ 88分钟 ｜ https://changelog.com/jsparty/320
-
-《JS Party》第 320 期（2024 年 4 月），主持人 Amal Hussein 和 Nick Nisi，嘉宾是 Solid.js 的作者、人称"Signals CEO"的 Ryan Carniato。节目名义上介绍 Solid，实际想讲清楚的是：为什么"细粒度响应式"和 Signals 会在短短几年里席卷几乎所有前端框架，它除了性能还带来什么。
+细粒度响应式系统（Fine-Grained Reactivity）正在取代基于虚拟 DOM 的全量重渲染树比对，成为现代前端框架状态管理的核心范式。SolidJS 创建者 Ryan Carniato 在访谈中深入阐述了 Signals 的拓扑依赖图执行机制、无虚拟 DOM 的精准 DOM 编译策略，以及推动 TC39 Signals 标准化以消弭前端框架状态壁垒的架构愿景。
 
 Ryan 先讲了自己的来路。他 2010 年在 Knockout.js 里迷上响应式，喜欢那种"电子表格式"的数据流：定好规则、改数据、一切自动传播。2014 年后 React 的"全部重渲染"模型成为主流，响应式库被冷落。他对当时的性能基准颇不以为然：真实应用要的是少传数据、少做更新，而不是每秒把整个数据库刷到页面上；React 擅长的是给性能"设下限"，而不是真正让东西快起来。于是他 2016 年开始做 Solid、2018 年开源，实验的问题是："如果 Signals 就是整个框架呢？"不要虚拟 DOM、不要 diff，只在数据变化处直接更新真实 DOM。
 
@@ -20,4 +16,4 @@ Signals 对服务端渲染的意义来自他在 eBay 做 Marko 的经历：电�
 
 他认为 Solid、Vue、Svelte 半年内可能在底层趋同，差别只剩"美元符号、.value 还是函数调用"这类语法偏好，而正如 Rich Harris 早就看清的，偏好本身足以让人继续各选各的。实际案例方面，他举 Tanner Linsley 的 TanStack：在 React 里，状态库作者因 context 和 setState 不够高效，只能自建外部状态再接回 React，还要应付并发模式，成了"二等公民"（这也是 XState、TanStack Query 作者最常批评 useEffect 的原因）；而在 Solid 里，TanStack Query 只需包装 createResource，就自动获得 SSR 序列化、Suspense、乱序流式传输和 transitions。Solid Query 成功到 TanStack Query 各框架版本的开发者工具如今都用 Solid 写成。
 
-谈到采用障碍，Ryan 很坦然：面对 React 的生态锁定和大公司背书，Solid 无法正面竞争，企业那张"等 1.0、等元框架、等移动端"的清单永远勾不完，尽管 Solid 已经一项项勾掉了。他把成功定义为理念的胜利：Signals 是自虚拟 DOM 以来最具革命性的变化，而且出自草根而非 Meta。他还预告了即将发布 1.0 的元框架 SolidStart：延续原语思路，从无服务器的单页应用到 SSR 用同一套 API，有单次往返变更、实验性群岛支持，不绑定路由、多用现有生态库。最后他给所有 JavaScript 开发者的一句话是：工具没那么重要，重要的是把项目交付给用户；有好想法就去试，Solid 本身就是这样开始的。
+在框架生态演进层面，Signals 为跨框架状态互通提供了共同语言。虽然 React 凭借庞大的生态惯性依然占据主流，但 Signals 在底层渲染效率与心智模型上的优势正在驱动前端底层运行时的根本性收敛。

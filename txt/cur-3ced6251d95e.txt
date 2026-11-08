@@ -1,11 +1,9 @@
-https://syntax.fm/855
+现代 Web 性能优化正在从被动的资源静态预加载迈向由浏览器原生推测执行引擎驱动的即时导航：Speculation Rules API 允许开发者通过声明式 JSON 规则向浏览器下达预取（Prefetch）与后台完整预渲染（Prerender）指令，将页面跳转延迟压低至感知极限。《Syntax》以工业级电商 McMaster-Carr 的极速体验为切入点，系统拆解了推测执行规则的工程机制、计费开销与架构权衡。
 
-855: Fast Websites: The New Speculation Rules API ｜ Syntax ｜ 24分钟 ｜ https://syntax.fm/855
+相较于传统的 link rel="preload"（针对当前页面字体与首屏图片的确定性预载）与 preconnect（仅提前完成 DNS 解析与 TLS 握手），Speculation Rules API 实现了面向跨页面跳转的全量导航优化。开发者通过在页面中嵌入 type="speculationrules" 的脚本标签，能够以正则表达式或 CSS 文档选择器灵活指定推测规则：一方面，prefetch 规则指示浏览器在后台预先下载目标页面的 HTML 文本；另一方面，更为激进的 prerender 规则允许浏览器在不可见的后台标签页中完整渲染目标页面，预先解析执行 CSS、JavaScript 与子资源，当用户触发点击时实现瞬时无缝切换激活。规则支持划分不同的渴望度（Eagerness）等级——包含 immediate、eager、moderate（鼠标悬停触发）与 conservative（指针按下触发）；浏览器内部的推测引擎更会智能结合当前网络带宽、设备算力、节能模式及电量状态（如低电量自动熔断）自适应调节执行时机。
 
-起因是 McMaster-Carr 网站在推特上走红：一家百年老公司，网站却快得惊人。Wes Bos 研究后发现，最见效的一招是鼠标悬停在链接上就预加载目标页的 HTML。他借这个话题向 Scott Tolinski 介绍浏览器新推出的 Speculation Rules API；CSS Wizardry 的 Harry Roberts 已经在自己的网站上用上了。
+在生产环境落地推测规则时，工程团队必须审慎评估带宽消耗与后端计算负载。对于纯静态 CDN 托管站点，预取数个数十 KB 的 HTML 页面开销极低；但对于由边缘函数或服务器动态渲染（SSR）驱动的架构，无节制的推测执行将导致边缘计算调用量与数据库查询呈倍数激增（例如仿真案例中单月数十万独立访客可产生数百美元的边缘请求与图片处理账单）。工程缓解策略包括配置 stale-while-revalidate 缓存响应头提高边缘命中率，将状态编码入规范化 URL 参数以实现按需缓存，以及通过规则排除个性化私有数据页面。
 
-他们先回顾老办法。link rel="preload" 提前下载字体、首屏图片这类资源；preconnect 只提前做好 DNS 和 SSL 握手，免得 HTML、CSS、字体一层层排队请求。Scott 的比方是：preload 是"穿鞋上车出发"，preconnect 是"先把导航打开"。新 API 是在页面里放一个 type="speculationrules" 的脚本，用正则或 CSS 选择器写规则，指定哪些链接要 prefetch（只下载 HTML），哪些要 prerender（像后台标签页那样连资源一起完整渲染，点击后瞬间切换）。积极程度用 eagerness 设定，分 immediate、eager、moderate、conservative 四档；浏览器还会参考网速、设备性能和电量自行决定，比如电量只剩 4% 就不预取。
+在前端工程度量体系上，开发者应当破除对 Lighthouse 静态打分的教条迷信。类似 McMaster-Carr 等高吞吐站点虽在跑分指标上表现平平，但依托对 HTML 预取的精准编排与局部 DOM 替换，在用户真实交互中提供了近乎零延迟的极速体验。综合运用原生推测执行、多级边缘缓存与本地优先（Local-First）架构，才是现代 Web 应用消除感知延迟、提升工程交付质量的核心正道。
 
-两人重点讨论了代价。一个 HTML 页面大约 30–100K，静态页走 CDN 几乎不花钱；但如果按带宽计费，或者每个页面都要服务器渲染，预取 10 个页面就等于 10 倍的带宽、服务器和数据库开销。缓解办法有：用缓存头和 stale-while-revalidate 让 CDN 缓存；把状态放进 URL 参数，首次渲染后缓存起来，不必把上万种组合全部预生成；个人数据页不能放进全局缓存。Scott 补充说，SvelteKit 写 prerender = true 就能在构建时静态化路由；用户那边的流量套餐也要考虑。McMaster-Carr 本身靠激进缓存，只是预取 HTML，局部替换页面，并没有用 prerender。有人用 Next.js 仿写了一个 Next Master，公开的 Vercel 账单是：4.5 万独立访客、约 100 万次浏览，共 513 美元，其中 Edge 请求 220 美元，图片优化 160 美元是一次性的。Wes 认为自己托管能便宜很多。这个 API 目前只有 Chrome 支持，但已经有 polyfill；Next.js 则能细到组件层面去预取。
-
-最后他们批评了对 PageSpeed/Lighthouse 分数的迷信。McMaster-Carr 分数很低，普通用户却都说它是最喜欢的网站；wesbos.com 移动端七十多分，vercel.com 只有 44 分，用起来却飞快；同一个网站多跑几次，分数能从 80 掉到 50。Scott 的结论是，用户实际感受到的速度比分数重要，预加载、缓存和本地优先应用（首次加载重，之后每个操作都是瞬间）才是让网站"感觉快"的正道。
+在跨浏览器支持与渐进增强策略上，Speculation Rules API 目前主要由 Chromium 内核原生驱动，但社区已推出成熟的轻量级 Polyfill 方案，在非支持环境下平稳降级为传统的预加载探测。框架层面（如 Next.js 与 Nuxt）亦开始探索在组件层面对推测规则进行细粒度注入。工程团队应当将推测执行规则深度纳入 CI/CD 性能基线测试，动态监测推测命中率与带宽开销比，实现用户感知体验与云端资源消耗的最佳平衡。

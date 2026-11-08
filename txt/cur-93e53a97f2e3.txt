@@ -1,11 +1,14 @@
-https://lilianweng.github.io/posts/2021-07-11-diffusion-models/
+扩散模型（Diffusion Models）是一类受非平衡热力学启发的生成概率模型，通过定义前向扩散加噪过程与学习逆向去噪生成过程，在图像合成、视频生成与多模态建模中实现了超越 GAN 的生成多样性与样本质量。不同于对抗生成网络（GAN）的对抗博弈不稳与模式坍缩（Mode Collapse）、变分自编码器（VAE）的替代下界松弛导致的样本模糊，以及标准化流模型（Normalizing Flows）受限于雅可比行列式易算的可逆架构约束，扩散模型具备严谨的数学推导闭式解、平稳的最大似然变分目标与出色的样本保真度。
 
-What are Diffusion Models? ｜ Lilian Weng ｜ 文章 ｜ https://lilianweng.github.io/posts/2021-07-11-diffusion-models/
+以去噪扩散概率模型（DDPM）为主线的数学体系由前向过程、逆向过程与变分目标构成：
+- 前向扩散过程（Forward Process）：由预设方差调度序列 $\beta_1, \dots, \beta_T$ 驱动离散马尔可夫链持续加噪。令系数 $\alpha_t = 1 - \beta_t$ 且累乘系数 $\bar{\alpha}_t = \prod_{i=1}^t \alpha_i$，基于高斯变量的线性叠加性质，任意时刻 $t$ 的带噪潜在状态可直接一步解析重参数化生成：$x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \boldsymbol{\epsilon}$（其中高斯噪声 $\boldsymbol{\epsilon} \sim \mathcal{N}(0, \mathbf{I})$），从而在训练时完全免除了逐步迭代加噪的前向时间开销。
+- 逆向生成过程（Reverse Process）：真实的逆向去噪分布难以直接边缘化积分，由参数化深度神经网络预测高斯分布均值 $\boldsymbol{\mu}_\theta$ 与协方差 $\boldsymbol{\Sigma}_\theta$ 进行变分逼近。在给定初始干净样本 $x_0$ 作为先验条件时，局部的逆向高斯后验分布存在严格的解析闭式解，其后验方差 $\tilde{\beta}_t = \frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \beta_t$ 仅由时间步调度决定，而后验均值 $\tilde{\boldsymbol{\mu}}_t$ 为初始干净样本 $x_0$ 与当前带噪样本 $x_t$ 的确定性线性加权组合。
+- 变分目标与目标简化：对数似然的证据变分下界（VLB）可严格拆解为多步高斯分布之间的 KL 散度解析式。Ho 等人巧妙地将网络参数化重构为直接预测各时间步所添加的标准化高斯噪声 $\boldsymbol{\epsilon}_\theta(x_t, t)$，从而将复杂的带权变分下界极致简化为未加权的均方误差损失：$L_{\text{simple}} = \mathbb{E}_{t, x_0, \boldsymbol{\epsilon}} [\|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(x_t, t)\|^2]$。实证表明，该简化目标在数学上等价于对不同信噪比阶段施加启发式重加权，赋予高噪声扩散阶段更高的梯度权重，大幅提升了生成质量。
 
-Lilian Weng 这篇长文从数学推导出发，系统讲解扩散模型，并在 2022 至 2024 年间陆续补充了引导、蒸馏、潜在扩散和模型架构等新进展。她的出发点是：GAN 训练不稳、多样性差，VAE 依赖替代损失，流模型受限于可逆架构；而扩散模型受非平衡热力学启发，先用马尔可夫链逐步向数据加噪，再学习逆转这一过程，从纯噪声中生成样本。
+与分数匹配生成模型（Score-based Generative Modeling）的本质等价性构成了扩散模型的理论支柱。Song & Ermon 提出的基于分数的生成模型（NCSN）通过朗之万动力学（Langevin Dynamics）沿数据分布的对数梯度（Score Function）逐步迭代采样。推导证明，噪声预测网络 $\boldsymbol{\epsilon}_\theta(x_t, t)$ 在数学上严格等价于估计带噪数据分布对数概率梯度的相反方向：$\nabla_{x_t} \log q(x_t) = -\boldsymbol{\epsilon}_\theta(x_t, t) / \sqrt{1 - \bar{\alpha}_t}$，这一对偶性将随机微分方程（SDE）与热力学扩散统一在同一框架下。方差调度设计上，Nichol & Dhariwal 提出平滑的余弦调度（Cosine Schedule）替代朴素线性调度，避免图像边缘细节过早被高斯噪声彻底破坏；同时学习逆向过程方差 $\boldsymbol{\Sigma}_\theta$，有效压缩采样步数。
 
-核心框架以 DDPM 为主线。前向过程按方差调度每步加入少量高斯噪声，且可以一步直接采样任意时刻。逆向过程无法直接求得，要用神经网络近似，但在已知原始数据时有闭式解。训练目标是变分下界，可拆成一串能解析计算的高斯 KL 项；把网络改为预测所加的噪声后，去掉权重的简化均方误差反而效果更好。她还说明，预测噪声与基于分数的生成模型中估计分数本质上是一回事，并介绍了余弦调度和可学习逆向方差等改进。
+条件控制生成形成了两大主流导引机制：
+- 分类器引导（Classifier Guidance）：利用预先训练的带噪图像分类器梯度 $\nabla_{x_t} \log p(y | x_t)$ 修正逆向高斯均值，在 ADM 中首次在图像质量与多样性上全面超越强对抗模型 BigGAN。
+- 无分类器引导（Classifier-Free Guidance, CFG）：Ho & Salimans 提出在同一网络中联合训练条件与无条件生成，训练时以固定概率（如 10%）随机丢弃条件标签 $c \to \emptyset$。推理时沿外推方向构造预测噪声 $\tilde{\boldsymbol{\epsilon}}_\theta(x_t, c) = (1 + w)\boldsymbol{\epsilon}_\theta(x_t, c) - w \boldsymbol{\epsilon}_\theta(x_t, \emptyset)$。导引系数 $w > 0$ 实现了在采样多样性与语义保真度之间的显式权衡，彻底摆脱了外置分类器的计算负担。
 
-条件生成有两条路线：分类器引导用带噪图像分类器的梯度修正预测，使 ADM 首次在图像质量上超过 BigGAN；无分类器引导让同一网络同时学会条件与无条件生成，GLIDE 发现它优于 CLIP 引导。速度是最大痛点，DDPM 生成 5 万张小图要约 20 小时，GAN 不到一分钟。加速手段包括跨步采样、确定性的 DDIM、每轮把步数减半的渐进式蒸馏，以及可一步生成的一致性模型；潜在扩散模型则在压缩后的潜在空间里扩散，并用交叉注意力接入文本等条件，大幅降低成本。
-
-在质量与分辨率方面，她介绍了靠噪声增强抑制误差累积的级联模型、基于 CLIP 图像嵌入的 unCLIP，以及发现扩大文本编码器比扩大 U-Net 更重要的 Imagen；架构部分涵盖 U-Net、用零初始化卷积添加控制条件的 ControlNet，以及随算力稳定扩展的 DiT。结论是扩散模型兼具解析可解性与拟合复杂数据的灵活性，代价是采样链很长，速度仍不及 GAN。
+采样加速与现代网络架构的突破推动了扩散模型的工业级普及。DDIM（去噪扩散隐式模型）构建了具有相同边缘分布的非马尔可夫扩散前向过程，实现了确定性的常微分方程（ODE）极速采样；渐进式蒸馏（Progressive Distillation）与一致性模型（Consistency Models）则将数百步迭代推理跨越式压缩至 1 至 4 步。在空间表征维度，潜在扩散模型（LDM / Stable Diffusion）通过预训练自编码器将像素级扩散降维至紧凑的潜在特征空间（下采样率 $f=4$ 或 $8$），将计算开销骤降数倍；在骨干网络演进中，DiT（Diffusion Transformer）采用 Vision Transformer 替代经典的 U-Net 结构，通过自适应层归一化（AdaLN-Zero，零初始化门控参数保持训练初始平稳）调制时间步与条件向量，展现了与算力规模严格挂钩的优异扩展效应，为后续多模态大规模扩散生成系统奠定了坚实的通用基座。

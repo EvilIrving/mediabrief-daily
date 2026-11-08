@@ -1,17 +1,20 @@
-https://surma.dev/things/webgpu/
+WebGPU 通过废除 OpenGL 的隐式全局状态机架构，直接对齐现代 GPU 原生 API（Vulkan、Metal、DirectX 12）的显式管线与不可变对象模型，为 Web 端通用计算（GPGPU）提供了高性能的显式调度原语。
 
-WebGPU — All of the cores, none of the canvas ｜ Surma ｜ 文章 ｜ https://surma.dev/things/webgpu/
+Web 平台图形与算力调度的历史长期被 WebGL 统领，而 WebGL 本质上仅是移动端 OpenGL ES 2.0 的薄封装。OpenGL 的核心架构完全围绕一个隐式的全局内部状态机运转：所有的函数调用均隐式修改全局状态指针，API 调用顺序极其脆弱，库和上层抽象在执行绘制前必须极其繁琐地保存并恢复数十个上下文状态；一旦某个状态发生冲突，开发者通常只能面对一块全黑的画布而无从排查。在利用 GPU 进行非图形通用计算（GPGPU）时，WebGL 1 时代必须极其扭曲地将通用矩阵数据伪装编码为 RGBA 纹理图像，在像素着色器中计算完毕后再逆向解码读取；WebGL 2 引入的 Transform Feedback 虽有所改善，但跨浏览器兼容性滞后且心智模型极其繁复。现代原生图形领域早已全面转向 Vulkan、Metal 与 DirectX 12 等低开销 API，其共同特征是将验证前置、拥抱多线程并行记录命令列表，并显式管理显存。WebGPU 正是由 W3C 与各主流浏览器厂商联合制定的崭新抽象标准，旨在以符合 Web 人体工学的方式直接释放现代 GPU 的底层吞吐算力。
 
-Surma 自称图形方面经验不多，用 WebGL 一直不顺手。别人都说 WebGPU 的样板代码比 WebGL 还多，他真上手后的结论却是：样板量差不多，API 用起来顺手得多。这篇长文想让 Web 开发者入门 WebGPU，但刻意不讲图形渲染，只讲用它调用 GPU 的通用算力（GPGPU）。他也说明，目标是能“有效”使用，而不是“高效”使用。
+在 WebGPU 的系统抽象模型中，计算资源被显式分层解耦：
+第一层，适配器（GPUAdapter）与逻辑设备（GPUDevice）。适配器代表物理硬件与操作系统底层原生图形 API 的桥接转换层；逻辑设备则是网页沙箱与物理 GPU 之间的专属交互隔离实例。WebGPU 默认采用“最小公分母”策略暴露硬件能力（例如默认缓冲区大小上限限制为 1GiB，即使高端显卡支持 4GiB），从而确保 Web 应用具备极强的跨平台确定性，应用亦可根据 adapter.limits 显式申请更高配额。
+第二层，显式管线（Compute Pipeline）与 WGSL 着色器。与 WebGL 动态组装着色器不同，WebGPU 要求提前显式编译不可变的计算管线。着色器采用全新的 WGSL（WebGPU Shading Language）语言编写，其语法吸收了 Rust 与 GLSL 的严谨类型风格，由浏览器底层引擎直接预编译为目标平台原生的 HLSL、MSL 或 SPIR-V 二进制码。
+第三层，工作组维度与并行执行拓扑。WGSL 计算着色器通过 @workgroup_size(x, y, z) 属性硬性声明单个工作组内的微观线程矩阵（局部线程网格），而在 JavaScript 运行时通过 passEncoder.dispatchWorkgroups(X, Y, Z) 调度宏观网格。在 GPU 微架构中，同一个工作组内的线程被物理调度在同一个计算单元（CU/SM）中并发执行，能够共享极低延迟的工作组共享内存（var<workgroup>）并通过屏障（workgroupBarrier()）进行微秒级同步。开发者通过内置变量 @builtin(global_invocation_id) 即可唯一定位当前线程在全局数据矩阵中的绝对索引。
 
-他先解释为什么需要新 API。WebGL 基本就是 OpenGL ES 2.0 加一层薄封装，而 OpenGL 的设计围绕一个内部的全局状态对象：调用顺序极其关键，写库和抽象时必须小心保存、恢复各种指针，出错时往往只得到一块黑色画布。在他看来，这正是大家宁可用 ThreeJS 的原因。做通用计算时，WebGL 1 要把数据编码成纹理、算完再编码回去；WebGL 2 的 Transform Feedback 好一些，但 Safari 直到 2021 年 9 月才支持。与此同时，原生领域已经有了 Vulkan、Metal、DirectX 12 这些更底层的新一代 API，适应 GPU 无处不在、多线程以及提前做验证的需求。WebGPU 不照搬其中任何一个，而是自成一套抽象，既符合 Web 习惯，又能架在各家原生 API 之上，由 W3C 联合各大浏览器厂商标准化。
+GPU 内存架构与数据回读机制构成了 GPGPU 的关键性能分水岭：
+WebGPU 实行极其严密的显存访问权限控制。GPU 本地高速显存缓冲区（通过 GPUBufferUsage.STORAGE 标记）直接暴露给着色器进行高并发读写，但为了保障硬件总线吞吐与多进程沙箱安全，JavaScript 主线程严禁直接映射或读取该存储缓冲区；若要将计算结果传回 CPU，必须在代码中显式构建一个中转缓冲区（Staging Buffer），将其标记为 GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST。
+数据回读的典型控制流程包含严谨的多阶段调度：
+1. 创建并填充包含输入矩阵的 Storage Buffer；
+2. 构建绑定组布局（BindGroupLayout）与绑定组（BindGroup），将缓冲区显式绑定至着色器槽位；
+3. 创建命令编码器（CommandEncoder），开启计算通道（ComputePass），绑定计算管线与绑定组，派发工作组执行并行计算；
+4. 调用 copyBufferToBuffer 命令，显式指示 GPU 引擎将 Storage Buffer 中的运算输出复制至 Staging Buffer；
+5. 结束通道并提交（Submit）命令缓冲区至设备队列（Queue）；
+6. 调用 stagingBuffer.mapAsync(GPUMapMode.READ) 异步等待显存数据映射至系统总线，最后通过 getMappedRange() 构造 TypedArray 视图提取原始二进制数据，并在消费完毕后立即调用 unmap() 释放资源。
 
-接着他按代码顺序讲解核心概念。适配器是操作系统原生图形 API 到 WebGPU 的转换层，逻辑设备则让每个网页都像独占 GPU。默认设备只提供所有 GPU 的“最低公分母”能力，比如缓冲区上限是 1GiB，而他的显卡能支持 4GiB。这样做的好处是程序几乎在哪儿都能跑，需要时也可以按 adapter.limits 申请更高的上限。管线必须显式声明，分渲染管线和计算管线两种。他把渲染管线看作计算管线的一种特化，但也承认这在历史上是倒过来的，而且两者在硬件上是不同的电路。着色器用 WGSL 编写，语法像 Rust 和 GLSL 的混合，浏览器会把它编译成 HLSL、MSL 或 SPIR-V。
-
-理解 @workgroup_size 需要先了解 GPU 架构。他以 Intel 的公开文档为例：最底层的执行单元（EU）里有 7 个步调一致的 SIMT 核心，执行同一条指令、处理不同的数据。所以分支和长短不一的循环会让所有核心陪着空转。访存要等几百个时钟周期，于是每个 EU 都被超额分配工作，一等待就切换到别的工作项，以牺牲单个任务的延迟来换取整体吞吐量。多个 EU 组成 SubSlice，共享约 64KiB 的本地内存，需要同步的工作只能在同一个 SubSlice 内完成。WebGPU 把工作负载建模为三维网格，再切成工作组。三维形状本意是提高缓存局部性，但实际硬件上 64 和 8×8 几乎没有差别，这个概念已有些过时。工作组大小还受 device.limits 中各维度上限和乘积上限的约束。至于取多大，他转述 Corentin 的建议：除非清楚目标 GPU 或负载有特殊需要，否则就用 64。命令通过 CommandEncoder 和 PassEncoder 编码后提交到队列。所有状态都经由通道编码器显式传递，这正好取代了 OpenGL 的全局状态。
-
-文章最繁琐的部分是数据交换。缓冲区要通过绑定组布局预先声明类型（storage、read-only-storage、uniform），以便 GPU 提前优化。由于 GPU 显存为了吞吐量与核心紧密集成，主机无法直接读写。读回结果时，得先把数据复制到可映射的暂存缓冲区，再用 mapAsync 和 getMappedRange 取出，并用 slice 复制一份，因为取消映射后原来的 ArrayBuffer 就会失效。写入则可以直接用 device.queue.writeBuffer，由它选择最高效的路径。他还提醒了两个坑。一是过量调度：调用次数向上取整到 64 的倍数，越界写入会被钳制到数组最后一个元素，造成脏数据，所以着色器里要用 arrayLength 提前返回。二是内存对齐：Ball 结构体中 f32 半径之后跟着 vec2，而 vec2 要求 8 字节对齐，因此会被插入 4 字节填充，JavaScript 端按每个球 6 个浮点数来排布才能对上。
-
-演示是用 GPU 模拟大量小球的移动与碰撞，再用 Canvas2D 画出来。碰撞检测采用最朴素的两两比较，也没做任何优化，在 M1 MacBook Air 上也能跑到约 2500 个球仍保持 60fps，而这时的瓶颈其实是 Canvas2D 绘图。关掉渲染后，16 毫秒帧预算内大约能模拟 14000 个球。
-
-最后谈现状。当时 WebGPU 只能在 Chrome 和 Firefox 中通过开关标志启用，Safari 技术预览版里还没有。规范仍在变动，比如属性语法从 [[stage(compute)]] 改成了 @compute，endPass() 改名为 end()，所以还要预期会有破坏性变更。他的结论是，跨过学习曲线后，用 JavaScript 驱动大规模并行计算的感觉非常强大。他还提到，用 Rust 实现的 wgpu 能让同一套 API 在浏览器外原生运行或编译成 WebAssembly，Deno 正是借助它成为第一个内置 WebGPU 的运行时；遇到问题可以去 WebGPU 的 Matrix 频道求助。
+这种显式声明对象、严密区分存储层级与异步显存拷贝的机制，虽然在代码编写阶段引入了结构化的配置样板，但彻底消除了 WebGL 全局状态污染与隐式管线阻塞的暗坑，使 Web 开发者能够稳定利用现代 GPU 架构的数千个物理计算核心，执行图像处理、物理模拟与神经网络推理等高并发重算任务。

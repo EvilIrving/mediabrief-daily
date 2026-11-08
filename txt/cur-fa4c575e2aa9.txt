@@ -1,15 +1,15 @@
-https://www.joshwcomeau.com/css/interactive-guide-to-grid/
+CSS Grid 是现代 Web 布局中首个真正意义上的二维排版系统，与专注于一维单向流（行或列）的 Flexbox 形成互补。理解 Grid 的关键在于建立以“轨道结构”、“隐式生成”与“比例分配”为核心的空间几何模型。
 
-An Interactive Guide to CSS Grid ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/css/interactive-guide-to-grid/
+在心智模型上，Flexbox 的布局逻辑遵循“内容决定流向”，容器依据子元素的尺寸与换行规则顺次流动；而 CSS Grid 则采用“容器规划轨道，子元素认领网格”的自顶向下机制。当容器声明 display: grid 后，它便被赋予了在水平和垂直两个正交维度同时划定排版坐标系的能力。
 
-Josh W. Comeau 这篇交互式教程（2023 年发表，2026 年 6 月更新）把自己学 CSS Grid 时最关键的几个"顿悟点"串起来讲。CSS Grid 已被约 96% 的用户的浏览器支持，只比 Flexbox 少 0.5% 左右。
+网格的核心构建依托于显式轨道与隐式轨道的动态配合。通过 grid-template-columns 与 grid-template-rows，开发者能够显式划定网格的基础列宽与行高序列。然而在真实业务流中，子元素的数量往往是动态不可控的；当内容超出显式声明的单元格范围时，布局引擎会自动触发隐式网格（Implicit Grid）机制，依据 grid-auto-flow 的流向规则向后追加轨道，并借由 grid-auto-rows 或 grid-auto-columns 为新生成的轨道赋予统一的尺寸约束。
 
-核心心智模型是：Grid 的行列结构完全由 CSS 定义，一个 DOM 节点被切成看不见的隔间，而 Table 布局必须靠 <tr>、<td> 等额外节点才能做到。display: grid 默认是单列的隐式网格，每个子元素自动占一行；父元素高度仍按 Flow 布局由内容撑开，给定固定高度时则均分成等高的行。
+在尺寸度量单位方面，Grid 引入了弹性分数单位 fr（Fractional Unit）。fr 并非代表物理像素，而是参与对容器内扣除固定尺寸（如 px、rem）及内容尺寸（min-content、max-content）后“剩余可用空间”的按比例加权瓜分。配合 minmax() 函数，开发者可以为轨道设定严格的上下限范围（例如 minmax(200px, 1fr)），从源头上规避极端缩放下的溢出挤压。此外，通过 repeat(auto-fit, minmax(...)) 与 repeat(auto-fill, minmax(...)) 的模式组合，网格能够实现纯 CSS 驱动的响应式列自适应重排：auto-fill 倾向于在空间充裕时尽可能保留空轨道，而 auto-fit 则会将没有容纳内容的空轨道折叠收缩为 0px，使承载真实内容的卡片平铺拉伸填满屏幕。
 
-grid-template-columns 可以用百分比、像素等任何长度，也可以用新单位 fr。fr 分配的是"多余空间"：先按内容算出列宽，剩下的再按比例分，类似 flex-grow，所以列不会缩到比内容还窄；百分比是硬约束，内容会溢出。加上 gap 时差别更明显：百分比列占满 100% 后再加间距就会撑出容器，fr 列则自动扣除间距。grid-gap 已弃用，成为 gap 的别名。子元素多于列数时网格会自动加行；同时写上 grid-template-rows 就成了显式网格，适合"圣杯"式页面布局。repeat(7, 1fr) 免去了手写七遍 1fr，作者用日历举例，并提醒正式的日期选择器应使用 React Aria 这类无障碍库。
+在子元素的空间锚定层面，Grid 提供了基于线编号（Line-based Placement）与命名区域（Grid Template Areas）双轨机制。网格线从 1 开始按序递增，同时支持负数索引以表示从末尾反向计数（如 grid-column: 1 / -1 代表跨越从首到尾的完整宽度）。而 grid-template-areas 则支持以直观的 ASCII 艺术字串在容器上直观勾勒 header、sidebar、main、footer 等宏观版面拓扑，子元素仅需指定 grid-area 名称即可精准入位。
 
-放置子元素时默认像铺瓷砖一样依次填空格，也可以用 grid-row、grid-column 指定位置。grid-column: 1 / 4 里的斜杠是分隔符而非除法，数字指的是网格线而不是列序号，4 列网格有 5 条线；负数从右往左数，1 / -1 无论多少列都能横跨全宽。想让部分元素自然流动、又让"特色"元素占两列，用 span 2 即可；若宽元素落在末列放不下会换行留洞，顺序无所谓时可用 grid-auto-flow: row dense 让后面的小元素回填。
+在单元对齐机制上，Grid 明确区分了项对齐与轨道对齐两个层级：justify-items 与 align-items 用于调节子元素在各自所分配网格单元格内部的对齐行为；而当整个显式网格的总尺寸小于外层容器时，justify-content 与 align-content 则用于控制整套网格轨道骨架在容器视口中的整体位移。整套体系在彻底解放样板包裹 DOM 的同时，为 Web 应用提供了高确定性、低重排开销的宏观布局能力。
 
-作者最喜欢的是 grid-template-areas：像画 ASCII 图一样用字符串画出布局，再用 grid-area 按名字分配，重复名字即可跨行跨列，语义清楚，适合行列固定的显式布局；隐式网格则更适合用行列编号。一个大坑是 Tab 键顺序仍按 DOM 顺序而非视觉位置，焦点会乱跳，所以应让源码顺序与视觉顺序一致；新属性 reading-flow 和 reading-order 可以解决这个问题，但截至 2026 年 5 月只有 Chrome 和 Edge 支持（约 67%）。
+在间距管理与嵌套网格方面，Grid 提供了原生且优雅的 gap（以及 row-gap、column-gap）属性，彻底规避了传统 CSS 依赖负 margin 与子元素内边距补偿所引发的边缘溢出计算顽疾。更为关键的是，现代 CSS Grid 规范进一步引入了 subgrid（子网格）特性：当网格内部的子卡片自身也需要对齐内容时，子元素可以通过在 grid-template-columns 或 grid-template-rows 上声明 subgrid，直接继承外层父级网格的轨道定义。这一机制从根本上解决了长期困扰开发者的跨卡片内部标题、正文及操作栏高度不一致的排版难题，使多层嵌套组件能够无缝锚定在全局统一的二维坐标系之下。
 
-对齐部分，justify-content 和 align-content 分布的是整列整行（网格结构本身），justify-items 和 align-items 对齐的是格子里的元素，justify-self 和 align-self 只针对单个元素；记法是 justify 管列、align 管行、content 管结构、items 管节点。最后的小技巧是 display: grid 加 place-content: center，两行代码就能让子元素水平垂直居中。文末是作者课程 CSS for JavaScript Developers 的推广。
+在现代浏览器支持度方面，CSS Grid 已在各大主流排版引擎中获得了超过 96% 的广泛覆盖，其标准化程度与运行稳定性已完全具备作为生产级基础排版设施的能力。通过结合命名网格线、隐式流向自动填充以及子网格约束，Grid 赋予了前端开发者前所未有的二维几何掌控力，在大幅压缩布局样板代码的同时，彻底消除了由多层浮动与绝对定位拼凑所带来的布局脆弱性。

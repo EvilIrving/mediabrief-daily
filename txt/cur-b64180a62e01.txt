@@ -1,8 +1,4 @@
-https://darknetdiaries.com/episode/73
-
-第 73 期：WannaCry 73: WannaCry ｜ Darknet Diaries ｜ 播客 ｜ 约 48 分钟 ｜ https://darknetdiaries.com/episode/73
-
-这是 Jack Rhysider 朝鲜三部曲（第 71–73 期）的最后一集，从一家伦敦医院的急诊室讲起，一路追到朝鲜黑客的身份与动机。
+2017 年席卷全球 150 余个国家的 WannaCry 勒索蠕虫危机，标志着武器级网络军火泄漏与自动化蠕虫传播技术结合的灾难性破坏力。《Darknet Diaries》深度复盘了黑客组织利用方程式组织（Equation Group）泄露的 SMBv1 漏洞利用工具 EternalBlue 实施链式感染的全过程，分析了英国国家医疗服务体系（NHS）等关键基础设施遭遇的系统瘫痪，以及安全研究员 Marcus Hutchins 通过逆向分析硬编码域名成功触发杀毒开关（Kill Switch）阻断全球传播的防御细节。
 
 2017 年 5 月 12 日中午，急诊医生 Tony Bleetman 走进办公室时，电脑全都停在 WannaCry 的红色勒索界面上，要求支付价值 300 美元的比特币。很快大家意识到，这是一场波及整个 NHS 的网络攻击。急诊科退回到纸质登记、墙上白板标注病人位置、每半小时派人去实验室取手工打印的化验单；创伤中心因外科医生看不到 CT 影像而暂停收治。反倒是那些从未联网、一直被嫌麻烦的独立 CT 机和化验设备保住了功能。NHS 取消了 6,912 个预约，目前没有发现因此死亡的病例。内政大臣 Amber Rudd 称数百家机构中有 45 家受影响，并强调这是波及约百国的全球攻击。
 

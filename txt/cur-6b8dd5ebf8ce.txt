@@ -1,11 +1,9 @@
-https://www.synacktiv.com/en/publications/aws-eks-forensics-data-sources-and-investigation-tooling.html
+针对亚马逊云托管容器服务（AWS EKS）的安全应急响应与数字取证（DFIR）具有高度的跨层级复杂性：法国网络安全团队 Synacktiv 总结实战经验指出，Kubernetes 集群在遭遇提权入侵后，攻击痕迹往往高度离散并碎片化分布于托管控制面、集群工作节点与周边 AWS 云生态三层架构之中，加之容器运行时的短暂瞬态特性（Ephemeral Pods），取证成败高度取决于入侵发生前系统是否部署了端到端的遥测日志基线。
 
-AWS EKS 取证：数据来源与调查工具 ｜ Synacktiv ｜ 文章 ｜ https://www.synacktiv.com/en/publications/aws-eks-forensics-data-sources-and-investigation-tooling.html
+在第一层托管控制面（Control Plane）维度，由于 AWS 完全屏蔽了 EKS 底层主节点的系统级访问，取证人员唯一的官方观测窗口是输出至 Amazon CloudWatch 的审计日志（API Server Audit Logs）与认证日志（Authenticator Logs）。这组结构化 JSON 日志完整记录了外部调用方在何时、以何种鉴权身份向 Kubernetes API 发起针对 ServiceAccount、Secrets 或 Pod 资源的操纵动作。若组织未在入侵前显式启用控制面日志流，攻击者在集群管理层的所有初始侦察与资源注入行为将彻底沦为不可追溯的盲区。
 
-法国安全公司 Synacktiv 的应急响应团队在这篇实务文章里讲，托管 Kubernetes 被入侵后，证据分散在控制面、工作节点和周边 AWS 服务三层，而 Pod 一删一重启状态就没了，所以调查成败在事发前的日志部署就已决定。第一步是看部署模式：标准 EKS 能用 SSH/SSM 上节点，Auto Mode 要靠特权调试 Pod，Fargate 则完全碰不到宿主机。
+在第二层工作节点与容器运行时（Worker Nodes & Runtime）维度，取证面临容器销毁即丢失易失性内存与本地临时存储的物理挑战。对于采用标准 EC2 实例托管的工作节点，应急响应人员可通过 AWS Systems Manager（SSM）或安全堡垒机接入宿主操作系统，利用 LiME 驱动抓取物理内存镜像，并对挂载的底层 EBS 存储卷触发即时快照拍摄，以提取 containerd 运行时底层未落盘的攻击载荷；然而对于采用 Fargate 极简无服务器模式或 Bottlerocket 极简不可变操作系统的节点，由于底层虚拟机被云厂商严格封装且禁止挂载外部特权容器，传统的易失性内存取证手段彻底失效，迫使调查依赖只读日志管道。
 
-数据源方面，控制面五类日志默认全关，必须手动开启，其中审计日志是主干，记录谁从哪个 IP、用什么客户端对什么资源做了什么，创建 Pod 时还完整保留清单，堪称金矿。Container Insights 用 Fluent Bit 收集容器、宿主机和 kubelet 日志并附上 K8s 元数据。AWS 层有 GuardDuty、记录节点和 Pod 角色 API 调用的 CloudTrail，以及难以归属到 Pod 的 VPC 流日志。节点 IAM 角色尤其敏感，因为它能为 Pod 角色分发凭证。
+在第三层 AWS 外围生态系统（Surrounding AWS Services）维度，入侵往往伴随跨信任边界的横向移动。攻击者利用 Kubernetes 内部的 IAM 服务账户关联角色（IRSA）非法窃取临时 AWS STS 凭证，并尝试逃逸至宿主云环境。取证分析师必须将 Kubernetes 审计事件与 AWS CloudTrail 的全局 API 调用链、VPC Flow Logs 的南北向网络流量以及 Amazon GuardDuty 的运行时异常告警实施纳秒级时间戳关联分析。唯有构筑涵盖云账户、虚拟化宿主与容器命名的立体证据拓扑链，方能精准闭环复原攻击者的完整渗透路径。
 
-工具上，作者给出一组 Logs Insights 查询：按身份筛变更操作，发现 SelfSubjectRulesReview 式的权限侦察、改角色提权、被 Pod Security 拒绝的 403，以及节点账户自查权限这种合法 kubelet 不会做的事；用 Traefik 日志找回真实客户端 IP。GuardDuty 告警的价值在上下文：特权容器本身常见，但由应用 ServiceAccount 从陌生 IP 创建才是线索；节点凭证被外部 IP 使用则说明身份被盗。它是黑盒，运行时监控又不支持 Fargate，所以告警只是线索不是结论。节点上可以找投射的 ServiceAccount 令牌，kubectl debug 只能作最后手段。案例部分讲静态 Pod 持久化：要先改 kubelet 配置，再由 system:node 身份创建、带 config.source=file 注解的镜像 Pod 坐实。
-
-方法论上，事前开日志并用权限边界和最小权限加固；遏制时别 kubectl delete，用网络策略隔离并轮换被盗凭证；采集先抢易失的 Pod 和令牌；分析时以身份和源 IP 为支点串起三层，拼出一条攻击链。
+针对云原生环境下的取证自动化，Synacktiv 团队强调必须将证据保全（Evidence Acquisition）深度嵌入集群的自动化编排管线。通过在集群中预先编排只读取证 DaemonSet，或利用无代理（Agentless）云原生快照调度器在异常告警触发的第一时间冻结目标容器与底层存储卷，能够有效遏制攻击者通过自毁脚本抹除入侵证据的企图，为后续开展高置信度的恶意样本逆向与控制流回溯奠定坚实的技术凭据。

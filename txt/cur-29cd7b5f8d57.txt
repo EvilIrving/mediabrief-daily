@@ -1,8 +1,4 @@
-https://www.xiaoyuzhoufm.com/episode/69caa449e2c8be3155f03013?utm_source=rss
-
-EP124 为什么 Agent 时代，CLI 反而成了最优解？⚡ ｜ 硬地骇客 ｜ 47分钟 ｜ https://www.xiaoyuzhoufm.com/episode/69caa449e2c8be3155f03013?utm_source=rss
-
-这一期是硬地骇客三位主持人借 Podwise 发布 CLI 和 Skills 的契机，聊为什么在 agent 时代，命令行反而成了软件对外提供能力的最佳形态，主要观点由一啸阐述。他认为这并非反潮流，而是反传统 SaaS 以 API、SDK 为主的交付方式：API 参数繁多、要读文档、定义 schema，本质是给程序员编程用的；CLI 则是可组合的文本接口，天然有 stdin/stdout 和管道，一条命令就能跑，认知负担极低，agent 写一条命令远比集成 API 容易，这也解释了 Obsidian 这类做了六年都没想过 CLI 的软件纷纷推出 CLI。主持人用“堂食店加外卖”作比：CLI 复用原有业务能力，只是换了一个面向 AI 的取餐口。
+《硬地骇客》第 124 期以 Podwise 发布 CLI 与 Skills 为契机，深入探讨在 AI Agent 时代命令行接口（CLI）反超传统 REST API 和 SDK 成为软件对外能力交付最优解的技术逻辑与架构演进。
 
 关于怎么做，一啸提醒不要把 Web 版功能一比一搬进 CLI，那只会得到臃肿难用的工具。Podwise 只保留发现、处理、获取结果、导出四类原子能力，并特别强调“发现”，因为人已不在回路里，agent 必须自己找到内容。他认为 CLI 胜过 MCP 的关键在于人也能直接用、本地好调试，因此保留了带颜色和动画的 pretty 模式，但只在有 TTY 的终端启用，被 agent 调用或管道重定向时自动退回纯文本，避免控制字符浪费 token。他总结的设计原则包括：优先支持管道而非 -o 写文件、保证幂等以承受 agent 的重复调用、绝不交互式、help 里给可直接复制的示例、错误信息要告诉 agent 下一步怎么做、输出结构化且字段语义清楚。谈到 agent 不能交互，他引用谢赛宁的观点，说今天的 AI 仍主要基于文本而非视觉工作。
 

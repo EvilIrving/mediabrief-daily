@@ -1,11 +1,13 @@
-https://www.joshwcomeau.com/javascript/promises/
+JavaScript 的单线程事件循环架构决定了其无法以阻塞主线程的方式处理高耗时 I/O 任务，而 Promise 的诞生不仅是为了平铺嵌套回调函数（Callback Hell），更是为了在异步计算中重新建立确定性的控制反转边界与类型化状态机。
 
-从零理解 Promise（Promises From The Ground Up） ｜ Josh W. Comeau ｜ 文章 ｜ https://www.joshwcomeau.com/javascript/promises/
+在早期的异步编程模型中，异步操作完全依赖回调函数进行通知。当发起一个网络请求或定时器时，开发者必须将后续业务逻辑作为函数指针传递给底层 API。这种机制带来了两大约束性缺陷：其一是控制权反转（Inversion of Control），即调用方无法掌控自身代码的调用时机、调用次数以及异常隔离，第三方库若内部重复调用或遗漏调用回调，外部系统将陷入未定义状态；其二是嵌套地狱引发的上下文撕裂，多个依序执行的异步操作导致代码向右金字塔式倾斜，且每个层级必须独立处理错误，无法复用同步代码中的 try/catch 错误冒泡机制。
 
-Josh W. Comeau 认为 Promise 是学 JavaScript 最大的坑之一，难点不在 API，而在于得先理解 JavaScript 的运作和限制，否则 Promise 根本说不通。所以他从"为什么要这样设计"讲起，一路推到 async/await。
+Promise 从底层重构了这一范式，其本质是一个代表异步计算最终结果的只读凭证与状态机。一个 Promise 在生命周期中严格处于三种互斥状态之一：未决（pending）、已兑现（fulfilled）或已拒绝（rejected）。状态一旦发生迁移（从 pending 转为 fulfilled 或 rejected），其内部持有的值或拒因即被永久冻结，后续任何对 .then() 或 .catch() 的注册都会立即拿到不可变的相同结果。这种状态不可逆性从根本上消除了回调被意外多次触发的安全隐患。
 
-主线是一个新年倒计时。别的语言打印 3、sleep 一秒、打印 2 就行，但 JavaScript 是单线程的，没有 sleep：唯一的线程同时负责事件、网络和界面更新，一旦被占住页面就会卡死，他用 window.prompt() 弹窗时页面无法滚动和点击来演示这种感觉。解决办法是 setTimeout 这类回调：sleep 像打客服电话一直在线等，setTimeout 像让对方有空再回电。代价是代码不再按书写顺序执行，多步倒计时还会层层嵌套成"回调地狱"。
+在方法论层面，Promise 的核心威力体现在链式调用（Chaining）与平铺能力。每一个 .then() 方法调用都会同步返回一个全新创建的 Promise 实例。如果传递给 .then() 的回调函数返回一个纯粹的值，返回的 Promise 会立即以该值兑现；更关键的是，如果该回调函数返回另一个未决的 Promise，外层 Promise 会自动展开（Flatten）并等待内部 Promise 的状态结算，直至整个异步链路完全收敛。这种机制将纵向深层嵌套的树状代码彻底重塑为横向线性的数据流管道。
 
-Promise 把嵌套改成 .then() 链。它在 2015 年加入语言，setTimeout 为了向后兼容没法改，但 fetch 等现代 API 都建立在 Promise 之上。fetch 返回的像一张"欠条"，数据还没到但保证会到。Promise 有 pending、fulfilled、rejected 三种状态，只能决议一次，所以适合一次性的异步工作，不适合会反复触发的鼠标事件。
+错误捕获与穿透是 Promise 的另一大设计亮点。当链条中的某一环抛出异常或进入 rejected 状态时，错误会沿着链路自动向下穿透，直至遇到第一个显式的 .catch() 处理器。这完全还原了同步执行环境下的异常冒泡心智，使开发者能够集中声明容灾降级分支，避免了在每个中间节点反复校验错误参数。
 
-接着他带读者用 new Promise 包住 setTimeout 写出 wait 函数，逐句拆解 resolve 如何引发连锁反应，再讲链式调用、用 resolve 传数据、用 reject 和 .catch() 处理"承诺被打破"。最后，async/await 让倒计时写得几乎和同步代码一样；它看似在函数中途暂停，其实没有违背单线程，只是 Promise 的语法糖。他的总结是，Promise 让代码看起来是同步的，底下却完全是异步的。
+在语法演进的终点，async/await 关键字作为 Promise 的顶层语法糖，消除了链式方法调用带来的样板代码。它将异步函数内部的执行流程伪装为直观的同步顺序，底层则通过微任务队列（Microtask Queue）自动驱动生成器和 Promise 的状态步进。理解 Promise 的状态冻结、平铺解包与异常传播机制，是把握现代前端并发模型、网络数据流及微任务调度的必要基石。
+
+在自定义封装层面，通过构造函数 `new Promise((resolve, reject) => ...)` 可以将陈旧的基于事件监听器或定时器的低阶 API 无缝桥接进现代异步体系。执行器函数（Executor）在构造期同步执行，但在内部通过闭包保护了 resolve 与 reject 的终态触发通道。同时，配合 `Promise.all`、`Promise.allSettled` 与 `Promise.race` 等静态组合子，开发者能够在并发请求中灵活调度多分支数据依赖：或是执行强一致的协同等待，或是实施故障隔离的尽力交付，或是针对高延迟网络引入确定性的超时熔断机制。这一整套基于组合子与类型化状态迁移的机制，彻底奠定了现代前端异步架构的基石。

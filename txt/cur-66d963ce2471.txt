@@ -1,8 +1,4 @@
-https://se-radio.net/2017/03/se-radio-episode-284-john-allspaw-on-system-failures-preventing-responding-and-learning-from/
-
-SE Radio 284: John Allspaw on System Failures: Preventing, Responding, and Learning From ｜ Software Engineering Radio ｜ 52分钟 ｜ https://se-radio.net/2017/03/se-radio-episode-284-john-allspaw-on-system-failures-preventing-responding-and-learning-from/
-
-本期由 Robert Blumen 主持，嘉宾是时任 Etsy CTO 的 John Allspaw。他有 17 年以上系统运维经验，在隆德大学读过人因与系统安全硕士，写过《Web Operations》和《The Art of Capacity Planning》。两人从 AWS、Gmail 的知名宕机说起，讨论系统为何在精心规划之下仍会出故障、应该如何应对，以及怎样从故障中学习。整期的基调来自韧性工程，John 一再把话题从“如何预防”拉回“当预防失效时人们实际怎么做”。
+在高度复杂的现代分布式与社会技术系统（Socio-Technical Systems）中，组件故障与意外扰动是系统运行的常态，韧性工程（Resilience Engineering）的核心在于构建组织在重压之下适应、吸收与恢复的关键能力。Etsy 前 CTO John Allspaw 深入阐述了 Safety-II 现代安全哲学：彻底摒弃寻找“单一根本原因”（Root Cause）与归咎于“人为失误”的传统教条，倡导通过无指责复盘（Blameless Post-Mortem）揭示一线工程师在多重冲突目标与信息不完备环境下的真实决策推演。
 
 对于什么是故障，John 认为它是被建构出来、取决于情境的，比如一家主要靠原生 App 的公司官网挂了未必算故障，所以他更愿意称之为“不良事件”。他指出，我们只听说没防住的故障，从未听说每天都在被防住的那些，因此每一次故障本质上都是意外：能预见并防住的就不会发生。冗余服务器、多家 DNS、调整副本数这些常见做法他认为算不上建议，旋钮是想象力造出来的，何时去拧永远是判断问题，连自动扩缩容这种“自愈”也只是把人的判断编码进去。他引用 Richard Cook 的话：该惊讶的不是系统会宕机，而是它们居然能运转，而这靠的是人的主动努力。
 

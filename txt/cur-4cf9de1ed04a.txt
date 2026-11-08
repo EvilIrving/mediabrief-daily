@@ -1,5 +1,10 @@
-https://jakearchibald.com/2026/css-custom-property-compute-time/
+CSS 自定义属性（CSS Custom Properties）计算值生成的时机与执行上下文，直接决定了动态样式的继承行为与最终渲染呈现。在未显式注册语法的默认状态下，自定义属性仅作为未解析的标记流（Token Stream）暂存，其真正的求值计算会被推迟至使用该属性的具体元素节点上；而一旦通过 @property 规则声明了具体类型语法，计算时机将前移至属性声明所在的元素节点处。
 
-控制 CSS 自定义属性值的计算时机（Controlling when CSS custom property values are computed） ｜ Jake Archibald ｜ 文章 ｜ https://jakearchibald.com/2026/css-custom-property-compute-time/
+在默认规范下，未注册的自定义属性隐式遵循 syntax: '*'，引擎将其视为任意标记流。声明节点不提前求值其中的动态上下文函数，保持原始 Token 序列向下传递。例如在父元素（属于容器的第二个子项）声明 --index: sibling-index()，并在其首个子元素中通过 scale: var(--index) 消费该属性。由于未注册语法，--index 暂存未求值的函数标记。当子元素解析 var() 时，该函数直接在子元素自身的 DOM 上下文中求值。子元素是其父容器的首个子节点，因此 sibling-index() 返回 1，导致段落缩放比例为 1 而非预期的 2。此时在父节点调用 getComputedStyle，获取到的依然是字面字符串 "sibling-index()"。
 
-Jake Archibald 讲自定义属性值在哪个元素上计算。未注册的属性只是一串记号，代入使用处再算，所以 sibling-index() 在子元素上求值；用 @property 注册成 <number> 后，就在声明处提前算好。相对字体单位、容器查询单位和 URL 也遵循这一规律。var() 等替换函数例外，无论是否注册都在声明处立刻替换。
+通过 @property 规则显式注册属性后，求值生命周期与上下文发生根本转变：
+1. 声明节点即刻求值：为 --index 显式注册 syntax: '<number>' 后，解析引擎在父元素声明阶段立即完成计算，将 sibling-index() 求值为数值 2。子节点继承计算后的数值，scale 稳定为 2，父元素上的 getComputedStyle 同步返回数字 "2"。
+2. 相对单位与容器查询基准：相对字体单位（em、ch、lh）及容器查询单位（cqw、cqb）受控于这一计算时机。未注册时根据消费属性的子元素字号或其所在容器尺寸推导；注册后则以声明属性的父级元素字号或外层容器为基准完成冻结，阻断上下文漂移。
+3. 资源 URL 路径绑定：在外部样式表定义包含相对 URL 的 Token 流属性并在另一样式表被引用时，未注册属性在消费方样式表的 Base URL 下解析；注册 syntax: '<url>' 则强制在声明属性所在样式表的基准路径下完成解析。
+
+规范对任意替换函数（如 var()、if()、attr() 与 ident()）设立了特殊优先级。无论所属属性是否注册，任意替换函数都必须在声明该属性的元素节点上立即完成替换展开。若父元素声明 --multiplier: 1 与 --index: calc(sibling-index() * var(--multiplier))，而子元素重写 --multiplier: 3，父元素中的 var() 会在声明处立即展开替换为 1。子元素对变量的重定义无法渗透进该计算式，其后续仅依据 --index 的注册状态决定 sibling-index() 的计算节点。标记流推迟求值、@property 提前固化与任意替换函数立即展开，共同构成了现代 CSS 自定义属性的核心求值机制。

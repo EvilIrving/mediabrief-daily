@@ -1,8 +1,4 @@
-https://se-radio.net/2020/07/episode-417-alex-petrov-on-database-storage-engines/
-
-Episode 417: Alex Petrov on Database Storage Engines ｜ Software Engineering Radio ｜ 56分钟 ｜ https://se-radio.net/2020/07/episode-417-alex-petrov-on-database-storage-engines/
-
-本期由 Adam Gordon Bell 主持，嘉宾是 Cassandra 核心贡献者、O'Reilly《数据库内核》（Database Internals）一书的作者 Alex Petrov。两人避开查询优化和事务，专门聊数据库最底层的存储引擎：数据怎样写进磁盘、又怎样读回来。
+数据库存储引擎作为持久化架构的最底层基座，其核心在于在读写放大、空间放大与硬件存储物理特性之间取得精确的算法平衡。Cassandra 核心贡献者、《数据库内核》作者 Alex Petrov 深入剖析了面向读优化的不可变 B-Tree/B+Tree 结构与面向高并发写优化的日志结构合并树（LSM-Tree）的底层机制，详细阐述了预写日志（WAL）、MemTable 内存缓冲、SSTable 磁盘排序以及 Compaction 压缩策略的系统设计权衡。
 
 Petrov 把存储引擎定义为离用户最远的一层，它和预写日志、事务处理器耦合很紧。正因如此，像 MySQL 那样可替换存储引擎的数据库并不多见。MongoDB 从 MMAP 换到 WiredTiger 是个例子；试图给 Cassandra 换上 RocksDB 的 Rocksandra 项目则说明，可插拔远不是实现一个读写接口那么简单。内存数据库也各不相同，有的完全不碰磁盘，有的用磁盘做恢复日志或冷数据存储。他认为只要最终要访问磁盘，存储引擎就是位于各层缓存之下的那部分。至于把 Cassandra 配上大内存能否像 Redis 一样快，他的回答是很难，两者各有所长。
 

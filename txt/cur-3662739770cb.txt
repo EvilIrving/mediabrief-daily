@@ -1,11 +1,9 @@
-https://syntax.fm/895
+自 React Server Components（RSC）架构提出近五年以来，前端工程生态在享受零客户端运行时体积与原生流式渲染红利的同时，也面临着严重的打包器绑定、框架生态割裂与开发心智模型复杂化危机。《Syntax》围绕 RSC 的底层运行机制、主流框架支持瓶颈及工程落地阻力展开了系统性复盘。
 
-895: React Server Components: Where are we at? ｜ Syntax ｜ 31分钟 ｜ https://syntax.fm/895
+从底层运行架构分析，服务端组件在构建期或服务端请求期直接执行，其产物并非纯 HTML，而是结构化的 RSC Payload（虚拟 DOM 的流式序列化表达），直接流式推送到浏览器后无缝拼接进入现有客户端 DOM 树，且无需在客户端执行昂贵的重新水合（Hydration）。这使得 Markdown 解析器、语法高亮引擎等重型依赖仅在服务端运行，实现了客户端 JavaScript 打包体积的彻底归零；配合 Suspense 流式渲染，服务端可优先输出骨架并异步流式更新耗时组件（例如在页面级流式加载外部动态数据）。与此同时，Server Actions 充当了内置的远程过程调用（RPC）机制，通过标准 POST 请求与 FormData 实现了前后端数据流转的统一抽象，配合 useActionState 等 hook 达成声明式状态流转。
 
-这期节目录于 2025 年 4 月。Wes Bos 和 Scott Tolinski 盘点 React Server Components（RSC）推出近五年后的现状，讨论它为什么一直没能真正普及。
+在主流框架的支持矩阵上，Next.js App Router 是落地最早也最激进的实现，但其特定的心智模型与脆弱的构建管线常引发工程阻力。新兴轻量级框架如 Waku（由 Zustand 作者 Daishi Kato 开发）探索了在 Cloudflare Workers 等轻量边缘运行时上运行 RSC，虽然构建耗时大幅缩减，但底层仍需编排三至四个独立的 Vite 进程协同运作，成熟度仍未达生产基准。与此同时，传统客户端路由框架的跟进遭遇严重滞后：React Router v7 推迟了对 RSC 的整合支持，核心作者 Michael Jackson 公开指出 RSC 理论完备但落地迟滞，选择转向纯 Web 标准微模块；TanStack Start 则优先聚焦于传统 SSR 的确定性工程治理。
 
-Wes 先讲清概念。服务端组件在构建时或服务器上渲染，只把输出发给浏览器；客户端组件则要把自己渲染所需的一切都带到浏览器，实际项目里两者通常混用。服务端组件是异步的，可以直接 await 数据库调用再返回 JSX；也可以 suspend，配合流式渲染，比如 Wes 新网站页脚的推特动态，就不会拖慢整个页面。它发出的是 RSC 负载，不涉及再水合，概念上有点像 htmx 换 HTML 片段。最大的好处是代码高亮、Markdown 解析这类重型库只在服务器上运行。服务端函数（原名 server actions）相当于内置 RPC，配合 useActionState 等 hook 使用。
+RSC 生态普及迟滞的根本原因在于其与底层打包工具链（Bundler）的过度绑定：缺乏跨打包工具的标准运行时抽象，使得组件库无法实现“npm install 后自动携带前后端与数据获取逻辑”的通用愿景。此外，流式传输的物理限制导致 HTTP 响应头一旦发出即被锁定，使得在流式渲染中动态设置 Cookie 或执行重定向等常见操作受到严格制约。Vite 6 的 Environment API 被寄予厚望，有望统一服务端与客户端环境，但在关键生态框架形成确定性共识之前，RSC 依然处于工程价值与落地复杂度的剧烈拉锯之中。
 
-框架支持方面：Next.js 是最早、也是支持最完整的。Wes 把网站从 Gatsby 迁到 Next.js，受不了 Next.js 特有的写法和经常坏掉的构建，又转到 Waku。Waku 由 Zustand、Jotai 的作者开发，他的代码几乎原样搬了过去，部署在 Cloudflare Workers 上，构建时间缩短一半。不过 Waku 文档稀少，目前靠三四个 Vite 进程拼起来运行，还没到 1.0。两人顺带夸了给 Waku 做设计的 Candy Code，研究了它用 linear-gradient 做的渐变滚动条（Firefox 不支持）。React Router 原计划在 v7 加入 RSC，但 PR 一直没合并。React Router 作者之一 Michael Jackson 公开表示"RSC 理论上很好，但五年了没成功"，并彻底告别 React，转去做基于 Web 标准的小模块。Wes 认为根子在于 RSC 深度依赖打包工具，连在多个产物之间共享单例都做不到。Vite 6 的 Environment API 有望让服务端和客户端统一跑在 Vite 上，从而简化这些问题。TanStack Start 目前只支持 SSR，Tanner 打算先把核心稳定下来再加 RSC。Bun 有类似的演示。至于自己在 Express 上搭，Wes 不建议。闲聊里还提到了浏览器新的 moveBefore API 和 React 的 Activity（原名 Offscreen）。
-
-关于大家为什么反感 RSC，两人总结了几点：打包复杂；没有显式的 HTTP 方法和中间件；设 cookie、重定向受限，这其实是流式传输本身的限制，却常被怪到 Next.js 头上。更根本的问题是各框架支持不一，React 生态因此被割裂，"npm install 一个组件就自带前后端和数据获取"的愿景迟迟没有实现。Scott 的感受是"这些功能我都想要，但不是这样"。至于锁定，Wes 认为不严重：他 98% 的代码迁移顺利，actions 用的也是标准的 FormData，真正离不开的是 JSX。结尾两人意见不同：Wes 觉得 React 已经押上全部身家，仍然看好；Scott 则认为五年才走到这一步，本身就说明不行。他们都同意，如果半年到一年内 React Router 和 TanStack 还不跟进，RSC 可能就要被视为失败。
+此外，RSC 架构还深度交织着现代浏览器与 React 并发原语的协同演进：例如浏览器层面的原生 moveBefore DOM 操作提案，以及 React 内部的 Activity（原 Offscreen 离屏渲染机制），均旨在解决组件在异步流式挂载与跨视图迁移时的状态保活难题。但在基础生态框架全面达成构建期与运行时规范收敛之前，团队在生产环境中采纳 RSC 必须充分评估架构迁移成本与打包器锁定风险。

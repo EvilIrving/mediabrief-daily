@@ -1,13 +1,15 @@
-https://surma.dev/things/rust-to-webassembly/
+将 Rust 编译至 WebAssembly（Wasm）运行时的底层机理涉及 C ABI 导出、线性内存交互以及编译产物体积的多阶段工程裁减。
 
-用笨办法把 Rust 编译成 WebAssembly（Rust to WebAssembly the hard way） ｜ Surma ｜ 文章 ｜ https://surma.dev/things/rust-to-webassembly/
+Web 平台资深工程师 Surma 故意剥离高级粘合工具（如 wasm-bindgen 与 wasm-pack），通过原生底层的原始工具链从零构建 Rust 到 WebAssembly 的集成链路，以此透视 Wasm 虚拟机内部的物理运转规律。
 
-Google 前开发者关系工程师 Surma 2023 年的一篇长文，自称是"我所知道的 Rust 编译到 WebAssembly 的一切"。他故意不用 wasm-bindgen，从最原始的工具链一步步做，弄懂背后发生了什么，最后再回头介绍那些方便的工具。
+底层集成的首要挑战在于符号导出与 ABI 规范绑定：
+在 Cargo.toml 中将 crate-type 配置为 cdylib 并使用 --target=wasm32-unknown-unknown 构建是基础起点。然而，仅仅在 Rust 函数前声明 pub 并不能保留符号，编译器会在死代码消除阶段将其剔除；必须显式附加 #[no_mangle]（或 #[export_name]）属性以保留外部链接符号，并使用 extern "C" 强制绑定为标准 C 语言调用约定（C ABI），以规避 Rust 自身跨版本未定义的 ABI 变动。
+在导入外部能力时，通过 #[link(wasm_import_module = "Math")] 的外部块直接引入宿主环境的 JavaScript 基础方法（例如直接复用 Math.random），能够有效避免在 Wasm 模块内部打包臃肿的第三方算法库。由于外部导入函数在 Rust 类型系统中天生属于 unsafe，最佳工程实践是为其包装一层类型安全且符合习惯的封装接口。
+在内存交互与数据传递层面，由于 Wasm 仅原生支持数值基元类型（i32、i64、f32、f64），非数值结构（如字符串 &str 或切片）在底层物理布局上必须拆解为线性内存中的“指针（Pointer）加长度（Length）”；传递或返回大型复合结构体或元组时，C ABI 会将其自动改写为向预分配堆栈写入的隐式输出参数。
 
-起点很简单：建一个库项目，把 crate-type 设成 cdylib，用 cargo build --target=wasm32-unknown-unknown 编译。但光写 pub 不够，函数会被整个删掉，要加 #[no_mangle]（或 #[export_name]）才能导出；再用 extern "C" 固定成稳定的 C ABI，否则 Rust 自己的 ABI 随版本可能变化。导入同理：用 #[link(wasm_import_module = "Math")] 的 extern 块声明宿主提供的函数，比如直接借 JavaScript 的 Math.random，而不是把 rand 库打包进去；外部函数天然是 unsafe 的，他建议包一层安全的封装。跨边界最好只传能直接对应 wasm 类型的数值，结构体会变成指针，str、切片这类不定长类型会拆成"指针加长度"，返回较大的数组或元组会变成额外的输出参数，这些细节他建议交给现成工具。
+模块体积的工程瘦身是构建生产级 Wasm 模块的核心战场：
+第一阶段，调试信息剥离。一个仅执行简单加法的微小 Rust 库，在 Release 模式下编译产物居然高达 1.7MB；利用 Twiggy 剖析工具深入分析，发现其中 99% 以上的空间被预编译标准库所携带的自定义调试段（Custom Debug Sections）所占据；在配置文件中开启 strip = "debuginfo" 或 strip = "symbols" 后，模块体积瞬间骤降至 116 字节。
+第二阶段，异常恐慌（Panic）路径与格式化开销治理。在安全代码中执行数组按索引查表时，哪怕最简单的隐式越界检查一旦触发 panic，编译器就会将整个格式化打印引擎与行号定位逻辑全量静态链接打包，导致模块骤增至 18KB。工程解法包括：通过自定义前置边界检查、改用 get().unwrap_or() 消除潜在 panic，或在明确安全的上下文中采用 unsafe { get_unchecked() }；在工具链层面，开启全程序链接时优化（LTO = true）可使编译器内联并消除死代码分支，体积直接压降至 2.3KB，配合 Binaryen 的 wasm-opt -Oz 优化器进一步降至 2.0KB。
+第三阶段，无标准库（#![no_std]）与极简内存分配。浏览器中的 Wasm 运行在沙箱内存空间中，不存在宿主操作系统的系统调用支持，标准库（std）的大量依赖在底层只是一组注定执行失败的存根桩代码。全面转向 #![no_std] 并仅链接 core 核心库，自行提供使用 core::arch::wasm32::unreachable 指令的极简 Panic Handler，可将体积直接压至 168 字节。若业务逻辑必须依赖 Vec 等堆分配数据结构，则需引入 extern crate alloc 并配置全局内存分配器（Global Allocator）；对于单次执行且生命周期短暂的纯计算任务，实现一个仅向前移动游标、从不执行释放的极简 Bump Allocator 是最轻量的解法；而在长期运行的复杂场景下，Rust 默认的 System Allocator（约 10KB 开销）在稳定性与防止内存损坏上远优于维护停滞的极简三方库。
 
-文章的重头戏是体积。一个只做加法的 release 构建居然有 1.7MB，用 Twiggy 一看，几乎全是调试信息的自定义段，原因是预编译的标准库带着调试符号；在 Cargo.toml 里设 strip 后只剩 116 字节。另一个隐形膨胀来源是 panic：一个按下标查质数表的函数就有 18KB，因为越界检查失败要生成格式化的错误信息。办法有自己做边界检查、用 get().unwrap_or()、或用 unsafe 的 get_unchecked；更普适的是打开 LTO（链接时优化），降到 2.3KB，再过一遍 binaryen 的 wasm-opt 到 2.0KB。
-
-继续往下挖就是 #![no_std]：浏览器里的 wasm 沙箱没有操作系统，标准库很多功能其实只是"注定失败"的空壳，作者借用嵌入式 Rust 的经验，只链接 core，自己写 panic handler（他用 unreachable 指令而不是死循环），体积降到 168 字节。想要 Vec 这类堆上的数据结构，就引入 alloc 并提供全局分配器，他演示了一个只分配、从不释放的极简 bump 分配器。他提醒常被推荐的 wee_alloc 似乎已无人维护、还有内存损坏的 issue，在稍复杂的模块里，Rust 默认分配器那 10KB 不算什么，还是用它更稳妥。
-
-最后他介绍 wasm-bindgen：它的宏除了加上前面那些导出标注，还会生成描述函数签名的数据，命令行工具据此生成量身定做的 JS 绑定，能直接传字符串、ArrayBuffer 甚至闭包；wasm-pack 则把编译、生成绑定、wasm-opt 这一整套流程打包好。他的结论是 Rust 非常适合编译到 WebAssembly，开了 LTO 能得到极小的模块，工具链也很成熟；日常开发推荐用 wasm-bindgen，而走一遍笨办法的价值在于理解并欣赏这些工具替你做了什么。
+在完成这一系列底层机制的推演后，高级工具链的架构价值得以全面显现：wasm-bindgen 的宏在编译期生成类型描述元数据，其 CLI 工具能够全自动生成高保真的 JavaScript 胶水层，以最优的线性内存拷贝语义无缝支撑字符串、TypedArray 乃至闭包的跨边界调用；而 wasm-pack 则将多阶段编译、代码生成与 wasm-opt 压缩固化为流水线。理解底层 C ABI 与线性内存布局，是精准调优现代 WebAssembly 系统性能与产物体积的根本基石。

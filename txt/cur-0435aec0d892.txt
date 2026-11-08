@@ -1,8 +1,4 @@
-https://se-radio.net/2023/12/se-radio-596-maxim-fateev-on-durable-execution-with-temporalse-radio-596/
-
-SE Radio 596: Maxim Fateev on Durable Execution with Temporal ｜ Software Engineering Radio ｜ 69分钟 ｜ https://se-radio.net/2023/12/se-radio-596-maxim-fateev-on-durable-execution-with-temporalse-radio-596/
-
-这一期 Software Engineering Radio，Philip Winston 采访 Temporal 联合创始人兼 CEO Maxim Fateev，主题是 durable execution（持久执行）：运行时始终把代码执行的完整状态持久化，进程崩、网络断甚至整片区域宕机后，执行能迁到别处并从断点继续——包括卡在某次 API 调用上的局部变量。Temporal 开源（MIT）、可自建，源自 Uber 的 Cadence，已在生产高规模跑约七年，被全球数千家公司用于关键任务。Maxim 的路径是 Amazon Simple Workflow（内部三轮迭代才公开）→ Samar Abbas 在微软做的 Durable Task / Azure Durable Functions → Uber Cadence → fork 成 Temporal（thrift→protobuf、Uber 专用协议→gRPC 等，fork 后改了一年才宣布生产可用）。后端集群 MIT 许可，开源支持 MySQL/Postgres/Cassandra/SQLite；应用只做出站 gRPC，不需开端口。
+持久执行（Durable Execution）彻底颠覆了传统基于异步消息队列、手动状态机与分布式定时器拼接的分布式系统编排范式：Temporal 通过将代码执行状态、历史事件流与确定性重放（Replay）机制深度融合，使得开发者能够以单机同步代码的心智模型编写永不崩溃的长周期工作流。Temporal 联合创始人兼 CEO Maxim Fateev 系统复盘了持久执行模型的技术机理、事件源（Event Sourcing）存储架构，以及面对分布式网络分区与节点故障的容错设计。
 
 他强调队列和事件驱动运行时特性很好（缓冲、隔离故障），却不是编排业务的正确抽象：服务互相缠死、难做清晰状态机。Temporal 里的“workflow”特指用 Java/Go/TypeScript/PHP/.NET 等写的持久代码，而不是 YAML/XML 画出来的传统工作流引擎——那些对开发者不友好，也从未真正普及。实现上不靠序列化任意语言的内存快照，而靠 event history + 确定性重放：从头跑代码，已完成的外部动作直接喂历史结果；因此有路由层把迟到的结果送到当前等待的进程。代码必须确定性；随机、时间、线程等要走 Temporal 提供的 API。Worker 像队列消费者一样监听 task queue；碰到 sleep 就变成服务器侧持久 timer，到期再唤醒。短等待会在 worker 里缓存状态以免反复恢复。
 
