@@ -258,6 +258,188 @@
   "added_at": "2026-11-08T20:19+08:00"
  },
  {
+  "id": "cur-ad165f2e01fd",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "Working with designers",
+  "link": "https://seangoedecke.com/working-with-designers/",
+  "date": "2026-11-07",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-ad165f2e01fd.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-ad165f2e01fd.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-ad165f2e01fd.orig.txt"
+   }
+  ],
+  "title_zh": "与设计师合作",
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cx-182-zhiye-dajia",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "职业打假转向",
+  "link": "https://weekly.caixin.com/2026-11-07/102502084.html",
+  "date": "2026-11-07",
+  "author": "周泰来、冯奕铭",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-182-zhiye-dajia.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-182-zhiye-dajia.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-182-zhiye-dajia.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cx-183-kaishanling",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "阅读｜《开山令》：被湮没的底层中国史",
+  "link": "https://weekly.caixin.com/2026-11-07/102502106.html",
+  "date": "2026-11-07",
+  "author": "周智琛",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-183-kaishanling.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-183-kaishanling.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-183-kaishanling.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cx-184-nordhaus",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "逝者｜威廉·诺德豪斯：为碳排放计算社会成本",
+  "link": "https://weekly.caixin.com/2026-11-07/102502108.html",
+  "date": "2026-11-07",
+  "author": "李志青",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-184-nordhaus.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-184-nordhaus.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-184-nordhaus.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cx-185-humanoid-return",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "人形机器人何时返岗",
+  "link": "https://weekly.caixin.com/2026-11-07/102502102.html",
+  "date": "2026-11-07",
+  "author": "安丽敏、翟少辉",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-185-humanoid-return.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-185-humanoid-return.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-185-humanoid-return.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cx-186-honest-unlucky",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "记者手记｜“诚实但不幸”的创业者出路何在",
+  "link": "https://finance.caixin.com/2026-11-07/102502202.html",
+  "date": "2026-11-07",
+  "author": "朱亮韬",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-186-honest-unlucky.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-186-honest-unlucky.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-186-honest-unlucky.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cx-187-minsu-bubble",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "民宿挤泡沫",
+  "link": "https://weekly.caixin.com/2026-11-07/102502103.html",
+  "date": "2026-11-07",
+  "author": "包云红",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-187-minsu-bubble.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-187-minsu-bubble.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-187-minsu-bubble.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
   "id": "cx-179-yang-dechang",
   "kind": "curated",
   "type": "caixin",
@@ -360,6 +542,84 @@
   ],
   "title_zh": "在Binance之后，检查您的签名系统可以批准的内容",
   "added_at": "2026-11-08T20:19+08:00"
+ },
+ {
+  "id": "cur-2b224dc89e68",
+  "kind": "curated",
+  "type": "article",
+  "source": "우아한형제들 기술블로그",
+  "title": "우아한형제들의 AI 거버넌스, 플랫폼에 담다",
+  "link": "https://techblog.woowahan.com/27890/",
+  "date": "2026-11-06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-2b224dc89e68.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-2b224dc89e68.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-2b224dc89e68.orig.txt"
+   }
+  ],
+  "title_zh": "在平台上为优雅的兄弟提供人工智能治理",
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cur-594105e3c519",
+  "kind": "curated",
+  "type": "article",
+  "source": "Anthropic Engineering (via Olshansk/rss-feeds)",
+  "title": "The components of agent memory",
+  "link": "https://www.anthropic.com/research/components-of-agent-memory",
+  "date": "2026-11-06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-594105e3c519.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-594105e3c519.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-594105e3c519.orig.txt"
+   }
+  ],
+  "title_zh": "代理内存的组成部分",
+  "added_at": "2026-11-08T20:30+08:00"
+ },
+ {
+  "id": "cur-e214d358f05d",
+  "kind": "curated",
+  "type": "article",
+  "source": "Anthropic Research (via Olshansk/rss-feeds)",
+  "title": "Teaching AI to build scientific models",
+  "link": "https://www.anthropic.com/research/teaching-ai-to-build-scientific-models",
+  "date": "2026-11-06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-e214d358f05d.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-e214d358f05d.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e214d358f05d.orig.txt"
+   }
+  ],
+  "title_zh": "教授人工智能建立科学模型",
+  "added_at": "2026-11-08T20:30+08:00"
  },
  {
   "id": "cx-175-baibaoguo",
@@ -1713,6 +1973,32 @@
   "title_zh": "Kimi K3.1 Pro、新的网络现实与 Muse 随想",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-cb0e6541c41d.m4a",
   "added_at": "2026-10-30T07:26+08:00"
+ },
+ {
+  "id": "cur-27bbc3c05afb",
+  "kind": "curated",
+  "type": "article",
+  "source": "Drew Breunig",
+  "title": "The State of Context Engineering",
+  "link": "https://www.dbreunig.com/2026/10/24/the-state-of-context-engineering.html",
+  "date": "2026-10-25",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-27bbc3c05afb.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-27bbc3c05afb.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-27bbc3c05afb.orig.txt"
+   }
+  ],
+  "title_zh": "情境工程的现状",
+  "added_at": "2026-11-08T20:30+08:00"
  },
  {
   "id": "cur-d1a3b4fa5d93",

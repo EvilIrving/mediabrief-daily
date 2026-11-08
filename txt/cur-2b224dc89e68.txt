@@ -1,0 +1,17 @@
+https://techblog.woowahan.com/27890/
+
+把AI治理做进平台 ｜ Woowa Brothers 技术博客 ｜ 文章 ｜ https://techblog.woowahan.com/27890/
+
+Woowa Brothers 把分散在各服务和供应商的 LLM、MCP 调用收拢到基于 LiteLLM 的 AI Gateway，以项目为管理单位，用 Virtual Key 识别调用方，在转发前检查允许模型、预算、RPM/TPM，并把成本与 Langfuse 追踪记到项目上；Agent 的模型和工具调用也走同一路径。此前凭证发放方式不一、多个课题共用密钥，总成本可见但无法按课题解释，Agent 反复调用又放大了这一问题。
+
+AI Studio 把原本分散在 Bedrock、外部供应商和 Gateway 的三个申请入口合一，注册课题时用政策文件评估申请，默认范围直接发 Key，涉及高成本模型、超预算或数据安全例外时才连接公司审批系统做成本、安全审核；服务、负责人和用途以服务目录为源，审批状态以审批系统为源，预算和模型配置以 Gateway 为源，Virtual Key 继承项目设置。发放时在 Gateway、Virtual Key、Langfuse 使用同一项目名，使申请、审核、调用记录和成本可以持续对照，用户也能在 AI Studio 变更预算、模型和密钥。
+
+成本侧，Gateway 在调用时即时计算成本，而 Bedrock 账单约滞后两天；仪表盘按角色展示项目和平台状态，Slack 发出预算、故障和成本骤增告警，预算耗尽后限制调用。用于说明仪表盘的虚构示例中，项目A占总成本45%、预算使用率92%且未用缓存，这些并非实测数据。另一个仅更改项目名称的实际案例，把变动内容移到user消息并给system提示加cache_control后，缓存比例从 5% 升到 97%，单次请求成本降 84%，平均延迟从 0.79 秒升到 1.33 秒，原因是 LiteLLM 每次多查一次 Gemini 缓存。模型政策上，满足区域要求的课题可选 Global 跨区域推理，其输入输出 token 单价比 Geographic 低约 10%。
+
+安全侧，敏感信息请求送往公司自建推理的 AI Platform，一般信息才去 Bedrock、Azure、GCP；护栏可在 pre_call、during_call、post_call 生效，MASK 掩码后还原，BLOCK 直接拒绝，平台做首轮实验，安全组织定探测和拦截标准。所有调用按项目记录，可用于发现个人信息外发、未获批服务共用密钥，并反过来调整政策；成本和安全分别按 FinOps、SecOps 与对应组织运营。
+
+Agent 额外限制允许渠道和用户、只开放安全审核过的 MCP 及按工具开关，查询以请求者账户权限执行。AI Studio 把这些作为默认设置，公共Helm Chart固定模型与MCP路径、限制终端、文件、代码执行、浏览器等危险工具集合，缺少配置或无法解密 Secret 就不启动。平台因此承担治理，创建者选择渠道、用户、模型、工具并开发技能和提示。
+
+平台自身按五项标准判定隔离对象，迁到独立 AWS 账户和 VPC，入口只留 AI Gateway，Bedrock 用 IRSA 认证，GCP 只放行固定 IP，管理界面限管理员 SSO；部署时先备好新 Pod、摘除旧 Pod 后等 30 秒，按可用区分散并限制同时中断，供应商故障时重试或切替代模型。
+
+目前已覆盖 LLM 调用、Agent 工具许可和请求者信息传递；下一步做 Agent Registry、按会话限制成本和执行次数、Agent 认证授权、扩大护栏与自动批准，并用 Slack 反馈转成 Langfuse 评分来评估质量。结论是把治理做成让 AI 安全快速扩展的工程：调用走一个 Gateway，政策在 AI Studio 通过申请审核确定，成本和安全的记录再用于改进，平台本身用隔离账户、路径控制和零中断运营保护。
