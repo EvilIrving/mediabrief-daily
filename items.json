@@ -42,6 +42,53 @@
   "added_at": "2026-11-08T20:14+08:00"
  },
  {
+  "id": "cur-55bc9d2d78e42c2807dd33ca73c017d8",
+  "kind": "curated",
+  "type": "article",
+  "source": "中信证券",
+  "title": "致首次入市的新朋友",
+  "link": "https://mp.weixin.qq.com/s?__biz=MjM5OTYzMzAxMg==&mid=2650245419&idx=3&sn=55bc9d2d78e42c2807dd33ca73c017d8",
+  "date": "2026-11-08",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-55bc9d2d78e42c2807dd33ca73c017d8.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-55bc9d2d78e42c2807dd33ca73c017d8.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-08T20:19+08:00"
+ },
+ {
+  "id": "cur-bd44c82769fb",
+  "kind": "curated",
+  "type": "article",
+  "source": "The Beautiful Mess (John Cutler)",
+  "title": "TBM 450: The Loss of Positive Friction",
+  "link": "https://cutlefish.substack.com/p/tbm-450-the-loss-of-positive-friction",
+  "date": "2026-11-08",
+  "audio_url": "https://substackcdn.com/image/fetch/$s_!vc3E!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fba98f031-98bd-46b4-8e13-3cb3fc567594_4032x3024.jpeg",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-bd44c82769fb.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-bd44c82769fb.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-bd44c82769fb.orig.txt"
+   }
+  ],
+  "title_zh": "TBM 450 ：正摩擦的损失",
+  "added_at": "2026-11-08T20:19+08:00"
+ },
+ {
   "id": "2115062331227226349",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -159,6 +206,58 @@
   "added_at": "2026-10-11T03:20+08:00"
  },
  {
+  "id": "cur-417531680267",
+  "kind": "curated",
+  "type": "article",
+  "source": "Nielsen Norman Group",
+  "title": "Agent Harness: Definition",
+  "link": "https://www.nngroup.com/articles/agent-harness/?utm_source=rss&utm_medium=feed&utm_campaign=rss-syndication",
+  "date": "2026-11-07",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-417531680267.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-417531680267.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-417531680267.orig.txt"
+   }
+  ],
+  "title_zh": "客服代表线束：定义",
+  "added_at": "2026-11-08T20:19+08:00"
+ },
+ {
+  "id": "cur-9b0e30367cd4",
+  "kind": "curated",
+  "type": "article",
+  "source": "Murat Demirbas",
+  "title": "Writing as a thinking tool",
+  "link": "https://muratbuffalo.blogspot.com/2026/11/writing-as-thinking-tool.html",
+  "date": "2026-11-07",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-9b0e30367cd4.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-9b0e30367cd4.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-9b0e30367cd4.orig.txt"
+   }
+  ],
+  "title_zh": "作为思考工具的写作",
+  "added_at": "2026-11-08T20:19+08:00"
+ },
+ {
   "id": "cx-179-yang-dechang",
   "kind": "curated",
   "type": "caixin",
@@ -235,6 +334,32 @@
    }
   ],
   "added_at": "2026-11-08T07:33+08:00"
+ },
+ {
+  "id": "cur-eff432925562",
+  "kind": "curated",
+  "type": "article",
+  "source": "Trail of Bits",
+  "title": "After Binance, check what your signing systems can approve",
+  "link": "https://blog.trailofbits.com/2026/11/06/after-binance-check-what-your-signing-systems-can-approve/",
+  "date": "2026-11-06",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-eff432925562.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-eff432925562.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-eff432925562.orig.txt"
+   }
+  ],
+  "title_zh": "在Binance之后，检查您的签名系统可以批准的内容",
+  "added_at": "2026-11-08T20:19+08:00"
  },
  {
   "id": "cx-175-baibaoguo",
