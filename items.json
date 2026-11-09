@@ -113,6 +113,58 @@
   "added_at": "2026-11-08T20:19+08:00"
  },
  {
+  "id": "cx-188-keju-family",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“平民逆袭”还是“家族托底”：当科举被量化分析",
+  "link": "https://mini.caixin.com/2026-11-08/102502359.html",
+  "date": "2026-11-08",
+  "author": "李井奎",
+  "issue": "mini+",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-188-keju-family.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-188-keju-family.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-188-keju-family.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-09T09:15+08:00"
+ },
+ {
+  "id": "cx-190-bingyi-unseen",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "冰逸《象罔无形》：在山水本身之中重新找到山水画｜观展",
+  "link": "https://mini.caixin.com/2026-11-08/102502362.html",
+  "date": "2026-11-08",
+  "author": "李宏",
+  "issue": "mini+",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-190-bingyi-unseen.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-190-bingyi-unseen.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-190-bingyi-unseen.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-09T09:15+08:00"
+ },
+ {
   "id": "2115062331227226349",
   "kind": "summary",
   "source": "YouTube 总结",
@@ -464,6 +516,58 @@
   "added_at": "2026-11-08T20:30+08:00"
  },
  {
+  "id": "cx-189-un-sg-race",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "联合国秘书长遴选陷胶着",
+  "link": "https://weekly.caixin.com/2026-11-07/102502086.html",
+  "date": "2026-11-07",
+  "author": "王克柔",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-189-un-sg-race.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-189-un-sg-race.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-189-un-sg-race.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-09T09:15+08:00"
+ },
+ {
+  "id": "cx-191-rate-anchor",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "利率调控「换锚」",
+  "link": "https://weekly.caixin.com/2026-11-07/102502087.html",
+  "date": "2026-11-07",
+  "author": "丁锋、范浅蝉",
+  "issue": "财新周刊2026年第43期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-191-rate-anchor.txt"
+   },
+   {
+    "label": "详读",
+    "url": "txt/cx-191-rate-anchor.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-191-rate-anchor.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-09T09:15+08:00"
+ },
+ {
   "id": "cx-179-yang-dechang",
   "kind": "curated",
   "type": "caixin",
@@ -772,8 +876,8 @@
     "url": "txt/cur-7fb652c9ef37.orig.txt"
    }
   ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7fb652c9ef37.m4a",
   "title_zh": "扩展 Slack 与 GitHub：瓶颈不只在代码里",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7fb652c9ef37.m4a",
   "added_at": "2026-11-09T07:21+08:00"
  },
  {
