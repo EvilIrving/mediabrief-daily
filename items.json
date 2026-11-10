@@ -1,5 +1,71 @@
 [
  {
+  "id": "cx-193-jing-yidan-letters",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "敬一丹：当家信成为一本书｜带着问题去读书",
+  "link": "https://mini.caixin.com/2026-11-10/102502900.html",
+  "date": "2026-11-10",
+  "author": "敬一丹",
+  "issue": "mini+",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-193-jing-yidan-letters.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-193-jing-yidan-letters.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-11T01:06+08:00"
+ },
+ {
+  "id": "cx-192-tennis-tiebreak",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "段钢：抢七，由个人发起的网球规则革命｜网球手记",
+  "link": "https://mini.caixin.com/2026-11-09/102502651.html",
+  "date": "2026-11-09",
+  "author": "段钢",
+  "issue": "mini+",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-192-tennis-tiebreak.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-192-tennis-tiebreak.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-11T01:06+08:00"
+ },
+ {
+  "id": "cx-194-japan-consumption-tax",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "日本消费税减税，为何引发朝野争议",
+  "link": "https://opinion.caixin.com/2026-11-09/102502635.html",
+  "date": "2026-11-09",
+  "author": "柴思原",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-194-japan-consumption-tax.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-194-japan-consumption-tax.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-11T01:06+08:00"
+ },
+ {
   "id": "6aea205e97726cd4675c55ff",
   "kind": "summary",
   "source": "YouTube 总结",
