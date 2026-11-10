@@ -53,7 +53,12 @@ audio{display:block;width:100%;height:36px;margin:12px 0 0}
 #txt code{font:.88em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--sf2);padding:.05em .3em}
 #txt pre{background:var(--sf2);padding:.8em 1em;overflow:auto;white-space:pre;line-height:1.5}#txt pre code{background:none;padding:0}
 #txt{white-space:normal;font-size:16.5px;line-height:1.85;letter-spacing:.01em;overflow-wrap:anywhere;padding-top:14px}
-.hint{color:var(--dim);font:10.5px ui-monospace,Menlo,monospace;margin-top:40px}
+.rd-foot{display:flex;align-items:center;gap:8px;margin-top:40px;min-height:28px}
+.copy-tab{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;background:none;color:var(--dim);cursor:pointer;padding:6px;margin:0;line-height:1;min-width:32px;min-height:32px}
+.copy-tab:hover{color:var(--ac)}.copy-tab:focus{outline:none}.copy-tab:focus-visible{outline:1px dashed var(--ac);outline-offset:1px}
+.copy-tab .copy-msg{font:10.5px ui-monospace,Menlo,monospace;color:var(--ac)}
+.copy-tab.ok svg{display:none}
+.hint{color:var(--dim);font:10.5px ui-monospace,Menlo,monospace;margin:0}
 #back{display:none;background:none;border:0;color:var(--act);font:inherit;font-size:13px;padding:0 0 4px;cursor:pointer}
 @media(max-width:760px){#ftoggle{display:inline-block}#fx{display:none}#fbar.open #fx{display:block}body{display:block}#side{width:auto;border:0}#main{display:none}
  body.reading #side{display:none}body.reading #main{display:block}#back{display:block}#rd{padding:16px 18px 60px}.hint{display:none}}
@@ -73,7 +78,7 @@ if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWor
 const idle=window.requestIdleCallback||(f=>setTimeout(f,300));
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const RK='mb_read',LK='mb_last',read=new Set(JSON.parse(localStorage.getItem(RK)||'[]')),cache={};
-const key=i=>encodeURIComponent(i.id);let cur=-1,tab=0;
+const key=i=>encodeURIComponent(i.id);let cur=-1,tab=0,copyBody=null,copyGen=0;
 let PREF=localStorage.getItem('mb_tab')||'s'; // preferred tab: s=总结 z=译文 o=原文
 const tabFor=i=>i.source==='财新'?0:Math.max(0,(i.txt||[]).findIndex(x=>x.code===PREF));
 function setPref(c){if(cur>=0&&ITEMS[cur]&&ITEMS[cur].source==='财新')return;PREF=c;localStorage.setItem('mb_tab',c)}
@@ -132,17 +137,20 @@ function show(n,push){if(n<0||n>=ITEMS.length)return;const i=ITEMS[n];
  if(push!==false)history.replaceState(null,'',hashStr());
  document.body.classList.add('reading');render();$('#main').scrollTop=0}
 function render(){const i=ITEMS[cur],t=i.txt||[];
+ copyBody=null;const gen=++copyGen;
  $('#rd').innerHTML=`<div class="hd"><button id="back">← 返回列表</button><h2 title="${esc(i.title)}"${i.title_zh?` data-alt="${esc(i.title)}" class="sw"`:''}>${esc(i.title_zh||i.title)}</h2>
  <div class="row"><div class="meta mono">${esc((i.date||'').slice(0,10))} · ${esc(i.source)}<span id="wc"></span>${i.author?' · '+esc(i.author):''}${i.issue?' · '+esc(i.issue.replace(/^\d{4}-\d{2}-\d{2}\s*/,'')):''}${i.link?` · <a href="${esc(i.link)}" target="_blank" rel="noopener" title="原链接">原链接 ↗</a>`:''}${(i.audio||i.audio_url)?` · <a href="${esc(i.audio||i.audio_url)}" target="_blank" rel="noopener" download>音频 ↗</a>`:''}</div>
  ${t.length>1?`<div class="tabs">${t.map((x,k)=>`<button data-k="${k}" class="${k===tab?'on':''}">${esc(x.label)}</button>`).join('')}</div>`:''}</div></div>
  ${t.length?'<div id="txt">加载中…</div>':''}
- <p class="hint">快捷键：j/k 或 ↓/↑ 切换条目 · t 或 ←/→ 切换 总结/译文/原文</p>`;
+ <div class="rd-foot"><button type="button" class="copy-tab" id="copy-tab" aria-label="复制全文" title="复制全文"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="5" y="1.5" width="6" height="3" rx=".8" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M5.5 2.8H4a1 1 0 0 0-1 1V13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3.8a1 1 0 0 0-1-1h-1.5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg><span class="copy-msg" hidden aria-live="polite">已复制</span></button>
+ <p class="hint">快捷键：j/k 或 ↓/↑ 切换条目 · t 或 ←/→ 切换 总结/译文/原文</p></div>`;
  const H=$('#rd h2.sw');if(H){H.onmouseenter=()=>{H.dataset.cur=H.textContent;H.textContent=H.dataset.alt};H.onmouseleave=()=>{if(H.dataset.cur){H.textContent=H.dataset.cur;delete H.dataset.cur}}}
  $('#back').onclick=()=>document.body.classList.remove('reading');
  document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=+b.dataset.k;setPref(ITEMS[cur].txt[tab].code);history.replaceState(null,'',hashStr());render()});
- if(t.length){const u=t[tab].url,c=i.id,set=x=>{if(ITEMS[cur].id===c)paint(clean(x,i))};
+ $('#copy-tab').onclick=()=>copyTab();
+ if(t.length){const u=t[tab].url,c=i.id,set=x=>{if(ITEMS[cur].id===c&&gen===copyGen){copyBody=clean(x,i);paint(copyBody)}};
   cache[u]?set(cache[u]):fetch(u).then(r=>r.ok?r.text():Promise.reject()).then(x=>{cache[u]=x;set(x);
-   idle(()=>{const nx=ITEMS[cur+1],q=nx&&nx.txt[0];q&&!cache[q.url]&&fetch(q.url).then(r=>r.ok&&r.text()).then(y=>{if(y)cache[q.url]=y})})}).catch(()=>set('加载失败。'))}}
+   idle(()=>{const nx=ITEMS[cur+1],q=nx&&nx.txt[0];q&&!cache[q.url]&&fetch(q.url).then(r=>r.ok&&r.text()).then(y=>{if(y)cache[q.url]=y})})}).catch(()=>{if(ITEMS[cur].id===c&&gen===copyGen){copyBody=null;paint('加载失败。')}})}}
 // tiny safe Markdown: escape first, then **bold** / `code` inline; blocks: #, bold-only line, -, 1., >, ```
 const BLK=/^(#{1,6}\s|\s*```|\s*>|\s*[-*•]\s+|\s*\d+[.)、]\s+)/,BOLDLINE=/^\s*\*\*([^*]+)\*\*[：:]?\s*$/;
 const inl=s=>esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+?)\*\*/g,'<strong>$1</strong>');
@@ -165,6 +173,15 @@ function paint(x){const el=$('#txt');if(!el)return;{const w=$('#wc');if(w){const
  add(0,30);let k=30;const more=()=>{if(tok!==paintTok||k>=bs.length)return;add(k,k+80);k+=80;idle(more)};idle(more)}
 function clean(x,i){const L=x.split('\n'),T=(i.title||'').trim();let k=0;
  while(k<L.length&&k<6){const l=L[k].trim();if(!l||(i.link&&l===i.link)||(T&&l.startsWith(T))||/^https?:\/\/\S+$/.test(l)&&k<2)k++;else break}return L.slice(k).join('\n')}
+function writeClip(text){
+ if(navigator.clipboard&&window.isSecureContext)return navigator.clipboard.writeText(text);
+ return new Promise((res,rej)=>{const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');
+  ta.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,text.length);
+  let ok=false;try{ok=document.execCommand('copy')}finally{ta.remove()}ok?res():rej(new Error('copy'))})}
+async function copyTab(){const text=copyBody,btn=$('#copy-tab');if(text==null||!String(text).trim()||!btn)return;const gen=copyGen;
+ try{await writeClip(text);if(gen!==copyGen||copyBody!==text)return;
+  btn.classList.add('ok');const msg=btn.querySelector('.copy-msg');if(msg)msg.hidden=false;
+  clearTimeout(copyTab._t);copyTab._t=setTimeout(()=>{if(gen!==copyGen)return;btn.classList.remove('ok');if(msg)msg.hidden=true},1600)}catch(e){}}
 function fromHash(){const {id}=readHash();const n=ITEMS.findIndex(i=>i.id===id);if(n>=0&&n!==cur)show(n,false)}
 const sw=(a,on)=>{const t=a&&a.querySelector('.t[data-alt]');if(!t)return;if(on&&!t.dataset.cur){t.dataset.cur=t.textContent;t.textContent=t.dataset.alt}else if(!on&&t.dataset.cur){t.textContent=t.dataset.cur;delete t.dataset.cur}};
 $('#list').addEventListener('mouseover',e=>sw(e.target.closest('.it'),1));
