@@ -1,5 +1,27 @@
 [
  {
+  "id": "cx-195-epilepsy-ai-death",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "病案录｜华裔癫痫患者之死：AI的角色",
+  "link": "https://www.caixin.com/2026-11-11/102502935.html",
+  "date": "2026-11-11",
+  "author": "张粲",
+  "issue": "健康",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-195-epilepsy-ai-death.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-195-epilepsy-ai-death.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-11T09:25+08:00"
+ },
+ {
   "id": "cx-193-jing-yidan-letters",
   "kind": "curated",
   "type": "caixin",
@@ -20,6 +42,28 @@
    }
   ],
   "added_at": "2026-11-11T01:06+08:00"
+ },
+ {
+  "id": "cx-196-france-safe-asset",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "失去“次安全资产”光环，法国会成为下一个希腊吗",
+  "link": "https://opinion.caixin.com/2026-11-10/102503110.html",
+  "date": "2026-11-10",
+  "author": "王加春",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-196-france-safe-asset.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-196-france-safe-asset.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-11T09:25+08:00"
  },
  {
   "id": "cx-192-tennis-tiebreak",
