@@ -8097,6 +8097,28 @@
   "added_at": "2026-10-11T05:45+08:00"
  },
  {
+  "id": "cur-03d88b5bd306",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "无人知晓",
+  "title": "E38 孟岩对话陈行甲：他们落水了，水很凉",
+  "link": "https://www.xiaoyuzhoufm.com/episode/674993fcc3b2a2f334681d1c?utm_source=rss",
+  "date": "2024-12-03T20:00+08:00",
+  "audio_url": "https://media.xyzcdn.net/ltQLGAGNRRRTiQZqd_ZmhAAewLcp.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-03d88b5bd306.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-03d88b5bd306.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-03d88b5bd306.m4a",
+  "added_at": "2026-11-14T11:27+08:00"
+ },
+ {
   "id": "cur-3ced6251d95e",
   "kind": "curated",
   "type": "podcast",
@@ -8201,6 +8223,28 @@
   ],
   "title_zh": "理解多模态 LLM",
   "added_at": "2026-10-11T05:32+08:00"
+ },
+ {
+  "id": "cur-846d717fa10c",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "M字闲聊",
+  "title": "我自卑，所以我活得很累",
+  "link": "https://www.xiaoyuzhoufm.com/episode/671b4188eb46cd6655a3a9c0?utm_source=rss",
+  "date": "2024-10-30T00:00+08:00",
+  "audio_url": "https://media.xyzcdn.net/lrx1ihJ7IYr4y_vkqUG4OLjRvBV9.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-846d717fa10c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-846d717fa10c.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-846d717fa10c.m4a",
+  "added_at": "2026-11-14T11:27+08:00"
  },
  {
   "id": "cur-fb8757e9a46d",
