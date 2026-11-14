@@ -20,6 +20,30 @@
   "added_at": "2026-11-14T11:05+08:00"
  },
  {
+  "id": "100000011255857",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "性工作让我更信任男人",
+  "link": "https://www.nytimes.com/video/podcasts/100000011255857/being-a-sex-worker-made-me-trust-men-more.html",
+  "date": "2026-11-14T10:50",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/100000011255857.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/100000011255857.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/100000011255857.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/100000011255857.m4a",
+  "added_at": "2026-11-14T11:18+08:00"
+ },
+ {
   "id": "BV1nj4x6rEHR",
   "kind": "summary",
   "source": "19分36秒",
