@@ -9315,6 +9315,28 @@
   "added_at": "2026-10-11T13:00+08:00"
  },
  {
+  "id": "cur-7d5b4d3f2cd3",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "知行小酒馆",
+  "title": "E95 永远赞美好奇心！金融学里那个被苹果砸中的人，改变了我们的投资规则｜纪念马科维茨",
+  "link": "https://www.xiaoyuzhoufm.com/episode/64a785d2b21ecc647d9099ff?utm_source=rss",
+  "date": "2023-07-07",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/6013f9f58e2f7ee375cf4216/64a785d2b21ecc647d9099ff/media.xyzcdn.net/libdptjiu28rd2QtAvVjBbS6V16e.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-7d5b4d3f2cd3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-7d5b4d3f2cd3.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7d5b4d3f2cd3.m4a",
+  "added_at": "2026-11-16T07:50+08:00"
+ },
+ {
   "id": "cur-ad388d074085",
   "kind": "curated",
   "type": "article",
