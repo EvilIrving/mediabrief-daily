@@ -5584,6 +5584,28 @@
   "added_at": "2026-10-11T05:32+08:00"
  },
  {
+  "id": "cur-a3f0540a0aa3",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "知行小酒馆",
+  "title": "E241 这次真的不一样吗？在市场喧嚣里，找到不变的参照系｜SBBI China 2025 上线",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6a4762cf2e335a35a80d789e?utm_source=rss",
+  "date": "2026-07-03",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/6013f9f58e2f7ee375cf4216/6a4762cf2e335a35a80d789e/media.xyzcdn.net/6013f9f58e2f7ee375cf4216/lu8xR6NKlpRwk1TAjX36MPzOBjAu.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-a3f0540a0aa3.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-a3f0540a0aa3.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-a3f0540a0aa3.m4a",
+  "added_at": "2026-11-16T08:43+08:00"
+ },
+ {
   "id": "cur-2462892d260e",
   "kind": "curated",
   "type": "article",
@@ -6644,6 +6666,28 @@
   "added_at": "2026-10-11T05:09+08:00"
  },
  {
+  "id": "cur-f1b722fc4042",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "知行小酒馆",
+  "title": "E213 解码巴菲特：42 年传奇收益背后的模型、系统与选择",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6920103fcbba038b429d9f7a?utm_source=rss",
+  "date": "2025-11-21",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/6013f9f58e2f7ee375cf4216/6920103fcbba038b429d9f7a/media.xyzcdn.net/6013f9f58e2f7ee375cf4216/lgloI8BolQOl1l_HQOO7hQN3rFQB.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-f1b722fc4042.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-f1b722fc4042.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-f1b722fc4042.m4a",
+  "added_at": "2026-11-16T08:43+08:00"
+ },
+ {
   "id": "cur-e4717274827e",
   "kind": "curated",
   "type": "article",
@@ -7042,6 +7086,28 @@
   "title_zh": "RAG 大家都做过了，然后呢？",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-66b3f5f3f7a3.m4a",
   "added_at": "2026-10-11T05:30+08:00"
+ },
+ {
+  "id": "cur-518ee6dcaccc",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "知行小酒馆",
+  "title": "E206 元明清七百年：财政如何塑造帝国命运",
+  "link": "https://www.xiaoyuzhoufm.com/episode/68d63d17522b40626c5dd9c0?utm_source=rss",
+  "date": "2025-09-26",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/6013f9f58e2f7ee375cf4216/68d63d17522b40626c5dd9c0/media.xyzcdn.net/6013f9f58e2f7ee375cf4216/ljEYpa7XXg41uXWRjP2HILv97wuy.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-518ee6dcaccc.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-518ee6dcaccc.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-518ee6dcaccc.m4a",
+  "added_at": "2026-11-16T08:43+08:00"
  },
  {
   "id": "cur-28a19bfcde1f",
