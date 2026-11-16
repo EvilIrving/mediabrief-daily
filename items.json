@@ -8437,6 +8437,28 @@
   "added_at": "2026-10-19T07:27+08:00"
  },
  {
+  "id": "cur-d72a0513d8a9",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "知行小酒馆",
+  "title": "SP01 瑞·达利欧的 A 面与 B 面",
+  "link": "https://www.xiaoyuzhoufm.com/episode/66ac3ee97349f7a55732e673?utm_source=rss",
+  "date": "2024-08-02",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/6013f9f58e2f7ee375cf4216/66ac3ee97349f7a55732e673/media.xyzcdn.net/lpuTfAROhIYbwSz00RBmvWumcKG7.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d72a0513d8a9.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d72a0513d8a9.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-d72a0513d8a9.m4a",
+  "added_at": "2026-11-16T08:11+08:00"
+ },
+ {
   "id": "cur-307d4a6462c1",
   "kind": "curated",
   "type": "podcast",
@@ -8820,6 +8842,28 @@
   "title_zh": "给你的 Core Web Vitals 把把脉",
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-7af6c18a0984.m4a",
   "added_at": "2026-10-11T05:45+08:00"
+ },
+ {
+  "id": "cur-d7538f5d113e",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "知行小酒馆",
+  "title": "E127 对话经济学者朱宁：买没买过“永远涨”的资产，这些关于泡沫的真问题都值得你听",
+  "link": "https://www.xiaoyuzhoufm.com/episode/65c31d02513a776b5718592a?utm_source=rss",
+  "date": "2024-02-16",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/6013f9f58e2f7ee375cf4216/65c31d02513a776b5718592a/media.xyzcdn.net/lr7dyW4n4bou9-h3Y8Ev57stIr9F.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d7538f5d113e.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d7538f5d113e.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-d7538f5d113e.m4a",
+  "added_at": "2026-11-16T08:11+08:00"
  },
  {
   "id": "cur-d5e6bf97efd1",
