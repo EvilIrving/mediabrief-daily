@@ -1,11 +1,34 @@
 [
  {
+  "id": "2103620465029943764",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "成瘾是麻醉",
+  "link": "https://x.com/chrislakin/status/2103620465029943764",
+  "date": "2026-11-17T07:26",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2103620465029943764.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2103620465029943764.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2103620465029943764.orig.txt"
+   }
+  ],
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
   "id": "BV1hyWF61EWG",
   "kind": "summary",
   "source": "13分29秒",
   "title": "45到60岁的医美清单",
   "link": "https://www.bilibili.com/video/BV1hyWF61EWG",
-  "date": "2026-11-14T10:59",
+  "date": "2026-11-17T07:25",
   "txt": [
    {
     "label": "总结",
@@ -25,7 +48,7 @@
   "source": "YouTube 总结",
   "title": "性工作让我更信任男人",
   "link": "https://www.nytimes.com/video/podcasts/100000011255857/being-a-sex-worker-made-me-trust-men-more.html",
-  "date": "2026-11-14T10:50",
+  "date": "2026-11-17T07:25",
   "txt": [
    {
     "label": "总结",
@@ -49,7 +72,7 @@
   "source": "19分36秒",
   "title": "双11战报与消费收缩",
   "link": "https://www.bilibili.com/video/BV1nj4x6rEHR",
-  "date": "2026-11-12T22:39",
+  "date": "2026-11-17T07:25",
   "txt": [
    {
     "label": "总结",
@@ -62,6 +85,301 @@
   ],
   "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/BV1nj4x6rEHR.m4a",
   "added_at": "2026-11-13T00:20+08:00"
+ },
+ {
+  "id": "6aea205e97726cd4675c55ff",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "EP.17",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6aea205e97726cd4675c55ff",
+  "date": "2026-11-17T07:25",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/6aea205e97726cd4675c55ff.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/6aea205e97726cd4675c55ff.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/6aea205e97726cd4675c55ff.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/6aea205e97726cd4675c55ff.m4a",
+  "title_zh": "第17集",
+  "added_at": "2026-11-08T20:39+08:00"
+ },
+ {
+  "id": "2115062331227226349",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Anthropic 工程师讲 Claude Managed Agents：从 API 到托管智能体",
+  "link": "https://x.com/Grow_withAI/status/2115062331227226349",
+  "date": "2026-11-17T07:25",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2115062331227226349.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2115062331227226349.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2115062331227226349.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2115062331227226349.m4a",
+  "added_at": "2026-10-30T02:12+08:00"
+ },
+ {
+  "id": "1787843010006278491",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "MIT: REGRESSIONS",
+  "link": "https://x.com/mitregressions/status/1787843010006278491",
+  "date": "2026-11-17T07:25",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/1787843010006278491.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/1787843010006278491.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/1787843010006278491.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/1787843010006278491.m4a",
+  "title_zh": "麻省理工学院：回归",
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "2115954345850400890",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "DeepMind《智能经济学》：能力进步何时带来经济转型",
+  "link": "https://x.com/MTSlive/status/2115954345850400890",
+  "date": "2026-11-17T07:25",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/2115954345850400890.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/2115954345850400890.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/2115954345850400890.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2115954345850400890.m4a",
+  "added_at": "2026-10-30T22:13+08:00"
+ },
+ {
+  "id": "om2lIWXLLn4",
+  "kind": "summary",
+  "source": "YouTube 总结",
+  "title": "Building Anthropic: A Conversation with Our Co-founders",
+  "link": "https://youtu.be/om2lIWXLLn4",
+  "date": "2026-11-17T07:25",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/om2lIWXLLn4.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/om2lIWXLLn4.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/om2lIWXLLn4.m4a",
+  "title_zh": "构建 Anthropic：与联合创始人对谈",
+  "added_at": "2026-10-11T03:20+08:00"
+ },
+ {
+  "id": "cx-202-ai-daydream",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "随笔｜回不了头：一位AI连续创业者的“白日梦”",
+  "link": "https://weekly.caixin.com/2026-11-14/102504815.html",
+  "date": "2026-11-16",
+  "author": "阿茶",
+  "issue": "《财新周刊》2026年第44期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-202-ai-daydream.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-202-ai-daydream.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-203-manganese-town",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜“锰都”旧事",
+  "link": "https://weekly.caixin.com/2026-11-13/102504313.html",
+  "date": "2026-11-16",
+  "author": "万无恙",
+  "issue": "《财新周刊》2026年第44期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-203-manganese-town.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-203-manganese-town.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-204-entertainment-traffic",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "特稿｜帮明星刷量控评被诉非法经营 文娱博主涉刑风波",
+  "link": "https://china.caixin.com/2026-11-16/102505065.html",
+  "date": "2026-11-16",
+  "author": "覃建行",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-204-entertainment-traffic.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-204-entertainment-traffic.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-205-cancer-vaccine",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "个体化肿瘤疫苗“破局”之后",
+  "link": "https://weekly.caixin.com/2026-11-14/102504811.html",
+  "date": "2026-11-16",
+  "author": "刘栩含 陈曦",
+  "issue": "《财新周刊》2026年第44期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-205-cancer-vaccine.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-205-cancer-vaccine.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-206-ebike-mod",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "电单车如何跳出改装循环",
+  "link": "https://weekly.caixin.com/2026-11-14/102504794.html",
+  "date": "2026-11-16",
+  "author": "方祖望",
+  "issue": "《财新周刊》2026年第44期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-206-ebike-mod.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-206-ebike-mod.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-207-estate-tax",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "这些国家为何推出遗产税又取消",
+  "link": "https://opinion.caixin.com/2026-11-16/102505342.html",
+  "date": "2026-11-16",
+  "author": "张是之",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-207-estate-tax.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-207-estate-tax.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-208-chen-guangzhong",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "对话｜陈光中：刑事诉讼法修改应进一步解放思想",
+  "link": "https://china.caixin.com/2026-11-16/102505113.html",
+  "date": "2026-11-16",
+  "author": "单玉晓",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-208-chen-guangzhong.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-208-chen-guangzhong.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cx-209-ai-productivity",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "AI省下的时间去了哪里：企业生产率的几道关口",
+  "link": "https://opinion.caixin.com/2026-11-16/102505160.html",
+  "date": "2026-11-16",
+  "author": "李嘉 张丹丹",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-209-ai-productivity.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-209-ai-productivity.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-17T09:10+08:00"
  },
  {
   "id": "cx-199-political-market-failure",
@@ -284,31 +602,6 @@
   "added_at": "2026-11-11T01:06+08:00"
  },
  {
-  "id": "6aea205e97726cd4675c55ff",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "EP.17",
-  "link": "https://www.xiaoyuzhoufm.com/episode/6aea205e97726cd4675c55ff",
-  "date": "2026-11-08T20:34",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/6aea205e97726cd4675c55ff.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/6aea205e97726cd4675c55ff.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/6aea205e97726cd4675c55ff.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/6aea205e97726cd4675c55ff.m4a",
-  "title_zh": "第17集",
-  "added_at": "2026-11-08T20:39+08:00"
- },
- {
   "id": "cur-00178af6438d46bb76e01d5eb0203d24",
   "kind": "curated",
   "type": "article",
@@ -448,123 +741,6 @@
    }
   ],
   "added_at": "2026-11-09T09:15+08:00"
- },
- {
-  "id": "2115062331227226349",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Anthropic 工程师讲 Claude Managed Agents：从 API 到托管智能体",
-  "link": "https://x.com/Grow_withAI/status/2115062331227226349",
-  "date": "2026-11-07T01:22",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2115062331227226349.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/2115062331227226349.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2115062331227226349.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2115062331227226349.m4a",
-  "added_at": "2026-10-30T02:12+08:00"
- },
- {
-  "id": "1787843010006278491",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "MIT: REGRESSIONS",
-  "link": "https://x.com/mitregressions/status/1787843010006278491",
-  "date": "2026-11-07T01:22",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/1787843010006278491.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/1787843010006278491.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/1787843010006278491.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/1787843010006278491.m4a",
-  "title_zh": "麻省理工学院：回归",
-  "added_at": "2026-10-30T22:13+08:00"
- },
- {
-  "id": "2103620465029943764",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "成瘾是麻醉",
-  "link": "https://x.com/chrislakin/status/2103620465029943764",
-  "date": "2026-11-07T01:22",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2103620465029943764.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/2103620465029943764.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2103620465029943764.orig.txt"
-   }
-  ],
-  "added_at": "2026-10-30T22:13+08:00"
- },
- {
-  "id": "2115954345850400890",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "DeepMind《智能经济学》：能力进步何时带来经济转型",
-  "link": "https://x.com/MTSlive/status/2115954345850400890",
-  "date": "2026-11-07T01:22",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/2115954345850400890.txt"
-   },
-   {
-    "label": "译文",
-    "url": "txt/2115954345850400890.zh.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/2115954345850400890.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/2115954345850400890.m4a",
-  "added_at": "2026-10-30T22:13+08:00"
- },
- {
-  "id": "om2lIWXLLn4",
-  "kind": "summary",
-  "source": "YouTube 总结",
-  "title": "Building Anthropic: A Conversation with Our Co-founders",
-  "link": "https://youtu.be/om2lIWXLLn4",
-  "date": "2026-11-07T01:19",
-  "txt": [
-   {
-    "label": "总结",
-    "url": "txt/om2lIWXLLn4.txt"
-   },
-   {
-    "label": "原文",
-    "url": "txt/om2lIWXLLn4.orig.txt"
-   }
-  ],
-  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/om2lIWXLLn4.m4a",
-  "title_zh": "构建 Anthropic：与联合创始人对谈",
-  "added_at": "2026-10-11T03:20+08:00"
  },
  {
   "id": "cur-417531680267",
