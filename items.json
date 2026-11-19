@@ -1,5 +1,71 @@
 [
  {
+  "id": "cx-211-truck-subsidy",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "特稿｜内蒙古老旧营运货车骗补案争议 上百人被查",
+  "link": "https://china.caixin.com/2026-11-19/102506323.html",
+  "date": "2026-11-19",
+  "author": "冯华妹",
+  "issue": "财新网·政经",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-211-truck-subsidy.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-211-truck-subsidy.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-19T08:55+08:00"
+ },
+ {
+  "id": "cx-212-ni-runfeng",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "倪润峰与中国彩电业的共同成长｜纪念",
+  "link": "https://mini.caixin.com/2026-11-18/102506106.html",
+  "date": "2026-11-18",
+  "author": "高林",
+  "issue": "财新网·mini+",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-212-ni-runfeng.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-212-ni-runfeng.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-19T08:55+08:00"
+ },
+ {
+  "id": "cx-213-labor-three-way",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "“劳动三分法”的是与非",
+  "link": "https://opinion.caixin.com/2026-11-18/102506298.html",
+  "date": "2026-11-18",
+  "author": "董保华",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-213-labor-three-way.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-213-labor-three-way.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-19T08:55+08:00"
+ },
+ {
   "id": "2103620465029943764",
   "kind": "summary",
   "source": "YouTube 总结",
