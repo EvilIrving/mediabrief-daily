@@ -180,6 +180,32 @@
   "added_at": "2026-11-19T08:55+08:00"
  },
  {
+  "id": "cur-1e6b15e0e845",
+  "kind": "curated",
+  "type": "article",
+  "source": "Martin Fowler",
+  "title": "Data Contracts",
+  "link": "https://martinfowler.com/articles/data-contracts.html",
+  "date": "2026-11-18",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1e6b15e0e845.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-1e6b15e0e845.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1e6b15e0e845.orig.txt"
+   }
+  ],
+  "title_zh": "数据合约",
+  "added_at": "2026-11-22T00:14+08:00"
+ },
+ {
   "id": "BV1hyWF61EWG",
   "kind": "summary",
   "source": "13分29秒",
@@ -515,6 +541,59 @@
   ],
   "title_zh": "理解我们所打造的产品意味着什么？",
   "added_at": "2026-11-22T00:04+08:00"
+ },
+ {
+  "id": "cur-bb1032f7c486",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Pragmatic Engineer Podcast",
+  "title": "Software engineering after code becomes cheap with Satya Nadella",
+  "link": "https://newsletter.pragmaticengineer.com/p/software-engineering-after-code-becomes",
+  "date": "2026-11-16",
+  "audio_url": "https://api.substack.com/feed/podcast/225062889/de3ec785dc079b1f629f4720783cb429.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-bb1032f7c486.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-bb1032f7c486.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-bb1032f7c486.orig.txt"
+   }
+  ],
+  "title_zh": "代码变得廉价后的软件工程，对话者：萨蒂亚·纳德拉",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-bb1032f7c486.m4a",
+  "added_at": "2026-11-22T00:14+08:00"
+ },
+ {
+  "id": "cur-d2d6bb654973",
+  "kind": "curated",
+  "type": "article",
+  "source": "Stratechery",
+  "title": "Obituaries",
+  "link": "https://stratechery.com/2026/obituaries/",
+  "date": "2026-11-16",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-d2d6bb654973.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-d2d6bb654973.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-d2d6bb654973.orig.txt"
+   }
+  ],
+  "title_zh": "讣告",
+  "added_at": "2026-11-22T00:14+08:00"
  },
  {
   "id": "cur-e2234e9e96ed",

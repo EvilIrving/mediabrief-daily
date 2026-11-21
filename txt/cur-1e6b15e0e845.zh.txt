@@ -1,0 +1,655 @@
+https://martinfowler.com/articles/data-contracts.html
+
+# 数据契约
+
+*数据契约用来描述数据集的内容及其保证。它将API设计的实践应用于数据：把数据视为提供数据的服务——例如数据产品——并尽可能清楚地定义其接口。这种方式能显著增强大规模数据环境的稳健性，并为人和AI智能体提供自主使用数据所需的、明确可信的元数据，因此越来越多企业正在采用它。*
+
+2026年11月18日
+
+### [Simon Harrer](https://simonharrer.com/)
+
+Simon Harrer博士是[Entropy Data](https://www.entropy-data.com/)的联合创始人兼首席执行官，这家公司正在打造由数据产品和数据契约驱动的数据市场。他将深厚的软件工程经验带入数据领域，倡导稳健的契约优先方法。Simon还是Linux基金会[Bitol项目](https://bitol.io/)旗下开放数据契约标准（ODCS）与开放数据产品标准（ODPS）技术指导委员会的成员。他著有[《Java by Comparison》](https://pragprog.com/titles/javacomp/java-by-comparison/)，并将著名的[《Data Mesh》一书译成德语](https://dpunkt.de/produkt/data-mesh/)。
+
+### [Arif Wider](https://arifwider.com/)
+
+Arif Wider博士是[柏林应用科技大学（HTW Berlin）](https://www.htw-berlin.de/)的软件工程教授，也是[Thoughtworks](https://www.thoughtworks.com/)德国公司的Fellow级技术顾问；在重返学术界之前，他曾任该公司的数据与AI负责人。在研究、教学和咨询工作中，他一直热衷于提炼并传播软件工程社区涌现的优秀思想与概念。因此，他经常围绕Data Mesh等大规模企业数据架构发表演讲和文章；他在这一主题上合著了[数十篇](https://doi.org/10.1109/icws60048.2023.00101)[相关](https://doi.org/10.1109/icws62655.2024.00019)[文章](https://doi.org/10.1109/icws67624.2025.00126)，以及一本[由O’Reilly出版的小册子](https://www.oreilly.com/library/view/data-mesh-in/9781098108502/)。近来，他专注于负责任的AI和AI治理。
+
+## 为什么需要数据契约
+
+随着当下智能体式AI的兴起，便于发现和处理的业务数据，已成为任何公司迈向数据驱动业务的基石。在大型公司中，这些宝贵数据产生于内部不同位置，不同团队分别最了解某个特定主题。因此，构建有价值的分析或数据应用，通常需要从多个来源汇集数据，并以有意义的方式将其连接起来。在这种多源数据组合过程中，对数据的*信任*成为一项重要因素。
+
+设想Alex是一家跨国保险公司的数据工程师，正在构建一个客户洞察应用，预测客户购买额外保险产品的可能性。Alex在公司的数据仓库中找到了一个数据集，看起来包含进行这种预测所需的大部分信息，但仍有几个问题：
+
+- 数据集是否包含我所需的全部信息，又以什么形式提供？
+- 数据是否包含我以为它包含的信息，是否具有我以为它具有的含义？
+- 它是否与其他数据集关联？如果有，是哪些？
+- 数据的新鲜度、完整程度和质量如何？
+- 我能否依赖其结构保持稳定，使我的应用未来不至于出问题？
+- 我是否获准为自己的目的处理这些数据，例如在GDPR规定下？
+- 在处理数据或再次分享结果时，我是否需要采取特别的预防措施，例如针对个人数据的措施？
+- 我可以与谁分享生成的预测结果？
+
+上述问题可以按多种方式分类，但它们说明，信任问题不仅在于Alex能否信任数据来源（质量、可靠性、法律问题等），也在于结果接收者是否值得信任、能否妥善照管数据。
+
+数据契约提供了一种回答这些问题的方式：不只回答一次，而是持续确保数据处理值得信赖。
+
+### 一个简单的数据契约示例
+
+最简单的数据契约，是对数据提供方所提供的数据形态的描述，例如一个模式（schema）。下面的片段展示Alex所发现的数据集可以如何描述。本文所有示例都使用[开放数据契约标准](https://bitol-io.github.io/open-data-contract-standard)（ODCS）：它是由Linux基金会Bitol项目治理的事实上的行业标准，在[Thoughtworks技术雷达](https://www.thoughtworks.com/en-de/radar/languages-and-frameworks/summary/open-data-contract-standard-odcs)中被评为*采用（Adopt）*。
+
+```yaml
+apiVersion: "v3.2.0"
+kind: "DataContract"
+id: "customers"
+name: "Customers"
+version: "1.0.0"
+status: "active"
+
+schema:
+  - name: "customers"
+    physicalType: "TABLE"
+    description: "All customers holding a life insurance policy since 2020-01-01"
+    properties:
+      - name: "customer_id"
+        logicalType: "string"
+        primaryKey: true
+      - name: "customer_name"
+        businessName: "Customer Name"
+        logicalType: "string"
+        physicalType: "VARCHAR(100)"
+        examples:
+          - "Alex Doe"
+        classification: "restricted"
+```
+
+看到这个简单的数据契约后，Alex已经更清楚这些数据是否足以实现预测；实际看到的很可能是公司数据市场中的一个页面，而非原始YAML。不过，Alex还想知道数据上次是什么时候更新的，以及声明的字段能否始终包含正确数据。在ODCS中，有专门的元素通过质量规则描述数据质量，也有服务级别来规定随时间变化的运行时行为。下面展示如何扩展这个数据契约来解决这些问题：
+
+```yaml
+schema:
+  - name: "customers"
+    properties:
+      - name: "customer_name"
+        quality:
+          - type: "sql"
+            description: "Expect less than 1% empty name fields"
+            query: |
+              SELECT AVG(
+                CASE
+                  WHEN customer_name IS NULL
+                    OR TRIM(customer_name) = ''
+                  THEN 1
+                  ELSE 0
+                END
+              )
+              FROM customers
+            mustBeLessThan: 0.01
+slaProperties:
+  - property: "freshness"
+    value: 24
+    unit: "hours"
+    element: "customers.last_updated_at"
+    description: "Within 24 hours of the last update"
+```
+
+看到这些保证后，Alex更有信心：基于这个数据集构建的应用能够持续使用，而不会在下次更新数据集时就崩溃。active状态和1.0.0版本表明，这是一个稳定且有人维护的数据集；质量与SLA说明使可靠地处理数据成为可能。而真正的信任，来自对这些保证的自动验证。
+
+### 这对AI智能体意味着什么？
+
+现在设想Alex不是人，而是AI智能体。人对数据不信任时会犹豫，或去询问数据所有者。智能体两者都不会做：正如Pramod Sadalage与Prem Chandrasekaran在[《让你的数据为智能体式AI做好准备》](https://martinfowler.com/articles/making-data-ready-for-agentic-ai.html#AgentsTreatEveryValueAsTruth)中所说，智能体把每个值都视为事实。信任不足会让人放慢脚步，却会使智能体自信地产生错误结果；人类继而不再信任智能体独立使用数据。数据契约通过提供明确的元数据，打破了这个循环，否则智能体只能猜测这些信息。
+
+智能体在每项任务中都面临Alex的那些问题，却无人可问。数据契约以可供智能体采取行动的形式回答这些问题：发布到智能体可搜索的数据市场中，首先让数据能被发现；其模式和语义告诉智能体如何正确查询和连接数据；其质量规则和服务级别告诉智能体应当在多大程度上信任结果；其使用条款告诉智能体获准做什么。因此，从与数据对话到生成完整数据流水线，智能体用例正在成为采用数据契约的主要原因之一。
+
+## 数据契约包含什么
+
+---
+
+## 契约难道不是双边协议吗？
+
+从法律意义上说，契约是两方或多方之间的协议。在当前的数据实践中，数据契约由提供方单方面发布，描述其面向任何消费方的[承诺和使用条款](https://doi.org/10.1109/icws72778.2026.00084)。但这并不意味着其效力只针对一方。软件工程师熟悉Bertrand Meyer的[契约式设计](https://se.inf.ethz.ch/~meyer/publications/old/dbc_chapter.pdf)中的这种形式：例程声明它要求什么、保证什么，无需协商便对双方形成约束。许多数据契约也会先与主要消费方协商，尤其是在契约优先的工作方式下；即便是已发布的契约，也会保护双方：消费方获得明确承诺，提供方则同样明确地说明自己不承诺什么。本文始终在这种由提供方发布的意义上使用这一术语，后文再介绍针对某个特定消费方双边关系的访问协议。
+
+---
+
+在逐节查看之前，先了解数据契约本身具有什么特征会有所帮助。数据契约是：
+
+- **机器可读的。** 数据契约是结构化文档，通常采用YAML，而不是埋在wiki中的散文。工具、流水线和AI智能体能够直接解析它并据此行动，无需先由人进行转换。
+- **可验证的。** 它的承诺足够具体，能与实际数据核验。“空姓名少于1%”这样的质量规则不是愿望，而是工具可以判断通过或失败的断言。
+- **有版本的。** 数据契约带有版本，并按明确规则演进，让消费方能区分无害变更与破坏性变更，也让提供方能平稳引入新版本、淘汰旧版本。
+- **提供方驱动的。** 它由生产数据、最了解数据的一方单方面发布。该方对自己作出的承诺负责，这就把接口责任转移到掌握知识、也能够兑现或违背承诺的位置。
+- **面向消费方的。** 虽由提供方编写，却是为消费方而写：它记录消费方判断数据是否适合自身目的、并长期依赖数据所需的模式、语义、质量保证及使用条款。
+- **元数据的唯一事实来源。** 它是数据集的权威描述。目录、市场、文档和智能体都从中获取信息，而不是各自维护彼此分歧的副本。
+
+这类数据契约通常使用开放数据契约标准定义。
+
+### 开放数据契约标准
+
+---
+
+### 开放数据契约标准的起源
+
+开放数据契约标准的故事始于PayPal。他们开发了一种YAML格式，在内部描述数据契约；得益于Jean-Georges Perrin的推动，这一格式于2023年以[Data Contract Template](https://github.com/paypal/data-contract-template)的名称开源。仅几个月后，它便发展成开放数据契约标准2.2，成为Linux基金会Bitol项目的创始标准。当时它仍包含很多PayPal专用字段。2024年发布3.0版本时，这些PayPal特有内容被删除或泛化，为更广泛的采用做好准备。与此同时，另一种格式也获得了大量关注：Jochen Christ与Simon Harrer发布的Data Contract Specification。它尤其因为与名为[Data Contract CLI](https://cli.datacontract.com/)的开源工具同步开发而受到欢迎。2025年发布的ODCS 3.1让两项标准更加接近，Data Contract CLI也加入了对ODCS 3.1的原生支持；随后Data Contract Specification退役，ODCS因而成为描述数据契约的事实标准。2026年，ODCS 3.2加入了AI上下文，告诉AI智能体和其他工具应如何使用数据。
+
+---
+
+开放数据契约标准（ODCS）定义了一种YAML格式，以标准化方式规定数据契约。你已在本文开头见过这种YAML的简短示例。开放数据契约标准属于[Bitol项目](https://bitol.io/)——Linux基金会的一个毕业项目——因此也是一个元数据标准家族的组成部分。开放数据契约标准的规范[在GitHub上公开提供](https://github.com/bitol-io/open-data-contract-standard)，已获得超过1000颗星。标准随附一个JSON Schema，用于帮助验证YAML文件是否符合标准。
+
+![图1：开放数据契约标准v3.2的各个部分](https://martinfowler.com/articles/data-contracts/11-data-contract-sections.svg)
+
+*图1：开放数据契约标准v3.2的各个部分*
+
+开放数据契约标准包含许多不同类别的元数据，接下来我们会基于撰文时最新的ODCS 3.2，为各部分提供示例代码片段并加以介绍。datacontract.com还提供[对相同各节的交互式分步讲解](https://datacontract.com/)。
+
+```yaml
+apiVersion: "v3.2.0"
+kind: "DataContract"
+id: "customers"
+name: "Customers"
+version: "1.0.0"
+status: "active"
+```
+
+每份数据契约都从基本信息开始：标准版本、唯一标识符、名称、数据契约版本号和状态。这些元数据标识契约，并支持版本管理与生命周期管理。
+
+### 模式与数据质量
+
+```yaml
+schema:
+  - name: "customers"
+    physicalType: "TABLE"
+    description: "All customers holding a life insurance policy since 2020-01-01"
+    properties:
+      - name: "customer_id"
+        logicalType: "string"
+        primaryKey: true
+      - name: "customer_name"
+        businessName: "Customer Name"
+        logicalType: "string"
+        physicalType: "VARCHAR(100)"
+        required: true
+        examples:
+          - "Alex Doe"
+        classification: "restricted"
+        tags:
+          - "pii:true"
+      - name: "annual_premium"
+        logicalType: "integer"
+        physicalType: "INTEGER"
+        description: "Annual premium in cents"
+        required: true
+        logicalTypeOptions:
+          minimum: 0
+      - name: "customer_status"
+        logicalType: "string"
+        physicalType: "TEXT"
+        examples:
+          - "active"
+      - name: "last_updated_at"
+        logicalType: "date"
+        physicalType: "TIMESTAMP"
+        description: "Timestamp of the last update to the customer record"
+```
+
+模式定义数据的结构和语义。在示例中，它是一张表及其列；但同样的结构也能描述Kafka主题中的消息、对象存储中的文件，或API的载荷。每列都包含技术细节、业务语义和治理属性。例如，年保费遵循公司处理货币值的惯例，以整数形式按分存储。你也可以在数据契约中定义列与表之间的外键等关系。
+
+```yaml
+schema:
+  - name: "customers"
+    quality:
+      - type: "sql"
+        description: "Expect more than 100K rows"
+        query: "select count(*) from customers"
+        mustBeGreaterThan: 100000
+    properties:
+      - name: "customer_name"
+        quality:
+          - type: "sql"
+            description: "Expect less than 1% empty name fields"
+            query: |
+              SELECT AVG(
+                CASE
+                  WHEN customer_name IS NULL
+                    OR TRIM(customer_name) = ''
+                  THEN 1
+                  ELSE 0
+                END
+              )
+              FROM customers
+            mustBeLessThan: 0.01
+      - name: "customer_status"
+        quality:
+          - type: "library"
+            description: "Only valid customer statuses"
+            metric: "invalidValues"
+            arguments:
+              validValues:
+                - "active"
+                - "lapsed"
+                - "cancelled"
+            mustBe: 0
+```
+
+数据质量规则确保数据符合预期。你可以定义有效值约束、行数阈值、自定义SQL校验逻辑等检查，甚至简单地用文字描述质量规则。阈值可以是绝对值，例如最少行数，也可以是相对值，例如空姓名最多占1%。这些检查可以通过合适的工具自动验证。
+
+### 所有权与支持渠道
+
+```
+team:
+  name: "customer-data"
+  members:
+    - username: "carola@example.com"
+      name: "Carola Doe"
+      role: "Owner"
+
+support:
+  - channel: "#customer-data-support"
+    tool: "slack"
+    url: "https://example.slack.com/archives/C123456789"
+```
+
+所有权是数据契约的核心。team部分定义谁拥有并维护数据契约，包括成员及其角色。添加支持渠道，可以明确数据消费方如何联系所有者。这种找得到负责人的责任安排，对建立数据信任至关重要。
+
+### 使用条款与SLA
+
+```
+description:
+  purpose: "Provides customer master data for analytics and reporting"
+  usage: "Used by analytics team for customer insights and cross-sell prediction"
+  limitations: "Contains only customers with an active policy"
+  authoritativeDefinitions:
+    - url: "https://example.com/policies/gdpr-compliance"
+      type: "businessDefinition"
+      description: "GDPR compliance policy for handling customer data"
+```
+
+使用条款帮助数据消费方理解可以和不可以用数据做什么，建立清晰的治理边界。标准允许你定义数据的目的、使用指导和限制，也能指向隐私政策或许可协议等外部政策。
+
+```
+slaProperties:
+  - property: "retention"
+    value: 5
+    unit: "year"
+    description: "Data will be deleted after 5 years"
+  - property: "freshness"
+    value: 24
+    unit: "hours"
+    element: "customers.last_updated_at"
+    description: "Within 24 hours of the last update"
+```
+
+服务级别协议定义数据新鲜度、数据保留期限或延迟等保证。每项保证都以可测量的方式陈述：上面的新鲜度承诺会在每次测试契约时对照`last_updated_at`检查，违约则向负责团队发出告警。
+
+### 数据的位置
+
+```
+servers:
+  - server: "production"
+    type: "snowflake"
+    environment: "prod"
+    account: "insurance-corp"
+    database: "prod_lifeinsurance"
+    schema: "dp_customers_v1"
+```
+
+servers指定数据实际存放在哪里，其中包含访问数据的连接信息，但不含任何凭据。该标准基本支持指定任何能直接保存数据的系统：Snowflake、Databricks、BigQuery、Oracle和Postgres等数据平台与数据库，Kafka、Kinesis或Pub/Sub等事件流，S3中的文件，甚至SFTP服务器上的CSV文件，以及[许多其他系统](https://bitol-io.github.io/open-data-contract-standard/latest/infrastructure-servers/)。如果某个系统不受支持，还可以退回使用自定义服务器类型。
+
+对于事件流，server条目给出集群和消息格式，schema则描述主题：
+
+```
+servers:
+  - server: "production"
+    type: "kafka"
+    environment: "prod"
+    host: "kafka.example.com:9092"
+    format: "avro"
+
+schema:
+  - name: "customer_events"
+    physicalType: "topic"
+```
+
+### 角色与安全
+
+```
+roles:
+  - role: "customers_reader"
+    access: "read"
+    description: "Read access to all customer data"
+```
+
+角色描述消费方如何获得数据访问权限。每个角色都指明数据平台上的一个IAM角色，例如Snowflake角色，以及它授予的访问类型。提供方经常定义多个角色，例如一个包含个人数据、另一个不包含。契约不列出谁持有某个角色；正如我们将在数据市场一节中看到的，这会在访问请求获批时，针对每个消费方分别决定。
+
+### AI上下文
+
+```sql
+context:
+  instructions: >
+    Use this data for analytics on life insurance customers.
+    Annual premiums are stored in cents; divide by 100 before
+    reporting amounts.
+  constraints:
+    - constraint: >
+        Do not use this data to make decisions about individual
+        customers, such as pricing a policy or assessing a claim.
+  verifiedStatements:
+    - question: "How many active customers do we have?"
+      answer: |
+        SELECT COUNT(*)
+        FROM customers
+        WHERE customer_status = 'active'
+```
+
+AI上下文是专为AI智能体编写的指导。instructions像是数据集的系统提示，例如告诉智能体保费以分存储。constraints说明智能体不得如何使用数据。verifiedStatements则把常见业务问题与提供方核验过的查询配对，让智能体能够复用正确答案，而不是猜测。
+
+### 数据使用定价
+
+价格可以表示反映数据价值的内部收费。实践中，这一项通常留空，或者只转嫁平台上访问数据的实际成本，如此例所示：每扫描1TB收费10美元。
+
+```
+price:
+  priceAmount: 10
+  priceCurrency: "USD"
+  priceUnit: "per TB scanned"
+```
+
+### 内置可扩展性
+
+每家公司都不同，因此标准内置两种扩展机制。每个层级都可使用的自定义属性，用来承载标准尚未涵盖的元数据，例如提供数据的法律实体，或对驱动基础设施配置的平台清单的引用。供应商也用同一机制添加额外功能。权威定义则把契约或其中任意元素链接到其他地方定义的内容，包括其他开放标准：下面的例子就链接到提供相同数据的REST API的OpenAPI规范。我们的建议始终是：优先使用标准的正式属性，并尽量少用自定义属性。
+
+```
+customProperties:
+  - property: "legalEntity"
+    value: "Insurance Corp AG"
+    description: "Legal entity that owns and provides this data"
+
+authoritativeDefinitions:
+  - url: "https://example.com/apis/customers/openapi.yaml"
+    type: "openapi"
+    description: "OpenAPI specification of the REST API serving this data"
+```
+
+## 数据契约所处的上下文
+
+数据契约很少孤立存在，连接的内容越丰富，价值就越大。实践中有三种连接最重要：把列链接到领域模型，而不是重复说明其含义；把契约放在数据产品的端口上；让契约成为消费方申请访问权限时使用的产品详情页。
+
+### 将数据契约链接到本体
+
+尤其是在智能体使用数据并组合不同来源的数据时，只记录各个数据集的语义是不够的。正如[《让你的数据为智能体式AI做好准备》](https://martinfowler.com/articles/making-data-ready-for-agentic-ai.html#context-layer)所指出的，需要在一个统领全局的语义层中跨数据源定义语义。把语义，尤其是本体，与数据契约结合，可以解决两个具体问题：
+
+- **元数据去重**：减少数据生产方的重复工作。Customer ID这样的概念可以只定义一次，包括示例、保密与隐私分类、描述；数据契约只需链接到该定义，继承集中定义的特征，而不必重复陈述。
+- **语义一致性与互操作性**：让数据消费方能够互操作地使用两份或多份数据契约中的数据。通过把列链接到共享的概念定义，消费方可以判断两个名称相似的列是否确实含义相同，也可以判断两个名称不同的列是否含义相同。这是概念层面的一致性，而不只是主键与外键的匹配；不过，也正是这样的共享概念使可靠的连接键成为可能。
+
+![图2：两份数据契约将各自的属性链接到本体中的同一个概念，让消费方知道如何连接它们](https://martinfowler.com/articles/data-contracts/03-ontology-linking.svg)
+
+*图2：两份数据契约将各自的属性链接到本体中的同一个概念，让消费方知道如何连接它们*
+
+```yaml
+schema:
+  - name: "customer_360"
+    properties:
+      - name: "cid"
+        authoritativeDefinitions:
+          - type: "semantics"
+            url: "https://example.com/ns/Customer.id"
+```
+
+核心概念是通过`authoritativeDefinitions`元素，从数据契约指向本体中的一个元素。这样，数据契约便映射到本体中。只需用该本体中的IRI或URL标识这个元素即可。本体本身可以采用RDF、OWL等标准描述，也可以采用目前在Apache软件基金会孵化中的[Apache Ossie](https://ossie.apache.org/)项目里颇有前景的[本体标准](https://github.com/apache/ossie/blob/main/ontology/ontology.md)。
+
+### 数据产品构建于数据契约之上
+
+---
+
+### 数据契约与数据网格原则
+
+熟悉数据网格的读者，会在数据契约中看到它的四项原则：
+
+- **领域所有权。** team与support部分写明谁拥有数据、如何联系他们：即生产数据、最了解数据的领域团队。
+- **数据即产品。** 契约就是数据市场中的产品详情页，为判断数据是否适合自身目的的消费方编写。
+- **自助式数据平台。** 代码检查、破坏性变更检测和数据测试，随平台为每个团队提供的流水线一并交付，因此无需各团队自行构建。
+- **联邦式计算治理。** 分类和使用条款等全局政策被写入契约，由工具而不是人工审查来执行。
+
+---
+
+数据契约与[数据产品](https://martinfowler.com/articles/designing-data-products.html)尤其契合；后者将产品思维带入数据，是[数据网格](https://martinfowler.com/articles/data-mesh-principles.html)等现代分散式数据架构的核心部分。数据契约是接口描述语言，使数据产品的端口明确且可验证。
+
+![图3：一个数据产品有一个输入端口和三个输出端口，每个端口都用数据契约描述；其中两个输出端口提供同一契约的不同版本](https://martinfowler.com/articles/data-contracts/02-data-product-ports.svg)
+
+*图3：一个数据产品有一个输入端口和三个输出端口，每个端口都用数据契约描述；其中两个输出端口提供同一契约的不同版本*
+
+自2025年起，Bitol标准家族还增加了描述数据产品元数据的标准：[开放数据产品标准](https://github.com/bitol-io/open-data-product-standard)（ODPS），它建立在开放数据契约标准之上。
+
+customers.odps.yaml，用于描述Customers数据产品
+
+```yaml
+  apiVersion: "v1.1.0"
+  kind: "DataProduct"
+  id: "customers"
+  name: "Customers"
+  status: "active"
+  
+  description:
+    purpose: >
+      Master data for all customers holding a life insurance
+      policy. All customers since 2020-01-01.
+    usage: "Used by analytics teams for customer insights and cross-sell prediction"
+    limitations: "Contains only customers with an active policy"
+  
+  inputPorts:
+    - name: "customer_events"
+      version: "1.0.0"
+      contractId: "kafka_customer_events"
+  
+  outputPorts:
+    - name: "customers_pii_snowflake_v1"
+      description: "All customer records, with PII."
+      version: "1.0.0"
+      contractId: "customers_pii_snowflake"
+    - name: "customers_pii_snowflake_v2"
+      description: "All customer records, with PII."
+      version: "2.0.0"
+      contractId: "customers_pii_snowflake"
+    - name: "customers_npii_snowflake_v1"
+      description: "All customer records, without PII data."
+      version: "1.0.0"
+      contractId: "customers_npii_snowflake"
+```
+
+上面的ODPS示例中，数据产品的端口引用用ODCS定义的数据契约。ODPS与ODCS文件共同构成数据产品元数据。数据产品是一个整体：生产数据的代码与流水线、数据本身，以及描述数据的元数据。这就是把数据产品视为[架构量子](https://www.oreilly.com/library/view/building-evolutionary-architectures/9781491986356/ch04.html)的概念：一个自包含单元，输入和输出端口以ODCS规定的接口呈现。
+
+由于两个标准彼此兼容，我们可以把团队、支持渠道等所有权信息，以及适用于全部数据契约的信息，移到数据产品描述中，减少重复。
+
+尽管数据产品和ODPS很有用，输出端口上的数据契约仍是核心要素。它们承载提供方作出的承诺，许多参与方都会使用它们。
+
+![图4：数据契约至少是四类参与方的共同核心：提供方、消费方、数据治理和数据产品平台](https://martinfowler.com/articles/data-contracts/06-contract-stakeholders.svg)
+
+*图4：数据契约至少是四类参与方的共同核心：提供方、消费方、数据治理和数据产品平台*
+
+提供方发布数据契约，消费方依赖它。数据产品平台读取它，了解应当注册、配置和监控什么。数据治理读取它，检查所有权、分类和使用条款等政策是否得到遵守。这也正是数据契约最终会成为数据市场中产品详情页的原因。
+
+### 数据契约是数据市场中的“产品详情页”
+
+大多数企业都有某种数据市场，使数据可以像商品一样被选购。在那里，数据契约包含数据消费方作出知情判断所需的全部信息，以判断所提供的数据是否符合预期用途。一旦认可，消费方便申请访问契约描述的数据，同时说明处理目的；这个目的应当符合数据契约的使用条款。这种申请对应于客户在产品详情页上点击“购买”。
+
+该请求会创建一份**访问协议**，主要由三部分组成：所申请数据的数据契约、声明的处理目的，以及提出申请的消费方。只有提供方批准请求，访问协议才生效。此后，[数据产品平台才会授予实际的数据访问权限](https://martinfowler.com/articles/data-product-platform-nav.html#Level3ScalablePlatform-PlatformAsAProduct)。
+
+![图5：提供方与AI智能体之间的访问协议：智能体申请访问，提供方批准，智能体获得短期数据访问权限](https://martinfowler.com/articles/data-contracts/04-access-agreement.svg)
+
+*图5：提供方与AI智能体之间的访问协议：智能体申请访问，提供方批准，智能体获得短期数据访问权限*
+
+不要混淆两者。数据契约由提供方单方面发布，不涉及特定消费方，也没有时间概念。访问协议则是双边的，更接近日常生活中的合同：消费方以请求形式创建它，只有提供方批准后才具有约束力，就像合同要在双方签署后才有约束力一样。它始终有开始日期，也可选择设置到期日期；对于AI智能体，获准访问的时长可以短至几分钟。目前还没有访问协议标准，但Bitol项目正在制定：[开放访问协议标准的RFC](https://github.com/bitol-io/tsc/blob/main/rfcs/0056-oaas.md)（OAAS）提议记录谁可以访问哪个输出端口、出于什么目的，以及持续多久。
+
+产品页面还会展示评价，而不只是厂商的描述。数据中与之对应的是契约的履约记录：把测试结果发布到市场后，就能在每项承诺旁显示其兑现得如何，例如过去30天中有29天达到了新鲜度要求，或者团队通常需要多久才能修复一次违约。[《为你的数据产品打造一个“Amazon.com”》](https://www.thoughtworks.com/insights/blog/data-strategy/building-an-amazon-com-for-your-data-products)中描述的这类信任信号，比单独一项承诺能告诉消费方更多信息。
+
+## 如何使用数据契约
+
+编写数据契约是容易的部分；在日常工作中持续遵循它，才决定团队成败。要做好，就得[像对待API一样严谨地对待数据契约](https://martinfowler.com/articles/making-data-ready-for-agentic-ai.html#WhereToStart)：有意识地创建它，把它与代码放在一起，在不破坏消费方的前提下演进，并自动检查它。
+
+### 数据优先与契约优先
+
+如果数据已经与其他团队共享，例如以数据仓库中表的形式共享，我们可以用契约约束它，让数据提供方的承诺明确化；理想情况下，将其作为数据产品的输出端口。为此，需要先在数据契约中表示数据集的现有结构，再迭代地补入所有隐含承诺。可以借助开源工具[Data Contract CLI](https://cli.datacontract.com/)起步：它能转换SQL DDL、JSON Schema或Avro Schema等描述数据结构的现有元数据，生成数据契约初稿，之后再加以丰富。
+
+不过，生成只是起点。初稿一经完善并发布，方向就反过来了：数据契约稳定下来，成为事实来源，数据必须遵循它。如果底层表的某列后来改名，不应重新生成契约，而应让契约测试失败，并把这次改名作为其本来性质——破坏性变更——来处理。
+
+另一种方法，是先讨论究竟要构建什么，在写任何代码之前就定义数据契约。根据我们的经验，由引导者主持的工作坊形式非常有效：潜在的数据提供方与数据消费方共同拟定数据契约初稿。
+
+可以用适合参与群体的任何媒介记录初稿：
+
+- 白板，或你选择的YAML编辑器。
+- [Data Product Canvas](https://www.datamesh-architecture.com/data-product-canvas)，数据契约是其中的核心部分。
+- [符合ODCS的Excel模板](https://github.com/datacontract/open-data-contract-standard-excel-template)，也就是业务用户每天都在使用的工具。
+- 开源的[Data Contract Editor](https://editor.datacontract.com/)。
+
+最终必须产出一份符合标准的数据契约，反复完善，直至各方满意，然后据此开始实现流水线，真正按照约定的数据契约提供数据。
+
+### 它的天然栖息地是Git仓库
+
+但无论数据契约如何创建，它的天然栖息地都是Git仓库，与数据产品元数据、帮助生产实际数据的代码、CI/CD流水线配置放在一起。契约通常保存在专用子目录中，数据产品YAML则位于仓库根目录。
+
+Customers数据产品的Git仓库文件树
+
+```
+  customers.odps.yaml
+  |- datacontracts
+     |- customers_pii_snowflake_v1.odcs.yaml
+     |- customers_pii_snowflake_v2.odcs.yaml
+     |- customers_npii_snowflake_v1.odcs.yaml
+  |- code
+     |- pipeline.sql
+  .gitlab-ci.yml
+```
+
+我们的建议是，不要把契约放在远离流水线代码的地方，因为流水线代码通常必须与数据契约一同变更。而共同变更的东西应当放在一起。
+
+你可能已经注意到文件名的命名约定。开头是人类可读的数据契约ID，其中指明数据集（`customers_pii`或`customers_npii`）以及向消费方提供数据的技术（`snowflake`），随后是主版本（`v1`或`v2`）。主版本属于文件名，但不属于ID：不同主版本的ID保持相同，因此可以作为单独文件并存。这是最佳实践，因为一个数据产品可以用不同形态、版本和技术提供数据。测试、预发布和生产等不同环境，最好通过数据契约内部独立的server条目表示。
+
+### 版本管理与破坏性变更
+
+数据契约的主要目标之一，是在消费方受到影响前发现破坏性变更，并提供平稳的演进过程。为此，数据契约遵循[语义化版本（SemVer）](https://semver.org/)规则。
+
+- 主版本变更：破坏性变更，例如删除列或重命名列。
+- 次版本变更：非破坏性变更，例如新增一列。
+- 补丁版本变更：小改动，例如修正拼写错误或更新支持渠道。
+
+破坏性变更增加主版本号；非破坏性变更或小修复则增加次版本号或补丁版本号。主版本与其保护的数据集绑定。发生主要的破坏性变更时，应当随一个新数据集一起，提供主版本号递增的数据契约。这允许新主版本与现有版本并行引入，并在宽限期过后淘汰旧主版本。宽限期内，状态向消费方表明版本是正在引入、处于活跃状态，还是正在淘汰。数据契约通常从草稿（draft）状态起步，以开发中（in development）状态逐步引入；承诺开始真正具有约束力时，标记为活跃（active）。淘汰同理，先标记为已弃用（deprecated），再标记为已退役（retired）。生命周期与版本管理紧密交织。当契约作为数据产品的一部分管理时，生命周期往往转而遵循数据产品的发布流程，每个主版本作为独立输出端口并行运行。
+
+对于事件流，这对应于模式注册中心的兼容模式。次版本必须向前兼容，让现有消费方能用已有模式继续读取新事件；理想情况下还应完全兼容，让新消费方也能重放旧事件。要小心注册中心的默认设置：向后兼容允许删除字段，而这恰恰会破坏现有消费方。凡是会被注册中心拒绝的变更，都属于主版本变更，应发布为一个新主题。
+
+---
+
+## “Select *”的问题
+
+著名的“SELECT *”使SQL查询容易编写，却也非常脆弱。如果更改列的顺序，或者在中间或末尾新增一列，查询仍可运行，但由于结果不同，任何下游依赖都可能出问题。消费方应当像[宽容的读取者（Tolerant Reader）](https://martinfowler.com/bliki/TolerantReader.html)那样，只选择自己需要的列。因此，为了接口稳定，通常会排除“SELECT *”操作符的使用，这样我们才能把向表中新增一列定义为非破坏性变更。
+
+---
+
+### 将一切自动化
+
+没有人检查的数据契约就是纸老虎：它的承诺不比wiki页面更值钱，消费方第一次发现承诺落空，信任就会消失。真正的价值来自在契约之上叠加自动化，而且潜力巨大：
+
+- 生成HTML文档，在企业内网集中提供。
+- 发布到数据产品市场或数据目录等元数据存储库。
+- 在拉取请求的CI/CD流水线中，对照契约测试测试环境里的数据；失败则阻止合并。
+- 每天对照契约测试生产环境的数据；若有承诺未兑现，通知所有者和所有下游消费方。
+- 根据数据契约生成建表用的SQL DDL，使提供方从设计上就保证表符合契约。
+- 从契约派生数据平台的脱敏和访问策略，例如对无权访问个人数据的角色，屏蔽所有标记为`pii:true`的列。
+- 生成实际使用数据的SQL查询，作为宽容的数据消费方，不使用星号选择操作符。
+- 在拉取请求中比较数据契约的新旧版本；若只有次版本或补丁版本更新，却存在破坏性变更，则使检查失败。
+- 在新数据到达消费方之前，对照契约校验；像[隔离模式](https://martinfowler.com/articles/making-data-ready-for-agentic-ai.html#TheQuarantinePattern)那样，扣留违反契约的数据。
+
+开源工具[Data Contract CLI](https://cli.datacontract.com/)每月下载量超过100万次，原生理解ODCS格式的数据契约，可用于自动完成上述全部任务。它在[Thoughtworks技术雷达](https://www.thoughtworks.com/en-de/radar/tools/data-contract-cli)（2025年11月）中被评为*试用（Trial）*，尤其适用于对照契约校验数据、检测破坏性变更，以及通过CI/CD流水线把数据治理落到实处。
+
+### 数据契约应当放进CI/CD流水线
+
+数据契约应当放进CI/CD流水线，在每次提交交付之前接受检查。[Data Contract CLI](https://cli.datacontract.com/)为各阶段提供相应命令：`datacontract lint`校验契约，`datacontract breaking`对照上一版本捕获破坏性变更，`datacontract ci`则在各环境中对照契约测试数据。只有全部阶段都通过后，流水线才会部署到生产，并通过`datacontract publish`把契约发布到市场。
+
+![图6：CI/CD流水线中的数据契约：每次提交都检查，每晚对照生产数据测试](https://martinfowler.com/articles/data-contracts/05-cicd-pipeline.svg)
+
+*图6：CI/CD流水线中的数据契约：每次提交都检查，每晚对照生产数据测试*
+
+---
+
+### 测试数据集与测试代码
+
+测试数据集不同于测试代码。测试代码时，我们选择输入、检查输出。消费数据时，我们无法选择输入：代码是基于对所接收数据的假设编写的，而这些假设必须成立。数据集没有逻辑或行为，但有特征，例如行数、可选列中空值的数量，以及数据集是否最新；这些特征可以持续测试，以快速发现违例。传统上，这由[Great Expectations](https://www.thoughtworks.com/en-de/radar/tools/great-expectations)等数据质量工具完成，各工具都有自己的检查定义语言。有了数据契约，检查转移到契约本身，成为消费方可以依赖、甚至自行测试的承诺。工具并未消失：它们正越来越多地从契约读取检查并执行，就像Data Contract CLI所做的那样。
+
+---
+
+此后，第二条定时流水线持续守望，通过cron运行`datacontract test --server prod`并发布结果，在任何承诺落空时，立即通知数据提供方和受影响的消费方。
+
+## 数据契约的成本与收益
+
+数据契约带来信任和自动化方面的回报，但并非没有成本，也不是每个数据集都值得编写。智能体放大了这一权衡的两面。
+
+### 收益
+
+当企业大部分分析数据都用数据契约描述时，就可以按照契约中的承诺自动测试数据，持续监控质量，并在低于承诺阈值时自动触发应对措施。
+
+至少同样重要的是，消费方的预期已被明确记录，因此可以自动发现破坏这些预期的变更，例如在CI/CD流水线中停止部署。破坏性变更不再通过流水线传播到下游服务，整个系统因而稳健得多。
+
+总体而言，数据契约将所有权责任向数据提供方转移。这在提供方与消费方、业务与IT，以及越来越多地在人类与代表他们工作的智能体之间，建立起信任。
+
+当消费方是智能体时，每一项收益都会扩大，因为智能体会按字面读取契约，并以机器速度行动。契约告诉智能体安全、正确行动所需的信息：用以正确查询数据的模式、用以和其他数据集合并的语义、用以信任数据的质量保证，以及用以知道获准做什么的使用条款。
+
+两项能力因此才变得切实可行：生成数据流水线，以及与数据对话。
+
+### 生成数据流水线
+
+数据契约支持[规范驱动开发](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html)。数据契约充当规范的核心：把它与一个包含技能的插件一并交给编码智能体，这些技能描述公司如何构建数据流水线，智能体就能几乎自动生成整条流水线。[dataproduct.com上提供了这种生成过程的示例运行](https://dataproduct.com/)。在生成流水线的过程中，可以依据契约测试数据，形成反馈回路，引导智能体朝正确方向前进。
+
+![图7：编码智能体根据数据契约、技能和数据市场生成数据流水线](https://martinfowler.com/articles/data-contracts/07-generate-pipeline.svg)
+
+*图7：编码智能体根据数据契约、技能和数据市场生成数据流水线*
+
+### 与数据对话
+
+业务用户希望提出“为什么本季度收入增长了？”这样的问题，并在几分钟内得到答案。“与数据对话”的难点不是生成SQL，而是生成正确的SQL。如果让智能体直接面对有几百张表、几千个列的数据库，它就必须猜测列的语义，以及如何正确连接各表。我们甚至还没有讨论，它是否获准使用这些数据回答这个问题。
+
+但在正确查询数据之前，智能体必须先找到数据。将数据契约发布到智能体可以搜索的数据市场中，例如通过MCP搜索，首先就使数据变得可发现。找到之后，数据契约让猜测不再必要：它告诉智能体列的含义，并通过组成上下文层的语义链接，告诉它如何正确连接数据集。使用条款则明确哪些数据用途是允许的，哪些不被允许。这样，“与数据对话”才成为可以依赖的能力。
+
+### 成本
+
+这些都不是免费的。数据契约的编写与维护需要时间和精力，所有者也必须兑现其中的承诺。智能体同样加大了这里的风险：它按照过期契约行动时，会与按照正确契约行动时一样自信。
+
+因此，不应该为公司所有数据都引入数据契约。这听起来可能像泛泛的顾问建议，但很重要：聚焦于一个团队与另一个团队共享数据的接口，理想情况下通过数据产品共享。
+
+也不要一次性全面铺开数据契约。如果契约不能立即解决实际问题，就会让人觉得是官僚程序。应从痛处着手：数据质量问题、流水线故障，或大量沟通误解。或者在构建新用例时，从一开始就用数据契约规定接口。
+
+此外，引入数据契约也是一种文化转变：走向对数据负责，并作出明确、可验证的承诺。标准和工具有帮助，但团队必须认识到，拥有数据也意味着出问题时要负责。明确化还可能暴露所有权缺失，而这首先需要在组织层面解决。
+
+提供方通常按交付功能来考核，因此契约可能让他们觉得只有阻力、回报有限。有几件事能有所帮助：用平台模板降低编写和测试契约的成本；与消费方开工作坊，约定他们实际需要的服务级别；在市场中展示每个数据产品的可靠性，让良好的所有权实践得到看见；明确承诺落空时由谁负责处理告警。
+
+成本确实存在，但数据契约通过建立信任、实现自动化和赋能智能体，提供了很高的回报。只要审慎引入，它们的回报就会较早而不是很晚到来。
+
+## 为什么数据契约将无处不在
+
+有了ODCS，数据契约拥有了由Linux基金会治理的事实行业标准，以及围绕它的开源工具。我们相信，很快，数据契约之于数据，就会如同今天OpenAPI之于REST API；原因有三：智能体终于让认真编写契约变得值得，消费方将开始编写自己的契约，而开放标准使契约保持可移植。
+
+### 在智能体时代，激励终于指向正确方向
+
+即使没有AI智能体，数据契约也有价值。但人们的精力投入在可自动化的部分：模式和质量规则会被认真填写，业务名称、描述和使用条款等文字字段却没有受到同样严谨的对待，因为只有其他人类会阅读它们。可悲，却是事实。
+
+智能体改变了这一点。智能体会按这些文字字段的字面含义行动。模糊的描述使它构建错误的流水线，缺失的“使用条款”使它以不应采用的方式使用数据，含糊的目的则导致自信的错误答案。突然之间，契约中被忽视的一半产生了真实后果，激励终于指向正确方向。标准也已跟进：ODCS 3.2增加了AI上下文，一个专为智能体编写的区块。
+
+元数据过去是为别人做的杂务，因此长期落在待办事项列表底部。现在，它会回报你自己：问一个问题，看见一个错误答案，修正描述或使用条款，再问一次。很少有人会为了他人的利益写文档，但当获益者是自己时，元数据就会改善。这就是促成改变的强制因素：智能体终于让认真写好整份契约变得值得，也正因此，在智能体时代，数据契约将蓬勃发展。
+
+### 消费方驱动的数据契约补上缺失视角
+
+到目前为止，我们讨论的都是由提供方发布的数据契约，让消费方能够信任数据。但信任也必须反向成立，例如共享敏感数据时；这正是使用条款的用途。
+
+将[消费方驱动契约](https://martinfowler.com/articles/consumerDrivenContracts.html)的原则应用于数据契约，可以再进一步：消费方可以发布自己的数据契约，以此前讨论提供方时所用的同样结构化方式，规定自身的[承诺和预期](https://doi.org/10.1109/icws72778.2026.00084)。事实上，我们可以用完全相同的ODCS定义结构描述消费方驱动的契约，因为改变的只是方向：例如，提供方驱动契约中的模式定义陈述的是承诺，而消费方驱动契约中的模式定义陈述的则是预期。
+
+这也支持从消费方一侧开展契约优先：消费方不必知道谁能提供数据，就先规定所需数据，再用该规范寻找匹配的数据；由AI智能体执行搜索时，这尤其强大。消费方驱动的契约还记录实际使用了哪些数据，与获准访问哪些数据形成对照，帮助提供方优化服务，并自动化治理。
+
+### 开放标准实现元数据主权
+
+元数据体积虽小，战略地位却居于核心：它是通向所有宝贵数据的地图，也是每个目录、质量检查、血缘工具和AI智能体赖以构建的基础。这恰恰是大型供应商乐于免费提供元数据解决方案的原因。不是出于慷慨，而是因为元数据一旦存在于其专有格式中，所有读取它的东西也随之被锁定。元数据如此之小，并不存在必须保持专有的存储或成本理由。这纯粹是在争夺控制权。
+
+开放标准才是真正的防线。它使元数据保持可移植，让你能组合来自不同供应商的最佳工具，并使格式接受供应商中立的治理。ODCS位于Linux基金会，因此没有哪一家公司能够单独改变规则。先行企业不得不从头构建自定义格式和工具，而近期采用者只需花费小得多的精力，就能利用ODCS及其开放生态。一项简单的锁定测试是：你能否把全部契约以普通文件导出到git，再仅凭这些文件到别处重建目录？随着智能体成为元数据的主要消费方，谁控制格式，谁就控制了对企业数据的访问。OpenAPI已经为运营系统展示了另一条路：它本身就是开放元数据标准，以供应商中立的格式描述REST API，任何网关、生成器或文档工具都能读取。ODCS将同样的能力带给数据。拥抱[开放标准](https://data-landscape.com/)的人，能够保有对元数据的主权。
+
+## 致谢
+
+作者衷心感谢Jonathan Axon、Fabian Biberger、Florian Bigelmaier、Yuvaraj Birari、Michael Bok、Jochen Christ、Tom De Wolf、André Deuerling、Tiankai Feng、Manisha Jain、Michael Kutz、Tammo van Lessen、Stefan Negele、Andreas Oehler、Hristiyan Pehlivanov、Jean-Georges “jgp” Perrin、Pablo Porto、Kiran Prakash以及Sabrina Schiele所作的宝贵贡献。
+
+作者在本文写作过程中使用了AI辅助。AI工具被用于头脑风暴、创建提纲，以及审阅草稿，以润色语言并提升清晰度。
+
+## 重要修订
+
+*2026年11月18日：* 发布
