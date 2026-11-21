@@ -1,5 +1,49 @@
 [
  {
+  "id": "cx-216-anaklia",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "黑海边被抛弃的度假天堂｜高加索散记",
+  "link": "https://mini.caixin.com/2026-11-20/102507073.html",
+  "date": "2026-11-20",
+  "author": "胡舒立",
+  "issue": "财新mini+",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-216-anaklia.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-216-anaklia.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-21T23:45+08:00"
+ },
+ {
+  "id": "cx-217-consumer-credit",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "中国无抵押消费信贷风险有多大？银行体系能否承受？",
+  "link": "https://opinion.caixin.com/2026-11-20/102506951.html",
+  "date": "2026-11-20",
+  "author": "颜湄之",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-217-consumer-credit.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-217-consumer-credit.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-21T23:45+08:00"
+ },
+ {
   "id": "cx-211-truck-subsidy",
   "kind": "curated",
   "type": "caixin",
