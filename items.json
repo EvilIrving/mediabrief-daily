@@ -413,6 +413,32 @@
   "added_at": "2026-11-17T09:10+08:00"
  },
  {
+  "id": "cur-e2234e9e96ed",
+  "kind": "curated",
+  "type": "article",
+  "source": "Sean Goedecke",
+  "title": "How to find meaning in large tech companies",
+  "link": "https://seangoedecke.com/how-to-find-meaning-in-large-tech-companies/",
+  "date": "2026-11-14",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-e2234e9e96ed.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-e2234e9e96ed.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e2234e9e96ed.orig.txt"
+   }
+  ],
+  "title_zh": "如何在大型科技公司中找到意义",
+  "added_at": "2026-11-21T23:55+08:00"
+ },
+ {
   "id": "cx-199-political-market-failure",
   "kind": "curated",
   "type": "caixin",
