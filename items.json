@@ -44,6 +44,32 @@
   "added_at": "2026-11-21T23:45+08:00"
  },
  {
+  "id": "cur-e7d55aa516eb",
+  "kind": "curated",
+  "type": "article",
+  "source": "우아한형제들 기술블로그",
+  "title": "세 번 그리던 화면을 한 번에: CLAYDesign이 디자인시스템으로 화면을 생성하는 방법",
+  "link": "https://techblog.woowahan.com/28538/",
+  "date": "2026-11-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-e7d55aa516eb.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-e7d55aa516eb.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-e7d55aa516eb.orig.txt"
+   }
+  ],
+  "title_zh": "将三次绘制的界面一次性完成：CLAYDesign 如何使用设计系统来生成界面",
+  "added_at": "2026-11-22T00:04+08:00"
+ },
+ {
   "id": "cx-211-truck-subsidy",
   "kind": "curated",
   "type": "caixin",
@@ -411,6 +437,84 @@
    }
   ],
   "added_at": "2026-11-17T09:10+08:00"
+ },
+ {
+  "id": "cur-3fdcf87ab4c8",
+  "kind": "curated",
+  "type": "article",
+  "source": "Daniel Lemire",
+  "title": "Cognitive radius",
+  "link": "https://lemire.me/blog/2026/11/16/cognitive-radius/",
+  "date": "2026-11-16",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-3fdcf87ab4c8.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-3fdcf87ab4c8.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-3fdcf87ab4c8.orig.txt"
+   }
+  ],
+  "title_zh": "认知半径",
+  "added_at": "2026-11-22T00:04+08:00"
+ },
+ {
+  "id": "cur-8c2639154952",
+  "kind": "curated",
+  "type": "article",
+  "source": "METR",
+  "title": "Measuring alignment eval tells",
+  "link": "https://metr.org/notes/2026-11-16-measuring-alignment-eval-tells/",
+  "date": "2026-11-16",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-8c2639154952.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-8c2639154952.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-8c2639154952.orig.txt"
+   }
+  ],
+  "title_zh": "衡量一致性的评估指标",
+  "added_at": "2026-11-22T00:04+08:00"
+ },
+ {
+  "id": "cur-afcf308c0219",
+  "kind": "curated",
+  "type": "article",
+  "source": "Marc Brooker",
+  "title": "What does it mean to understand what we built?",
+  "link": "http://brooker.co.za/blog/2026/11/16/understanding.html",
+  "date": "2026-11-16",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-afcf308c0219.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-afcf308c0219.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-afcf308c0219.orig.txt"
+   }
+  ],
+  "title_zh": "理解我们所打造的产品意味着什么？",
+  "added_at": "2026-11-22T00:04+08:00"
  },
  {
   "id": "cur-e2234e9e96ed",

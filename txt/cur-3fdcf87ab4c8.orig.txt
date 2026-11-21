@@ -1,0 +1,17 @@
+https://lemire.me/blog/2026/11/16/cognitive-radius/
+
+16 November 2026 · 3 min
+The most interesting change AI brings to software work is not faster coding. It is the expansion of context or range… what I call radius.
+For decades the job was defined by the limits of what one person could hold in their head. You tended to specialize. You got good at one or two systems, one or two types of problems because keeping more than that coherent was expensive. Context switching hurt. Onboarding to a new project took days or weeks.
+Simply issuing a pull request to a new open-source repository took days. You had to learn the conventions. Learn the code base. Find out how to test it. Find out how to run benchmarks.
+With a good model and the right tools, you can load a large amount of relevant information into the session: the structure of several repositories, the conventions of different teams, recent issues, design decisions, performance constraints, the history of related libraries. You can ask questions across them, generate changes that stay consistent with local style, and keep more projects alive at once without the usual collapse in quality.
+The unit of work stops being “the project I am currently deep in” and becomes something closer to “the set of projects I can keep coherent right now.”
+This is not the same as having an assistant write code for you. It is more. The gain comes from the ability to hold and operate on a larger working set. You still decide what matters. You still check the results. What changes is how much of the surrounding system you can bring into focus at the same time.
+The practical consequences are already visible for people who treat this as a skill rather than a novelty:
+- You can enter a codebase you have not touched in months and become useful again in an hour instead of a day, because the model can reconstruct the local idioms and the reasons behind them from the history and tests.
+- You can maintain consistency across languages or frameworks. The cost of switching is lower when the model carries the surface details.
+None of this is automatic. The model does not magically expand your capacity. You have to learn how to feed it the right context, how to structure the questions so the answers stay grounded, and how to verify the parts that matter. The people who get the most out of it treat the model as a high-bandwidth interface to a larger set of information.
+Most discussion of AI in programming still focuses on the speed of generating individual functions or on the fear that juniors will not learn. Those are real topics, but they miss the larger shift. The constraint that shaped the profession for a long time, the limited amount of context a single developer could keep active, has loosened. What you can usefully own has grown. Learning to operate at that new scale is the part that is still under-discussed and under-practiced.
+The cognitive radius of an engineer is the distance (in projects, technologies, or time) over which they can still produce consistent, well-informed work. AI has increased that radius.
+Daniel Lemire, "Cognitive radius," in Daniel Lemire's blog, November 16, 2026, https://lemire.me/blog/2026/11/16/cognitive-radius/.
+[BibTeX]
