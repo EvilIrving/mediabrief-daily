@@ -70,6 +70,32 @@
   "added_at": "2026-11-22T00:04+08:00"
  },
  {
+  "id": "cur-5fc49c0ebd94",
+  "kind": "curated",
+  "type": "article",
+  "source": "METR",
+  "title": "AI R&D-relevant model capabilities are improving rapidly and are getting harder to measure",
+  "link": "https://metr.org/blog/2026-11-20-q4-2026-capability-update/",
+  "date": "2026-11-20",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-5fc49c0ebd94.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-5fc49c0ebd94.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-5fc49c0ebd94.orig.txt"
+   }
+  ],
+  "title_zh": "与人工智能研发相关的模型能力正在迅速提升，并且越来越难以衡量",
+  "added_at": "2026-11-22T00:22+08:00"
+ },
+ {
   "id": "cx-211-truck-subsidy",
   "kind": "curated",
   "type": "caixin",
@@ -134,6 +160,28 @@
    }
   ],
   "added_at": "2026-11-20T08:43+08:00"
+ },
+ {
+  "id": "cur-70fb4c5c193c",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "张小珺Jùn｜商业访谈录",
+  "title": "157. 复盘Personal Agent集体诞生背后：和蔡伟聊AI产品史、需求真伪、入口与未来想象",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6afd12c6a4a79edf137afd61?utm_source=rss",
+  "date": "2026-11-18T11:08+08:00",
+  "audio_url": "https://dts-api.xiaoyuzhoufm.com/track/626b46ea9cbbf0451cf5a962/6afd12c6a4a79edf137afd61/media.xyzcdn.net/626b46ea9cbbf0451cf5a962/ltU-y2wl0s2fvaEJBluGHouM2hO0.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-70fb4c5c193c.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-70fb4c5c193c.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-70fb4c5c193c.m4a",
+  "added_at": "2026-11-22T00:22+08:00"
  },
  {
   "id": "cx-212-ni-runfeng",
