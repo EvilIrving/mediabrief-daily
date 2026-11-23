@@ -1,5 +1,115 @@
 [
  {
+  "id": "cx-219-listed-reorg",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "谁有资格拯救上市公司？",
+  "link": "https://weekly.caixin.com/2026-11-21/102507417.html",
+  "date": "2026-11-23",
+  "author": "刘冉",
+  "issue": "《财新周刊》2026年第45期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-219-listed-reorg.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-219-listed-reorg.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-23T09:08+08:00"
+ },
+ {
+  "id": "cx-220-majuqiao",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "阅读｜在马驹桥，看到“灵活”的另一面",
+  "link": "https://weekly.caixin.com/2026-11-21/102507434.html",
+  "date": "2026-11-23",
+  "author": "马妍睿",
+  "issue": "《财新周刊》2026年第45期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-220-majuqiao.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-220-majuqiao.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-23T09:08+08:00"
+ },
+ {
+  "id": "cx-221-posner",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "逝者｜理查德·波斯纳：终生迎接挑战的学术英雄",
+  "link": "https://weekly.caixin.com/2026-11-21/102507437.html",
+  "date": "2026-11-23",
+  "author": "邓峰",
+  "issue": "《财新周刊》2026年第45期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-221-posner.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-221-posner.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-23T09:08+08:00"
+ },
+ {
+  "id": "cx-222-ill-workers",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "化解大病劳动者的就业危机",
+  "link": "https://weekly.caixin.com/2026-11-21/102507432.html",
+  "date": "2026-11-23",
+  "author": "刘栩含、张粲",
+  "issue": "《财新周刊》2026年第45期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-222-ill-workers.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-222-ill-workers.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-23T09:08+08:00"
+ },
+ {
+  "id": "cx-223-john-heil",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "逝者｜约翰·海尔：从本体论看世界",
+  "link": "https://weekly.caixin.com/2026-11-21/102507436.html",
+  "date": "2026-11-23",
+  "author": "梅剑华",
+  "issue": "《财新周刊》2026年第45期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-223-john-heil.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-223-john-heil.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-23T09:08+08:00"
+ },
+ {
   "id": "cx-216-anaklia",
   "kind": "curated",
   "type": "caixin",
@@ -94,6 +204,28 @@
   ],
   "title_zh": "AI 研发能力快速提升，也更难测量",
   "added_at": "2026-11-22T00:22+08:00"
+ },
+ {
+  "id": "cx-218-startup-teens",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "显影｜创业少年",
+  "link": "https://weekly.caixin.com/2026-11-20/102507022.html",
+  "date": "2026-11-20",
+  "author": "张芮雪",
+  "issue": "《财新周刊》2026年第45期",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-218-startup-teens.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-218-startup-teens.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-23T09:08+08:00"
  },
  {
   "id": "cx-211-truck-subsidy",
