@@ -110,6 +110,72 @@
   "added_at": "2026-11-23T09:08+08:00"
  },
  {
+  "id": "cx-224-cop31-antalya",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "记者手记｜安塔利亚气候大会如何走向谈判破裂：两条“红线”之争",
+  "link": "https://science.caixin.com/2026-11-23/102507752.html",
+  "date": "2026-11-23",
+  "author": "徐路易",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-224-cop31-antalya.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-224-cop31-antalya.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-24T09:01+08:00"
+ },
+ {
+  "id": "cx-225-top-journals",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "顶刊接连被打假，意味着“顶刊的终结”吗",
+  "link": "https://opinion.caixin.com/2026-11-23/102507854.html",
+  "date": "2026-11-23",
+  "author": "包特、陈晓萌",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-225-top-journals.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-225-top-journals.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-24T09:01+08:00"
+ },
+ {
+  "id": "cx-226-cross-border-pay",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "跨境支付，光钱到得快还不够",
+  "link": "https://opinion.caixin.com/2026-11-23/102507838.html",
+  "date": "2026-11-23",
+  "author": "赵鹞",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-226-cross-border-pay.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-226-cross-border-pay.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-24T09:01+08:00"
+ },
+ {
   "id": "cx-216-anaklia",
   "kind": "curated",
   "type": "caixin",
