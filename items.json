@@ -361,6 +361,32 @@
   "added_at": "2026-11-24T09:01+08:00"
  },
  {
+  "id": "cur-07b4e95a0768",
+  "kind": "curated",
+  "type": "article",
+  "source": "Anthropic Research (via Olshansk/rss-feeds)",
+  "title": "Working with AI",
+  "link": "https://www.anthropic.com/research/working-with-ai",
+  "date": "2026-11-23",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-07b4e95a0768.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-07b4e95a0768.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-07b4e95a0768.orig.txt"
+   }
+  ],
+  "title_zh": "与人工智能合作",
+  "added_at": "2026-11-26T11:47+08:00"
+ },
+ {
   "id": "cx-216-anaklia",
   "kind": "curated",
   "type": "caixin",
