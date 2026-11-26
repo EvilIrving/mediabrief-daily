@@ -22,6 +22,33 @@
   "added_at": "2026-11-26T09:17+08:00"
  },
  {
+  "id": "cur-943d9ed1df75",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "Dwarkesh Podcast",
+  "title": "Responding to objections to recursive self-improvement",
+  "link": "https://www.dwarkesh.com/p/rsiobjections",
+  "date": "2026-11-25T05:45+08:00",
+  "audio_url": "https://api.substack.com/feed/podcast/226413128/4ad273437a5ffb5c6234fc0a6a855326.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-943d9ed1df75.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-943d9ed1df75.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-943d9ed1df75.orig.txt"
+   }
+  ],
+  "title_zh": "回应对递归自我改进的异议",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-943d9ed1df75.m4a",
+  "added_at": "2026-11-26T11:42+08:00"
+ },
+ {
   "id": "cx-229-liu-guoguang",
   "kind": "curated",
   "type": "caixin",
@@ -130,6 +157,32 @@
    }
   ],
   "added_at": "2026-11-25T09:15+08:00"
+ },
+ {
+  "id": "cur-1f03186d2e3d",
+  "kind": "curated",
+  "type": "article",
+  "source": "AI Snake Oil",
+  "title": "Management consulting is not a thin wrapper on intelligence",
+  "link": "https://www.normaltech.ai/p/management-consulting-is-not-a-thin",
+  "date": "2026-11-24",
+  "audio_url": null,
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-1f03186d2e3d.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-1f03186d2e3d.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-1f03186d2e3d.orig.txt"
+   }
+  ],
+  "title_zh": "管理咨询不是对智力的简单包装",
+  "added_at": "2026-11-26T11:42+08:00"
  },
  {
   "id": "cx-219-listed-reorg",
