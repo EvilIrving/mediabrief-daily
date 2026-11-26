@@ -1,5 +1,32 @@
 [
  {
+  "id": "cur-8bc07deb0c8a",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "The Pragmatic Engineer Podcast",
+  "title": "How Anthropic builds software in 2026 with Katelyn Lesse",
+  "link": "https://newsletter.pragmaticengineer.com/p/how-anthropic-builds-software-in",
+  "date": "2026-11-26T01:31+08:00",
+  "audio_url": "https://api.substack.com/feed/podcast/226291266/eac6e7c7161fd068378012a45f4a2418.mp3",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-8bc07deb0c8a.txt"
+   },
+   {
+    "label": "译文",
+    "url": "txt/cur-8bc07deb0c8a.zh.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-8bc07deb0c8a.orig.txt"
+   }
+  ],
+  "title_zh": "Katelyn Lesse 谈 Anthropic 如何在 2026 年构建软件",
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-8bc07deb0c8a.m4a",
+  "added_at": "2026-11-26T11:53+08:00"
+ },
+ {
   "id": "cx-230-cart-medicare",
   "kind": "curated",
   "type": "caixin",
@@ -20,6 +47,28 @@
    }
   ],
   "added_at": "2026-11-26T09:17+08:00"
+ },
+ {
+  "id": "cur-c9b66540c3c6",
+  "kind": "curated",
+  "type": "podcast",
+  "source": "张小珺Jùn｜商业访谈录",
+  "title": "158.【2026年复盘】和沈驿康聊，黄仁勋、xAI内幕、RSI、持续学习、去中心化、预训练白盒、硅谷创业地图",
+  "link": "https://www.xiaoyuzhoufm.com/episode/6b05746801b0ab432eddab62?utm_source=rss",
+  "date": "2026-11-25T07:30+08:00",
+  "audio_url": "https://media.xyzcdn.net/626b46ea9cbbf0451cf5a962/lo59f0zXlNXrDkwHxIAtSKKZ8KF0.m4a",
+  "txt": [
+   {
+    "label": "总结",
+    "url": "txt/cur-c9b66540c3c6.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cur-c9b66540c3c6.orig.txt"
+   }
+  ],
+  "audio": "https://github.com/EvilIrving/mediabrief-daily/releases/download/audio-2026-11/cur-c9b66540c3c6.m4a",
+  "added_at": "2026-11-26T11:53+08:00"
  },
  {
   "id": "cur-943d9ed1df75",
