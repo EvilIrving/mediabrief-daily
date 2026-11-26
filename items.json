@@ -1,5 +1,93 @@
 [
  {
+  "id": "cx-230-cart-medicare",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "药明巨诺CEO详解CAR-T低于30万元进医保始末",
+  "link": "https://www.caixin.com/2026-11-26/102508790.html",
+  "date": "2026-11-26",
+  "author": "周信达",
+  "issue": "财新网",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-230-cart-medicare.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-230-cart-medicare.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-26T09:17+08:00"
+ },
+ {
+  "id": "cx-229-liu-guoguang",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "张卓元忆刘国光：在特殊时期起到了特殊作用",
+  "link": "https://opinion.caixin.com/2026-11-25/102508727.html",
+  "date": "2026-11-25",
+  "author": "张卓元",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-229-liu-guoguang.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-229-liu-guoguang.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-26T09:17+08:00"
+ },
+ {
+  "id": "cx-231-auto-europe",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "跨越壁垒、深度共生：中国汽车工业的欧洲破局之道",
+  "link": "https://opinion.caixin.com/2026-11-25/102508647.html",
+  "date": "2026-11-25",
+  "author": "陶志刚、乔亿源",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-231-auto-europe.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-231-auto-europe.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-26T09:17+08:00"
+ },
+ {
+  "id": "cx-232-economy-outlook",
+  "kind": "curated",
+  "type": "caixin",
+  "source": "财新",
+  "title": "平稳中蜕变｜2027—2028年中国经济展望",
+  "link": "https://opinion.caixin.com/2026-11-25/102508539.html",
+  "date": "2026-11-25",
+  "author": "宋宇",
+  "issue": "观点",
+  "txt": [
+   {
+    "label": "速读",
+    "url": "txt/cx-232-economy-outlook.txt"
+   },
+   {
+    "label": "原文",
+    "url": "txt/cx-232-economy-outlook.orig.txt"
+   }
+  ],
+  "added_at": "2026-11-26T09:17+08:00"
+ },
+ {
   "id": "cx-227-nvidia-board",
   "kind": "curated",
   "type": "caixin",
